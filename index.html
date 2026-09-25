@@ -475,8 +475,40 @@ function updateBanner(msg) {
 }
 
 function getEmailLinks(u) {
-    const emailSubject = encodeURIComponent(`Transfer Candidate: Akihiro Fujikawa - Harcum College (NJCAA D1)`);
-    const emailBody = encodeURIComponent(`Dear Coaching Staff,\n\nI hope this email finds you well.\nMy name is Akihiro Fujikawa, a sophomore winger/defender currently playing at Harcum College (NJCAA D1). I am writing to express my strong interest in transferring to your program for Fall 2027.\n\nAcademic Status: Cumulative GPA 3.28\n\n[Latest Video Links]\n• Freshman Highlight Video: https://youtu.be/GYwZrTe9pqw\n• UPSL Match Clips (Irvine FC): https://www.youtube.com/watch?v=mDg81hUIL8k\n• Instagram: https://www.instagram.com/a93914/\n\nThank you for your time and consideration.\n\nBest regards,\nAkihiro Fujikawa`);
+    const emailSubject = encodeURIComponent(`Transfer Candidate: Akihiro Fujikawa | LW/RB | NJCAA D1 (GPA 3.28) | Fall 2027`);
+    
+    const emailBody = encodeURIComponent(
+`Dear Coaching Staff at ${u.name},
+
+I hope this email finds you well.
+
+My name is Akihiro Fujikawa, a sophomore winger/fullback currently playing at Harcum College (NJCAA D1 in PA). I am writing to express my strong interest in transferring to ${u.name} for the Fall 2027 season.
+
+[Player Overview & Academic Status]
+• Position: LW / LM / RB (170cm / 68kg, Right-footed)
+• Current Level: Harcum College (NJCAA D1) | 7 GP, 1G 1A in Freshman Season
+• Summer 2026: UPSL Irvine FC (SoCal Premier) & D1 Combine Participant
+• Academic Eligibility: Cumulative GPA 3.28 (Harcum & OCC Credits Cleared)
+• NCAA ID: 250663641 (Fully Cleared for Transfer)
+
+[Athletic Profile & Key Strengths]
+• 1v1 Flank Specialist: Explosive acceleration and tactical agility to break lines.
+• Tactical & Technical Fit: High-pressure composure, tight-space build-up, and right-footed set-piece accuracy.
+• D1 Combine Assessment: Rated highly for possession-oriented play (evaluated by UC Riverside D1 Coaching Staff).
+
+[Recruitment Profile & Film]
+Please review my complete scouting profile, highlight films, and assessment sheets at:
+👉 https://fujitame.github.io/profile/
+
+Thank you for your time, consideration, and evaluation. I look forward to hearing from you.
+
+Best regards,
+
+Akihiro Fujikawa
+Harcum College (NJCAA D1 - #14)
+Email: fujiakihiro8@gmail.com | Phone: +1 610-529-3326
+Instagram: @a93914`
+    );
 
     const hcLink = `mailto:${u.hc_email}?cc=agency@withyou.com&subject=${emailSubject}&body=${emailBody}`;
     const acLink = `mailto:${u.ac_email}?cc=agency@withyou.com&subject=${emailSubject}&body=${emailBody}`;
