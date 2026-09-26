@@ -178,10 +178,11 @@ function getCoachLastName(fullName){if(!fullName||fullName==='Coach')return 'Coa
 
 /* コーチ宛メールの自動生成ロジック（CC削除、補足文削除） */
 function getEmailLinks(u){
-const subject=encodeURIComponent(`Harcum College Soccer #14 - Akihiro Fujikawa (Fall 2027 Transfer Candidate / GPA 3.28)`);
+const subject=encodeURIComponent(`Harcum College #14 - Akihiro Fujikawa (Fall 2027 Transfer Candidate / GPA 3.28)`);
 const bodyFor=(lastName)=>encodeURIComponent(`Dear Coach ${lastName},
 
-My name is Akihiro Fujikawa, a 19-year-old Japanese student-athlete currently playing at Harcum College (NJCAA D1 in PA). I am writing to express my strong interest in transferring to ${u.name}'s soccer program for Fall 2027.
+My name is Akihiro Fujikawa, a 19-year-old Japanese student-athlete currently playing at Harcum College (NJCAA D1 in PA).
+I am writing to express my strong interest in transferring to ${u.name}'s soccer program for Fall 2027.
 
 ==================================================
 ★ ONLINE RECRUITING PROFILE & SCOUTING REPORT ★
