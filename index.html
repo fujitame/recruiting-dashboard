@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Akihiro Fujikawa - Transfer Recruiting Dashboard v4.3</title>
+<title>Akihiro Fujikawa - Transfer Recruiting Dashboard v4.4</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -33,7 +33,7 @@ th:nth-child(1), td:nth-child(1) { position: sticky; left: 0; z-index: 10; backg
 th:nth-child(2), td:nth-child(2) { position: sticky; left: 32px; z-index: 10; background: #fff; width: 36px; min-width: 36px; text-align: center; }
 th:nth-child(3), td:nth-child(3) { position: sticky; left: 68px; z-index: 10; background: #fff; min-width: 140px; box-shadow: 3px 0 5px -2px rgba(0,0,0,0.12); }
 
-/* 固定列のヘッダー（Intersection: Top + Left固定のためz-index:30） */
+/* 固定列のヘッダー */
 th:nth-child(1), th:nth-child(2), th:nth-child(3) { z-index: 30; background: #edf2f7; }
 
 /* 行ホバー時の固定列背景色同期 */
@@ -49,7 +49,7 @@ tr:hover td:nth-child(1), tr:hover td:nth-child(2), tr:hover td:nth-child(3) { b
 </style>
 </head>
 <body>
-<header><div><h1>Akihiro Fujikawa - Transfer Dashboard v4.3</h1><div class="player-info">19yo | 170cm/68kg | Harcum College (NJCAA D1) | GPA: 3.28 | NCAA ID: 250663641</div></div></header>
+<header><div><h1>Akihiro Fujikawa - Transfer Dashboard v4.4</h1><div class="player-info">19yo | 170cm/68kg | Harcum College (NJCAA D1) | GPA: 3.28 | NCAA ID: 250663641</div></div></header>
 <div id="sync-banner" class="sync-banner">☁️ クラウド同期準備中...</div>
 <div class="controls">
 
@@ -176,11 +176,18 @@ function badgeClass(div){return div==='NCAA D1'?'badge-d1':(div==='NCAA D2'?'bad
 
 function getCoachLastName(fullName){if(!fullName||fullName==='Coach')return 'Coach';const p=fullName.trim().split(/\s+/);return p[p.length-1]}
 
+/* コーチ宛メールの自動生成ロジック（Profile Site と URL を強調） */
 function getEmailLinks(u){
 const subject=encodeURIComponent(`Harcum College Soccer #14 - Akihiro Fujikawa (Fall 2027 Transfer Candidate / GPA 3.28)`);
 const bodyFor=(lastName)=>encodeURIComponent(`Dear Coach ${lastName},
 
 My name is Akihiro Fujikawa, a 19-year-old Japanese student-athlete currently playing at Harcum College (NJCAA D1 in PA). I am writing to express my strong interest in transferring to ${u.name}'s soccer program for Fall 2027.
+
+==================================================
+★ ONLINE RECRUITING PROFILE & SCOUTING REPORT ★
+👉 Profile Site : https://fujitame.github.io/profile/
+👉 Highlight Video: https://youtu.be/GYwZrTe9poc
+==================================================
 
 [Player Overview]
 • Primary Position: Wide Defender / Fullback
@@ -194,13 +201,7 @@ My name is Akihiro Fujikawa, a 19-year-old Japanese student-athlete currently pl
 • NCAA ID: 250663641
 • Transfer Eligibility: Update Pending
 
-[Recruiting Profile & Film]
-Profile Site: https://fujitame.github.io/profile/
-Highlight Video: https://youtu.be/GYwZrTe9poc
-
-A current scouting profile and additional film are available through the Profile site. Full-match footage is available upon request.
-
-Thank you for your time and consideration. I would appreciate the opportunity to introduce myself and learn more about your program.
+Thank you for your time and consideration. Full-match footage is available upon request, and I would appreciate the opportunity to discuss how I can contribute to ${u.name}.
 
 Best regards,
 
@@ -209,7 +210,12 @@ Harcum College Men's Soccer #14
 Email: ${CURRENT_PLAYER.email}
 Phone: ${CURRENT_PLAYER.phone}
 Instagram: @a93914`);
-return {hcLink:`mailto:${u.hc_email}?subject=${subject}&body=${bodyFor(getCoachLastName(u.hc_name))}`,acLink:`mailto:${u.ac_email}?subject=${subject}&body=${bodyFor(getCoachLastName(u.ac_name))}`};
+
+const ccEmail = "recruit@withyou-usa.com";
+return {
+    hcLink:`mailto:${u.hc_email}?cc=${ccEmail}&subject=${subject}&body=${bodyFor(getCoachLastName(u.hc_name))}`,
+    acLink:`mailto:${u.ac_email}?cc=${ccEmail}&subject=${subject}&body=${bodyFor(getCoachLastName(u.ac_name))}`
+};
 }
 
 function createPopupContent(u){const {hcLink,acLink}=getEmailLinks(u);const c=getCost(u);const igText=u.ig_verified?'Instagram ✓':'Instagram';return `<div style="min-width:260px"><div class="popup-header"><b>${u.name}</b><button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button></div><span class="badge ${badgeClass(u.div)}">${u.div}</span><div style="font-size:11px;margin-top:5px;line-height:1.35">${u.desc}</div><div style="font-size:10px;color:#4a5568;margin-top:5px"><b>HC:</b> ${u.hc_name||'Coach'} | <b>AC:</b> ${u.ac_name||'Coach'}</div><div style="font-size:10px;color:#334155;margin-top:5px"><b>費用:</b> Tuition ${money(c.tuition)} / On-campus ${money(c.living)}${c.total!=null?` / <b>Annual Total ${money(c.total)}</b>`:''} <span style="color:#718096">(${c.year})</span></div><div class="popup-links"><a class="btn-link btn-fac" href="${u.facility}" target="_blank" rel="noopener noreferrer">Facility</a><a class="btn-link btn-ros" href="${u.roster}" target="_blank" rel="noopener noreferrer">Roster</a><a class="btn-link btn-ig" href="${u.ig}" target="_blank" rel="noopener noreferrer">${igText}</a><a class="btn-link btn-mail-hc" href="${hcLink}">Mail (HC)</a><a class="btn-link btn-mail-ac" href="${acLink}">Mail (AC)</a></div></div>`}
