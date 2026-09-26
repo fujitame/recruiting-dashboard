@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Akihiro Fujikawa - Transfer Recruiting Dashboard v4.2</title>
+<title>Akihiro Fujikawa - Transfer Recruiting Dashboard v4.3</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -20,7 +20,25 @@ select,input{padding:5px 7px;border-radius:4px;border:1px solid #4a5568;backgrou
 select:focus,input:focus{outline:none;border-color:var(--accent)}
 .view-toggle-bar{grid-column:1/-1;display:flex;gap:6px;justify-content:space-between;margin-top:2px}.toggle-btn{flex:1;background:#4a5568;color:#fff;border:0;padding:8px 4px;border-radius:4px;font-size:11px;font-weight:700;cursor:pointer;text-align:center}.toggle-btn.active{background:var(--accent)}.toggle-btn.fav-btn.active{background:var(--fav)}
 .main-content{flex:1 1 auto;position:relative;width:100%;height:540px;min-height:460px;min-width:0}#map-view,#list-view{width:100%;height:100%;position:absolute;top:0;left:0}#map-view{z-index:1}#list-view{z-index:2;overflow:hidden;padding:10px;display:none;background:var(--bg);min-width:0}
-.table-wrapper{width:100%;height:100%;overflow:auto;background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.05);-webkit-overflow-scrolling:touch;overscroll-behavior:contain}table{width:100%;border-collapse:separate;border-spacing:0;font-size:10.5px;min-width:1320px}th,td{padding:7px 6px;text-align:left;border-bottom:1px solid #e2e8f0;vertical-align:middle}th{background:#edf2f7;color:#4a5568;font-weight:700;position:sticky;top:0;z-index:20;box-shadow:0 1px 0 #d9e2ec}tr:hover{background:#f8fafc}
+
+/* テーブルスタイル設定 */
+.table-wrapper{width:100%;height:100%;overflow:auto;background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.05);-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:10.5px;min-width:1380px}
+th,td{padding:7px 6px;text-align:left;border-bottom:1px solid #e2e8f0;vertical-align:middle}
+th{background:#edf2f7;color:#4a5568;font-weight:700;position:sticky;top:0;z-index:20;box-shadow:0 1px 0 #d9e2ec}
+tr:hover{background:#f8fafc}
+
+/* 固定列（★、No.、大学名）のCSS設定 */
+th:nth-child(1), td:nth-child(1) { position: sticky; left: 0; z-index: 10; background: #fff; width: 32px; min-width: 32px; text-align: center; }
+th:nth-child(2), td:nth-child(2) { position: sticky; left: 32px; z-index: 10; background: #fff; width: 36px; min-width: 36px; text-align: center; }
+th:nth-child(3), td:nth-child(3) { position: sticky; left: 68px; z-index: 10; background: #fff; min-width: 140px; box-shadow: 3px 0 5px -2px rgba(0,0,0,0.12); }
+
+/* 固定列のヘッダー（Intersection: Top + Left固定のためz-index:30） */
+th:nth-child(1), th:nth-child(2), th:nth-child(3) { z-index: 30; background: #edf2f7; }
+
+/* 行ホバー時の固定列背景色同期 */
+tr:hover td:nth-child(1), tr:hover td:nth-child(2), tr:hover td:nth-child(3) { background: #f8fafc; }
+
 .star-btn{background:none;border:0;font-size:16px;cursor:pointer;color:#cbd5e0;padding:2px 4px;line-height:1}.star-btn.active{color:var(--fav)}
 .popup-header{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px}.popup-header b{font-size:12px}.status-select{padding:4px 6px;border-radius:12px;font-weight:700;font-size:10px;border:0;cursor:pointer}.status-uncontacted{background:#e2e8f0;color:#4a5568}.status-sent{background:#feebc8;color:#c05621}.status-replied{background:#c3dafe;color:#2b6cb0}.status-camp{background:#e9d8fd;color:#6b46c1}.status-offer{background:#c6f6d5;color:#22543d}
 .badge{display:inline-block;padding:2px 5px;border-radius:4px;font-size:9px;font-weight:700;color:#fff}.badge-d1{background:#e53e3e}.badge-d2{background:#dd6b20}.badge-naia{background:#38a169}
@@ -31,7 +49,7 @@ select:focus,input:focus{outline:none;border-color:var(--accent)}
 </style>
 </head>
 <body>
-<header><div><h1>Akihiro Fujikawa - Transfer Dashboard v4.2</h1><div class="player-info">19yo | 170cm/68kg | Harcum College (NJCAA D1) | GPA: 3.28 | NCAA ID: 250663641</div></div></header>
+<header><div><h1>Akihiro Fujikawa - Transfer Dashboard v4.3</h1><div class="player-info">19yo | 170cm/68kg | Harcum College (NJCAA D1) | GPA: 3.28 | NCAA ID: 250663641</div></div></header>
 <div id="sync-banner" class="sync-banner">☁️ クラウド同期準備中...</div>
 <div class="controls">
 
@@ -140,7 +158,6 @@ const universities=[
     { "id": 67, "name": "Our Lady of the Lake Univ.", "cat": "naia-tx", "div": "NAIA", "conf": "RRAC", "lat": 29.427, "lng": -98.543, "hc_name": "Shane Hurley", "hc_email": "ollumsoccer@ollusa.edu", "ac_name": "Coach", "ac_email": "asstmsoccer@ollusa.edu", "facility": "https://ollumsoccer.com/facilities", "roster": "https://ollusaints.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/ollumsoccer/", "desc": "サンアントニオ拠点。テクニカルなポゼッションを展開しGPA基準クリア者に厚遇。", "ig_verified": false }
 ];
 const COSTS={"1":[46640,18991,"2025 ref"],"2":[46524,20691,"2025 ref"],"3":[47676,18970,"2025 ref"],"4":[47332,20279,"2025 ref"],"5":[20070,19080,"2025 ref"],"6":[20058,13804,"2025 ref"],"7":[20618,19174,"2025 ref"],"8":[61867,22026,"2025 ref"],"9":[60522,19764,"2025 ref"],"10":[57803,17600,"2025 ref"],"11":[57080,17190,"2025 ref"],"12":[41228,12140,"2025 ref"],"13":[21010,20971,"2025 ref"],"14":[19764,19696,"2025 ref"],"15":[43480,14270,"2025 ref"],"16":[20381,16682,"2025 ref"],"17":[20054,18444,"2025 ref"],"18":[20682,14152,"2025 ref"],"19":[44458,10704,"2025 ref"],"20":[48984,13130,"2025 ref"],"21":[53584,16960,"2025 ref"],"22":[null,null,"School-specific ref pending"],"23":[56721,null,"2025 ref; living pending"],"24":[58390,17160,"2026-27 official"],"25":[null,null,"School-specific ref pending"],"26":[null,null,"School-specific ref pending"],"27":[null,null,"School-specific ref pending"],"28":[null,null,"School-specific ref pending"],"29":[17670,null,"2025 ref; no on-campus standard listed"],"30":[38125,12950,"2025 ref"],"31":[38728,14378,"2025 ref"],"32":[null,null,"School-specific ref pending"],"33":[null,null,"School-specific ref pending"],"34":[null,null,"School-specific ref pending"],"35":[18964,13080,"2025 ref"],"36":[17324,15860,"2025 ref"],"37":[null,null,"School-specific ref pending"],"38":[null,null,"School-specific ref pending"],"39":[null,null,"School-specific ref pending"],"40":[null,null,"School-specific ref pending"],"41":[null,null,"School-specific ref pending"],"42":[null,null,"School-specific ref pending"],"43":[null,null,"School-specific ref pending"],"44":[22143,10164,"2026-27 official"],"45":[null,null,"School-specific ref pending"],"46":[37090,14296,"2025 ref"],"47":[67040,null,"2025 ref; living pending"],"48":[null,null,"School-specific ref pending"],"49":[51384,14248,"2025 ref"],"50":[38404,null,"2026-27 official; living pending"],"51":[10996,9278,"2025 ref"],"52":[55700,19867,"2026-27 official"],"53":[null,null,"School-specific ref pending"],"54":[41891,13984,"2025 ref"],"55":[40866,13284,"2025 ref"],"56":[null,null,"School-specific ref pending"],"57":[null,null,"School-specific ref pending"],"58":[37963,12694,"2025 ref"],"59":[35800,11300,"2025 ref"],"60":[null,null,"School-specific ref pending"],"61":[null,null,"School-specific ref pending"],"62":[null,null,"School-specific ref pending"],"63":[null,null,"School-specific ref pending"],"64":[null,null,"School-specific ref pending"],"65":[null,null,"School-specific ref pending"],"66":[23782,9654,"2025 ref"],"67":[null,null,"School-specific ref pending"]};
-const VERIFIED_IG=new Set([1, 2, 3, 9, 12, 26, 27, 34]);
 const colorMap={ca:'#3182ce',west:'#805ad5','naia-ca':'#38a169','naia-west':'#2f855a',fl:'#dd6b20','naia-fl':'#c05621',tx:'#d69e2e','naia-tx':'#b7791f',top:'#e53e3e'};
 let map=null,markers=[];let showFavOnly=false;let currentView='map';
 const CURRENT_PLAYER={jersey:'#14',primary:'Wide Defender / Fullback',secondary:'LM / LW',gpa:'3.28',height:'170 cm',weight:'68 kg',foot:'Right-footed',stats:'7 GP · 1G · 1A',season:'2025-26',academic:'General Studies',eligibility:'Update Pending',ncaaId:'250663641',email:'fujiaki@icloud.com',phone:'+1 610-529-3326'};
@@ -179,7 +196,7 @@ My name is Akihiro Fujikawa, a 19-year-old Japanese student-athlete currently pl
 
 [Recruiting Profile & Film]
 Profile Site: https://fujitame.github.io/profile/
-Highlight Video: https://youtu.be/GYwZrTe9pqw
+Highlight Video: https://youtu.be/GYwZrTe9poc
 
 A current scouting profile and additional film are available through the Profile site. Full-match footage is available upon request.
 
@@ -213,7 +230,6 @@ function switchView(view){currentView=view;document.getElementById('btn-map').cl
 async function loadDataFromCloud(){if(!supabaseClient){initCloudDefaults();updateBanner('📱 ローカル保存モード（Supabase未接続）');return}try{const {data,error}=await supabaseClient.from('recruiting_records').select('content,updated_at').eq('id','akihiro_dashboard').single();if(error)throw error;if(data&&data.content){universities.forEach(u=>{u.fav=Array.isArray(data.content.favs)&&data.content.favs.includes(u.id);u.status=data.content.statuses?.[u.id]||'未接触'});showFavOnly=Boolean(data.content.showFavOnly);updateBanner(`✅ クラウド同期済み (最終更新: ${new Date(data.updated_at).toLocaleTimeString()})`)}else{initCloudDefaults();updateBanner('⚡ クラウド接続完了 (新規データ)')}}catch(err){console.warn('Cloud load fallback:',err);initCloudDefaults();updateBanner('⚠️ ネットワークエラー（ローカル表示中）')}document.getElementById('btn-fav-only').classList.toggle('active',showFavOnly)}
 async function saveDataToCloud(){const favs=universities.filter(u=>u.fav).map(u=>u.id);const statuses={};universities.forEach(u=>statuses[u.id]=u.status);const content={favs,statuses,showFavOnly};localStorage.setItem('recruiting_dashboard_backup',JSON.stringify(content));if(!supabaseClient)return;try{updateBanner('☁️ 保存中...');const {error}=await supabaseClient.from('recruiting_records').upsert({id:'akihiro_dashboard',content,updated_at:new Date().toISOString()},{onConflict:'id'});if(error)throw error;updateBanner(`✅ 全端末同期完了 (${new Date().toLocaleTimeString()})`)}catch(err){console.error('Cloud save error:',err);updateBanner('⚠️ クラウド保存失敗（ローカルに一時保存）')}}
 document.addEventListener('DOMContentLoaded',()=>{
-    // マップ初期化バグ回避のため、初期ビューをMapに設定します
     switchView('map');
     initCloudDefaults();
     
