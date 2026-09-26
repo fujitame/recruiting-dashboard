@@ -211,7 +211,6 @@ Email: ${CURRENT_PLAYER.email}
 Phone: ${CURRENT_PLAYER.phone}
 Instagram: @a93914`);
 
-const ccEmail = "recruit@withyou-usa.com";
 return {
     hcLink:`mailto:${u.hc_email}?cc=${ccEmail}&subject=${subject}&body=${bodyFor(getCoachLastName(u.hc_name))}`,
     acLink:`mailto:${u.ac_email}?cc=${ccEmail}&subject=${subject}&body=${bodyFor(getCoachLastName(u.ac_name))}`
