@@ -23,13 +23,13 @@ h1{margin:0;font-size:14px;font-weight:700}.player-info{font-size:10px;color:#cb
 select,input{padding:5px 7px;border-radius:4px;border:1px solid #4a5568;background:#4a5568;color:#fff;font-size:11px;width:100%;-webkit-appearance:none}
 select:focus,input:focus{outline:none;border-color:var(--accent)}
 .view-toggle-bar{grid-column:1/-1;display:flex;gap:6px;justify-content:space-between;margin-top:2px}.toggle-btn{flex:1;background:#4a5568;color:#fff;border:0;padding:8px 4px;border-radius:4px;font-size:11px;font-weight:700;cursor:pointer;text-align:center}.toggle-btn.active{background:var(--accent)}.toggle-btn.fav-btn.active{background:var(--fav)}
-.main-content{flex:1 1 auto;position:relative;width:100%;height:540px;min-height:460px}#map-view,#list-view{width:100%;height:100%;position:absolute;top:0;left:0}#map-view{z-index:1}#list-view{z-index:2;overflow:auto;padding:10px;display:none;background:var(--bg);-webkit-overflow-scrolling:touch}
-.table-wrapper{width:100%;overflow-x:auto;overflow-y:visible;background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.05)}table{width:100%;border-collapse:collapse;font-size:10.5px;min-width:1320px}thead{position:sticky;top:0;z-index:30}th,td{padding:7px 6px;text-align:left;border-bottom:1px solid #e2e8f0;vertical-align:middle}th{background:#edf2f7;color:#4a5568;font-weight:700;position:sticky;top:0;z-index:31;box-shadow:0 1px 0 #cbd5e0}tr:hover{background:#f8fafc}
+.main-content{flex:1 1 auto;position:relative;width:100%;height:540px;min-height:460px;min-width:0}#map-view,#list-view{width:100%;height:100%;position:absolute;top:0;left:0}#map-view{z-index:1}#list-view{z-index:2;overflow:hidden;padding:10px;display:none;background:var(--bg);min-width:0}
+.table-wrapper{width:100%;height:100%;overflow:auto;background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.05);-webkit-overflow-scrolling:touch;overscroll-behavior:contain}table{width:100%;border-collapse:separate;border-spacing:0;font-size:10.5px;min-width:1320px}th,td{padding:7px 6px;text-align:left;border-bottom:1px solid #e2e8f0;vertical-align:middle}th{background:#edf2f7;color:#4a5568;font-weight:700;position:sticky;top:0;z-index:20;box-shadow:0 1px 0 #d9e2ec}tr:hover{background:#f8fafc}
 .star-btn{background:none;border:0;font-size:16px;cursor:pointer;color:#cbd5e0;padding:2px 4px;line-height:1}.star-btn.active{color:var(--fav)}
 .popup-header{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px}.popup-header b{font-size:12px}.status-select{padding:4px 6px;border-radius:12px;font-weight:700;font-size:10px;border:0;cursor:pointer}.status-uncontacted{background:#e2e8f0;color:#4a5568}.status-sent{background:#feebc8;color:#c05621}.status-replied{background:#c3dafe;color:#2b6cb0}.status-camp{background:#e9d8fd;color:#6b46c1}.status-offer{background:#c6f6d5;color:#22543d}
 .badge{display:inline-block;padding:2px 5px;border-radius:4px;font-size:9px;font-weight:700;color:#fff}.badge-d1{background:#e53e3e}.badge-d2{background:#dd6b20}.badge-naia{background:#38a169}
 .btn-link{display:inline-block;padding:4px 6px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none;color:#fff;margin-right:2px;margin-bottom:2px}.btn-link:hover{opacity:.85}.btn-fac{background:#4a5568}.btn-ros{background:#2b6cb0}.btn-ig{background:#c13584}.btn-mail-hc{background:#3182ce}.btn-mail-ac{background:#805ad5}
-.popup-links{margin-top:6px;display:flex;gap:4px;flex-wrap:wrap}.action-cell{white-space:nowrap}.cost-cell{line-height:1.35;min-width:150px}.cost-main{font-weight:700;color:#1a365d}.cost-total{font-weight:800;color:#22543d;margin-top:2px;padding-top:2px;border-top:1px solid #e2e8f0}.cost-sub{font-size:9px;color:#718096}.cost-ref{font-size:8.5px;color:#718096;margin-top:2px}.verified{font-size:9px;color:#2f855a;font-weight:700}
+.popup-links{margin-top:6px;display:flex;gap:4px;flex-wrap:wrap}.action-cell{white-space:nowrap}.cost-cell{line-height:1.35;min-width:150px}.cost-main{font-weight:700;color:#1a365d}.cost-sub{font-size:9px;color:#718096}.cost-total{margin-top:2px;font-weight:800;color:#2b6cb0}.verified{font-size:9px;color:#2f855a;font-weight:700}
 .cost-note{padding:7px 10px;background:#fffaf0;border-bottom:1px solid #f0dca8;color:#7b5b1a;font-size:10px;line-height:1.4}
 @media(max-width:768px){h1{font-size:13px}.player-info{font-size:9.5px}.controls{grid-template-columns:1fr 1fr;padding:6px 8px}.control-group-search{grid-column:1/-1}.cost-note{font-size:9.5px}}
 </style>
@@ -49,9 +49,9 @@ select:focus,input:focus{outline:none;border-color:var(--accent)}
 <div class="view-toggle-bar"><button class="toggle-btn fav-btn" id="btn-fav-only" onclick="toggleFavFilter()">★ お気に入り</button><button class="toggle-btn" id="btn-map" onclick="switchView('map')">Map View</button><button class="toggle-btn active" id="btn-list" onclick="switchView('list')">Table View</button></div>
 </div>
 
-<div class="cost-note"><b>費用(参考)</b>：<b>Tuition（学費）</b>と<b>寮・生活費（On-campus living）</b>を分けて表示し、両方そろう学校は<b>年間合計（Tuition + On-campus living）</b>も表示します。なお「On-campus living」は寮費だけでなく食費等を含む学校別の生活費指標で、純粋な寮費単独とは限りません。学校別に取得できなかったものは「School-specific ref pending」と表示。奨学金・編入後の実費・2026-27公式COAとは異なる場合があります。</div>
+<div class="cost-note"><b>費用(参考)</b>：学費は原則として2025年の比較データに基づく参考値（公立はOut-of-State、私立/NAIAは通常のTuition）。寮・食費相当は「On-campus living」の参考値です。TuitionとOn-campus livingの両方が確認できる学校は、<b>年間合計 = Tuition + On-campus living</b>として表示します。学校別に取得できなかったものは「School-specific ref pending」と表示。奨学金・編入後の実費・2026-27公式COAとは異なる場合があります。</div>
 
-<div class="main-content"><div id="map-view"></div><div id="list-view"><div class="table-wrapper"><table>
+<div class="main-content"><div id="map-view"></div><div id="list-view"><!-- .table-wrapper owns both vertical/horizontal scroll so the header can remain sticky --><div class="table-wrapper"><table>
     <thead>
         <tr>
             <th>★</th>
@@ -63,7 +63,7 @@ select:focus,input:focus{outline:none;border-color:var(--accent)}
             <th>IG</th>
             <th>Links</th>
             <th>Scouting</th>
-            <th>Annual Cost (Ref./Yr.)</th>
+            <th>Cost (Ref./Yr.)</th>
             <th>Coach</th>
             <th>Email</th>
         </tr>
@@ -1292,11 +1292,11 @@ function initCloudDefaults(){universities.forEach(u=>{u.status='未接触';u.fav
 
 function updateBanner(msg){const b=document.getElementById('sync-banner');if(b)b.innerText=msg}
 
-function getCost(u){const v=COSTS[u.id]||[null,null,'School-specific ref pending'];return {tuition:v[0],living:v[1],year:v[2]}}
+function getCost(u){const v=COSTS[u.id]||[null,null,'School-specific ref pending'];const tuition=v[0];const living=v[1];return {tuition,living,total:tuition!=null&&living!=null?tuition+living:null,year:v[2]}}
 
 function money(v){return v==null?'—':`$${Number(v).toLocaleString('en-US')}`}
 
-function costHtml(u){const c=getCost(u);const total=(c.tuition!=null&&c.living!=null)?c.tuition+c.living:null;if(c.tuition==null&&c.living==null)return `<div class="cost-cell"><div class="cost-sub">Tuition: —</div><div class="cost-sub">寮・生活費: —</div><div class="cost-total">年間合計: —</div><div class="cost-ref">${c.year}</div></div>`;return `<div class="cost-cell"><div><b>Tuition:</b> ${money(c.tuition)}</div><div><b>寮・生活費:</b> ${money(c.living)}</div><div class="cost-total"><b>年間合計:</b> ${money(total)}</div><div class="cost-ref">${c.year}</div></div>`}
+function costHtml(u){const c=getCost(u);if(c.tuition==null&&c.living==null)return `<div class="cost-cell"><div class="cost-sub">参考値未確認</div><div class="cost-sub">${c.year}</div></div>`;return `<div class="cost-cell"><div class="cost-main">Tuition: ${money(c.tuition)}</div><div class="cost-sub">On-campus: ${money(c.living)}</div>${c.total!=null?`<div class="cost-total">Annual Total: ${money(c.total)}</div>`:'<div class="cost-sub">Annual Total: —</div>'}<div class="cost-sub">${c.year}</div></div>`}
 
 function badgeClass(div){return div==='NCAA D1'?'badge-d1':(div==='NCAA D2'?'badge-d2':'badge-naia')}
 
@@ -1304,7 +1304,6 @@ function getCoachLastName(fullName){if(!fullName||fullName==='Coach')return 'Coa
 
 function getEmailLinks(u){
 const subject=encodeURIComponent(`Harcum College Soccer #14 - Akihiro Fujikawa (Fall 2027 Transfer Candidate / GPA 3.28)`);
-const ccEmail='recruit@withyou-usa.com';
 const bodyFor=(lastName)=>encodeURIComponent(`Dear Coach ${lastName},
 
 My name is Akihiro Fujikawa, a 19-year-old Japanese student-athlete currently playing at Harcum College (NJCAA D1 in PA). I am writing to express my strong interest in transferring to ${u.name}'s soccer program for Fall 2027.
@@ -1336,10 +1335,10 @@ Harcum College Men's Soccer #14
 Email: ${CURRENT_PLAYER.email}
 Phone: ${CURRENT_PLAYER.phone}
 Instagram: @a93914`);
-return {hcLink:`mailto:${u.hc_email}?cc=${ccEmail}&subject=${subject}&body=${bodyFor(getCoachLastName(u.hc_name))}`,acLink:`mailto:${u.ac_email}?cc=${ccEmail}&subject=${subject}&body=${bodyFor(getCoachLastName(u.ac_name))}`};
+return {hcLink:`mailto:${u.hc_email}?subject=${subject}&body=${bodyFor(getCoachLastName(u.hc_name))}`,acLink:`mailto:${u.ac_email}?subject=${subject}&body=${bodyFor(getCoachLastName(u.ac_name))}`};
 }
 
-function createPopupContent(u){const {hcLink,acLink}=getEmailLinks(u);const igText=u.ig_verified?'Instagram ✓':'Instagram';return `<div style="min-width:260px"><div class="popup-header"><b>${u.name}</b><button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button></div><span class="badge ${badgeClass(u.div)}">${u.div}</span><div style="font-size:11px;margin-top:5px;line-height:1.35">${u.desc}</div><div style="font-size:10px;color:#4a5568;margin-top:5px"><b>HC:</b> ${u.hc_name||'Coach'} | <b>AC:</b> ${u.ac_name||'Coach'}</div><div style="font-size:10px;color:#334155;margin-top:5px"><b>費用:</b> Tuition ${money(getCost(u).tuition)} / 寮・生活費 ${money(getCost(u).living)} / <b>年間合計 ${((getCost(u).tuition!=null&&getCost(u).living!=null)?money(getCost(u).tuition+getCost(u).living):'—')}</b> <span style="color:#718096">(${getCost(u).year})</span></div><div class="popup-links"><a class="btn-link btn-fac" href="${u.facility}" target="_blank" rel="noopener noreferrer">Facility</a><a class="btn-link btn-ros" href="${u.roster}" target="_blank" rel="noopener noreferrer">Roster</a><a class="btn-link btn-ig" href="${u.ig}" target="_blank" rel="noopener noreferrer">${igText}</a><a class="btn-link btn-mail-hc" href="${hcLink}">Mail (HC)</a><a class="btn-link btn-mail-ac" href="${acLink}">Mail (AC)</a></div></div>`}
+function createPopupContent(u){const {hcLink,acLink}=getEmailLinks(u);const c=getCost(u);const igText=u.ig_verified?'Instagram ✓':'Instagram';return `<div style="min-width:260px"><div class="popup-header"><b>${u.name}</b><button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button></div><span class="badge ${badgeClass(u.div)}">${u.div}</span><div style="font-size:11px;margin-top:5px;line-height:1.35">${u.desc}</div><div style="font-size:10px;color:#4a5568;margin-top:5px"><b>HC:</b> ${u.hc_name||'Coach'} | <b>AC:</b> ${u.ac_name||'Coach'}</div><div style="font-size:10px;color:#334155;margin-top:5px"><b>費用:</b> Tuition ${money(c.tuition)} / On-campus ${money(c.living)}${c.total!=null?` / <b>Annual Total ${money(c.total)}</b>`:''} <span style="color:#718096">(${c.year})</span></div><div class="popup-links"><a class="btn-link btn-fac" href="${u.facility}" target="_blank" rel="noopener noreferrer">Facility</a><a class="btn-link btn-ros" href="${u.roster}" target="_blank" rel="noopener noreferrer">Roster</a><a class="btn-link btn-ig" href="${u.ig}" target="_blank" rel="noopener noreferrer">${igText}</a><a class="btn-link btn-mail-hc" href="${hcLink}">Mail (HC)</a><a class="btn-link btn-mail-ac" href="${acLink}">Mail (AC)</a></div></div>`}
 
 function renderTable(){const tbody=document.getElementById('table-body');tbody.innerHTML='';universities.forEach(u=>{const tr=document.createElement('tr');const {hcLink,acLink}=getEmailLinks(u);const igLabel=u.ig_verified?'IG ✓':'IG';tr.id=`row-${u.id}`;tr.innerHTML=`<td><button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button></td><td>${u.id}</td><td><strong>${u.name}</strong></td><td><span class="badge ${badgeClass(u.div)}">${u.div}</span></td><td>${u.conf}</td><td><select class="status-select ${getStatusClass(u.status)}" onchange="updateStatus(${u.id},this.value)"><option value="未接触" ${u.status==='未接触'?'selected':''}>未接触</option><option value="メール送信済" ${u.status==='メール送信済'?'selected':''}>メール送信済</option><option value="返信・関心あり" ${u.status==='返信・関心あり'?'selected':''}>返信・関心あり</option><option value="IDキャンプ済" ${u.status==='IDキャンプ済'?'selected':''}>IDキャンプ済</option><option value="オファー獲得" ${u.status==='オファー獲得'?'selected':''}>オファー獲得</option></select></td><td><a class="btn-link btn-ig" href="${u.ig}" target="_blank" rel="noopener noreferrer">${igLabel}</a></td><td><a class="btn-link btn-fac" href="${u.facility}" target="_blank" rel="noopener noreferrer">施設</a><a class="btn-link btn-ros" href="${u.roster}" target="_blank" rel="noopener noreferrer">Roster</a></td><td>${u.desc}</td><td>${costHtml(u)}</td><td style="font-size:10px"><div><b>HC:</b> ${u.hc_name||'Coach'}</div><div><b>AC:</b> ${u.ac_name||'Coach'}</div></td><td class="action-cell"><a class="btn-link btn-mail-hc" href="${hcLink}" title="Mail Head Coach">HC</a><a class="btn-link btn-mail-ac" href="${acLink}" title="Mail Assistant Coach">AC</a></td>`;tbody.appendChild(tr)})}
 
