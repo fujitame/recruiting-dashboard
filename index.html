@@ -23,7 +23,7 @@ h1{margin:0;font-size:14px;font-weight:700}.player-info{font-size:10px;color:#cb
 select,input{padding:5px 7px;border-radius:4px;border:1px solid #4a5568;background:#4a5568;color:#fff;font-size:11px;width:100%;-webkit-appearance:none}
 select:focus,input:focus{outline:none;border-color:var(--accent)}
 .view-toggle-bar{grid-column:1/-1;display:flex;gap:6px;justify-content:space-between;margin-top:2px}.toggle-btn{flex:1;background:#4a5568;color:#fff;border:0;padding:8px 4px;border-radius:4px;font-size:11px;font-weight:700;cursor:pointer;text-align:center}.toggle-btn.active{background:var(--accent)}.toggle-btn.fav-btn.active{background:var(--fav)}
-.main-content{flex:1 1 auto;position:relative;width:100%;height:540px;min-height:460px;min-width:0}#map-view,#list-view{width:100%;height:100%;position:absolute;top:0;left:0}#map-view{z-index:1}#list-view{z-index:2;overflow:hidden;padding:10px;display:none;background:var(--bg);min-width:0}
+.main-content{flex:1 1 auto;position:relative;width:100%;height:540px;min-height:460px;min-width:0}#map-view,#list-view{width:100%;height:100%;position:absolute;top:0;left:0}#map-view{z-index:1;background:#e5e7eb;min-height:100%;}#list-view{z-index:2;overflow:hidden;padding:10px;display:none;background:var(--bg);min-width:0}
 .table-wrapper{width:100%;height:100%;overflow:auto;background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.05);-webkit-overflow-scrolling:touch;overscroll-behavior:contain}table{width:100%;border-collapse:separate;border-spacing:0;font-size:10.5px;min-width:1320px}th,td{padding:7px 6px;text-align:left;border-bottom:1px solid #e2e8f0;vertical-align:middle}th{background:#edf2f7;color:#4a5568;font-weight:700;position:sticky;top:0;z-index:20;box-shadow:0 1px 0 #d9e2ec}tr:hover{background:#f8fafc}
 .star-btn{background:none;border:0;font-size:16px;cursor:pointer;color:#cbd5e0;padding:2px 4px;line-height:1}.star-btn.active{color:var(--fav)}
 .popup-header{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px}.popup-header b{font-size:12px}.status-select{padding:4px 6px;border-radius:12px;font-weight:700;font-size:10px;border:0;cursor:pointer}.status-uncontacted{background:#e2e8f0;color:#4a5568}.status-sent{background:#feebc8;color:#c05621}.status-replied{background:#c3dafe;color:#2b6cb0}.status-camp{background:#e9d8fd;color:#6b46c1}.status-offer{background:#c6f6d5;color:#22543d}
@@ -46,7 +46,7 @@ select:focus,input:focus{outline:none;border-color:var(--accent)}
 <div class="control-group"><label>進捗:</label><select id="filter-status" onchange="applyFilters()"><option value="all">全ステータス</option><option value="未接触">未接触</option><option value="メール送信済">メール送信済</option><option value="返信・関心あり">返信・関心あり</option><option value="IDキャンプ済">IDキャンプ済</option><option value="オファー獲得">オファー獲得</option></select></div>
 <div class="control-group control-group-search"><label>検索:</label><input type="text" id="search-input" placeholder="大学名・カンファレンス・コーチ名..." oninput="applyFilters()"></div>
 
-<div class="view-toggle-bar"><button class="toggle-btn fav-btn" id="btn-fav-only" onclick="toggleFavFilter()">★ お気に入り</button><button class="toggle-btn" id="btn-map" onclick="switchView('map')">Map View</button><button class="toggle-btn active" id="btn-list" onclick="switchView('list')">Table View</button></div>
+<div class="view-toggle-bar"><button class="toggle-btn fav-btn" id="btn-fav-only" onclick="toggleFavFilter()">★ お気に入り</button><button class="toggle-btn active" id="btn-map" onclick="switchView('map')">Map View</button><button class="toggle-btn" id="btn-list" onclick="switchView('list')">Table View</button></div>
 </div>
 
 <div class="cost-note"><b>費用(参考)</b>：学費は原則として2025年の比較データに基づく参考値（公立はOut-of-State、私立/NAIAは通常のTuition）。寮・食費相当は「On-campus living」の参考値です。TuitionとOn-campus livingの両方が確認できる学校は、<b>年間合計 = Tuition + On-campus living</b>として表示します。学校別に取得できなかったものは「School-specific ref pending」と表示。奨学金・編入後の実費・2026-27公式COAとは異なる場合があります。</div>
@@ -68,7 +68,7 @@ select:focus,input:focus{outline:none;border-color:var(--accent)}
             <th>Email</th>
         </tr>
     </thead><tbody id="table-body"></tbody></table></div></div></div>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20qH7NwLhP/JKs4Q3jz8Gm0h7j3QhXGJX0qf7eJ4iX4=" crossorigin=""></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const SUPABASE_URL='https://cjrabdfdtrufbpjmqddh.supabase.co';
 const SUPABASE_KEY='sb_publishable_u0hVckGZrWePM3j1BHDBsQ_YImzJ4D2';
@@ -219,10 +219,48 @@ function updateStatus(id,newStatus){const u=universities.find(x=>x.id===id);if(!
 
 function applyFilters(){const reg=document.getElementById('filter-region')?.value||'all';const div=document.getElementById('filter-div')?.value||'all';const stat=document.getElementById('filter-status')?.value||'all';const search=(document.getElementById('search-input')?.value||'').toLowerCase();const bounds=window.L&&map?L.latLngBounds():null;let visible=0;universities.forEach(u=>{const okReg=reg==='all'||u.cat===reg;const okDiv=div==='all'||u.div===div;const okStat=stat==='all'||u.status===stat;const q=(u.name+' '+u.conf+' '+(u.hc_name||'')+' '+(u.ac_name||'')).toLowerCase();const okSearch=q.includes(search);const okFav=!showFavOnly||u.fav;const ok=okReg&&okDiv&&okStat&&okSearch&&okFav;const row=document.getElementById(`row-${u.id}`);if(row)row.style.display=ok?'':'none';const marker=markers.find(m=>m.data.id===u.id);if(marker&&map){if(ok){marker.instance.addTo(map);bounds&&bounds.extend([u.lat,u.lng]);visible++;}else{if(map.hasLayer(marker.instance))map.removeLayer(marker.instance);}}else if(ok){visible++;}});if(map&&bounds&&visible>0&&reg!=='all')map.fitBounds(bounds,{padding:[30,30]});else if(map&&reg==='all')map.setView([37.0902,-95.7129],4)}
 
-function switchView(view){currentView=view;document.getElementById('btn-map').classList.toggle('active',view==='map');document.getElementById('btn-list').classList.toggle('active',view==='list');document.getElementById('map-view').style.display=view==='map'?'block':'none';document.getElementById('list-view').style.display=view==='list'?'block':'none';if(view==='map'&&map)setTimeout(()=>map.invalidateSize(),200)}
+function switchView(view){currentView=view;const mapEl=document.getElementById('map-view');const listEl=document.getElementById('list-view');document.getElementById('btn-map').classList.toggle('active',view==='map');document.getElementById('btn-list').classList.toggle('active',view==='list');mapEl.style.display=view==='map'?'block':'none';listEl.style.display=view==='list'?'block':'none';if(view==='map'&&map){setTimeout(()=>{map.invalidateSize({pan:false});applyFilters()},50);setTimeout(()=>map.invalidateSize({pan:false}),250)}}
 async function loadDataFromCloud(){if(!supabaseClient){initCloudDefaults();updateBanner('📱 ローカル保存モード（Supabase未接続）');return}try{const {data,error}=await supabaseClient.from('recruiting_records').select('content,updated_at').eq('id','akihiro_dashboard').single();if(error)throw error;if(data&&data.content){universities.forEach(u=>{u.fav=Array.isArray(data.content.favs)&&data.content.favs.includes(u.id);u.status=data.content.statuses?.[u.id]||'未接触'});showFavOnly=Boolean(data.content.showFavOnly);updateBanner(`✅ クラウド同期済み (最終更新: ${new Date(data.updated_at).toLocaleTimeString()})`)}else{initCloudDefaults();updateBanner('⚡ クラウド接続完了 (新規データ)')}}catch(err){console.warn('Cloud load fallback:',err);initCloudDefaults();updateBanner('⚠️ ネットワークエラー（ローカル表示中）')}document.getElementById('btn-fav-only').classList.toggle('active',showFavOnly)}
 async function saveDataToCloud(){const favs=universities.filter(u=>u.fav).map(u=>u.id);const statuses={};universities.forEach(u=>statuses[u.id]=u.status);const content={favs,statuses,showFavOnly};localStorage.setItem('recruiting_dashboard_backup',JSON.stringify(content));if(!supabaseClient)return;try{updateBanner('☁️ 保存中...');const {error}=await supabaseClient.from('recruiting_records').upsert({id:'akihiro_dashboard',content,updated_at:new Date().toISOString()},{onConflict:'id'});if(error)throw error;updateBanner(`✅ 全端末同期完了 (${new Date().toLocaleTimeString()})`)}catch(err){console.error('Cloud save error:',err);updateBanner('⚠️ クラウド保存失敗（ローカルに一時保存）')}}
-document.addEventListener('DOMContentLoaded',()=>{switchView('list');initCloudDefaults();renderTable();applyFilters();if(window.L){try{map=L.map('map-view',{tap:false}).setView([37.0902,-95.7129],4);L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:'Tiles &copy; Esri'}).addTo(map);universities.forEach(u=>{const marker=L.circleMarker([u.lat,u.lng],{radius:7,fillColor:colorMap[u.cat]||'#718096',color:'#fff',weight:1.5,opacity:1,fillOpacity:.85});marker.bindPopup(()=>createPopupContent(u));marker.addTo(map);markers.push({instance:marker,data:u})});applyFilters();setTimeout(()=>map.invalidateSize(),400);}catch(err){console.warn('Map init failed:',err);document.getElementById('map-view').innerHTML='<div style="padding:24px;text-align:center;color:#718096">Map Viewは一時利用できません。Table Viewをご利用ください。</div>';switchView('list')}}else{document.getElementById('map-view').innerHTML='<div style="padding:24px;text-align:center;color:#718096">Mapライブラリを読み込めませんでした。Table Viewを表示しています。</div>';switchView('list')}loadDataFromCloud().then(()=>{renderTable();applyFilters();}).catch(()=>{});});
+document.addEventListener('DOMContentLoaded',()=>{
+    initCloudDefaults();
+    renderTable();
+    applyFilters();
+
+    const showMapSafely=()=>{
+        if(!window.L){
+            console.warn('Leaflet library is unavailable.');
+            document.getElementById('map-view').innerHTML='<div style=\"padding:24px;text-align:center;color:#718096;background:#f1f5f9;height:100%;display:flex;align-items:center;justify-content:center;\">Map Viewを読み込めませんでした。Table Viewをご利用ください。</div>';
+            switchView('list');
+            return;
+        }
+        try{
+            if(!map){
+                map=L.map('map-view',{tap:false,zoomControl:true}).setView([37.0902,-95.7129],4);
+                L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:'Tiles &copy; Esri'}).addTo(map);
+                universities.forEach(u=>{
+                    const marker=L.circleMarker([u.lat,u.lng],{radius:7,fillColor:colorMap[u.cat]||'#718096',color:'#fff',weight:1.5,opacity:1,fillOpacity:.85});
+                    marker.bindPopup(()=>createPopupContent(u));
+                    marker.addTo(map);
+                    markers.push({instance:marker,data:u});
+                });
+            }
+            switchView('map');
+            setTimeout(()=>map.invalidateSize({pan:false}),100);
+            setTimeout(()=>applyFilters(),120);
+        }catch(err){
+            console.error('Map init failed:',err);
+            document.getElementById('map-view').innerHTML='<div style=\"padding:24px;text-align:center;color:#718096;background:#f1f5f9;height:100%;display:flex;align-items:center;justify-content:center;\">Map Viewは一時利用できません。Table Viewをご利用ください。</div>';
+            switchView('list');
+        }
+    };
+
+    loadDataFromCloud().then(()=>{
+        renderTable();
+        applyFilters();
+        showMapSafely();
+    }).catch(()=>showMapSafely());
+});
 window.addEventListener('resize',()=>{if(currentView==='map'&&map)map.invalidateSize()});
 </script>
 </body>
