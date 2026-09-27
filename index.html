@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Akihiro Fujikawa - Transfer Recruiting Dashboard v4.2</title>
+<title>Akihiro Fujikawa - Transfer Recruiting Dashboard v4.2 · Player Master Phase 2</title>
     <!--
         FULL VERSION: all 67 universities and the original dashboard functionality are preserved.
         Table order: University → Division → Conference → Status → IG → Links → Scouting → Cost → Coach → Email
@@ -35,7 +35,7 @@ select:focus,input:focus{outline:none;border-color:var(--accent)}
 </style>
 </head>
 <body>
-<header><div><h1>Akihiro Fujikawa - Transfer Dashboard v4.2</h1><div class="player-info">19yo | 170cm/68kg | Harcum College (NJCAA D1) | GPA: 3.28 | NCAA ID: 250663641</div></div></header>
+<header><div><h1 id="dashboard-title">Akihiro Fujikawa - Transfer Dashboard v4.2</h1><div id="player-info" class="player-info">Sophomore | 170cm/68kg | Harcum College (NJCAA D1) | GPA: 3.28 | NCAA ID: 250663641</div></div></header>
 <div id="sync-banner" class="sync-banner">☁️ クラウド同期準備中...</div>
 <div class="controls">
 
@@ -147,7 +147,73 @@ const COSTS={"1":[46640,18991,"2025 ref"],"2":[46524,20691,"2025 ref"],"3":[4767
 const VERIFIED_IG=new Set([1, 2, 3, 9, 12, 26, 27, 34]);
 const colorMap={ca:'#3182ce',west:'#805ad5','naia-ca':'#38a169','naia-west':'#2f855a',fl:'#dd6b20','naia-fl':'#c05621',tx:'#d69e2e','naia-tx':'#b7791f',top:'#e53e3e'};
 let map=null,markers=[];let showFavOnly=false;let currentView='list';
-const CURRENT_PLAYER={jersey:'#14',primary:'Wide Defender / Fullback',secondary:'LM / LW',gpa:'3.28',height:'170 cm',weight:'68 kg',foot:'Right-footed',stats:'7 GP · 1G · 1A',season:'2025-26',academic:'General Studies',eligibility:'Update Pending',ncaaId:'250663641',email:'fujiakihiro8@gmail.com',phone:'+1 610-529-3326'};
+const PLAYER_MASTER_ID='akihiro-fujikawa';
+const CURRENT_PLAYER={name:'Akihiro Fujikawa',school:'Harcum College',division:'NJCAA D1',classYear:'Sophomore',jersey:'#14',primary:'Wide Defender / Fullback',secondary:'LM / LW',gpa:'3.28',height:'170 cm',weight:'68 kg',foot:'Right-footed',stats:'7 GP · 1G · 1A',season:'2025-26',academic:'General Studies',transferableCredits:'Update Pending',expectedTransfer:'Fall 2027',eligibility:'Update Pending',ncaaId:'250663641',email:'fujiakihiro8@gmail.com',phone:'+1 610-529-3326',instagram:'a93914',highlightVideo1:'GYwZrTe9pqw',highlightVideo2:'mDg81hUIL8k',playerMasterUpdatedAt:null};
+
+
+async function loadPlayerProfile(){
+    // Phase 2: read the single Player Master row from Supabase.
+    // Safe fallback: if player_profile cannot be read yet (for example, before
+    // its SELECT policy is added), the existing embedded values keep the Dashboard running.
+    if(!supabaseClient){
+        renderPlayerInfo();
+        return false;
+    }
+    try{
+        const {data,error}=await supabaseClient
+            .from('player_profile')
+            .select('id,player_name,current_school,current_division,class_year,jersey_number,primary_position,secondary_positions,preferred_foot,height_cm,weight_kg,gpa,season_label,appearances,goals,assists,ncaa_id,academic_focus,transferable_credits_status,expected_transfer,eligibility_status,highlight_video_1_id,highlight_video_2_id,player_email,player_phone,instagram_handle,updated_at')
+            .eq('id',PLAYER_MASTER_ID)
+            .single();
+        if(error) throw error;
+        if(!data) throw new Error('PLAYER_PROFILE_NOT_FOUND');
+
+        CURRENT_PLAYER.name=data.player_name || CURRENT_PLAYER.name;
+        CURRENT_PLAYER.school=data.current_school || CURRENT_PLAYER.school;
+        CURRENT_PLAYER.division=data.current_division || CURRENT_PLAYER.division;
+        CURRENT_PLAYER.classYear=data.class_year || CURRENT_PLAYER.classYear;
+        CURRENT_PLAYER.jersey=data.jersey_number!=null ? `#${data.jersey_number}` : CURRENT_PLAYER.jersey;
+        CURRENT_PLAYER.primary=data.primary_position || CURRENT_PLAYER.primary;
+        CURRENT_PLAYER.secondary=data.secondary_positions || CURRENT_PLAYER.secondary;
+        CURRENT_PLAYER.foot=data.preferred_foot || CURRENT_PLAYER.foot;
+        CURRENT_PLAYER.height=data.height_cm!=null ? `${data.height_cm} cm` : CURRENT_PLAYER.height;
+        CURRENT_PLAYER.weight=data.weight_kg!=null ? `${data.weight_kg} kg` : CURRENT_PLAYER.weight;
+        CURRENT_PLAYER.gpa=data.gpa!=null ? Number(data.gpa).toFixed(2) : CURRENT_PLAYER.gpa;
+        CURRENT_PLAYER.season=data.season_label || CURRENT_PLAYER.season;
+        if(data.appearances!=null || data.goals!=null || data.assists!=null){
+            const gp=data.appearances!=null?data.appearances:'—';
+            const gl=data.goals!=null?data.goals:'—';
+            const as=data.assists!=null?data.assists:'—';
+            CURRENT_PLAYER.stats=`${gp} GP · ${gl}G · ${as}A`;
+        }
+        CURRENT_PLAYER.ncaaId=data.ncaa_id || CURRENT_PLAYER.ncaaId;
+        CURRENT_PLAYER.academic=data.academic_focus || CURRENT_PLAYER.academic;
+        CURRENT_PLAYER.transferableCredits=data.transferable_credits_status || CURRENT_PLAYER.transferableCredits;
+        CURRENT_PLAYER.expectedTransfer=data.expected_transfer || CURRENT_PLAYER.expectedTransfer;
+        CURRENT_PLAYER.eligibility=data.eligibility_status || CURRENT_PLAYER.eligibility;
+        CURRENT_PLAYER.email=data.player_email || CURRENT_PLAYER.email;
+        CURRENT_PLAYER.phone=data.player_phone || CURRENT_PLAYER.phone;
+        CURRENT_PLAYER.instagram=data.instagram_handle || CURRENT_PLAYER.instagram;
+        CURRENT_PLAYER.highlightVideo1=data.highlight_video_1_id || CURRENT_PLAYER.highlightVideo1;
+        CURRENT_PLAYER.highlightVideo2=data.highlight_video_2_id || CURRENT_PLAYER.highlightVideo2;
+        CURRENT_PLAYER.playerMasterUpdatedAt=data.updated_at || null;
+
+        renderPlayerInfo();
+        updateBanner(`👤 Player Master同期済み${CURRENT_PLAYER.playerMasterUpdatedAt?` (${new Date(CURRENT_PLAYER.playerMasterUpdatedAt).toLocaleTimeString()})`:''}`);
+        return true;
+    }catch(err){
+        console.warn('Player Master load fallback:',err);
+        renderPlayerInfo();
+        updateBanner('⚠️ Player Master未取得（既存データで動作）');
+        return false;
+    }
+}
+
+function renderPlayerInfo(){
+    const el=document.getElementById('player-info');
+    if(!el) return;
+    el.innerText=`${CURRENT_PLAYER.classYear} | ${CURRENT_PLAYER.height}/${CURRENT_PLAYER.weight} | ${CURRENT_PLAYER.school} (${CURRENT_PLAYER.division}) | GPA: ${CURRENT_PLAYER.gpa} | NCAA ID: ${CURRENT_PLAYER.ncaaId}`;
+}
 
 function initCloudDefaults(){universities.forEach(u=>{u.status='未接触';u.fav=false})}
 
@@ -164,39 +230,41 @@ function badgeClass(div){return div==='NCAA D1'?'badge-d1':(div==='NCAA D2'?'bad
 function getCoachLastName(fullName){if(!fullName||fullName==='Coach')return 'Coach';const p=fullName.trim().split(/\s+/);return p[p.length-1]}
 
 function getEmailLinks(u){
-const subject=encodeURIComponent(`Harcum College #14 - Akihiro Fujikawa (Fall 2027 Transfer Candidate / GPA 3.28)`);
+const subject=encodeURIComponent(`${CURRENT_PLAYER.school} ${CURRENT_PLAYER.jersey} - ${CURRENT_PLAYER.name} (Fall 2027 Transfer Candidate / GPA ${CURRENT_PLAYER.gpa})`);
+const highlightUrl=CURRENT_PLAYER.highlightVideo1?`https://youtu.be/${CURRENT_PLAYER.highlightVideo1}`:'';
 const bodyFor=(lastName)=>encodeURIComponent(`Dear Coach ${lastName},
 
-My name is Akihiro Fujikawa, a 19-year-old Japanese student-athlete currently playing at Harcum College (NJCAA D1 in PA).
-I am writing to express my strong interest in transferring to ${u.name}'s soccer program for Fall 2027.
+My name is ${CURRENT_PLAYER.name}, a Japanese student-athlete currently playing at ${CURRENT_PLAYER.school} (${CURRENT_PLAYER.division}).
+I am writing to express my strong interest in transferring to ${u.name}'s soccer program for ${CURRENT_PLAYER.expectedTransfer}.
 
 ==================================================
 ★ ONLINE RECRUITING PROFILE & SCOUTING REPORT ★
 👉 Profile Site : https://fujitame.github.io/profile/
-👉 Highlight Video: https://youtu.be/GYwZrTe9pqw
+👉 Highlight Video: ${highlightUrl}
 ==================================================
 
 [Player Overview]
-• Primary Position: Wide Defender / Fullback
-• Secondary Positions: LM / LW
-• Height / Weight: 170 cm / 68 kg | Right-footed
-• Current Level: Harcum College (NJCAA D1) | #14
-• 2025-26 Official Freshman Season: 7 GP · 1G · 1A
+• Primary Position: ${CURRENT_PLAYER.primary}
+• Secondary Positions: ${CURRENT_PLAYER.secondary}
+• Height / Weight: ${CURRENT_PLAYER.height} / ${CURRENT_PLAYER.weight} | ${CURRENT_PLAYER.foot}
+• Current Level: ${CURRENT_PLAYER.school} (${CURRENT_PLAYER.division}) | ${CURRENT_PLAYER.jersey}
+• ${CURRENT_PLAYER.season} Official Freshman Season: ${CURRENT_PLAYER.stats}
 • Summer 2026: UPSL Irvine FC + D1 Combine Participant
-• Academic Focus: General Studies / General Education Coursework
-• GPA: 3.28
-• NCAA ID: 250663641
-• Transfer Eligibility: Update Pending
+• Academic Focus: ${CURRENT_PLAYER.academic} / General Education Coursework
+• GPA: ${CURRENT_PLAYER.gpa}
+• NCAA ID: ${CURRENT_PLAYER.ncaaId}
+• Transferable Credits: ${CURRENT_PLAYER.transferableCredits}
+• Transfer Eligibility: ${CURRENT_PLAYER.eligibility}
 
 Thank you for your time and consideration. Full-match footage is available upon request, and I would appreciate the opportunity to discuss how I can contribute to ${u.name}.
 
 Best regards,
 
-Akihiro Fujikawa
-Harcum College Men's Soccer #14
+${CURRENT_PLAYER.name}
+${CURRENT_PLAYER.school} Men's Soccer ${CURRENT_PLAYER.jersey}
 Email: ${CURRENT_PLAYER.email}
 Phone: ${CURRENT_PLAYER.phone}
-Instagram: @a93914`);
+Instagram: @${CURRENT_PLAYER.instagram}`);
 return {
   hcLink: u.hc_email ? `mailto:${u.hc_email}?subject=${subject}&body=${bodyFor(getCoachLastName(u.hc_name))}` : '',
   acLink: u.ac_email ? `mailto:${u.ac_email}?subject=${subject}&body=${bodyFor(getCoachLastName(u.ac_name))}` : ''
@@ -224,6 +292,7 @@ async function loadDataFromCloud(){if(!supabaseClient){initCloudDefaults();updat
 async function saveDataToCloud(){const favs=universities.filter(u=>u.fav).map(u=>u.id);const statuses={};universities.forEach(u=>statuses[u.id]=u.status);const content={favs,statuses,showFavOnly};localStorage.setItem('recruiting_dashboard_backup',JSON.stringify(content));if(!supabaseClient)return;try{updateBanner('☁️ 保存中...');const {error}=await supabaseClient.from('recruiting_records').upsert({id:'akihiro_dashboard',content,updated_at:new Date().toISOString()},{onConflict:'id'});if(error)throw error;updateBanner(`✅ 全端末同期完了 (${new Date().toLocaleTimeString()})`)}catch(err){console.error('Cloud save error:',err);updateBanner('⚠️ クラウド保存失敗（ローカルに一時保存）')}}
 document.addEventListener('DOMContentLoaded',()=>{
     initCloudDefaults();
+    renderPlayerInfo();
     renderTable();
     applyFilters();
 
@@ -255,7 +324,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         }
     };
 
-    loadDataFromCloud().then(()=>{
+    loadPlayerProfile().then(()=>loadDataFromCloud()).then(()=>{
         renderTable();
         applyFilters();
         showMapSafely();
