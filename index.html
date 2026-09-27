@@ -149,13 +149,27 @@ const colorMap={ca:'#3182ce',west:'#805ad5','naia-ca':'#38a169','naia-west':'#2f
 let map=null,markers=[];let showFavOnly=false;let currentView='list';
 const PLAYER_MASTER_ID='akihiro-fujikawa';
 const CURRENT_PLAYER={name:'Akihiro Fujikawa',school:'Harcum College',division:'NJCAA D1',classYear:'Sophomore',jersey:'#14',primary:'Wide Defender / Fullback',secondary:'LM / LW',gpa:'3.28',height:'170 cm',weight:'68 kg',foot:'Right-footed',stats:'7 GP · 1G · 1A',season:'2025-26',academic:'General Studies',transferableCredits:'Update Pending',expectedTransfer:'Fall 2027',eligibility:'Update Pending',ncaaId:'250663641',email:'fujiakihiro8@gmail.com',phone:'+1 610-529-3326',instagram:'a93914',highlightVideo1:'GYwZrTe9pqw',highlightVideo2:'mDg81hUIL8k',playerMasterUpdatedAt:null};
+const SYNC_STATE={player:{status:'checking',updatedAt:null},recruiting:{status:'checking',updatedAt:null},operation:''};
 
+function renderSyncBanner(){
+    const b=document.getElementById('sync-banner');
+    if(!b) return;
+    const playerText=SYNC_STATE.player.status==='ok'
+        ? `👤 Player Master同期済み${SYNC_STATE.player.updatedAt?` (${new Date(SYNC_STATE.player.updatedAt).toLocaleTimeString()})`:''}`
+        : (SYNC_STATE.player.status==='error'?'⚠️ Player Master未取得':'👤 Player Master確認中...');
+    const cloudText=SYNC_STATE.recruiting.status==='ok'
+        ? `✅ クラウド同期済み${SYNC_STATE.recruiting.updatedAt?` (最終更新: ${new Date(SYNC_STATE.recruiting.updatedAt).toLocaleTimeString()})`:''}`
+        : (SYNC_STATE.recruiting.status==='local'?'📱 ローカル保存モード':'☁️ クラウド同期確認中...');
+    const op=SYNC_STATE.operation?` ｜ ${SYNC_STATE.operation}`:'';
+    b.innerText=`${cloudText} ｜ ${playerText}${op}`;
+}
 
 async function loadPlayerProfile(){
     // Phase 2: read the single Player Master row from Supabase.
     // Safe fallback: if player_profile cannot be read yet (for example, before
     // its SELECT policy is added), the existing embedded values keep the Dashboard running.
     if(!supabaseClient){
+        SYNC_STATE.player.status='error';
         renderPlayerInfo();
         return false;
     }
@@ -198,13 +212,15 @@ async function loadPlayerProfile(){
         CURRENT_PLAYER.highlightVideo2=data.highlight_video_2_id || CURRENT_PLAYER.highlightVideo2;
         CURRENT_PLAYER.playerMasterUpdatedAt=data.updated_at || null;
 
+        SYNC_STATE.player.status='ok';
+        SYNC_STATE.player.updatedAt=CURRENT_PLAYER.playerMasterUpdatedAt;
         renderPlayerInfo();
-        updateBanner(`👤 Player Master同期済み${CURRENT_PLAYER.playerMasterUpdatedAt?` (${new Date(CURRENT_PLAYER.playerMasterUpdatedAt).toLocaleTimeString()})`:''}`);
         return true;
     }catch(err){
         console.warn('Player Master load fallback:',err);
+        SYNC_STATE.player.status='error';
+        SYNC_STATE.player.updatedAt=null;
         renderPlayerInfo();
-        updateBanner('⚠️ Player Master未取得（既存データで動作）');
         return false;
     }
 }
@@ -217,7 +233,10 @@ function renderPlayerInfo(){
 
 function initCloudDefaults(){universities.forEach(u=>{u.status='未接触';u.fav=false})}
 
-function updateBanner(msg){const b=document.getElementById('sync-banner');if(b)b.innerText=msg}
+function updateBanner(msg){
+    SYNC_STATE.operation=msg||'';
+    renderSyncBanner();
+}
 
 function getCost(u){const v=COSTS[u.id]||[null,null,'School-specific ref pending'];const tuition=v[0];const living=v[1];return {tuition,living,total:tuition!=null&&living!=null?tuition+living:null,year:v[2]}}
 
@@ -288,10 +307,41 @@ function updateStatus(id,newStatus){const u=universities.find(x=>x.id===id);if(!
 function applyFilters(){const reg=document.getElementById('filter-region')?.value||'all';const div=document.getElementById('filter-div')?.value||'all';const stat=document.getElementById('filter-status')?.value||'all';const search=(document.getElementById('search-input')?.value||'').toLowerCase();const bounds=window.L&&map?L.latLngBounds():null;let visible=0;universities.forEach(u=>{const okReg=reg==='all'||u.cat===reg;const okDiv=div==='all'||u.div===div;const okStat=stat==='all'||u.status===stat;const q=(u.name+' '+u.conf+' '+(u.hc_name||'')+' '+(u.ac_name||'')).toLowerCase();const okSearch=q.includes(search);const okFav=!showFavOnly||u.fav;const ok=okReg&&okDiv&&okStat&&okSearch&&okFav;const row=document.getElementById(`row-${u.id}`);if(row)row.style.display=ok?'':'none';const marker=markers.find(m=>m.data.id===u.id);if(marker&&map){if(ok){marker.instance.addTo(map);bounds&&bounds.extend([u.lat,u.lng]);visible++;}else{if(map.hasLayer(marker.instance))map.removeLayer(marker.instance);}}else if(ok){visible++;}});if(map&&bounds&&visible>0&&reg!=='all')map.fitBounds(bounds,{padding:[30,30]});else if(map&&reg==='all')map.setView([37.0902,-95.7129],4)}
 
 function switchView(view){currentView=view;const mapEl=document.getElementById('map-view');const listEl=document.getElementById('list-view');document.getElementById('btn-map').classList.toggle('active',view==='map');document.getElementById('btn-list').classList.toggle('active',view==='list');mapEl.style.display=view==='map'?'block':'none';listEl.style.display=view==='list'?'block':'none';if(view==='map'&&map){setTimeout(()=>{map.invalidateSize({pan:false});applyFilters()},50);setTimeout(()=>map.invalidateSize({pan:false}),250)}}
-async function loadDataFromCloud(){if(!supabaseClient){initCloudDefaults();updateBanner('📱 ローカル保存モード（Supabase未接続）');return}try{const {data,error}=await supabaseClient.from('recruiting_records').select('content,updated_at').eq('id','akihiro_dashboard').single();if(error)throw error;if(data&&data.content){universities.forEach(u=>{u.fav=Array.isArray(data.content.favs)&&data.content.favs.includes(u.id);u.status=data.content.statuses?.[u.id]||'未接触'});showFavOnly=Boolean(data.content.showFavOnly);updateBanner(`✅ クラウド同期済み (最終更新: ${new Date(data.updated_at).toLocaleTimeString()})`)}else{initCloudDefaults();updateBanner('⚡ クラウド接続完了 (新規データ)')}}catch(err){console.warn('Cloud load fallback:',err);initCloudDefaults();updateBanner('⚠️ ネットワークエラー（ローカル表示中）')}document.getElementById('btn-fav-only').classList.toggle('active',showFavOnly)}
+async function loadDataFromCloud(){
+    if(!supabaseClient){
+        initCloudDefaults();
+        SYNC_STATE.recruiting.status='local';
+        SYNC_STATE.recruiting.updatedAt=null;
+        renderSyncBanner();
+        return;
+    }
+    try{
+        const {data,error}=await supabaseClient.from('recruiting_records').select('content,updated_at').eq('id','akihiro_dashboard').single();
+        if(error) throw error;
+        if(data&&data.content){
+            universities.forEach(u=>{u.fav=Array.isArray(data.content.favs)&&data.content.favs.includes(u.id);u.status=data.content.statuses?.[u.id]||'未接触'});
+            showFavOnly=Boolean(data.content.showFavOnly);
+            SYNC_STATE.recruiting.status='ok';
+            SYNC_STATE.recruiting.updatedAt=data.updated_at||null;
+        }else{
+            initCloudDefaults();
+            SYNC_STATE.recruiting.status='ok';
+            SYNC_STATE.recruiting.updatedAt=null;
+        }
+    }catch(err){
+        console.warn('Cloud load fallback:',err);
+        initCloudDefaults();
+        SYNC_STATE.recruiting.status='error';
+        SYNC_STATE.recruiting.updatedAt=null;
+    }
+    document.getElementById('btn-fav-only').classList.toggle('active',showFavOnly);
+}
+
 async function saveDataToCloud(){const favs=universities.filter(u=>u.fav).map(u=>u.id);const statuses={};universities.forEach(u=>statuses[u.id]=u.status);const content={favs,statuses,showFavOnly};localStorage.setItem('recruiting_dashboard_backup',JSON.stringify(content));if(!supabaseClient)return;try{updateBanner('☁️ 保存中...');const {error}=await supabaseClient.from('recruiting_records').upsert({id:'akihiro_dashboard',content,updated_at:new Date().toISOString()},{onConflict:'id'});if(error)throw error;updateBanner(`✅ 全端末同期完了 (${new Date().toLocaleTimeString()})`)}catch(err){console.error('Cloud save error:',err);updateBanner('⚠️ クラウド保存失敗（ローカルに一時保存）')}}
 document.addEventListener('DOMContentLoaded',()=>{
     initCloudDefaults();
+    SYNC_STATE.operation='同期確認中...';
+    renderSyncBanner();
     renderPlayerInfo();
     renderTable();
     applyFilters();
@@ -324,11 +374,21 @@ document.addEventListener('DOMContentLoaded',()=>{
         }
     };
 
-    loadPlayerProfile().then(()=>loadDataFromCloud()).then(()=>{
-        renderTable();
-        applyFilters();
-        showMapSafely();
-    }).catch(()=>showMapSafely());
+    loadPlayerProfile()
+        .then(()=>loadDataFromCloud())
+        .then(()=>{
+            SYNC_STATE.operation='';
+            renderSyncBanner();
+            renderTable();
+            applyFilters();
+            showMapSafely();
+        })
+        .catch((err)=>{
+            console.warn('Initial data load sequence error:',err);
+            SYNC_STATE.operation='';
+            renderSyncBanner();
+            showMapSafely();
+        });
 });
 window.addEventListener('resize',()=>{if(currentView==='map'&&map)map.invalidateSize()});
 </script>
