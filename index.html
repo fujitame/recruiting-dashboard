@@ -95,7 +95,7 @@ select:focus,input:focus{outline:none;border-color:var(--accent)}
         <p class="auth-note">認証はSupabase Auth、RecruitingデータはRow Level Security (RLS)で保護されています。</p>
     </div>
 </div>
-<header><div><h1 id="dashboard-title">Akihiro Fujikawa - Transfer Dashboard v4.3</h1><div id="player-info" class="player-info">Sophomore | 170cm/68kg | Harcum College (NJCAA D1) | GPA: 3.29 | NCAA ID: 250663641</div></div><div class="header-account"><div class="gmail-status-wrap"><span id="gmail-status" class="gmail-status">Gmail未接続</span><button id="gmail-connect-btn" class="gmail-connect" type="button" onclick="connectGmail()">Gmail接続</button><button class="gmail-test" type="button" onclick="openGmailSelfTest()">自分宛テスト</button></div><span id="auth-user-badge" class="user-badge">Not signed in</span><button id="logout-btn" class="logout-btn" type="button" hidden>Logout</button></div></header>
+<header><div><h1 id="dashboard-title">Akihiro Fujikawa - Transfer Dashboard v4.3</h1><div id="player-info" class="player-info">Sophomore | 170cm/68kg | Harcum College (NJCAA D1) | GPA: 3.29 | NCAA ID: 250663641</div></div><div class="header-account"><div class="gmail-status-wrap"><span id="gmail-status" class="gmail-status">Gmail未接続</span><button id="gmail-connect-btn" class="gmail-connect" type="button" onclick="connectGmail()">Gmail接続</button><button class="gmail-test" type="button" onclick="openGmailSelfTest()">自分宛テスト</button><button class="gmail-test" type="button" onclick="openPhase5DTest()">Phase 5-Dテスト</button></div><span id="auth-user-badge" class="user-badge">Not signed in</span><button id="logout-btn" class="logout-btn" type="button" hidden>Logout</button></div></header>
 <div id="sync-banner" class="sync-banner">☁️ クラウド同期準備中...</div>
 <div class="controls">
 
@@ -202,13 +202,28 @@ function openGmailComposer(id,role){
 }
 function openGmailComposerFromCrm(){if(!crmCurrentContact)return;openGmailComposer(crmCurrentContact.university_id,crmCurrentContact.coach_role)}
 function openGmailSelfTest(){
- gmailTestMode=true;gmailCurrentContactId=null;
+ gmailTestMode='self';gmailCurrentContactId=null;
  document.getElementById('gmail-title').textContent='Gmail 自分宛テスト送信';
  document.getElementById('gmail-subtitle').textContent='送信先: '+GMAIL_ACCOUNT;
  const note=document.getElementById('gmail-note');if(note)note.textContent='これはテスト送信です。自分のGmailに送信するだけで、CRMのコーチ情報・連絡回数・ステータス・Thread IDは変更しません。';
  document.getElementById('gmail-to').value=GMAIL_ACCOUNT;
  document.getElementById('gmail-subject').value='[TEST] Akihiro Recruiting Dashboard Gmail送信テスト';
  document.getElementById('gmail-body').value='Akihiro Recruiting Dashboard のGmail送信テストです。\n\nこのメールが届けば、Gmail OAuth認証とGmail API送信処理が正常に動作しています。\n\n送信先: '+GMAIL_ACCOUNT+'\n\nこのテストではCRMデータは変更されません。';
+ showGmailError('');document.getElementById('gmail-modal').classList.add('open');
+}
+async function openPhase5DTest(){
+ if(!supabaseClient){alert('Supabaseに接続できていません。');return}
+ const {data,error}=await supabaseClient.from('recruiting_contacts').select('*').eq('owner_user_id',DASHBOARD_OWNER_ID).eq('university_id',67).eq('coach_key','phase5d-test:fujitame@gmail.com').maybeSingle();
+ if(error){alert('Phase 5-Dテスト用CRMレコードの取得に失敗しました: '+error.message);return}
+ if(!data){alert('Phase 5-Dテスト用CRMレコードが見つかりません。Supabase SQL Editorでテストレコードを作成してください。');return}
+ if(!gmailTokenValid()){alert('先に「Gmail接続」を行ってください。');return}
+ gmailTestMode='phase5d';gmailCurrentContactId=data.id;crmCurrentContact=data;
+ document.getElementById('gmail-title').textContent='Phase 5-D 返信検出テスト';
+ document.getElementById('gmail-subtitle').textContent='送信先: '+data.coach_email+' · CRM Thread ID保存テスト';
+ const note=document.getElementById('gmail-note');if(note)note.textContent='安全な自分宛テストです。送信元は '+GMAIL_ACCOUNT+'、送信先は '+data.coach_email+'。送信後に受信側から返信し、Phase 5-D Functionで返信検出を確認します。';
+ document.getElementById('gmail-to').value=data.coach_email;
+ document.getElementById('gmail-subject').value='[Phase 5-D TEST] Gmail返信検出テスト';
+ document.getElementById('gmail-body').value='Phase 5-D Gmail返信検出テストです。\\n\\nこのメールを受信したら、このメールに「Phase 5-D reply test OK」などと返信してください。\\n\\n実在のコーチには送信していません。CRMのThread ID保存と返信検出だけを確認するテストです。';
  showGmailError('');document.getElementById('gmail-modal').classList.add('open');
 }
 function closeGmailComposer(){document.getElementById('gmail-modal')?.classList.remove('open');gmailCurrentContactId=null;gmailTestMode=false;showGmailError('')}
@@ -225,7 +240,7 @@ async function sendGmailMessage(){
  try{
   const r=await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send',{method:'POST',headers:{Authorization:'Bearer '+gmailAccessToken,'Content-Type':'application/json'},body:JSON.stringify({raw:buildGmailRaw(to,subject,body)})});
   const result=await r.json();if(!r.ok)throw new Error(result.error?.message||'Gmail送信に失敗しました。');
-  if(gmailTestMode){
+  if(gmailTestMode==='self'){
    alert('自分宛テスト送信に成功しました。'+GMAIL_ACCOUNT+' の受信トレイを確認してください。CRMは変更していません。');
   }else{
    const contact=Array.from(crmContacts.values()).find(x=>x.id===gmailCurrentContactId);
