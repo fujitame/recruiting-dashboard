@@ -147,8 +147,8 @@ select:focus,input:focus{outline:none;border-color:var(--accent)}
 <div class="crm-field"><label for="crm-follow-up">フォローアップ予定日</label><input id="crm-follow-up" type="date"></div>
 <div class="crm-field"><label for="crm-count">連絡回数</label><input id="crm-count" type="number" min="0" step="1"></div>
 <div class="crm-field"><label for="crm-visit">訪問・キャンプ</label><input id="crm-visit" type="text" placeholder="ID Camp / 訪問 / 面談"></div>
-<div class="crm-field full"><label for="crm-response">コーチからの反応</label><textarea id="crm-response" placeholder="Summary of coach response"></textarea></div>
-<div class="crm-field full"><label for="crm-note">履歴メモ</label><textarea id="crm-note" placeholder="Optional note to append to contact history"></textarea></div>
+<div class="crm-field full"><label for="crm-response">コーチからの反応</label><textarea id="crm-response" placeholder="コーチからの反応・返信内容を記録"></textarea></div>
+<div class="crm-field full"><label for="crm-note">履歴メモ</label><textarea id="crm-note" placeholder="この連絡についてのメモ"></textarea></div>
 </div><div class="crm-actions"><button class="crm-save" type="button" onclick="saveCrmContact()">保存</button><button class="crm-secondary" type="button" onclick="closeCrmDrawer()">閉じる</button></div>
 <div class="crm-history"><h3>連絡履歴</h3><div id="crm-history-list" class="crm-empty">No history yet.</div></div></div></aside>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -585,7 +585,7 @@ function renderCrmSummary(){
  const ids={'crm-kpi-total':values.length,'crm-kpi-not-contacted':count('not_contacted'),'crm-kpi-contacted':count('contacted'),'crm-kpi-followup':count('follow_up_due'),'crm-kpi-responded':count('responded'),'crm-kpi-no-response':count('no_response')};
  Object.entries(ids).forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.textContent=v});
  const filter=document.getElementById('crm-filter');if(filter)filter.value=crmFilter;
- const note=document.getElementById('crm-summary-note');if(note)note.textContent=crmAvailable?'Showing '+values.length+' CRM coach contacts. Use HC管理 / AC管理 to edit each record.':'CRM data unavailable.';
+ const note=document.getElementById('crm-summary-note');if(note)note.textContent=crmAvailable?''+values.length+'名のコーチ連絡情報を管理中。各学校の「HC管理」「AC管理」から編集できます。':'CRM data unavailable.';
 }
 function crmStatusLabel(status){return CRM_STATUS_LABELS[status]||status||'未設定'}
 function crmDateOnlyLocal(v){if(!v)return null;const d=new Date(v+'T00:00:00');return Number.isNaN(d.getTime())?null:d}
