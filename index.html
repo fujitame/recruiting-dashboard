@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Akihiro Fujikawa - Transfer Recruiting Dashboard v4.2 · Player Master Phase 2</title>
+<title>Akihiro Fujikawa - Transfer Recruiting Dashboard v4.3 · Phase 4 Auth</title>
     <!--
         FULL VERSION: all 67 universities and the original dashboard functionality are preserved.
         Table order: University → Division → Conference → Status → IG → Links → Scouting → Cost → Coach → Email
@@ -32,10 +32,53 @@ select:focus,input:focus{outline:none;border-color:var(--accent)}
 .popup-links{margin-top:6px;display:flex;gap:4px;flex-wrap:wrap}.action-cell{white-space:nowrap}.cost-cell{line-height:1.35;min-width:150px}.cost-main{font-weight:700;color:#1a365d}.cost-sub{font-size:9px;color:#718096}.cost-total{margin-top:2px;font-weight:800;color:#2b6cb0}.verified{font-size:9px;color:#2f855a;font-weight:700}.staff-flag{font-size:9px;font-weight:700;color:#2f855a}.staff-flag.partial{color:#b7791f}.staff-flag.review{color:#c53030}.disabled-mail{opacity:.45;pointer-events:none;cursor:not-allowed}
 .cost-note{padding:7px 10px;background:#fffaf0;border-bottom:1px solid #f0dca8;color:#7b5b1a;font-size:10px;line-height:1.4}
 @media(max-width:768px){h1{font-size:13px}.player-info{font-size:9.5px}.controls{grid-template-columns:1fr 1fr;padding:6px 8px}.control-group-search{grid-column:1/-1}.cost-note{font-size:9.5px}}
+
+/* Phase 4: Supabase Auth gate */
+.auth-gate{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.96);backdrop-filter:blur(8px)}
+.auth-gate.hidden{display:none}
+.auth-card{width:min(420px,100%);background:#fff;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.35);padding:24px;color:#1f2937}
+.auth-card h2{margin:0;font-size:20px;font-weight:800;color:#1a365d}
+.auth-card .auth-sub{margin:6px 0 18px;font-size:12px;color:#718096;line-height:1.5}
+.auth-field{margin-bottom:12px}
+.auth-field label{display:block;color:#374151;font-size:11px;font-weight:800;margin-bottom:5px}
+.auth-field input{width:100%;padding:10px 11px;border:1px solid #cbd5e0;border-radius:7px;background:#fff;color:#1f2937;font-size:13px;appearance:auto}
+.auth-field input:focus{outline:none;border-color:#3182ce;box-shadow:0 0 0 2px rgba(49,130,206,.12)}
+.auth-submit{width:100%;border:0;border-radius:7px;padding:10px 12px;background:#3182ce;color:#fff;font-size:13px;font-weight:800;cursor:pointer}
+.auth-submit:disabled{opacity:.6;cursor:not-allowed}
+.auth-message{display:none;margin-top:12px;padding:9px 10px;border-radius:7px;font-size:11px;font-weight:700;line-height:1.5}
+.auth-message.show{display:block}
+.auth-message.error{background:#fff1f2;color:#be123c}
+.auth-message.info{background:#eff6ff;color:#1d4ed8}
+.auth-message.success{background:#ecfdf5;color:#047857}
+.auth-note{margin-top:14px;font-size:10px;line-height:1.5;color:#94a3b8}
+.header-account{display:flex;align-items:center;gap:7px;margin-left:12px}
+.user-badge{font-size:9px;color:#dbeafe;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);padding:4px 7px;border-radius:999px;white-space:nowrap}
+.logout-btn{border:1px solid rgba(255,255,255,.25);background:transparent;color:#fff;border-radius:6px;padding:5px 8px;font-size:10px;font-weight:800;cursor:pointer}
+.logout-btn:hover{background:rgba(255,255,255,.08)}
+@media(max-width:768px){.header-account{gap:5px;margin-left:8px}.user-badge{display:none}.logout-btn{padding:5px 6px;font-size:9px}}
 </style>
 </head>
 <body>
-<header><div><h1 id="dashboard-title">Akihiro Fujikawa - Transfer Dashboard v4.2</h1><div id="player-info" class="player-info">Sophomore | 170cm/68kg | Harcum College (NJCAA D1) | GPA: 3.28 | NCAA ID: 250663641</div></div></header>
+<div id="auth-gate" class="auth-gate" aria-live="polite">
+    <div class="auth-card">
+        <h2>Recruiting Dashboard Login</h2>
+        <p class="auth-sub">このDashboardは本人・家族向けのRecruiting管理画面です。作成したSupabaseアカウントでログインしてください。</p>
+        <form id="auth-form" novalidate>
+            <div class="auth-field">
+                <label for="auth-email">メールアドレス</label>
+                <input id="auth-email" type="email" autocomplete="email" required placeholder="your-email@example.com">
+            </div>
+            <div class="auth-field">
+                <label for="auth-password">パスワード</label>
+                <input id="auth-password" type="password" autocomplete="current-password" required placeholder="Password">
+            </div>
+            <button id="auth-submit" class="auth-submit" type="submit">ログイン</button>
+            <div id="auth-message" class="auth-message"></div>
+        </form>
+        <p class="auth-note">認証はSupabase Auth、RecruitingデータはRow Level Security (RLS)で保護されています。</p>
+    </div>
+</div>
+<header><div><h1 id="dashboard-title">Akihiro Fujikawa - Transfer Dashboard v4.3</h1><div id="player-info" class="player-info">Sophomore | 170cm/68kg | Harcum College (NJCAA D1) | GPA: 3.29 | NCAA ID: 250663641</div></div><div class="header-account"><span id="auth-user-badge" class="user-badge">Not signed in</span><button id="logout-btn" class="logout-btn" type="button" hidden>Logout</button></div></header>
 <div id="sync-banner" class="sync-banner">☁️ クラウド同期準備中...</div>
 <div class="controls">
 
@@ -77,7 +120,7 @@ if(window.supabase&&typeof window.supabase.createClient==='function'){supabaseCl
 const universities=[
     {"id": 1, "name": "UC Irvine", "cat": "ca", "div": "NCAA D1", "conf": "Big West", "lat": 33.6405, "lng": -117.8443, "hc_name": "Yossi Raz", "hc_email": "yraz@uci.edu", "ac_name": "Cale Rodriguez", "ac_email": "caler@uci.edu", "facility": "https://ucirvinesports.com/facilities", "roster": "https://ucirvinesports.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/ucimsoc/", "desc": "7/18 IDキャンプ参加済。サイドでの1v1スキルと狭いスペースでの技術を高く評価。", "ig_verified": true, "staff_status": "verified", "staff_status_label": "✓ Official/current contact verified"},
     {"id": 2, "name": "UC Riverside", "cat": "ca", "div": "NCAA D1", "conf": "Big West", "lat": 33.9737, "lng": -117.3281, "hc_name": "Tim Cupello", "hc_email": "tim.cupello@ucr.edu", "ac_name": "Chris Volk", "ac_email": "cvolk@ucr.edu", "facility": "https://gohighlanders.com/facilities", "roster": "https://gohighlanders.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/ucrmsoc/", "desc": "Chris Volk氏率いるポゼッション主体のプログラム。「展開力と足元技術」で最有力評価。", "ig_verified": true, "staff_status": "verified", "staff_status_label": "✓ Official/current contact verified"},
-    {"id": 3, "name": "UC San Diego", "cat": "ca", "div": "NCAA D1", "conf": "Big West", "lat": 32.8801, "lng": -117.234, "hc_name": "Jon Pascale", "hc_email": "jpascale@ucsd.edu", "ac_name": "Ryan Hernandez", "ac_email": "ryanhernandez@ucsd.edu", "facility": "https://ucsdtritons.com/facilities", "roster": "https://ucsdtritons.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/ucsdmsoc/", "desc": "スマートなポゼッションスタイル。高いGPA(3.28)と戦術眼が非常にフィット。", "ig_verified": true, "staff_status": "verified", "staff_status_label": "✓ Official/current contact verified"},
+    {"id": 3, "name": "UC San Diego", "cat": "ca", "div": "NCAA D1", "conf": "Big West", "lat": 32.8801, "lng": -117.234, "hc_name": "Jon Pascale", "hc_email": "jpascale@ucsd.edu", "ac_name": "Ryan Hernandez", "ac_email": "ryanhernandez@ucsd.edu", "facility": "https://ucsdtritons.com/facilities", "roster": "https://ucsdtritons.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/ucsdmsoc/", "desc": "スマートなポゼッションスタイル。高いGPA(3.29)と戦術眼が非常にフィット。", "ig_verified": true, "staff_status": "verified", "staff_status_label": "✓ Official/current contact verified"},
     {"id": 4, "name": "UC Santa Barbara", "cat": "ca", "div": "NCAA D1", "conf": "Big West", "lat": 34.414, "lng": -119.8489, "hc_name": "Tim Vom Steeg", "hc_email": "menssoccer@athletics.ucsb.edu", "ac_name": "Greg Wilson", "ac_email": "menssoccer@athletics.ucsb.edu", "facility": "https://ucsbgauchos.com/facilities", "roster": "https://ucsbgauchos.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/ucsbmenssoccer/", "desc": "西海岸屈指の観客動員数を誇る強豪。アタッキングサードでの展開力をアピール。", "ig_verified": false, "staff_status": "verified", "staff_status_label": "✓ Official/current contact verified"},
     {"id": 5, "name": "Cal State Fullerton", "cat": "ca", "div": "NCAA D1", "conf": "Big West", "lat": 33.8824, "lng": -117.8851, "hc_name": "George Kuntz", "hc_email": "gkuntz@fullerton.edu", "ac_name": "Enrique Cardenas", "ac_email": "encardenas@fullerton.edu", "facility": "https://fullertontitans.com/facilities", "roster": "https://fullertontitans.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/fullertonmsoc/", "desc": "サイドアタックを重用する戦術スタイル。カットバックとクロス精度が刺さる。", "ig_verified": false, "staff_status": "verified", "staff_status_label": "✓ Official/current contact verified"},
     {"id": 6, "name": "Cal State Northridge (CSUN)", "cat": "ca", "div": "NCAA D1", "conf": "Big West", "lat": 34.241, "lng": -118.5277, "hc_name": "Terry Davila", "hc_email": "terry.davila@csun.edu", "ac_name": "Milan Radovic", "ac_email": "Milan.radovic@csun.edu", "facility": "https://gomatadors.com/facilities", "roster": "https://gomatadors.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/csunmsoc/", "desc": "国際色豊かなスカウティング。JUCOからの即戦力ウイング補強に前向き。", "ig_verified": false, "staff_status": "verified", "staff_status_label": "✓ Official/current contact verified"},
@@ -98,14 +141,14 @@ const universities=[
     {"id": 21, "name": "Westmont College", "cat": "ca", "div": "NCAA D2", "conf": "PacWest", "lat": 34.4489, "lng": -119.6628, "hc_name": "Morgan Cathey", "hc_email": "menssoccer@westmont.edu", "ac_name": "Sebastian Castellanos", "ac_email": "", "facility": "https://athletics.westmont.edu/facilities", "roster": "https://athletics.westmont.edu/sports/mens-soccer/roster", "ig": "https://www.instagram.com/westmontmsoc/", "desc": "近年NAIAからD2へ移行完了。パスサッカーを主軸とし、即戦力編入生を獲得中。", "ig_verified": false, "staff_status": "partial", "staff_status_label": "△ Current staff/name found; exact email not published or not independently confirmed"},
     {"id": 22, "name": "University of Portland", "cat": "west", "div": "NCAA D1", "conf": "WCC", "lat": 45.5732, "lng": -122.7275, "hc_name": "Nick Carlin-Voigt", "hc_email": "portlandmsoc@portland.edu", "ac_name": "Ben Simon", "ac_email": "", "facility": "https://portlandpilots.com/facilities", "roster": "https://portlandpilots.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/portlandmsoc/", "desc": "全米屈指のポゼッションサッカー的名門。技術と戦術眼が高次元で求められる。", "ig_verified": false, "staff_status": "partial", "staff_status_label": "△ Current staff/name found; exact email not published or not independently confirmed"},
     {"id": 23, "name": "Seattle University", "cat": "west", "div": "NCAA D1", "conf": "WAC", "lat": 47.6092, "lng": -122.318, "hc_name": "Nate Daligcon", "hc_email": "daligcon@seattleu.edu", "ac_name": "Jason Farrell", "ac_email": "", "facility": "https://goseattleu.com/facilities", "roster": "https://goseattleu.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/seattleumsoc/", "desc": "D1全米大会の常連。国際色豊かで、JUCOからの実力者を積極的にスカウト。", "ig_verified": false, "staff_status": "partial", "staff_status_label": "△ Current staff/name found; exact email not published or not independently confirmed"},
-    {"id": 24, "name": "Gonzaga University", "cat": "west", "div": "NCAA D1", "conf": "WCC", "lat": 47.6672, "lng": -117.4023, "hc_name": "Chris McGaughey", "hc_email": "mcgaughey@gonzaga.edu", "ac_name": "Christo Michaelson", "ac_email": "michaelsonc@gonzaga.edu", "facility": "https://gozags.com/facilities", "roster": "https://gozags.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/zagmsoccer/", "desc": "文武両道を重視する名門私立。GPA 3.28の学術データが強い武器になる。", "ig_verified": false, "staff_status": "verified", "staff_status_label": "✓ Official/current contact verified"},
+    {"id": 24, "name": "Gonzaga University", "cat": "west", "div": "NCAA D1", "conf": "WCC", "lat": 47.6672, "lng": -117.4023, "hc_name": "Chris McGaughey", "hc_email": "mcgaughey@gonzaga.edu", "ac_name": "Christo Michaelson", "ac_email": "michaelsonc@gonzaga.edu", "facility": "https://gozags.com/facilities", "roster": "https://gozags.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/zagmsoccer/", "desc": "文武両道を重視する名門私立。GPA 3.29の学術データが強い武器になる。", "ig_verified": false, "staff_status": "verified", "staff_status_label": "✓ Official/current contact verified"},
     {"id": 25, "name": "Oregon State University", "cat": "west", "div": "NCAA D1", "conf": "WCC", "lat": 44.5638, "lng": -123.2794, "hc_name": "Jarred Brookins", "hc_email": "jarred.brookins@oregonstate.edu", "ac_name": "Matt Bersano", "ac_email": "matt.bersano@oregonstate.edu", "facility": "https://osubeavers.com/facilities", "roster": "https://osubeavers.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/beavermsoccer/", "desc": "全米トップクラスの攻撃陣を誇る。サイドでの爆発的なチェンジ・オブ・ペースが必要。", "ig_verified": false, "staff_status": "verified", "staff_status_label": "✓ Official/current contact verified"},
     {"id": 26, "name": "Western Washington Univ.", "cat": "west", "div": "NCAA D2", "conf": "GNAC", "lat": 48.7303, "lng": -122.4862, "hc_name": "Greg Brisbon", "hc_email": "wwumsoccer@wwu.edu", "ac_name": "Chuck Pitts", "ac_email": "wwumsoccer@wwu.edu", "facility": "https://wwuvikings.com/facilities", "roster": "https://wwuvikings.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/wwu_msoccer/", "desc": "GNACの強豪プログラム。フィジカルリーグだが、技術あるサイドアタッカーを重用。", "ig_verified": true, "staff_status": "verified", "staff_status_label": "✓ Official/current contact verified"},
     {"id": 27, "name": "Seattle Pacific University", "cat": "west", "div": "NCAA D2", "conf": "GNAC", "lat": 47.6506, "lng": -122.3619, "hc_name": "Kevin Sakuda", "hc_email": "spumenssoccer@spu.edu", "ac_name": "Josh Swett", "ac_email": "", "facility": "https://spufalcons.com/facilities", "roster": "https://spufalcons.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/spumenssoccer/", "desc": "歴史あるD2名門。ポゼッション志向が高く、プレースキッカーとしても高く評価。", "ig_verified": true, "staff_status": "partial", "staff_status_label": "△ Current staff/name found; exact email not published or not independently confirmed"},
     {"id": 28, "name": "Western Oregon University", "cat": "west", "div": "NCAA D2", "conf": "GNAC", "lat": 44.853, "lng": -123.234, "hc_name": "Current men’s HC — verify", "hc_email": "", "ac_name": "Current staff — verify", "ac_email": "", "facility": "https://wouwolves.com/facilities", "roster": "https://wouwolves.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/wou.msoc/", "desc": "新興プログラムで即戦力を熱望。JUCOからの編入生に対して奨学金枠が柔軟。", "ig_verified": false, "staff_status": "review", "staff_status_label": "⚠ Current staff/email requires manual recheck before sending"},
     {"id": 29, "name": "Westcliff University", "cat": "naia-ca", "div": "NAIA", "conf": "Cal Pac", "lat": 33.6846, "lng": -117.8311, "hc_name": "Current men’s HC — verify", "hc_email": "", "ac_name": "Current staff — verify", "ac_email": "", "facility": "https://westcliffathletics.com/facilities", "roster": "https://westcliffathletics.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/westcliffmsoccer/", "desc": "Irvine拠点。国際選手の受入実績全米トップクラス。特大の奨学金パッケージを提示。", "ig_verified": false, "staff_status": "review", "staff_status_label": "⚠ Current staff/email requires manual recheck before sending"},
     {"id": 30, "name": "Hope International Univ.", "cat": "naia-ca", "div": "NAIA", "conf": "GSAC", "lat": 33.8812, "lng": -117.886, "hc_name": "Benjamin Jordon", "hc_email": "bjordon@hiu.edu", "ac_name": "Gabriel Lucatero", "ac_email": "", "facility": "https://hiuroyals.com/facilities", "roster": "https://hiuroyals.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/hiuroyalsmsoc/", "desc": "フラトン（オレンジカウンティ）。非常に手厚い運動＆学業奨学金の給付が可能。", "ig_verified": false, "staff_status": "partial", "staff_status_label": "△ Current staff/name found; exact email not published or not independently confirmed"},
-    {"id": 31, "name": "Soka University of America", "cat": "naia-ca", "div": "NAIA", "conf": "Cal Pac", "lat": 33.5552, "lng": -117.7335, "hc_name": "Shawn Beyer", "hc_email": "sbeyer@soka.edu", "ac_name": "Alexandru Zotinca", "ac_email": "azotinca@soka.edu", "facility": "https://sokaathletics.com/facilities", "roster": "https://sokaathletics.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/sokamsoccer/", "desc": "アリソ・ビエホ位置。手厚い奨学金制度を持ち、GPA 3.28で学術給付金を最大化可能。", "ig_verified": false, "staff_status": "verified", "staff_status_label": "✓ Official/current contact verified"},
+    {"id": 31, "name": "Soka University of America", "cat": "naia-ca", "div": "NAIA", "conf": "Cal Pac", "lat": 33.5552, "lng": -117.7335, "hc_name": "Shawn Beyer", "hc_email": "sbeyer@soka.edu", "ac_name": "Alexandru Zotinca", "ac_email": "azotinca@soka.edu", "facility": "https://sokaathletics.com/facilities", "roster": "https://sokaathletics.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/sokamsoccer/", "desc": "アリソ・ビエホ位置。手厚い奨学金制度を持ち、GPA 3.29で学術給付金を最大化可能。", "ig_verified": false, "staff_status": "verified", "staff_status_label": "✓ Official/current contact verified"},
     {"id": 32, "name": "Vanguard University", "cat": "naia-ca", "div": "NAIA", "conf": "GSAC", "lat": 33.6601, "lng": -117.908, "hc_name": "Jesus (Chuy) Miramontes", "hc_email": "", "ac_name": "Alex Figueroa", "ac_email": "", "facility": "https://vanguardlions.com/facilities", "roster": "https://vanguardlions.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/vanguardmsoc/", "desc": "コスタメサ拠点。NCAA D2移行中で施設・環境が最高峰。強烈な補強を展開中。", "ig_verified": false, "staff_status": "partial", "staff_status_label": "△ Current staff/name found; exact email not published or not independently confirmed"},
     {"id": 33, "name": "The Master's University", "cat": "naia-ca", "div": "NAIA", "conf": "GSAC", "lat": 34.3789, "lng": -118.5273, "hc_name": "Jim Rickard", "hc_email": "jrickard@masters.edu", "ac_name": "Humphrey Mahowa", "ac_email": "hmahowa@masters.edu", "facility": "https://gomustangs.com/facilities", "roster": "https://gomustangs.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/tmu_msoccer/", "desc": "サンタクラリタ位置。Pass & Moveのスタイルで、ウイングの1v1突破力を求めている。", "ig_verified": false, "staff_status": "verified", "staff_status_label": "✓ Official/current contact verified"},
     {"id": 34, "name": "Stanton University", "cat": "naia-ca", "div": "NAIA", "conf": "Independent", "lat": 33.8353, "lng": -117.9145, "hc_name": "Current men’s HC — verify", "hc_email": "", "ac_name": "Current staff — verify", "ac_email": "", "facility": "https://stantonelks.com/facilities", "roster": "https://stantonelks.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/stanton_msoccer/", "desc": "アナハイム拠点。JUCO編入生を最優先補強ターゲットとし、柔軟なオファーを提示。", "ig_verified": true, "staff_status": "review", "staff_status_label": "⚠ Current staff/email requires manual recheck before sending"},
@@ -117,7 +160,7 @@ const universities=[
     {"id": 40, "name": "University of Tampa", "cat": "fl", "div": "NCAA D2", "conf": "SSC", "lat": 27.9472, "lng": -82.4646, "hc_name": "Adrian Bush", "hc_email": "abush@ut.edu", "ac_name": "Maurice Loregnard", "ac_email": "mloregnard@ut.edu", "facility": "https://tampapanthers.com/facilities", "roster": "https://tampapanthers.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/tampamsoccer/", "desc": "全米D2最高峰の環境と歴史。ポゼッション志向が極めて高く、戦術眼を重視。", "ig_verified": false, "staff_status": "verified", "staff_status_label": "✓ Official/current contact verified"},
     {"id": 41, "name": "Barry University", "cat": "fl", "div": "NCAA D2", "conf": "SSC", "lat": 25.8787, "lng": -80.1989, "hc_name": "Petsa Ivanovic", "hc_email": "pivanovic@barry.edu", "ac_name": "Juan Pablo Correa", "ac_email": "jcorrea@barry.edu", "facility": "https://gobarrybucs.com/facilities", "roster": "https://gobarrybucs.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/barryumsoccer/", "desc": "マイアミの名門D2。全米タイトル多数。短大からの即戦力を常にスカウト。", "ig_verified": false, "staff_status": "verified", "staff_status_label": "✓ Official/current contact verified"},
     {"id": 42, "name": "Nova Southeastern Univ.", "cat": "fl", "div": "NCAA D2", "conf": "SSC", "lat": 26.0792, "lng": -80.2471, "hc_name": "Matt McArthur", "hc_email": "mmcarthu@nova.edu", "ac_name": "Manuel Perez", "ac_email": "mperezba@nova.edu", "facility": "https://nsusharks.com/facilities", "roster": "https://nsusharks.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/nsu_msoccer/", "desc": "近年D2全米制覇。最先端のトレーニング施設を備え、奨学金枠も潤沢。", "ig_verified": false, "staff_status": "verified", "staff_status_label": "✓ Official/current contact verified"},
-    {"id": 43, "name": "Rollins College", "cat": "fl", "div": "NCAA D2", "conf": "SSC", "lat": 28.5925, "lng": -81.3484, "hc_name": "Keith Buckley", "hc_email": "kbuckley@rollins.edu", "ac_name": "Luke Boden", "ac_email": "lboden@rollins.edu", "facility": "https://rollinsanchor.com/facilities", "roster": "https://rollinsanchor.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/rollinsmsoccer/", "desc": "超名門私立D2。高GPA(3.28)を活かして学術＆運動のダブル奨学金を獲得可能。", "ig_verified": false, "staff_status": "verified", "staff_status_label": "✓ Official/current contact verified"},
+    {"id": 43, "name": "Rollins College", "cat": "fl", "div": "NCAA D2", "conf": "SSC", "lat": 28.5925, "lng": -81.3484, "hc_name": "Keith Buckley", "hc_email": "kbuckley@rollins.edu", "ac_name": "Luke Boden", "ac_email": "lboden@rollins.edu", "facility": "https://rollinsanchor.com/facilities", "roster": "https://rollinsanchor.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/rollinsmsoccer/", "desc": "超名門私立D2。高GPA(3.29)を活かして学術＆運動のダブル奨学金を獲得可能。", "ig_verified": false, "staff_status": "verified", "staff_status_label": "✓ Official/current contact verified"},
     {"id": 44, "name": "UT Rio Grande Valley", "cat": "tx", "div": "NCAA D1", "conf": "Southland", "lat": 26.3053, "lng": -98.1738, "hc_name": "Bryheem Hancock", "hc_email": "bryheem.hancock@utrgv.edu", "ac_name": "Sheldon Cipriani", "ac_email": "sheldon.cipriani@utrgv.edu", "facility": "https://goutrgv.com/facilities", "roster": "https://goutrgv.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/utrgvmsoccer/", "desc": "全米で最もJUCO編入生を獲得しているD1校の一つ。即戦力ウイングを熱望。", "ig_verified": false, "staff_status": "verified", "staff_status_label": "✓ Official/current contact verified"},
     {"id": 45, "name": "Houston Christian Univ.", "cat": "tx", "div": "NCAA D1", "conf": "Southland", "lat": 29.6942, "lng": -95.5152, "hc_name": "Ryan Pratt", "hc_email": "RPRATT@HC.EDU", "ac_name": "Archie Massen", "ac_email": "AMASSEN@HC.EDU", "facility": "https://hcuhuskies.com/facilities", "roster": "https://hcuhuskies.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/hcu_msoccer/", "desc": "ポゼッション志向へ戦術転換中。ハーフスペースでの展開力とFK精度が合致。", "ig_verified": false, "staff_status": "verified", "staff_status_label": "✓ Official/current contact verified"},
     {"id": 46, "name": "Univ. of the Incarnate Word", "cat": "tx", "div": "NCAA D1", "conf": "Southland", "lat": 29.4678, "lng": -98.4682, "hc_name": "Kiki Lara", "hc_email": "rlara@uiwtx.edu", "ac_name": "Marquis Muse", "ac_email": "muse@uiwtx.edu", "facility": "https://uiwcardinals.com/facilities", "roster": "https://uiwcardinals.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/uiwmsoccer/", "desc": "サンアントニオ位置。国際選手の受け入れ実績が豊富で、短大生を厚遇。", "ig_verified": false, "staff_status": "verified", "staff_status_label": "✓ Official/current contact verified"},
@@ -147,9 +190,12 @@ const COSTS={"1":[46640,18991,"2025 ref"],"2":[46524,20691,"2025 ref"],"3":[4767
 const VERIFIED_IG=new Set([1, 2, 3, 9, 12, 26, 27, 34]);
 const colorMap={ca:'#3182ce',west:'#805ad5','naia-ca':'#38a169','naia-west':'#2f855a',fl:'#dd6b20','naia-fl':'#c05621',tx:'#d69e2e','naia-tx':'#b7791f',top:'#e53e3e'};
 let map=null,markers=[];let showFavOnly=false;let currentView='list';
+const DASHBOARD_OWNER_ID='47e7c1a9-a806-4f65-b5ed-2b9b124ef337';
 const PLAYER_MASTER_ID='akihiro-fujikawa';
-const CURRENT_PLAYER={name:'Akihiro Fujikawa',school:'Harcum College',division:'NJCAA D1',classYear:'Sophomore',jersey:'#14',primary:'Wide Defender / Fullback',secondary:'LM / LW',gpa:'3.28',height:'170 cm',weight:'68 kg',foot:'Right-footed',stats:'7 GP · 1G · 1A',season:'2025-26',academic:'General Studies',transferableCredits:'Update Pending',expectedTransfer:'Fall 2027',eligibility:'Update Pending',ncaaId:'250663641',email:'fujiakihiro8@gmail.com',phone:'+1 610-529-3326',instagram:'a93914',highlightVideo1:'GYwZrTe9pqw',highlightVideo2:'mDg81hUIL8k',playerMasterUpdatedAt:null};
+const CURRENT_PLAYER={name:'Akihiro Fujikawa',school:'Harcum College',division:'NJCAA D1',classYear:'Sophomore',jersey:'#14',primary:'Wide Defender / Fullback',secondary:'LM / LW',gpa:'3.29',height:'170 cm',weight:'68 kg',foot:'Right-footed',stats:'7 GP · 1G · 1A',season:'2025-26',academic:'General Studies',transferableCredits:'Update Pending',expectedTransfer:'Fall 2027',eligibility:'Update Pending',ncaaId:'250663641',email:'fujiakihiro8@gmail.com',phone:'+1 610-529-3326',instagram:'a93914',highlightVideo1:'GYwZrTe9pqw',highlightVideo2:'mDg81hUIL8k',playerMasterUpdatedAt:null};
 const SYNC_STATE={player:{status:'checking',updatedAt:null},recruiting:{status:'checking',updatedAt:null},operation:''};
+let dashboardStarted=false;
+let authInitialized=false;
 
 function renderSyncBanner(){
     const b=document.getElementById('sync-banner');
@@ -162,6 +208,189 @@ function renderSyncBanner(){
         : (SYNC_STATE.recruiting.status==='local'?'📱 ローカル保存モード':'☁️ クラウド同期確認中...');
     const op=SYNC_STATE.operation?` ｜ ${SYNC_STATE.operation}`:'';
     b.innerText=`${cloudText} ｜ ${playerText}${op}`;
+}
+
+function setAuthMessage(type,message){
+    const el=document.getElementById('auth-message');
+    if(!el) return;
+    el.className=`auth-message show ${type||'info'}`;
+    el.innerText=message||'';
+}
+
+function setAuthLoading(loading){
+    const btn=document.getElementById('auth-submit');
+    if(!btn) return;
+    btn.disabled=loading;
+    btn.innerText=loading?'ログイン中...':'ログイン';
+}
+
+function showAuthGate(message,type='info'){
+    const gate=document.getElementById('auth-gate');
+    if(gate) gate.classList.remove('hidden');
+    const logout=document.getElementById('logout-btn');
+    if(logout) logout.hidden=true;
+    const badge=document.getElementById('auth-user-badge');
+    if(badge) badge.innerText='Not signed in';
+    document.body.style.overflow='hidden';
+    if(message) setAuthMessage(type,message);
+}
+
+function hideAuthGate(user){
+    const gate=document.getElementById('auth-gate');
+    if(gate) gate.classList.add('hidden');
+    const logout=document.getElementById('logout-btn');
+    if(logout) logout.hidden=false;
+    const badge=document.getElementById('auth-user-badge');
+    if(badge) badge.innerText=user?.email||'Signed in';
+    document.body.style.overflow='';
+}
+
+async function handleAuthSubmit(event){
+    event.preventDefault();
+    if(!supabaseClient){
+        setAuthMessage('error','Supabase is not available. Please reload the page.');
+        return;
+    }
+    const email=(document.getElementById('auth-email')?.value||'').trim();
+    const password=document.getElementById('auth-password')?.value||'';
+    if(!email||!password){
+        setAuthMessage('error','Please enter your email and password.');
+        return;
+    }
+    if(!document.getElementById('auth-email')?.checkValidity()){
+        setAuthMessage('error','Please enter a valid email address.');
+        return;
+    }
+    setAuthLoading(true);
+    setAuthMessage('info','認証しています...');
+    try{
+        const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+        if(error) throw error;
+        if(!data?.session){
+            setAuthMessage('error','Sign-in completed without an active session. Please try again.');
+            return;
+        }
+        setAuthMessage('success','ログインしました。Dashboardを読み込んでいます...');
+    }catch(err){
+        console.error('Supabase Auth sign-in failed:',err);
+        const message=err?.message||'Sign-in failed.';
+        setAuthMessage('error',message);
+    }finally{
+        setAuthLoading(false);
+    }
+}
+
+async function handleSignOut(){
+    if(!supabaseClient) return;
+    const {error}=await supabaseClient.auth.signOut();
+    if(error){
+        console.error('Supabase Auth sign-out failed:',error);
+        return;
+    }
+    dashboardStarted=false;
+    showAuthGate('ログアウトしました。Dashboardを利用するにはログインしてください。','info');
+}
+
+async function startDashboard(user){
+    if(dashboardStarted) return;
+    if(!user?.id || user.id!==DASHBOARD_OWNER_ID){
+        dashboardStarted=false;
+        console.warn('Unauthorized Dashboard account attempted access:', user?.id);
+        await supabaseClient.auth.signOut();
+        showAuthGate('このアカウントにはDashboardへのアクセス権がありません。','error');
+        return;
+    }
+    dashboardStarted=true;
+    hideAuthGate(user);
+    initCloudDefaults();
+    SYNC_STATE.operation='認証済み。同期確認中...';
+    SYNC_STATE.recruiting.status='checking';
+    SYNC_STATE.player.status='checking';
+    renderSyncBanner();
+    renderPlayerInfo();
+    renderTable();
+    applyFilters();
+
+    const showMapSafely=()=>{
+        if(!window.L){
+            console.warn('Leaflet library is unavailable.');
+            document.getElementById('map-view').innerHTML='<div style=\"padding:24px;text-align:center;color:#718096;background:#f1f5f9;height:100%;display:flex;align-items:center;justify-content:center;\">Map Viewを読み込めませんでした。Table Viewをご利用ください。</div>';
+            switchView('list');
+            return;
+        }
+        try{
+            if(!map){
+                map=L.map('map-view',{tap:false,zoomControl:true}).setView([37.0902,-95.7129],4);
+                L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:'Tiles &copy; Esri'}).addTo(map);
+                universities.forEach(u=>{
+                    const marker=L.circleMarker([u.lat,u.lng],{radius:7,fillColor:colorMap[u.cat]||'#718096',color:'#fff',weight:1.5,opacity:1,fillOpacity:.85});
+                    marker.bindPopup(()=>createPopupContent(u));
+                    marker.addTo(map);
+                    markers.push({instance:marker,data:u});
+                });
+            }
+            switchView('map');
+            setTimeout(()=>map.invalidateSize({pan:false}),100);
+            setTimeout(()=>applyFilters(),120);
+        }catch(err){
+            console.error('Map init failed:',err);
+            document.getElementById('map-view').innerHTML='<div style=\"padding:24px;text-align:center;color:#718096;background:#f1f5f9;height:100%;display:flex;align-items:center;justify-content:center;\">Map Viewは一時利用できません。Table Viewをご利用ください。</div>';
+            switchView('list');
+        }
+    };
+
+    try{
+        await loadPlayerProfile();
+        await loadDataFromCloud();
+        SYNC_STATE.operation='';
+        renderSyncBanner();
+        renderTable();
+        applyFilters();
+        showMapSafely();
+    }catch(err){
+        console.warn('Initial data load sequence error:',err);
+        SYNC_STATE.operation='';
+        renderSyncBanner();
+        showMapSafely();
+    }
+}
+
+async function initializeAuth(){
+    if(authInitialized) return;
+    authInitialized=true;
+    const form=document.getElementById('auth-form');
+    if(form) form.addEventListener('submit',handleAuthSubmit);
+    const logout=document.getElementById('logout-btn');
+    if(logout) logout.addEventListener('click',handleSignOut);
+
+    if(!supabaseClient){
+        showAuthGate('Supabaseを初期化できませんでした。ページを再読み込みしてください。','error');
+        return;
+    }
+
+    supabaseClient.auth.onAuthStateChange((event,session)=>{
+        setTimeout(()=>{
+            if(session?.user){
+                hideAuthGate(session.user);
+                startDashboard(session.user);
+            }else if(event==='SIGNED_OUT'){
+                dashboardStarted=false;
+                showAuthGate('ログアウトしました。Dashboardを利用するにはログインしてください。','info');
+            }
+        },0);
+    });
+
+    const {data,error}=await supabaseClient.auth.getSession();
+    if(error){
+        console.error('Supabase Auth session check failed:',error);
+        showAuthGate('ログイン状態を確認できませんでした。もう一度ログインしてください。','error');
+        return;
+    }
+    if(data?.session?.user){
+        await startDashboard(data.session.user);
+    }else{
+        showAuthGate('Dashboardを利用するにはログインしてください。','info');
+    }
 }
 
 async function loadPlayerProfile(){
@@ -339,56 +568,7 @@ async function loadDataFromCloud(){
 
 async function saveDataToCloud(){const favs=universities.filter(u=>u.fav).map(u=>u.id);const statuses={};universities.forEach(u=>statuses[u.id]=u.status);const content={favs,statuses,showFavOnly};localStorage.setItem('recruiting_dashboard_backup',JSON.stringify(content));if(!supabaseClient)return;try{updateBanner('☁️ 保存中...');const {error}=await supabaseClient.from('recruiting_records').upsert({id:'akihiro_dashboard',content,updated_at:new Date().toISOString()},{onConflict:'id'});if(error)throw error;updateBanner(`✅ 全端末同期完了 (${new Date().toLocaleTimeString()})`)}catch(err){console.error('Cloud save error:',err);updateBanner('⚠️ クラウド保存失敗（ローカルに一時保存）')}}
 document.addEventListener('DOMContentLoaded',()=>{
-    initCloudDefaults();
-    SYNC_STATE.operation='同期確認中...';
-    renderSyncBanner();
-    renderPlayerInfo();
-    renderTable();
-    applyFilters();
-
-    const showMapSafely=()=>{
-        if(!window.L){
-            console.warn('Leaflet library is unavailable.');
-            document.getElementById('map-view').innerHTML='<div style=\"padding:24px;text-align:center;color:#718096;background:#f1f5f9;height:100%;display:flex;align-items:center;justify-content:center;\">Map Viewを読み込めませんでした。Table Viewをご利用ください。</div>';
-            switchView('list');
-            return;
-        }
-        try{
-            if(!map){
-                map=L.map('map-view',{tap:false,zoomControl:true}).setView([37.0902,-95.7129],4);
-                L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:'Tiles &copy; Esri'}).addTo(map);
-                universities.forEach(u=>{
-                    const marker=L.circleMarker([u.lat,u.lng],{radius:7,fillColor:colorMap[u.cat]||'#718096',color:'#fff',weight:1.5,opacity:1,fillOpacity:.85});
-                    marker.bindPopup(()=>createPopupContent(u));
-                    marker.addTo(map);
-                    markers.push({instance:marker,data:u});
-                });
-            }
-            switchView('map');
-            setTimeout(()=>map.invalidateSize({pan:false}),100);
-            setTimeout(()=>applyFilters(),120);
-        }catch(err){
-            console.error('Map init failed:',err);
-            document.getElementById('map-view').innerHTML='<div style=\"padding:24px;text-align:center;color:#718096;background:#f1f5f9;height:100%;display:flex;align-items:center;justify-content:center;\">Map Viewは一時利用できません。Table Viewをご利用ください。</div>';
-            switchView('list');
-        }
-    };
-
-    loadPlayerProfile()
-        .then(()=>loadDataFromCloud())
-        .then(()=>{
-            SYNC_STATE.operation='';
-            renderSyncBanner();
-            renderTable();
-            applyFilters();
-            showMapSafely();
-        })
-        .catch((err)=>{
-            console.warn('Initial data load sequence error:',err);
-            SYNC_STATE.operation='';
-            renderSyncBanner();
-            showMapSafely();
-        });
+    initializeAuth();
 });
 window.addEventListener('resize',()=>{if(currentView==='map'&&map)map.invalidateSize()});
 </script>
