@@ -685,13 +685,20 @@ async function ensureMissingCrmContacts(){
 }
 function crmDateInput(v){if(!v)return '';const d=new Date(v);return Number.isNaN(d.getTime())?'':new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16)}
 function crmDateDisplay(v){if(!v)return '—';const d=new Date(v);return Number.isNaN(d.getTime())?String(v):d.toLocaleString('ja-JP')}
+function crmIsFavoriteContact(c){
+ const u=universities.find(x=>x.id===Number(c.university_id));
+ return Boolean(u?.fav);
+}
+function crmFavoriteContacts(){
+ return Array.from(crmContacts.values()).filter(crmIsFavoriteContact);
+}
 function renderCrmSummary(){
- const values=Array.from(crmContacts.values());
+ const values=crmFavoriteContacts();
  const count=s=>values.filter(c=>c.contact_status===s).length;
  const ids={'crm-kpi-total':values.length,'crm-kpi-not-contacted':count('not_contacted'),'crm-kpi-contacted':count('contacted'),'crm-kpi-followup':count('follow_up_due'),'crm-kpi-responded':count('responded'),'crm-kpi-no-response':count('no_response')};
  Object.entries(ids).forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.textContent=v});
  const filter=document.getElementById('crm-filter');if(filter)filter.value=crmFilter;
- const note=document.getElementById('crm-summary-note');if(note)note.textContent=crmAvailable?''+values.length+'名のコーチ連絡情報を管理中。各学校の「HC管理」「AC管理」から編集できます。':'CRM data unavailable.';
+ const note=document.getElementById('crm-summary-note');if(note)note.textContent=crmAvailable?'お気に入り学校 '+universities.filter(u=>u.fav).length+'校のコーチ '+values.length+'名を管理中。お気に入り学校を追加するとCRM集計にも反映されます。':'CRM data unavailable.';
 }
 function crmStatusLabel(status){return CRM_STATUS_LABELS[status]||status||'未設定'}
 function crmDateOnlyLocal(v){if(!v)return null;const d=new Date(v+'T00:00:00');return Number.isNaN(d.getTime())?null:d}
@@ -700,7 +707,7 @@ function openCrmFromContact(contactId){const c=Array.from(crmContacts.values()).
 function renderCrmActionList(){
  const dueEl=document.getElementById('crm-due-list'),nextEl=document.getElementById('crm-next-list');if(!dueEl||!nextEl)return;
  const today=new Date();today.setHours(0,0,0,0);
- const records=Array.from(crmContacts.values()).map(crmActionRecord).filter(Boolean);
+ const records=crmFavoriteContacts().map(crmActionRecord).filter(Boolean);
  const active=records.filter(r=>!['closed','not_a_fit'].includes(r.contact.contact_status));
  const due=active.filter(r=>{const d=crmDateOnlyLocal(r.contact.follow_up_date);return d&&d<=today}).sort((a,b)=>(a.contact.follow_up_date||'').localeCompare(b.contact.follow_up_date||''));
  const upcoming=active.filter(r=>{const d=crmDateOnlyLocal(r.contact.follow_up_date);return d&&d>today}).sort((a,b)=>(a.contact.follow_up_date||'').localeCompare(b.contact.follow_up_date||''));
