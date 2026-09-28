@@ -63,6 +63,13 @@ select:focus,input:focus{outline:none;border-color:var(--accent)}
 .crm-head{padding:14px 16px;background:#1a365d;color:#fff;display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.crm-head h2{margin:0;font-size:15px}.crm-head small{display:block;margin-top:3px;color:#cbd5e0;font-size:10px}.crm-close{border:0;background:transparent;color:#fff;font-size:22px;line-height:1;cursor:pointer}
 .crm-body{padding:14px 16px;overflow:auto;flex:1}.crm-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.crm-field{display:flex;flex-direction:column;gap:4px}.crm-field.full{grid-column:1/-1}.crm-field label{color:#374151;font-size:10px}.crm-field input,.crm-field select,.crm-field textarea{background:#fff;color:#1f2937;border:1px solid #cbd5e0;border-radius:6px;padding:7px;font-size:11px;width:100%}.crm-field textarea{min-height:70px;resize:vertical}.crm-actions{display:flex;gap:7px;margin-top:12px}.crm-save{border:0;background:#3182ce;color:#fff;border-radius:6px;padding:8px 12px;font-weight:800;cursor:pointer}.crm-secondary{border:1px solid #cbd5e0;background:#fff;color:#374151;border-radius:6px;padding:8px 12px;font-weight:700;cursor:pointer}.crm-history{margin-top:16px}.crm-history h3{font-size:11px;margin:0 0 7px;color:#374151}.crm-history-item{border-top:1px solid #e2e8f0;padding:7px 0;font-size:10px;line-height:1.45}.crm-history-meta{color:#718096;font-size:9px}.crm-empty{color:#94a3b8;font-size:10px;padding:8px 0}.crm-btn{display:inline-block;padding:4px 6px;border:0;border-radius:4px;background:#1a365d;color:#fff;font-size:10px;font-weight:800;cursor:pointer;margin:0 2px 2px 0}.crm-btn:hover{opacity:.88}
 @media(max-width:768px){.crm-grid{grid-template-columns:1fr}.crm-drawer{width:100vw}}
+
+/* Phase 5-B: CRM summary */
+.crm-summary{padding:8px 10px;background:#fff;border-bottom:1px solid #e2e8f0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.crm-kpi{border:1px solid #e2e8f0;border-radius:6px;background:#f8fafc;padding:7px 8px;min-width:0}.crm-kpi b{display:block;font-size:16px;line-height:1.1;color:#1a365d}.crm-kpi span{display:block;margin-top:3px;font-size:9px;color:#718096;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crm-kpi.total{background:#edf2f7}.crm-kpi.contacted{background:#ebf8ff}.crm-kpi.followup{background:#fffaf0}.crm-kpi.responded{background:#f0fff4}.crm-kpi button{border:0;background:none;padding:0;text-align:left;cursor:pointer;width:100%}.crm-kpi button:hover b{text-decoration:underline}
+.crm-summary-tools{grid-column:1/-1;display:flex;align-items:center;gap:7px}.crm-summary-tools label{color:#4a5568;font-size:10px}.crm-summary-tools select{max-width:190px;background:#fff;color:#1f2937;border:1px solid #cbd5e0;padding:5px 7px}
+@media(max-width:900px){.crm-summary{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:520px){.crm-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.crm-summary-tools{display:block}.crm-summary-tools select{max-width:none;margin-top:4px}}
 </style>
 </head>
 <body>
@@ -99,6 +106,16 @@ select:focus,input:focus{outline:none;border-color:var(--accent)}
 <div class="view-toggle-bar"><button class="toggle-btn fav-btn" id="btn-fav-only" onclick="toggleFavFilter()">★ お気に入り</button><button class="toggle-btn active" id="btn-map" onclick="switchView('map')">Map View</button><button class="toggle-btn" id="btn-list" onclick="switchView('list')">Table View</button></div>
 </div>
 
+
+<div id="crm-summary" class="crm-summary" aria-label="CRM summary">
+<div class="crm-kpi total"><button type="button" onclick="setCrmFilter('all')"><b id="crm-kpi-total">0</b><span>Total Contacts</span></button></div>
+<div class="crm-kpi"><button type="button" onclick="setCrmFilter('not_contacted')"><b id="crm-kpi-not-contacted">0</b><span>Not Contacted</span></button></div>
+<div class="crm-kpi contacted"><button type="button" onclick="setCrmFilter('contacted')"><b id="crm-kpi-contacted">0</b><span>Contacted</span></button></div>
+<div class="crm-kpi followup"><button type="button" onclick="setCrmFilter('follow_up_due')"><b id="crm-kpi-followup">0</b><span>Follow-up Due</span></button></div>
+<div class="crm-kpi responded"><button type="button" onclick="setCrmFilter('responded')"><b id="crm-kpi-responded">0</b><span>Responded</span></button></div>
+<div class="crm-kpi"><button type="button" onclick="setCrmFilter('no_response')"><b id="crm-kpi-no-response">0</b><span>No Response</span></button></div>
+<div class="crm-summary-tools"><label for="crm-filter">CRM Filter</label><select id="crm-filter" onchange="setCrmFilter(this.value)"><option value="all">All CRM Contacts</option><option value="not_contacted">Not Contacted</option><option value="draft_ready">Draft Ready</option><option value="contacted">Contacted</option><option value="follow_up_due">Follow-up Due</option><option value="responded">Responded</option><option value="no_response">No Response</option><option value="not_a_fit">Not a Fit</option><option value="closed">Closed</option></select><span id="crm-summary-note" style="font-size:9px;color:#718096">CRM data loading...</span></div>
+</div>
 <div class="cost-note"><b>費用(参考)</b>：学費は原則として2025年の比較データに基づく参考値（公立はOut-of-State、私立/NAIAは通常のTuition）。寮・食費相当は「On-campus living」の参考値です。TuitionとOn-campus livingの両方が確認できる学校は、<b>年間合計 = Tuition + On-campus living</b>として表示します。学校別に取得できなかったものは「School-specific ref pending」と表示。奨学金・編入後の実費・2026-27公式COAとは異なる場合があります。</div>
 
 <div class="main-content"><div id="map-view"></div><div id="list-view"><!-- .table-wrapper owns both vertical/horizontal scroll so the header can remain sticky --><div class="table-wrapper"><table>
@@ -546,13 +563,13 @@ function mailButton(label,href,kind){return href?`<a class="btn-link ${kind}" hr
 
 
 const CRM_STATUS_LABELS={not_contacted:'Not Contacted',draft_ready:'Draft Ready',contacted:'Contacted',follow_up_due:'Follow-up Due',responded:'Responded',no_response:'No Response',not_a_fit:'Not a Fit',closed:'Closed'};
-let crmContacts=new Map(),crmHistory=[],crmCurrentContact=null,crmAvailable=false;
+let crmContacts=new Map(),crmHistory=[],crmCurrentContact=null,crmAvailable=false,crmFilter='all';
 function crmCoachKey(role,name,email){const e=(email||'').trim().toLowerCase(),n=(name||'').trim().toLowerCase().replace(/\s+/g,' ');return role+':'+(e?'email:'+e:'name:'+n)}
 function crmEsc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function crmCoachRows(u){return [{role:'head_coach',name:u.hc_name||'Coach',email:u.hc_email||''},{role:'assistant_coach',name:u.ac_name||'Coach',email:u.ac_email||''}]}
 async function loadCrmContacts(){
  crmContacts.clear();crmHistory=[];crmAvailable=false;if(!supabaseClient||!DASHBOARD_OWNER_ID)return false;
- try{const {data,error}=await supabaseClient.from('recruiting_contacts').select('*').eq('owner_user_id',DASHBOARD_OWNER_ID);if(error)throw error;(data||[]).forEach(c=>crmContacts.set(c.university_id+':'+c.coach_key,c));crmAvailable=true;await ensureMissingCrmContacts();return true}catch(err){console.warn('CRM load unavailable:',err);return false}
+ try{const {data,error}=await supabaseClient.from('recruiting_contacts').select('*').eq('owner_user_id',DASHBOARD_OWNER_ID);if(error)throw error;(data||[]).forEach(c=>crmContacts.set(c.university_id+':'+c.coach_key,c));crmAvailable=true;await ensureMissingCrmContacts();renderCrmSummary();return true}catch(err){console.warn('CRM load unavailable:',err);return false}
 }
 async function ensureMissingCrmContacts(){
  if(!crmAvailable)return;const missing=[];
@@ -561,6 +578,15 @@ async function ensureMissingCrmContacts(){
 }
 function crmDateInput(v){if(!v)return '';const d=new Date(v);return Number.isNaN(d.getTime())?'':new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16)}
 function crmDateDisplay(v){if(!v)return '—';const d=new Date(v);return Number.isNaN(d.getTime())?String(v):d.toLocaleString('ja-JP')}
+function renderCrmSummary(){
+ const values=Array.from(crmContacts.values());
+ const count=s=>values.filter(c=>c.contact_status===s).length;
+ const ids={'crm-kpi-total':values.length,'crm-kpi-not-contacted':count('not_contacted'),'crm-kpi-contacted':count('contacted'),'crm-kpi-followup':count('follow_up_due'),'crm-kpi-responded':count('responded'),'crm-kpi-no-response':count('no_response')};
+ Object.entries(ids).forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.textContent=v});
+ const filter=document.getElementById('crm-filter');if(filter)filter.value=crmFilter;
+ const note=document.getElementById('crm-summary-note');if(note)note.textContent=crmAvailable?'Showing '+values.length+' CRM coach contacts. Use CRM HC / CRM AC to edit each record.':'CRM data unavailable.';
+}
+function setCrmFilter(value){crmFilter=value||'all';const filter=document.getElementById('crm-filter');if(filter)filter.value=crmFilter;applyFilters()}
 function openCrmDrawer(id,role){
  const u=universities.find(x=>x.id===Number(id));if(!u||!crmAvailable){alert('Recruiting CRM is currently unavailable.');return}const rows=crmCoachRows(u),coach=rows.find(x=>x.role===role)||rows[0],key=crmCoachKey(coach.role,coach.name,coach.email),c=crmContacts.get(u.id+':'+key);if(!c){alert('CRM contact record is not available yet. Please reload the Dashboard.');return}
  crmCurrentContact=c;document.getElementById('crm-title').textContent=u.name+' — CRM';document.getElementById('crm-subtitle').textContent=(c.coach_role==='head_coach'?'HC':'AC')+': '+c.coach_name+' · '+(c.coach_email||'email not confirmed');
@@ -582,7 +608,7 @@ async function saveCrmContact(){
  if(prev.count!==count||prev.last!==data.last_contact_at||prev.response!==response)events.push({event_type:'contact_logged',note:note||'Contact details updated'});
  if(note&&!events.some(e=>e.note===note))events.push({event_type:'note',note});
  if(events.length){const hr=await supabaseClient.from('recruiting_contact_history').insert(events.map(e=>({...e,owner_user_id:DASHBOARD_OWNER_ID,contact_id:data.id})));if(hr.error)console.warn('CRM history insert failed:',hr.error)}
- await loadCrmHistory(data.id);alert('CRM saved.')
+ renderCrmSummary();applyFilters();await loadCrmHistory(data.id);alert('CRM saved.')
 }
 
 function createPopupContent(u){const {hcLink,acLink}=getEmailLinks(u);const c=getCost(u);const igText=u.ig_verified?'Instagram ✓':'Instagram';return `<div style="min-width:280px"><div class="popup-header"><b>${u.name}</b><button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button></div><span class="badge ${badgeClass(u.div)}">${u.div}</span><div style="font-size:11px;margin-top:5px;line-height:1.35">${u.desc}</div><div style="font-size:10px;color:#4a5568;margin-top:5px"><b>HC:</b> ${staffFlag(u)} ${u.hc_name||'Coach'} | <b>AC:</b> ${u.ac_name||'Coach'}</div><div style="font-size:10px;color:#334155;margin-top:5px"><b>費用:</b> Tuition ${money(c.tuition)} / On-campus ${money(c.living)}${c.total!=null?` / <b>Annual Total ${money(c.total)}</b>`:''} <span style="color:#718096">(${c.year})</span></div><div style="font-size:9px;color:#718096;margin-top:4px">${u.staff_status_label}</div><div class="popup-links"><a class="btn-link btn-fac" href="${u.facility}" target="_blank" rel="noopener noreferrer">Facility</a><a class="btn-link btn-ros" href="${u.roster}" target="_blank" rel="noopener noreferrer">Roster</a><a class="btn-link btn-ig" href="${u.ig}" target="_blank" rel="noopener noreferrer">${igText}</a>${mailButton('Mail (HC)',hcLink,'btn-mail-hc')}${mailButton('Mail (AC)',acLink,'btn-mail-ac')}<button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'head_coach')">CRM (HC)</button><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'assistant_coach')">CRM (AC)</button></div></div>`}
@@ -597,7 +623,7 @@ function toggleFavFilter(){showFavOnly=!showFavOnly;document.getElementById('btn
 
 function updateStatus(id,newStatus){const u=universities.find(x=>x.id===id);if(!u)return;u.status=newStatus;const el=document.querySelector(`#row-${id} .status-select`);if(el)el.className=`status-select ${getStatusClass(newStatus)}`;saveDataToCloud()}
 
-function applyFilters(){const reg=document.getElementById('filter-region')?.value||'all';const div=document.getElementById('filter-div')?.value||'all';const stat=document.getElementById('filter-status')?.value||'all';const search=(document.getElementById('search-input')?.value||'').toLowerCase();const bounds=window.L&&map?L.latLngBounds():null;let visible=0;universities.forEach(u=>{const okReg=reg==='all'||u.cat===reg;const okDiv=div==='all'||u.div===div;const okStat=stat==='all'||u.status===stat;const q=(u.name+' '+u.conf+' '+(u.hc_name||'')+' '+(u.ac_name||'')).toLowerCase();const okSearch=q.includes(search);const okFav=!showFavOnly||u.fav;const ok=okReg&&okDiv&&okStat&&okSearch&&okFav;const row=document.getElementById(`row-${u.id}`);if(row)row.style.display=ok?'':'none';const marker=markers.find(m=>m.data.id===u.id);if(marker&&map){if(ok){marker.instance.addTo(map);bounds&&bounds.extend([u.lat,u.lng]);visible++;}else{if(map.hasLayer(marker.instance))map.removeLayer(marker.instance);}}else if(ok){visible++;}});if(map&&bounds&&visible>0&&reg!=='all')map.fitBounds(bounds,{padding:[30,30]});else if(map&&reg==='all')map.setView([37.0902,-95.7129],4)}
+function applyFilters(){const reg=document.getElementById('filter-region')?.value||'all';const div=document.getElementById('filter-div')?.value||'all';const stat=document.getElementById('filter-status')?.value||'all';const search=(document.getElementById('search-input')?.value||'').toLowerCase();const bounds=window.L&&map?L.latLngBounds():null;let visible=0;universities.forEach(u=>{const okReg=reg==='all'||u.cat===reg;const okDiv=div==='all'||u.div===div;const okStat=stat==='all'||u.status===stat;const q=(u.name+' '+u.conf+' '+(u.hc_name||'')+' '+(u.ac_name||'')).toLowerCase();const okSearch=q.includes(search);const okFav=!showFavOnly||u.fav;const crmRows=crmCoachRows(u);const okCrm=crmFilter==='all'||crmRows.some(c=>crmContacts.get(u.id+':'+crmCoachKey(c.role,c.name,c.email))?.contact_status===crmFilter);const ok=okReg&&okDiv&&okStat&&okSearch&&okFav&&okCrm;const row=document.getElementById(`row-${u.id}`);if(row)row.style.display=ok?'':'none';const marker=markers.find(m=>m.data.id===u.id);if(marker&&map){if(ok){marker.instance.addTo(map);bounds&&bounds.extend([u.lat,u.lng]);visible++;}else{if(map.hasLayer(marker.instance))map.removeLayer(marker.instance);}}else if(ok){visible++;}});if(map&&bounds&&visible>0&&reg!=='all')map.fitBounds(bounds,{padding:[30,30]});else if(map&&reg==='all')map.setView([37.0902,-95.7129],4)}
 
 function switchView(view){currentView=view;const mapEl=document.getElementById('map-view');const listEl=document.getElementById('list-view');document.getElementById('btn-map').classList.toggle('active',view==='map');document.getElementById('btn-list').classList.toggle('active',view==='list');mapEl.style.display=view==='map'?'block':'none';listEl.style.display=view==='list'?'block':'none';if(view==='map'&&map){setTimeout(()=>{map.invalidateSize({pan:false});applyFilters()},50);setTimeout(()=>map.invalidateSize({pan:false}),250)}}
 async function loadDataFromCloud(){
