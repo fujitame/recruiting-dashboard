@@ -747,7 +747,7 @@ async function saveDataToCloud(){const favs=universities.filter(u=>u.fav).map(u=
 document.addEventListener('DOMContentLoaded',()=>{
     initializeAuth();
 });
-window.addEventListener('resize',()=>{if(currentView==='map'&&map)map.invalidateSize()});
+window.addEventListener('resize',()=>{if(currentView==='map'&&map)map.invalidateSize()});window.addEventListener('load',()=>{if(gmailConfigured())setTimeout(initGmailOAuthClient,500)});
 </script>
 </body>
 </html>
