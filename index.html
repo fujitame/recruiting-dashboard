@@ -72,7 +72,7 @@ select:focus,input:focus{outline:none;border-color:var(--accent)}
 .crm-summary-tools{grid-column:1/-1;display:flex;align-items:center;gap:7px}.crm-summary-tools label{color:#4a5568;font-size:10px}.crm-summary-tools select{max-width:190px;background:#fff;color:#1f2937;border:1px solid #cbd5e0;padding:5px 7px}
 .crm-actions-panel{padding:8px 10px;background:#f8fafc;border-bottom:1px solid #e2e8f0;display:grid;grid-template-columns:1fr 1fr;gap:8px}.crm-action-box{background:#fff;border:1px solid #e2e8f0;border-radius:7px;padding:8px}.crm-action-box h3{margin:0 0 6px;font-size:11px;color:#1a365d}.crm-action-item{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-top:1px solid #edf2f7;font-size:10px;line-height:1.35}.crm-action-item:first-child{border-top:0}.crm-action-main{min-width:0}.crm-action-main b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.crm-action-meta{color:#718096;font-size:9px}.crm-action-btn{border:1px solid #cbd5e0;background:#fff;color:#1a365d;border-radius:4px;padding:3px 6px;font-size:9px;font-weight:800;cursor:pointer;white-space:nowrap}.crm-action-empty{color:#94a3b8;font-size:10px;padding:5px 0}@media(max-width:700px){.crm-actions-panel{grid-template-columns:1fr}}@media(max-width:900px){.crm-summary{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:520px){.crm-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.crm-summary-tools{display:block}.crm-summary-tools select{max-width:none;margin-top:4px}}
 /* Phase 5-C: Gmail UI */
-.gmail-status-wrap{display:flex;align-items:center;gap:6px;margin-left:8px}.gmail-status{font-size:9px;color:#dbeafe;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);padding:4px 7px;border-radius:999px;white-space:nowrap}.gmail-connect{border:1px solid rgba(255,255,255,.25);background:#fff;color:#1a365d;border-radius:6px;padding:5px 8px;font-size:10px;font-weight:800;cursor:pointer}.gmail-btn{display:inline-block;padding:4px 6px;border:0;border-radius:4px;background:#c53030;color:#fff;font-size:10px;font-weight:800;cursor:pointer;margin:0 2px 2px 0}.gmail-modal{position:fixed;inset:0;z-index:11000;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;padding:16px}.gmail-modal.open{display:flex}.gmail-card{width:min(720px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.3);color:#1f2937}.gmail-head{padding:13px 16px;background:#1a365d;color:#fff;display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.gmail-head h2{margin:0;font-size:15px}.gmail-head small{display:block;margin-top:3px;color:#cbd5e0;font-size:10px}.gmail-close{border:0;background:transparent;color:#fff;font-size:22px;cursor:pointer}.gmail-body{padding:14px 16px}.gmail-field{margin-bottom:10px}.gmail-field label{display:block;color:#374151;font-size:10px;font-weight:800;margin-bottom:4px}.gmail-field input,.gmail-field textarea{width:100%;border:1px solid #cbd5e0;border-radius:6px;background:#fff;color:#1f2937;padding:8px;font-size:11px}.gmail-field textarea{min-height:300px;resize:vertical;font-family:inherit;line-height:1.45}.gmail-note{padding:8px 10px;border-radius:6px;background:#eff6ff;color:#1e40af;font-size:10px;line-height:1.45;margin-bottom:10px}.gmail-error{padding:8px 10px;border-radius:6px;background:#fff1f2;color:#be123c;font-size:10px;line-height:1.45;margin-bottom:10px;display:none}.gmail-error.show{display:block}.gmail-actions{display:flex;gap:7px;justify-content:flex-end}.gmail-send{border:0;background:#c53030;color:#fff;border-radius:6px;padding:8px 13px;font-weight:800;cursor:pointer}.gmail-send:disabled{opacity:.55;cursor:not-allowed}.gmail-secondary{border:1px solid #cbd5e0;background:#fff;color:#374151;border-radius:6px;padding:8px 12px;font-weight:700;cursor:pointer}@media(max-width:768px){.gmail-status{display:none}.gmail-connect{padding:5px 6px;font-size:9px}.gmail-body{padding:12px}.gmail-field textarea{min-height:260px}}
+.gmail-status-wrap{display:flex;align-items:center;gap:6px;margin-left:8px}.gmail-status{font-size:9px;color:#dbeafe;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);padding:4px 7px;border-radius:999px;white-space:nowrap}.gmail-connect{border:1px solid rgba(255,255,255,.25);background:#fff;color:#1a365d;border-radius:6px;padding:5px 8px;font-size:10px;font-weight:800;cursor:pointer}.gmail-test{border:1px solid rgba(255,255,255,.25);background:#edf2f7;color:#1a365d;border-radius:6px;padding:5px 8px;font-size:10px;font-weight:800;cursor:pointer}.gmail-btn{display:inline-block;padding:4px 6px;border:0;border-radius:4px;background:#c53030;color:#fff;font-size:10px;font-weight:800;cursor:pointer;margin:0 2px 2px 0}.gmail-modal{position:fixed;inset:0;z-index:11000;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;padding:16px}.gmail-modal.open{display:flex}.gmail-card{width:min(720px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.3);color:#1f2937}.gmail-head{padding:13px 16px;background:#1a365d;color:#fff;display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.gmail-head h2{margin:0;font-size:15px}.gmail-head small{display:block;margin-top:3px;color:#cbd5e0;font-size:10px}.gmail-close{border:0;background:transparent;color:#fff;font-size:22px;cursor:pointer}.gmail-body{padding:14px 16px}.gmail-field{margin-bottom:10px}.gmail-field label{display:block;color:#374151;font-size:10px;font-weight:800;margin-bottom:4px}.gmail-field input,.gmail-field textarea{width:100%;border:1px solid #cbd5e0;border-radius:6px;background:#fff;color:#1f2937;padding:8px;font-size:11px}.gmail-field textarea{min-height:300px;resize:vertical;font-family:inherit;line-height:1.45}.gmail-note{padding:8px 10px;border-radius:6px;background:#eff6ff;color:#1e40af;font-size:10px;line-height:1.45;margin-bottom:10px}.gmail-error{padding:8px 10px;border-radius:6px;background:#fff1f2;color:#be123c;font-size:10px;line-height:1.45;margin-bottom:10px;display:none}.gmail-error.show{display:block}.gmail-actions{display:flex;gap:7px;justify-content:flex-end}.gmail-send{border:0;background:#c53030;color:#fff;border-radius:6px;padding:8px 13px;font-weight:800;cursor:pointer}.gmail-send:disabled{opacity:.55;cursor:not-allowed}.gmail-secondary{border:1px solid #cbd5e0;background:#fff;color:#374151;border-radius:6px;padding:8px 12px;font-weight:700;cursor:pointer}@media(max-width:768px){.gmail-status{display:none}.gmail-connect{padding:5px 6px;font-size:9px}.gmail-body{padding:12px}.gmail-field textarea{min-height:260px}}
 </style>
 </head>
 <body>
@@ -95,7 +95,7 @@ select:focus,input:focus{outline:none;border-color:var(--accent)}
         <p class="auth-note">認証はSupabase Auth、RecruitingデータはRow Level Security (RLS)で保護されています。</p>
     </div>
 </div>
-<header><div><h1 id="dashboard-title">Akihiro Fujikawa - Transfer Dashboard v4.3</h1><div id="player-info" class="player-info">Sophomore | 170cm/68kg | Harcum College (NJCAA D1) | GPA: 3.29 | NCAA ID: 250663641</div></div><div class="header-account"><div class="gmail-status-wrap"><span id="gmail-status" class="gmail-status">Gmail未接続</span><button id="gmail-connect-btn" class="gmail-connect" type="button" onclick="connectGmail()">Gmail接続</button></div><span id="auth-user-badge" class="user-badge">Not signed in</span><button id="logout-btn" class="logout-btn" type="button" hidden>Logout</button></div></header>
+<header><div><h1 id="dashboard-title">Akihiro Fujikawa - Transfer Dashboard v4.3</h1><div id="player-info" class="player-info">Sophomore | 170cm/68kg | Harcum College (NJCAA D1) | GPA: 3.29 | NCAA ID: 250663641</div></div><div class="header-account"><div class="gmail-status-wrap"><span id="gmail-status" class="gmail-status">Gmail未接続</span><button id="gmail-connect-btn" class="gmail-connect" type="button" onclick="connectGmail()">Gmail接続</button><button class="gmail-test" type="button" onclick="openGmailSelfTest()">自分宛テスト</button></div><span id="auth-user-badge" class="user-badge">Not signed in</span><button id="logout-btn" class="logout-btn" type="button" hidden>Logout</button></div></header>
 <div id="sync-banner" class="sync-banner">☁️ クラウド同期準備中...</div>
 <div class="controls">
 
@@ -140,7 +140,7 @@ select:focus,input:focus{outline:none;border-color:var(--accent)}
         </tr>
     </thead><tbody id="table-body"></tbody></table></div></div></div>
 
-<div id="crm-backdrop" class="crm-backdrop" onclick="closeCrmDrawer()"></div><div id="gmail-modal" class="gmail-modal" onclick="if(event.target===this)closeGmailComposer()"><div class="gmail-card" role="dialog" aria-modal="true"><div class="gmail-head"><div><h2 id="gmail-title">Gmail送信</h2><small id="gmail-subtitle"></small></div><button class="gmail-close" type="button" onclick="closeGmailComposer()">×</button></div><div class="gmail-body"><div id="gmail-error" class="gmail-error"></div><div class="gmail-note">送信前に宛先・件名・本文を確認してください。送信後はCRMを「連絡済み」に更新し、GmailのThread IDを保存します。</div><div class="gmail-field"><label for="gmail-to">宛先</label><input id="gmail-to" type="email" readonly></div><div class="gmail-field"><label for="gmail-subject">件名</label><input id="gmail-subject" type="text"></div><div class="gmail-field"><label for="gmail-body">本文</label><textarea id="gmail-body"></textarea></div><div class="gmail-actions"><button class="gmail-secondary" type="button" onclick="closeGmailComposer()">キャンセル</button><button id="gmail-send-btn" class="gmail-send" type="button" onclick="sendGmailMessage()">Gmailから送信</button></div></div></div></div>
+<div id="crm-backdrop" class="crm-backdrop" onclick="closeCrmDrawer()"></div><div id="gmail-modal" class="gmail-modal" onclick="if(event.target===this)closeGmailComposer()"><div class="gmail-card" role="dialog" aria-modal="true"><div class="gmail-head"><div><h2 id="gmail-title">Gmail送信</h2><small id="gmail-subtitle"></small></div><button class="gmail-close" type="button" onclick="closeGmailComposer()">×</button></div><div class="gmail-body"><div id="gmail-error" class="gmail-error"></div><div id="gmail-note" class="gmail-note">送信前に宛先・件名・本文を確認してください。通常送信ではCRMを「連絡済み」に更新し、GmailのThread IDを保存します。</div><div class="gmail-field"><label for="gmail-to">宛先</label><input id="gmail-to" type="email" readonly></div><div class="gmail-field"><label for="gmail-subject">件名</label><input id="gmail-subject" type="text"></div><div class="gmail-field"><label for="gmail-body">本文</label><textarea id="gmail-body"></textarea></div><div class="gmail-actions"><button class="gmail-secondary" type="button" onclick="closeGmailComposer()">キャンセル</button><button id="gmail-send-btn" class="gmail-send" type="button" onclick="sendGmailMessage()">Gmailから送信</button></div></div></div></div>
 <aside id="crm-drawer" class="crm-drawer" aria-hidden="true">
 <div class="crm-head"><div><h2 id="crm-title">Recruiting CRM</h2><small id="crm-subtitle"></small></div><button class="crm-close" type="button" onclick="closeCrmDrawer()" aria-label="Close">×</button></div>
 <div class="crm-body"><div class="crm-grid">
@@ -160,7 +160,7 @@ select:focus,input:focus{outline:none;border-color:var(--accent)}
 const GOOGLE_OAUTH_CLIENT_ID='299023621402-430kfge04dguvf830p6meesqpo2haf2r.apps.googleusercontent.com';
 const GMAIL_SCOPE='https://www.googleapis.com/auth/gmail.send';
 const GMAIL_ACCOUNT='fujiakihiro8@gmail.com';
-let gmailTokenClient=null,gmailAccessToken='',gmailTokenExpiresAt=0,gmailCurrentContactId=null;
+let gmailTokenClient=null,gmailAccessToken='',gmailTokenExpiresAt=0,gmailCurrentContactId=null,gmailTestMode=false;
 
 function gmailConfigured(){return GOOGLE_OAUTH_CLIENT_ID&&!GOOGLE_OAUTH_CLIENT_ID.startsWith('REPLACE_')}
 function setGmailStatus(text,connected){const e=document.getElementById('gmail-status');if(e)e.textContent=text;const b=document.getElementById('gmail-connect-btn');if(b)b.textContent=connected?'Gmail再接続':'Gmail接続'}
@@ -193,13 +193,25 @@ function getGmailDraft(u,role){
  return {to:role==='head_coach'?u.hc_email||'':u.ac_email||'',subject:subject,body:body};
 }
 function openGmailComposer(id,role){
+ gmailTestMode=false;
+ const note=document.getElementById('gmail-note');if(note)note.textContent='送信前に宛先・件名・本文を確認してください。通常送信ではCRMを「連絡済み」に更新し、GmailのThread IDを保存します。';
  const u=universities.find(x=>x.id===Number(id));if(!u)return;const d=getGmailDraft(u,role);if(!d.to){alert('このコーチのメールアドレスは登録されていません。');return}
  const key=crmCoachKey(role,role==='head_coach'?u.hc_name:u.ac_name,d.to);gmailCurrentContactId=crmContacts.get(u.id+':'+key)?.id||null;
  document.getElementById('gmail-title').textContent=u.name+' — Gmail送信';document.getElementById('gmail-subtitle').textContent=(role==='head_coach'?'HC':'AC')+': '+(role==='head_coach'?u.hc_name:u.ac_name)+' → '+d.to;
  document.getElementById('gmail-to').value=d.to;document.getElementById('gmail-subject').value=d.subject;document.getElementById('gmail-body').value=d.body;showGmailError('');document.getElementById('gmail-modal').classList.add('open');
 }
 function openGmailComposerFromCrm(){if(!crmCurrentContact)return;openGmailComposer(crmCurrentContact.university_id,crmCurrentContact.coach_role)}
-function closeGmailComposer(){document.getElementById('gmail-modal')?.classList.remove('open');gmailCurrentContactId=null;showGmailError('')}
+function openGmailSelfTest(){
+ gmailTestMode=true;gmailCurrentContactId=null;
+ document.getElementById('gmail-title').textContent='Gmail 自分宛テスト送信';
+ document.getElementById('gmail-subtitle').textContent='送信先: '+GMAIL_ACCOUNT;
+ const note=document.getElementById('gmail-note');if(note)note.textContent='これはテスト送信です。自分のGmailに送信するだけで、CRMのコーチ情報・連絡回数・ステータス・Thread IDは変更しません。';
+ document.getElementById('gmail-to').value=GMAIL_ACCOUNT;
+ document.getElementById('gmail-subject').value='[TEST] Akihiro Recruiting Dashboard Gmail送信テスト';
+ document.getElementById('gmail-body').value='Akihiro Recruiting Dashboard のGmail送信テストです。\n\nこのメールが届けば、Gmail OAuth認証とGmail API送信処理が正常に動作しています。\n\n送信先: '+GMAIL_ACCOUNT+'\n\nこのテストではCRMデータは変更されません。';
+ showGmailError('');document.getElementById('gmail-modal').classList.add('open');
+}
+function closeGmailComposer(){document.getElementById('gmail-modal')?.classList.remove('open');gmailCurrentContactId=null;gmailTestMode=false;showGmailError('')}
 function base64FromUtf8(value){const bytes=new TextEncoder().encode(value);let binary='';for(let i=0;i<bytes.length;i+=0x8000)binary+=String.fromCharCode(...bytes.subarray(i,i+0x8000));return btoa(binary)}
 function base64UrlFromUtf8(value){return base64FromUtf8(value).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 function encodeMimeSubject(value){return '=?UTF-8?B?'+base64FromUtf8(value)+'?='}
@@ -213,15 +225,20 @@ async function sendGmailMessage(){
  try{
   const r=await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send',{method:'POST',headers:{Authorization:'Bearer '+gmailAccessToken,'Content-Type':'application/json'},body:JSON.stringify({raw:buildGmailRaw(to,subject,body)})});
   const result=await r.json();if(!r.ok)throw new Error(result.error?.message||'Gmail送信に失敗しました。');
-  const contact=Array.from(crmContacts.values()).find(x=>x.id===gmailCurrentContactId);
-  if(contact){
-   const now=new Date().toISOString(),payload={contact_status:'contacted',last_contact_at:now,contact_count:Number(contact.contact_count||0)+1,gmail_thread_id:result.threadId||contact.gmail_thread_id||null};
-   const saved=await supabaseClient.from('recruiting_contacts').update(payload).eq('id',contact.id).eq('owner_user_id',DASHBOARD_OWNER_ID).select('*').single();if(saved.error)throw new Error('Gmailは送信されましたがCRM更新に失敗しました: '+saved.error.message);
-   crmContacts.set(saved.data.university_id+':'+saved.data.coach_key,saved.data);crmCurrentContact=saved.data;
-   const hr=await supabaseClient.from('recruiting_contact_history').insert({owner_user_id:DASHBOARD_OWNER_ID,contact_id:saved.data.id,event_type:'contact_logged',note:'Gmail送信: '+subject});if(hr.error)console.warn('Gmail history insert failed:',hr.error);
-   renderCrmSummary();renderCrmActionList();applyFilters();
+  if(gmailTestMode){
+   alert('自分宛テスト送信に成功しました。'+GMAIL_ACCOUNT+' の受信トレイを確認してください。CRMは変更していません。');
+  }else{
+   const contact=Array.from(crmContacts.values()).find(x=>x.id===gmailCurrentContactId);
+   if(contact){
+    const now=new Date().toISOString(),payload={contact_status:'contacted',last_contact_at:now,contact_count:Number(contact.contact_count||0)+1,gmail_thread_id:result.threadId||contact.gmail_thread_id||null};
+    const saved=await supabaseClient.from('recruiting_contacts').update(payload).eq('id',contact.id).eq('owner_user_id',DASHBOARD_OWNER_ID).select('*').single();if(saved.error)throw new Error('Gmailは送信されましたがCRM更新に失敗しました: '+saved.error.message);
+    crmContacts.set(saved.data.university_id+':'+saved.data.coach_key,saved.data);crmCurrentContact=saved.data;
+    const hr=await supabaseClient.from('recruiting_contact_history').insert({owner_user_id:DASHBOARD_OWNER_ID,contact_id:saved.data.id,event_type:'contact_logged',note:'Gmail送信: '+subject});if(hr.error)console.warn('Gmail history insert failed:',hr.error);
+    renderCrmSummary();renderCrmActionList();applyFilters();
+   }
+   alert('Gmailを送信しました。CRMも「連絡済み」に更新しました。');
   }
-  alert('Gmailを送信しました。CRMも「連絡済み」に更新しました。');closeGmailComposer();
+  closeGmailComposer();
  }catch(err){console.error('Gmail send failed:',err);showGmailError(err.message||'Gmail送信に失敗しました。')}
  finally{btn.disabled=false;btn.textContent='Gmailから送信'}
 }
