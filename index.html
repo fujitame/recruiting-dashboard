@@ -174,11 +174,13 @@ function connectGmail(){
   if(response.error){setGmailStatus('Gmail未接続');showGmailError('Gmail認証に失敗しました: '+(response.error_description||response.error));return}
   gmailAccessToken=response.access_token||'';gmailTokenExpiresAt=Date.now()+Math.max(60,Number(response.expires_in||3600)-30)*1000;
   try{
-   const r=await fetch('https://gmail.googleapis.com/gmail/v1/users/me/profile',{headers:{Authorization:'Bearer '+gmailAccessToken}});
-   const p=await r.json();if(!r.ok)throw new Error(p.error?.message||'Gmailアカウントを確認できませんでした。');
-   if((p.emailAddress||'').toLowerCase()!==GMAIL_ACCOUNT.toLowerCase())throw new Error('接続したGoogleアカウントが '+GMAIL_ACCOUNT+' ではありません。');
+   if(!gmailAccessToken)throw new Error('Googleからアクセストークンを取得できませんでした。');
+   // Phase 5-C uses the narrow gmail.send scope only. Gmail users.getProfile
+   // requires additional Gmail read/profile scopes, so do not call it here.
+   // The Google account selected in the OAuth consent flow is the account that
+   // will authorize the Gmail API send operation.
    setGmailStatus('Gmail接続済み',true);
-  }catch(err){gmailAccessToken='';gmailTokenExpiresAt=0;setGmailStatus('Gmail未接続');showGmailError(err.message||'Gmailアカウント確認に失敗しました。')}
+  }catch(err){gmailAccessToken='';gmailTokenExpiresAt=0;setGmailStatus('Gmail未接続');showGmailError(err.message||'Gmail接続に失敗しました。')}
  };
  gmailTokenClient.requestAccessToken({prompt:'consent'});
 }
