@@ -6,7 +6,7 @@
 <title>Akihiro Fujikawa - Transfer Recruiting Dashboard v4.3.1 · Phase 4 Auth</title>
     <!--
         FULL VERSION: all 67 universities and the original dashboard functionality are preserved.
-        Table order: University → Division → Conference → Status → IG → Links → Scouting → Cost → Coach → Email
+        Table order: University → Division → Conference → Status → IG → Links → Scouting → Cost → Coach → Contact → CRM
     -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -25,12 +25,12 @@ select,input{padding:5px 7px;border-radius:4px;border:1px solid #4a5568;backgrou
 select:focus,input:focus{outline:none;border-color:var(--accent)}
 .view-toggle-bar{grid-column:1/-1;display:flex;gap:6px;justify-content:space-between;margin-top:2px}.toggle-btn{flex:1;background:#4a5568;color:#fff;border:0;padding:8px 4px;border-radius:4px;font-size:11px;font-weight:700;cursor:pointer;text-align:center}.toggle-btn.active{background:var(--accent)}.toggle-btn.fav-btn.active{background:var(--fav)}
 .main-content{flex:1 1 auto;position:relative;width:100%;height:540px;min-height:460px;min-width:0}#map-view,#list-view{width:100%;height:100%;position:absolute;top:0;left:0}#map-view{z-index:1;background:#e5e7eb;min-height:100%;}#list-view{z-index:2;overflow:hidden;padding:10px;display:none;background:var(--bg);min-width:0}
-.table-wrapper{width:100%;height:100%;overflow:auto;background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.05);-webkit-overflow-scrolling:touch;overscroll-behavior:contain}table{width:100%;border-collapse:separate;border-spacing:0;font-size:10.5px;min-width:1320px}th,td{padding:7px 6px;text-align:left;border-bottom:1px solid #e2e8f0;vertical-align:middle}th{background:#edf2f7;color:#4a5568;font-weight:700;position:sticky;top:0;z-index:20;box-shadow:0 1px 0 #d9e2ec}tr:hover{background:#f8fafc}
+.table-wrapper{width:100%;height:100%;overflow:auto;background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.05);-webkit-overflow-scrolling:touch;overscroll-behavior:contain}table{width:100%;border-collapse:separate;border-spacing:0;font-size:10.5px;min-width:1400px}th,td{padding:7px 6px;text-align:left;border-bottom:1px solid #e2e8f0;vertical-align:middle}th{background:#edf2f7;color:#4a5568;font-weight:700;position:sticky;top:0;z-index:20;box-shadow:0 1px 0 #d9e2ec}tr:hover{background:#f8fafc}
 .star-btn{background:none;border:0;font-size:16px;cursor:pointer;color:#cbd5e0;padding:2px 4px;line-height:1}.star-btn.active{color:var(--fav)}
 .popup-header{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px}.popup-header b{font-size:12px}.status-select{padding:4px 6px;border-radius:12px;font-weight:700;font-size:10px;border:0;cursor:pointer}.status-uncontacted{background:#e2e8f0;color:#4a5568}.status-sent{background:#feebc8;color:#c05621}.status-replied{background:#c3dafe;color:#2b6cb0}.status-camp{background:#e9d8fd;color:#6b46c1}.status-offer{background:#c6f6d5;color:#22543d}
 .badge{display:inline-block;padding:2px 5px;border-radius:4px;font-size:9px;font-weight:700;color:#fff}.badge-d1{background:#e53e3e}.badge-d2{background:#dd6b20}.badge-naia{background:#38a169}
-.btn-link{display:inline-block;padding:4px 6px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none;color:#fff;margin-right:2px;margin-bottom:2px}.btn-link:hover{opacity:.85}.btn-fac{background:#4a5568}.btn-ros{background:#2b6cb0}.btn-ig{background:#c13584}.btn-mail-hc{background:#3182ce}.btn-mail-ac{background:#805ad5}
-.popup-links{margin-top:6px;display:flex;gap:4px;flex-wrap:wrap}.action-cell{white-space:nowrap}.cost-cell{line-height:1.35;min-width:150px}.cost-main{font-weight:700;color:#1a365d}.cost-sub{font-size:9px;color:#718096}.cost-total{margin-top:2px;font-weight:800;color:#2b6cb0}.verified{font-size:9px;color:#2f855a;font-weight:700}.staff-flag{font-size:9px;font-weight:700;color:#2f855a}.staff-flag.partial{color:#b7791f}.staff-flag.review{color:#c53030}.disabled-mail{opacity:.45;pointer-events:none;cursor:not-allowed}
+.btn-link{display:inline-block;padding:4px 6px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none;color:#fff;margin-right:2px;margin-bottom:2px}.btn-link:hover{opacity:.85}.btn-fac{background:#4a5568}.btn-ros{background:#2b6cb0}.btn-ig{background:#c13584}
+.popup-links{margin-top:6px;display:flex;gap:4px;flex-wrap:wrap}.action-cell{white-space:nowrap}.cost-cell{line-height:1.35;min-width:150px}.cost-main{font-weight:700;color:#1a365d}.cost-sub{font-size:9px;color:#718096}.cost-total{margin-top:2px;font-weight:800;color:#2b6cb0}.verified{font-size:9px;color:#2f855a;font-weight:700}.staff-flag{font-size:9px;font-weight:700;color:#2f855a}.staff-flag.partial{color:#b7791f}.staff-flag.review{color:#c53030}
 .cost-note{padding:7px 10px;background:#fffaf0;border-bottom:1px solid #f0dca8;color:#7b5b1a;font-size:10px;line-height:1.4}
 @media(max-width:768px){h1{font-size:13px}.player-info{font-size:9.5px}.controls{grid-template-columns:1fr 1fr;padding:6px 8px}.control-group-search{grid-column:1/-1}.cost-note{font-size:9.5px}}
 
@@ -95,7 +95,7 @@ select:focus,input:focus{outline:none;border-color:var(--accent)}
         <p class="auth-note">認証はSupabase Auth、RecruitingデータはRow Level Security (RLS)で保護されています。</p>
     </div>
 </div>
-<header><div><h1 id="dashboard-title">Akihiro Fujikawa - Transfer Dashboard v4.3</h1><div id="player-info" class="player-info">Sophomore | 170cm/68kg | Harcum College (NJCAA D1) | GPA: 3.29 | NCAA ID: 250663641</div></div><div class="header-account"><div class="gmail-status-wrap"><span id="gmail-status" class="gmail-status">Gmail未接続</span><button id="gmail-connect-btn" class="gmail-connect" type="button" onclick="connectGmail()">Gmail接続</button><button class="gmail-test" type="button" onclick="openGmailSelfTest()">自分宛テスト</button><button class="gmail-test" type="button" onclick="openPhase5DTest()">Phase 5-Dテスト</button></div><span id="auth-user-badge" class="user-badge">Not signed in</span><button id="logout-btn" class="logout-btn" type="button" hidden>Logout</button></div></header>
+<header><div><h1 id="dashboard-title">Akihiro Fujikawa - Transfer Dashboard v4.3</h1><div id="player-info" class="player-info">Sophomore | 170cm/68kg | Harcum College (NJCAA D1) | GPA: 3.29 | NCAA ID: 250663641</div></div><div class="header-account"><div class="gmail-status-wrap"><span id="gmail-status" class="gmail-status">Gmail未接続</span><button id="gmail-connect-btn" class="gmail-connect" type="button" onclick="connectGmail()">Gmail接続</button><button class="gmail-test" type="button" onclick="openGmailSelfTest()">自分宛テスト</button></div><span id="auth-user-badge" class="user-badge">Not signed in</span><button id="logout-btn" class="logout-btn" type="button" hidden>Logout</button></div></header>
 <div id="sync-banner" class="sync-banner">☁️ クラウド同期準備中...</div>
 <div class="controls">
 
@@ -136,7 +136,8 @@ select:focus,input:focus{outline:none;border-color:var(--accent)}
             <th>Scouting</th>
             <th>Cost (Ref./Yr.)</th>
             <th>Coach</th>
-            <th>Email</th>
+            <th>連絡</th>
+            <th>CRM</th>
         </tr>
     </thead><tbody id="table-body"></tbody></table></div></div></div>
 
@@ -209,21 +210,6 @@ function openGmailSelfTest(){
  document.getElementById('gmail-to').value=GMAIL_ACCOUNT;
  document.getElementById('gmail-subject').value='[TEST] Akihiro Recruiting Dashboard Gmail送信テスト';
  document.getElementById('gmail-body').value='Akihiro Recruiting Dashboard のGmail送信テストです。\n\nこのメールが届けば、Gmail OAuth認証とGmail API送信処理が正常に動作しています。\n\n送信先: '+GMAIL_ACCOUNT+'\n\nこのテストではCRMデータは変更されません。';
- showGmailError('');document.getElementById('gmail-modal').classList.add('open');
-}
-async function openPhase5DTest(){
- if(!supabaseClient){alert('Supabaseに接続できていません。');return}
- const {data,error}=await supabaseClient.from('recruiting_contacts').select('*').eq('owner_user_id',DASHBOARD_OWNER_ID).eq('university_id',67).eq('coach_key','phase5d-test:fujitame@gmail.com').maybeSingle();
- if(error){alert('Phase 5-Dテスト用CRMレコードの取得に失敗しました: '+error.message);return}
- if(!data){alert('Phase 5-Dテスト用CRMレコードが見つかりません。Supabase SQL Editorでテストレコードを作成してください。');return}
- if(!gmailTokenValid()){alert('先に「Gmail接続」を行ってください。');return}
- gmailTestMode='phase5d';gmailCurrentContactId=data.id;crmCurrentContact=data;
- document.getElementById('gmail-title').textContent='Phase 5-D 返信検出テスト';
- document.getElementById('gmail-subtitle').textContent='送信先: '+data.coach_email+' · CRM Thread ID保存テスト';
- const note=document.getElementById('gmail-note');if(note)note.textContent='安全な自分宛テストです。送信元は '+GMAIL_ACCOUNT+'、送信先は '+data.coach_email+'。送信後に受信側から返信し、Phase 5-D Functionで返信検出を確認します。';
- document.getElementById('gmail-to').value=data.coach_email;
- document.getElementById('gmail-subject').value='[Phase 5-D TEST] Gmail返信検出テスト';
- document.getElementById('gmail-body').value='Phase 5-D Gmail返信検出テストです。\\n\\nこのメールを受信したら、このメールに「Phase 5-D reply test OK」などと返信してください。\\n\\n実在のコーチには送信していません。CRMのThread ID保存と返信検出だけを確認するテストです。';
  showGmailError('');document.getElementById('gmail-modal').classList.add('open');
 }
 function closeGmailComposer(){document.getElementById('gmail-modal')?.classList.remove('open');gmailCurrentContactId=null;gmailTestMode=false;showGmailError('')}
@@ -623,51 +609,6 @@ function badgeClass(div){return div==='NCAA D1'?'badge-d1':(div==='NCAA D2'?'bad
 
 function getCoachLastName(fullName){if(!fullName||fullName==='Coach')return 'Coach';const p=fullName.trim().split(/\s+/);return p[p.length-1]}
 
-function getEmailLinks(u){
-const subject=encodeURIComponent(`${CURRENT_PLAYER.school} ${CURRENT_PLAYER.jersey} - ${CURRENT_PLAYER.name} (Fall 2027 Transfer Candidate / GPA ${CURRENT_PLAYER.gpa})`);
-const highlightUrl=CURRENT_PLAYER.highlightVideo1?`https://youtu.be/${CURRENT_PLAYER.highlightVideo1}`:'';
-const bodyFor=(lastName)=>encodeURIComponent(`Dear Coach ${lastName},
-
-My name is ${CURRENT_PLAYER.name}, a Japanese student-athlete currently playing at ${CURRENT_PLAYER.school} (${CURRENT_PLAYER.division}).
-I am writing to express my strong interest in transferring to ${u.name}'s soccer program for ${CURRENT_PLAYER.expectedTransfer}.
-
-==================================================
-★ ONLINE RECRUITING PROFILE & SCOUTING REPORT ★
-👉 Profile Site : https://fujitame.github.io/profile/
-👉 Highlight Video: ${highlightUrl}
-==================================================
-
-[Player Overview]
-• Primary Position: ${CURRENT_PLAYER.primary}
-• Secondary Positions: ${CURRENT_PLAYER.secondary}
-• Height / Weight: ${CURRENT_PLAYER.height} / ${CURRENT_PLAYER.weight} | ${CURRENT_PLAYER.foot}
-• Current Level: ${CURRENT_PLAYER.school} (${CURRENT_PLAYER.division}) | ${CURRENT_PLAYER.jersey}
-• ${CURRENT_PLAYER.season} Official Freshman Season: ${CURRENT_PLAYER.stats}
-• Summer 2026: UPSL Irvine FC + D1 Combine Participant
-• Academic Focus: ${CURRENT_PLAYER.academic} / General Education Coursework
-• GPA: ${CURRENT_PLAYER.gpa}
-• NCAA ID: ${CURRENT_PLAYER.ncaaId}
-• Transferable Credits: ${CURRENT_PLAYER.transferableCredits}
-• Transfer Eligibility: ${CURRENT_PLAYER.eligibility}
-
-Thank you for your time and consideration. Full-match footage is available upon request, and I would appreciate the opportunity to discuss how I can contribute to ${u.name}.
-
-Best regards,
-
-${CURRENT_PLAYER.name}
-${CURRENT_PLAYER.school} Men's Soccer ${CURRENT_PLAYER.jersey}
-Email: ${CURRENT_PLAYER.email}
-Phone: ${CURRENT_PLAYER.phone}
-Instagram: @${CURRENT_PLAYER.instagram}`);
-return {
-  hcLink: u.hc_email ? `mailto:${u.hc_email}?subject=${subject}&body=${bodyFor(getCoachLastName(u.hc_name))}` : '',
-  acLink: u.ac_email ? `mailto:${u.ac_email}?subject=${subject}&body=${bodyFor(getCoachLastName(u.ac_name))}` : ''
-};
-}
-function staffFlag(u){const s=u.staff_status;return s==='verified'?'<span class="staff-flag">✓</span>':(s==='partial'?'<span class="staff-flag partial">△</span>':'<span class="staff-flag review">⚠</span>')}
-function mailButton(label,href,kind){return href?`<a class="btn-link ${kind}" href="${href}" title="Mail ${label}">${label}</a>`:`<span class="btn-link ${kind} disabled-mail" title="Official/current email not confirmed">${label} —</span>`}
-
-
 const CRM_STATUS_LABELS={not_contacted:'未連絡',draft_ready:'メール準備済み',contacted:'連絡済み',follow_up_due:'フォローアップ必要',responded:'返信あり',no_response:'返信なし',not_a_fit:'対象外',closed:'終了'};
 let crmContacts=new Map(),crmHistory=[],crmCurrentContact=null,crmAvailable=false,crmFilter='all';
 function crmCoachKey(role,name,email){const e=(email||'').trim().toLowerCase(),n=(name||'').trim().toLowerCase().replace(/\s+/g,' ');return role+':'+(e?'email:'+e:'name:'+n)}
@@ -732,9 +673,9 @@ async function saveCrmContact(){
  renderCrmSummary();renderCrmActionList();applyFilters();await loadCrmHistory(data.id);alert('CRM saved.')
 }
 
-function createPopupContent(u){const {hcLink,acLink}=getEmailLinks(u);const c=getCost(u);const igText=u.ig_verified?'Instagram ✓':'Instagram';return `<div style="min-width:280px"><div class="popup-header"><b>${u.name}</b><button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button></div><span class="badge ${badgeClass(u.div)}">${u.div}</span><div style="font-size:11px;margin-top:5px;line-height:1.35">${u.desc}</div><div style="font-size:10px;color:#4a5568;margin-top:5px"><b>HC:</b> ${staffFlag(u)} ${u.hc_name||'Coach'} | <b>AC:</b> ${u.ac_name||'Coach'}</div><div style="font-size:10px;color:#334155;margin-top:5px"><b>費用:</b> Tuition ${money(c.tuition)} / On-campus ${money(c.living)}${c.total!=null?` / <b>Annual Total ${money(c.total)}</b>`:''} <span style="color:#718096">(${c.year})</span></div><div style="font-size:9px;color:#718096;margin-top:4px">${u.staff_status_label}</div><div class="popup-links"><a class="btn-link btn-fac" href="${u.facility}" target="_blank" rel="noopener noreferrer">Facility</a><a class="btn-link btn-ros" href="${u.roster}" target="_blank" rel="noopener noreferrer">Roster</a><a class="btn-link btn-ig" href="${u.ig}" target="_blank" rel="noopener noreferrer">${igText}</a>${mailButton('Mail (HC)',hcLink,'btn-mail-hc')}${mailButton('Mail (AC)',acLink,'btn-mail-ac')}<button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'head_coach')">Gmail HC</button><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'head_coach')">HC管理</button><button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'assistant_coach')">Gmail AC</button><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'assistant_coach')">AC管理</button></div></div>`}
+function createPopupContent(u){const c=getCost(u);const igText=u.ig_verified?'Instagram ✓':'Instagram';return `<div style="min-width:280px"><div class="popup-header"><b>${u.name}</b><button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button></div><span class="badge ${badgeClass(u.div)}">${u.div}</span><div style="font-size:11px;margin-top:5px;line-height:1.35">${u.desc}</div><div style="font-size:10px;color:#4a5568;margin-top:5px"><b>HC:</b> ${staffFlag(u)} ${u.hc_name||'Coach'} | <b>AC:</b> ${u.ac_name||'Coach'}</div><div style="font-size:10px;color:#334155;margin-top:5px"><b>費用:</b> Tuition ${money(c.tuition)} / On-campus ${money(c.living)}${c.total!=null?` / <b>Annual Total ${money(c.total)}</b>`:''} <span style="color:#718096">(${c.year})</span></div><div style="font-size:9px;color:#718096;margin-top:4px">${u.staff_status_label}</div><div class="popup-links"><a class="btn-link btn-fac" href="${u.facility}" target="_blank" rel="noopener noreferrer">Facility</a><a class="btn-link btn-ros" href="${u.roster}" target="_blank" rel="noopener noreferrer">Roster</a><a class="btn-link btn-ig" href="${u.ig}" target="_blank" rel="noopener noreferrer">${igText}</a><button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'head_coach')">Gmail HC</button><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'head_coach')">HC管理</button><button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'assistant_coach')">Gmail AC</button><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'assistant_coach')">AC管理</button></div></div>`}
 
-function renderTable(){const tbody=document.getElementById('table-body');tbody.innerHTML='';universities.forEach(u=>{const tr=document.createElement('tr');const {hcLink,acLink}=getEmailLinks(u);const igLabel=u.ig_verified?'IG ✓':'IG';tr.id=`row-${u.id}`;tr.innerHTML=`<td><button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button></td><td>${u.id}</td><td><strong>${u.name}</strong></td><td><span class="badge ${badgeClass(u.div)}">${u.div}</span></td><td>${u.conf}</td><td><select class="status-select ${getStatusClass(u.status)}" onchange="updateStatus(${u.id},this.value)"><option value="未接触" ${u.status==='未接触'?'selected':''}>未接触</option><option value="メール送信済" ${u.status==='メール送信済'?'selected':''}>メール送信済</option><option value="返信・関心あり" ${u.status==='返信・関心あり'?'selected':''}>返信・関心あり</option><option value="IDキャンプ済" ${u.status==='IDキャンプ済'?'selected':''}>IDキャンプ済</option><option value="オファー獲得" ${u.status==='オファー獲得'?'selected':''}>オファー獲得</option></select></td><td><a class="btn-link btn-ig" href="${u.ig}" target="_blank" rel="noopener noreferrer">${igLabel}</a></td><td><a class="btn-link btn-fac" href="${u.facility}" target="_blank" rel="noopener noreferrer">施設</a><a class="btn-link btn-ros" href="${u.roster}" target="_blank" rel="noopener noreferrer">Roster</a></td><td>${u.desc}</td><td>${costHtml(u)}</td><td style="font-size:10px"><div><b>HC:</b> ${staffFlag(u)} ${u.hc_name||'Coach'}</div><div><b>AC:</b> ${u.ac_name||'Coach'}</div><div class="${u.staff_status==='verified'?'staff-flag':u.staff_status==='partial'?'staff-flag partial':'staff-flag review'}">${u.staff_status_label}</div></td><td class="action-cell">${mailButton('HC',hcLink,'btn-mail-hc')}${mailButton('AC',acLink,'btn-mail-ac')}<button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'head_coach')">Gmail HC</button><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'head_coach')">HC管理</button><button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'assistant_coach')">Gmail AC</button><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'assistant_coach')">AC管理</button></td>`;tbody.appendChild(tr)})}
+function renderTable(){const tbody=document.getElementById('table-body');tbody.innerHTML='';universities.forEach(u=>{const tr=document.createElement('tr');const igLabel=u.ig_verified?'IG ✓':'IG';tr.id=`row-${u.id}`;tr.innerHTML=`<td><button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button></td><td>${u.id}</td><td><strong>${u.name}</strong></td><td><span class="badge ${badgeClass(u.div)}">${u.div}</span></td><td>${u.conf}</td><td><select class="status-select ${getStatusClass(u.status)}" onchange="updateStatus(${u.id},this.value)"><option value="未接触" ${u.status==='未接触'?'selected':''}>未接触</option><option value="メール送信済" ${u.status==='メール送信済'?'selected':''}>メール送信済</option><option value="返信・関心あり" ${u.status==='返信・関心あり'?'selected':''}>返信・関心あり</option><option value="IDキャンプ済" ${u.status==='IDキャンプ済'?'selected':''}>IDキャンプ済</option><option value="オファー獲得" ${u.status==='オファー獲得'?'selected':''}>オファー獲得</option></select></td><td><a class="btn-link btn-ig" href="${u.ig}" target="_blank" rel="noopener noreferrer">${igLabel}</a></td><td><a class="btn-link btn-fac" href="${u.facility}" target="_blank" rel="noopener noreferrer">施設</a><a class="btn-link btn-ros" href="${u.roster}" target="_blank" rel="noopener noreferrer">Roster</a></td><td>${u.desc}</td><td>${costHtml(u)}</td><td style="font-size:10px"><div><b>HC:</b> ${staffFlag(u)} ${u.hc_name||'Coach'}</div><div><b>AC:</b> ${u.ac_name||'Coach'}</div><div class="${u.staff_status==='verified'?'staff-flag':u.staff_status==='partial'?'staff-flag partial':'staff-flag review'}">${u.staff_status_label}</div></td><td class="action-cell"><button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'head_coach')">Gmail HC</button><button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'assistant_coach')">Gmail AC</button></td><td class="action-cell"><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'head_coach')">CRM HC</button><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'assistant_coach')">CRM AC</button></td>`;tbody.appendChild(tr)})}
 
 function getStatusClass(status){switch(status){case'メール送信済':return'status-sent';case'返信・関心あり':return'status-replied';case'IDキャンプ済':return'status-camp';case'オファー獲得':return'status-offer';default:return'status-uncontacted'}}
 
