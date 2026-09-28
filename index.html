@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Akihiro Fujikawa - Transfer Recruiting Dashboard v4.3 · Phase 4 Auth</title>
+<title>Akihiro Fujikawa - Transfer Recruiting Dashboard v4.3.1 · Phase 4 Auth</title>
     <!--
         FULL VERSION: all 67 universities and the original dashboard functionality are preserved.
         Table order: University → Division → Conference → Status → IG → Links → Scouting → Cost → Coach → Email
@@ -446,7 +446,7 @@ async function loadPlayerProfile(){
         renderPlayerInfo();
         return true;
     }catch(err){
-        console.warn('Player Master load fallback:',err);
+        console.warn('Player Master load fallback:',{message:err?.message,code:err?.code,status:err?.status,details:err?.details,hint:err?.hint});
         SYNC_STATE.player.status='error';
         SYNC_STATE.player.updatedAt=null;
         renderPlayerInfo();
@@ -566,7 +566,7 @@ async function loadDataFromCloud(){
     document.getElementById('btn-fav-only').classList.toggle('active',showFavOnly);
 }
 
-async function saveDataToCloud(){const favs=universities.filter(u=>u.fav).map(u=>u.id);const statuses={};universities.forEach(u=>statuses[u.id]=u.status);const content={favs,statuses,showFavOnly};localStorage.setItem('recruiting_dashboard_backup',JSON.stringify(content));if(!supabaseClient)return;try{updateBanner('☁️ 保存中...');const {error}=await supabaseClient.from('recruiting_records').upsert({id:'akihiro_dashboard',content,updated_at:new Date().toISOString()},{onConflict:'id'});if(error)throw error;updateBanner(`✅ 全端末同期完了 (${new Date().toLocaleTimeString()})`)}catch(err){console.error('Cloud save error:',err);updateBanner('⚠️ クラウド保存失敗（ローカルに一時保存）')}}
+async function saveDataToCloud(){const favs=universities.filter(u=>u.fav).map(u=>u.id);const statuses={};universities.forEach(u=>statuses[u.id]=u.status);const content={favs,statuses,showFavOnly};localStorage.setItem('recruiting_dashboard_backup',JSON.stringify(content));if(!supabaseClient)return;try{updateBanner('☁️ 保存中...');const {error}=await supabaseClient.from('recruiting_records').upsert({id:'akihiro_dashboard',owner_user_id:DASHBOARD_OWNER_ID,content,updated_at:new Date().toISOString()},{onConflict:'id'});if(error)throw error;SYNC_STATE.recruiting.status='ok';SYNC_STATE.recruiting.updatedAt=new Date().toISOString();updateBanner('');}catch(err){console.error('Cloud save error:',err);SYNC_STATE.recruiting.status='error';updateBanner('⚠️ クラウド保存失敗（ローカルに一時保存）')}}
 document.addEventListener('DOMContentLoaded',()=>{
     initializeAuth();
 });
