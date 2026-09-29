@@ -150,6 +150,8 @@ select:focus,input:focus{outline:none;border-color:var(--accent)}
 <div class="crm-field"><label for="crm-next-action">次のアクション</label><input id="crm-next-action" type="text" placeholder="例：フォローアップメール送信"></div>
 <div class="crm-field"><label for="crm-follow-up">フォローアップ予定日</label><input id="crm-follow-up" type="date"></div>
 <div class="crm-field"><label for="crm-count">連絡回数</label><input id="crm-count" type="number" min="0" step="1"></div>
+<div class="crm-field"><label for="crm-follow-up-count">Follow-up回数</label><input id="crm-follow-up-count" type="number" min="0" max="2" step="1"></div>
+<div class="crm-field"><label><input id="crm-auto-follow-up" type="checkbox" style="width:auto;margin-right:5px"> 自動Follow-upを有効化</label></div>
 <div class="crm-field"><label for="crm-visit">訪問・キャンプ</label><input id="crm-visit" type="text" placeholder="ID Camp / 訪問 / 面談"></div>
 <div class="crm-field full"><label for="crm-response">コーチからの反応</label><textarea id="crm-response" placeholder="コーチからの反応・返信内容を記録"></textarea></div>
 <div class="crm-field full"><label for="crm-note">履歴メモ</label><textarea id="crm-note" placeholder="この連絡についてのメモ"></textarea></div>
@@ -246,10 +248,12 @@ async function sendGmailMessage(){
   }else{
    const contact=Array.from(crmContacts.values()).find(x=>x.id===gmailCurrentContactId);
    if(contact){
-    const now=new Date().toISOString(),payload={contact_status:'contacted',last_contact_at:now,contact_count:Number(contact.contact_count||0)+1,gmail_thread_id:result.threadId||contact.gmail_thread_id||null};
+    const now=new Date().toISOString(),followDate=new Date(Date.now()+7*86400000).toISOString().slice(0,10),payload={contact_status:'contacted',last_contact_at:now,contact_count:Number(contact.contact_count||0)+1,follow_up_count:0,last_follow_up_at:null,follow_up_date:followDate,auto_follow_up_enabled:true,next_action:'次回フォローアップメール送信',gmail_thread_id:result.threadId||contact.gmail_thread_id||null};
     const saved=await supabaseClient.from('recruiting_contacts').update(payload).eq('id',contact.id).eq('owner_user_id',DASHBOARD_OWNER_ID).select('*').single();if(saved.error)throw new Error('Gmailは送信されましたがCRM更新に失敗しました: '+saved.error.message);
     crmContacts.set(saved.data.university_id+':'+saved.data.coach_key,saved.data);crmCurrentContact=saved.data;
-    const hr=await supabaseClient.from('recruiting_contact_history').insert({owner_user_id:DASHBOARD_OWNER_ID,contact_id:saved.data.id,event_type:'contact_logged',note:'Gmail送信: '+subject});if(hr.error)console.warn('Gmail history insert failed:',hr.error);
+    const school=universities.find(x=>x.id===Number(saved.data.university_id));if(school){school.status='メール送信済';}
+    const hr=await supabaseClient.from('recruiting_contact_history').insert({owner_user_id:DASHBOARD_OWNER_ID,contact_id:saved.data.id,event_type:'contact_logged',note:'Gmail送信: '+subject});
+    await saveDataToCloud();if(hr.error)console.warn('Gmail history insert failed:',hr.error);
     renderCrmSummary();renderCrmActionList();applyFilters();
    }
    alert('Gmailを送信しました。CRMも「連絡済み」に更新しました。');
@@ -719,22 +723,22 @@ function setCrmFilter(value){crmFilter=value||'all';const filter=document.getEle
 function openCrmDrawer(id,role){
  const u=universities.find(x=>x.id===Number(id));if(!u||!crmAvailable){alert('Recruiting CRM is currently unavailable.');return}const rows=crmCoachRows(u),coach=rows.find(x=>x.role===role)||rows[0],key=crmCoachKey(coach.role,coach.name,coach.email),c=crmContacts.get(u.id+':'+key);if(!c){alert('CRM contact record is not available yet. Please reload the Dashboard.');return}
  crmCurrentContact=c;document.getElementById('crm-title').textContent=u.name+' — CRM';document.getElementById('crm-subtitle').textContent=(c.coach_role==='head_coach'?'HC':'AC')+': '+c.coach_name+' · '+(c.coach_email||'email not confirmed');
- document.getElementById('crm-status').value=c.contact_status||'not_contacted';document.getElementById('crm-last-contact').value=crmDateInput(c.last_contact_at);document.getElementById('crm-next-action').value=c.next_action||'';document.getElementById('crm-follow-up').value=c.follow_up_date||'';document.getElementById('crm-count').value=c.contact_count??0;document.getElementById('crm-response').value=c.coach_response||'';document.getElementById('crm-visit').value=c.visit_camp||'';document.getElementById('crm-note').value='';
+ document.getElementById('crm-status').value=c.contact_status||'not_contacted';document.getElementById('crm-last-contact').value=crmDateInput(c.last_contact_at);document.getElementById('crm-next-action').value=c.next_action||'';document.getElementById('crm-follow-up').value=c.follow_up_date||'';document.getElementById('crm-count').value=c.contact_count??0;document.getElementById('crm-follow-up-count').value=c.follow_up_count??0;document.getElementById('crm-auto-follow-up').checked=c.auto_follow_up_enabled!==false;document.getElementById('crm-response').value=c.coach_response||'';document.getElementById('crm-visit').value=c.visit_camp||'';document.getElementById('crm-note').value='';
  document.getElementById('crm-backdrop').classList.add('open');document.getElementById('crm-drawer').classList.add('open');document.getElementById('crm-drawer').setAttribute('aria-hidden','false');loadCrmHistory(c.id);
 }
 function closeCrmDrawer(){document.getElementById('crm-backdrop')?.classList.remove('open');document.getElementById('crm-drawer')?.classList.remove('open');document.getElementById('crm-drawer')?.setAttribute('aria-hidden','true');crmCurrentContact=null}
 async function loadCrmHistory(id){const el=document.getElementById('crm-history-list');if(!el)return;el.innerHTML='<div class="crm-empty">Loading…</div>';try{const {data,error}=await supabaseClient.from('recruiting_contact_history').select('*').eq('contact_id',id).order('event_at',{ascending:false});if(error)throw error;crmHistory=data||[];renderCrmHistory()}catch(err){console.warn('CRM history load failed:',err);el.innerHTML='<div class="crm-empty">History unavailable.</div>'}}
 function renderCrmHistory(){const el=document.getElementById('crm-history-list');if(!el)return;if(!crmHistory.length){el.innerHTML='<div class="crm-empty">No history yet.</div>';return}el.innerHTML=crmHistory.map(h=>'<div class="crm-history-item"><b>'+crmEsc(h.event_type)+'</b><div class="crm-history-meta">'+crmEsc(crmDateDisplay(h.event_at))+(h.from_status||h.to_status?' · '+crmEsc(h.from_status||'')+' → '+crmEsc(h.to_status||''):'')+'</div>'+(h.note?'<div>'+crmEsc(h.note)+'</div>':'')+'</div>').join('')}
 async function saveCrmContact(){
- const c=crmCurrentContact;if(!c||!crmAvailable)return;const status=document.getElementById('crm-status').value,last=document.getElementById('crm-last-contact').value,next=document.getElementById('crm-next-action').value.trim(),follow=document.getElementById('crm-follow-up').value||null,count=Math.max(0,Number(document.getElementById('crm-count').value||0)),response=document.getElementById('crm-response').value.trim(),visit=document.getElementById('crm-visit').value.trim(),note=document.getElementById('crm-note').value.trim();
- const prev={status:c.contact_status||'not_contacted',next:c.next_action||'',follow:c.follow_up_date||null,response:c.coach_response||'',visit:c.visit_camp||'',count:c.contact_count||0,last:c.last_contact_at||null};
- const payload={contact_status:status,last_contact_at:last?new Date(last).toISOString():null,next_action:next||null,follow_up_date:follow,contact_count:count,coach_response:response||null,visit_camp:visit||null};
+ const c=crmCurrentContact;if(!c||!crmAvailable)return;const status=document.getElementById('crm-status').value,last=document.getElementById('crm-last-contact').value,next=document.getElementById('crm-next-action').value.trim(),follow=document.getElementById('crm-follow-up').value||null,count=Math.max(0,Number(document.getElementById('crm-count').value||0)),followCount=Math.min(2,Math.max(0,Number(document.getElementById('crm-follow-up-count').value||0))),autoFollow=document.getElementById('crm-auto-follow-up').checked,response=document.getElementById('crm-response').value.trim(),visit=document.getElementById('crm-visit').value.trim(),note=document.getElementById('crm-note').value.trim();
+ const prev={status:c.contact_status||'not_contacted',next:c.next_action||'',follow:c.follow_up_date||null,response:c.coach_response||'',visit:c.visit_camp||'',count:c.contact_count||0,last:c.last_contact_at||null,followCount:c.follow_up_count||0,autoFollow:c.auto_follow_up_enabled!==false};
+ const payload={contact_status:status,last_contact_at:last?new Date(last).toISOString():null,next_action:next||null,follow_up_date:follow,contact_count:count,follow_up_count:followCount,auto_follow_up_enabled:autoFollow,coach_response:response||null,visit_camp:visit||null};
  const {data,error}=await supabaseClient.from('recruiting_contacts').update(payload).eq('id',c.id).eq('owner_user_id',DASHBOARD_OWNER_ID).select('*').single();if(error){alert('CRM save failed: '+error.message);return}
  crmContacts.set(data.university_id+':'+data.coach_key,data);crmCurrentContact=data;const events=[];
  if(prev.status!==status)events.push({event_type:'status_changed',from_status:prev.status,to_status:status,note:note||null});
  if(prev.next!==next||prev.follow!==follow)events.push({event_type:'follow_up_set',note:note||null});
  if(prev.visit!==visit)events.push({event_type:'visit_camp_updated',note:visit||null});
- if(prev.count!==count||prev.last!==data.last_contact_at||prev.response!==response)events.push({event_type:'contact_logged',note:note||'Contact details updated'});
+ if(prev.count!==count||prev.last!==data.last_contact_at||prev.response!==response||prev.followCount!==followCount||prev.autoFollow!==autoFollow)events.push({event_type:'contact_logged',note:note||'Contact details updated'});
  if(note&&!events.some(e=>e.note===note))events.push({event_type:'note',note});
  if(events.length){const hr=await supabaseClient.from('recruiting_contact_history').insert(events.map(e=>({...e,owner_user_id:DASHBOARD_OWNER_ID,contact_id:data.id})));if(hr.error)console.warn('CRM history insert failed:',hr.error)}
  renderCrmSummary();renderCrmActionList();applyFilters();await loadCrmHistory(data.id);alert('CRM saved.')
