@@ -39,6 +39,34 @@ function emailAddress(value: string): string {
   return (match?.[1] ?? value).trim().toLowerCase();
 }
 
+
+function classifyInterest(text: string) {
+  const s = String(text || '').toLowerCase();
+  const high = [
+    'interested in akihiro','interested in your profile','interested in your player','interested in recruiting',
+    'would like to learn more','would like to discuss','let\'s discuss','let us discuss','schedule a call',
+    'schedule a meeting','set up a call','send me his highlight','send his highlight','send your transcript',
+    'send me his transcript','send more information','send more info','good fit','great fit','strong fit',
+    'could be a good fit','we are interested','we\'re interested','interested in having him','interested in having you',
+    'transfer candidate','transfer opportunity','visit campus','official visit','unofficial visit','id camp','idcamp'
+  ];
+  const medium = [
+    'keep me posted','keep us posted','please follow up','feel free to reach out','let me know',
+    'send your profile','send your information','send more','happy to connect','open to a conversation',
+    'tell me more','more information','more details','thanks for reaching out','thank you for reaching out'
+  ];
+  const low = [
+    'not recruiting','not looking','no roster spots','no room','already full','not a fit','unable to',
+    'cannot offer','can\'t offer','not interested','good luck with your transfer','best of luck','remove me'
+  ];
+  const hits=(terms:string[])=>terms.filter(t=>s.includes(t));
+  const h=hits(high), m=hits(medium), l=hits(low);
+  if(l.length && !h.length) return {level:'low',reason:'否定・対象外を示す表現を検出: '+l.slice(0,3).join(', ')};
+  if(h.length>=1) return {level:'high',reason:'具体的な関心・次のアクションを示す表現を検出: '+h.slice(0,3).join(', ')};
+  if(m.length>=1) return {level:'medium',reason:'前向きな接点継続を示す表現を検出: '+m.slice(0,3).join(', ')};
+  return {level:'unknown',reason:'明確な関心表現を検出できませんでした。'};
+}
+
 function collectText(part: any): string {
   if (!part) return "";
   if (part.mimeType === "text/plain" && part.body?.data) return decodeBase64Url(part.body.data);
@@ -131,6 +159,7 @@ Deno.serve(async (req) => {
       const from = header(latest.payload?.headers, "From");
       const subject = header(latest.payload?.headers, "Subject");
       const body = collectText(latest.payload);
+      const interest = classifyInterest(body + "\n" + subject);
       const receivedAt = new Date(Number(latest.internalDate ?? Date.now())).toISOString();
       const note = [
         `Gmail返信: ${subject || "(件名なし)"}`,
@@ -144,7 +173,10 @@ Deno.serve(async (req) => {
           contact_status: "responded",
           coach_response: body.trim().slice(0, 4000) || subject || "Gmail返信あり",
           last_contact_at: receivedAt,
-          next_action: "返信内容を確認",
+          next_action: interest.level === "high" ? "優先確認：返信内容を確認" : "返信内容を確認",
+          interest_level: interest.level,
+          interest_reason: interest.reason,
+          interest_analyzed_at: receivedAt,
         })
         .eq("id", contact.id)
         .eq("owner_user_id", contact.owner_user_id)
@@ -167,6 +199,17 @@ Deno.serve(async (req) => {
         });
 
       if (historyError) throw historyError;
+      if (interest.level === "high") {
+        const { data: dashboard } = await supabase.from("recruiting_records").select("content").eq("id","akihiro_dashboard").eq("owner_user_id",contact.owner_user_id).maybeSingle();
+        const current = dashboard?.content || {};
+        const currentStatus = current.statuses?.[contact.university_id] || "未接触";
+        if (["未接触","メール送信済","返信・関心あり"].includes(currentStatus) || !currentStatus) {
+          const statuses = { ...(current.statuses || {}), [contact.university_id]: "返信・関心あり" };
+          const nextContent = { ...current, statuses };
+          await supabase.from("recruiting_records").upsert({id:"akihiro_dashboard",owner_user_id:contact.owner_user_id,content:nextContent,updated_at:new Date().toISOString()},{onConflict:"id"});
+        }
+      }
+
       replies++;
     }
 
