@@ -157,6 +157,112 @@ table td:nth-child(11)>div{white-space:nowrap;overflow:hidden;text-overflow:elli
   .main-content{min-height:260px}
 }
 
+
+/* UI Phase 3 correction: reclaim CRM width and restore readable table columns */
+.crm-summary{
+  grid-template-columns:repeat(7,minmax(0,1fr)) 170px;
+  gap:5px;
+  align-items:stretch;
+}
+.crm-summary-tools{
+  grid-column:auto;
+  min-width:0;
+  align-self:stretch;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  padding:0 3px;
+}
+.crm-summary-tools label{
+  font-size:8px;
+  white-space:nowrap;
+}
+.crm-summary-tools select{
+  width:82px;
+  max-width:82px;
+  padding:4px 5px;
+  font-size:9px;
+}
+#crm-summary-note{display:none !important}
+
+/* Correct column mapping:
+   9 Scouting / 10 Cost / 11 Coach / 12 Contact / 13 CRM */
+table{min-width:1420px}
+table th:nth-child(9),table td:nth-child(9){
+  width:205px;
+  min-width:205px;
+  max-width:230px;
+}
+table th:nth-child(10),table td:nth-child(10){
+  width:165px;
+  min-width:165px;
+  max-width:180px;
+}
+table th:nth-child(11),table td:nth-child(11){
+  width:205px;
+  min-width:205px;
+  max-width:225px;
+}
+table th:nth-child(12),table td:nth-child(12),
+table th:nth-child(13),table td:nth-child(13){
+  width:118px;
+  min-width:118px;
+}
+table td:nth-child(9){
+  white-space:normal !important;
+  overflow:visible !important;
+  text-overflow:clip !important;
+  color:#4a5568;
+  line-height:1.25;
+}
+table td:nth-child(10){
+  white-space:nowrap;
+  line-height:1.2;
+}
+table td:nth-child(11){
+  white-space:normal;
+  line-height:1.2;
+}
+table td:nth-child(11)>div{
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+table td:nth-child(11)>div:last-child{
+  font-size:0 !important;
+  margin-top:1px;
+}
+table td:nth-child(11)>div:last-child::after{
+  content:"✓ Verified";
+  font-size:8px;
+  color:#2f855a;
+  font-weight:700;
+}
+table td:nth-child(11)>div.staff-flag.partial:last-child::after{
+  content:"△ Verify";
+  color:#b7791f;
+}
+table td:nth-child(11)>div.staff-flag.review:last-child::after{
+  content:"⚠ Verify";
+  color:#c53030;
+}
+.cost-cell{min-width:0 !important;line-height:1.2}
+.cost-main{font-size:9px;line-height:1.2}
+.cost-sub{font-size:7.5px;line-height:1.15}
+.cost-total{font-size:8.5px;line-height:1.15;margin-top:1px}
+.cost-cell>.cost-sub:last-child{display:none}
+table td:nth-child(12),table td:nth-child(13){white-space:nowrap}
+.gmail-btn,.crm-btn{padding:3px 5px;font-size:8.5px}
+
+/* Keep the action panel compact without forcing tall rows */
+.crm-actions-panel{grid-template-columns:repeat(3,minmax(0,1fr));min-height:54px}
+.crm-action-box{min-width:0}
+@media(max-width:1100px){
+  .crm-summary{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .crm-summary-tools{grid-column:1/-1}
+}
+
 </style>
 </head>
 <body>
@@ -802,87 +908,3 @@ function renderCrmActionList(){
  const due=active.filter(r=>{const d=crmDateOnlyLocal(r.contact.follow_up_date);return d&&d<=today}).sort((a,b)=>(a.contact.follow_up_date||'').localeCompare(b.contact.follow_up_date||''));
  const upcoming=active.filter(r=>{const d=crmDateOnlyLocal(r.contact.follow_up_date);return d&&d>today}).sort((a,b)=>(a.contact.follow_up_date||'').localeCompare(b.contact.follow_up_date||''));
  const item=r=>{const c=r.contact,u=r.university,role=r.role==='head_coach'?'HC':'AC';const note=c.interest_reason||c.coach_response||c.next_action||'次のアクション未設定';return '<div class="crm-action-item"><div class="crm-action-main"><b>'+crmEsc(u.name)+' · '+crmEsc(role)+' '+crmEsc(c.coach_name)+'</b><div class="crm-action-meta">'+crmEsc(crmStatusLabel(c.contact_status))+' · '+crmEsc(note)+'</div></div><button class="crm-action-btn" type="button" onclick="openCrmFromContact(\''+crmEsc(c.id)+'\')">確認</button></div>'};
- const dueItem=r=>{const c=r.contact,u=r.university,role=r.role==='head_coach'?'HC':'AC';const note=c.coach_response||c.next_action||'次のアクション未設定';return '<div class="crm-action-item"><div class="crm-action-main"><b>'+crmEsc(u.name)+' · '+crmEsc(role)+' '+crmEsc(c.coach_name)+'</b><div class="crm-action-meta">'+crmEsc(c.follow_up_date||'予定日未設定')+' · '+crmEsc(crmStatusLabel(c.contact_status))+' · '+crmEsc(note)+'</div></div><button class="crm-action-btn" type="button" onclick="openCrmFromContact(\''+crmEsc(c.id)+'\')">管理</button></div>'};
- priorityEl.innerHTML=priority.length?priority.slice(0,6).map(item).join(''):'<div class="crm-action-empty">現在、要優先確認の返信はありません。</div>';
- dueEl.innerHTML=due.length?due.slice(0,6).map(dueItem).join(''):'<div class="crm-action-empty">今日・期限超過の連絡はありません。</div>';
- nextEl.innerHTML=upcoming.length?upcoming.slice(0,6).map(dueItem).join(''):'<div class="crm-action-empty">今後の予定はありません。</div>';
-}
-function setCrmInterestFilter(level){crmInterestFilter=level||'all';renderCrmActionList();}
-function setCrmFilter(value){crmFilter=value||'all';const filter=document.getElementById('crm-filter');if(filter)filter.value=crmFilter;applyFilters()}
-function openCrmDrawer(id,role){
- const u=universities.find(x=>x.id===Number(id));if(!u||!crmAvailable){alert('Recruiting CRM is currently unavailable.');return}const rows=crmCoachRows(u),coach=rows.find(x=>x.role===role)||rows[0],key=crmCoachKey(coach.role,coach.name,coach.email),c=crmContacts.get(u.id+':'+key);if(!c){alert('CRM contact record is not available yet. Please reload the Dashboard.');return}
- crmCurrentContact=c;document.getElementById('crm-title').textContent=u.name+' — CRM';document.getElementById('crm-subtitle').textContent=(c.coach_role==='head_coach'?'HC':'AC')+': '+c.coach_name+' · '+(c.coach_email||'email not confirmed');
- document.getElementById('crm-status').value=c.contact_status||'not_contacted';document.getElementById('crm-last-contact').value=crmDateInput(c.last_contact_at);document.getElementById('crm-next-action').value=c.next_action||'';document.getElementById('crm-follow-up').value=c.follow_up_date||'';document.getElementById('crm-count').value=c.contact_count??0;document.getElementById('crm-follow-up-count').value=c.follow_up_count??0;document.getElementById('crm-auto-follow-up').checked=c.auto_follow_up_enabled!==false;document.getElementById('crm-response').value=c.coach_response||'';document.getElementById('crm-visit').value=c.visit_camp||'';document.getElementById('crm-note').value='';
- document.getElementById('crm-backdrop').classList.add('open');document.getElementById('crm-drawer').classList.add('open');document.getElementById('crm-drawer').setAttribute('aria-hidden','false');loadCrmHistory(c.id);
-}
-function closeCrmDrawer(){document.getElementById('crm-backdrop')?.classList.remove('open');document.getElementById('crm-drawer')?.classList.remove('open');document.getElementById('crm-drawer')?.setAttribute('aria-hidden','true');crmCurrentContact=null}
-async function loadCrmHistory(id){const el=document.getElementById('crm-history-list');if(!el)return;el.innerHTML='<div class="crm-empty">Loading…</div>';try{const {data,error}=await supabaseClient.from('recruiting_contact_history').select('*').eq('contact_id',id).order('event_at',{ascending:false});if(error)throw error;crmHistory=data||[];renderCrmHistory()}catch(err){console.warn('CRM history load failed:',err);el.innerHTML='<div class="crm-empty">History unavailable.</div>'}}
-function renderCrmHistory(){const el=document.getElementById('crm-history-list');if(!el)return;if(!crmHistory.length){el.innerHTML='<div class="crm-empty">No history yet.</div>';return}el.innerHTML=crmHistory.map(h=>'<div class="crm-history-item"><b>'+crmEsc(h.event_type)+'</b><div class="crm-history-meta">'+crmEsc(crmDateDisplay(h.event_at))+(h.from_status||h.to_status?' · '+crmEsc(h.from_status||'')+' → '+crmEsc(h.to_status||''):'')+'</div>'+(h.note?'<div>'+crmEsc(h.note)+'</div>':'')+'</div>').join('')}
-async function saveCrmContact(){
- const c=crmCurrentContact;if(!c||!crmAvailable)return;const status=document.getElementById('crm-status').value,last=document.getElementById('crm-last-contact').value,next=document.getElementById('crm-next-action').value.trim(),follow=document.getElementById('crm-follow-up').value||null,count=Math.max(0,Number(document.getElementById('crm-count').value||0)),followCount=Math.min(2,Math.max(0,Number(document.getElementById('crm-follow-up-count').value||0))),autoFollow=document.getElementById('crm-auto-follow-up').checked,response=document.getElementById('crm-response').value.trim(),visit=document.getElementById('crm-visit').value.trim(),note=document.getElementById('crm-note').value.trim();
- const prev={status:c.contact_status||'not_contacted',next:c.next_action||'',follow:c.follow_up_date||null,response:c.coach_response||'',visit:c.visit_camp||'',count:c.contact_count||0,last:c.last_contact_at||null,followCount:c.follow_up_count||0,autoFollow:c.auto_follow_up_enabled!==false};
- const payload={contact_status:status,last_contact_at:last?new Date(last).toISOString():null,next_action:next||null,follow_up_date:follow,contact_count:count,follow_up_count:followCount,auto_follow_up_enabled:autoFollow,coach_response:response||null,visit_camp:visit||null};
- const {data,error}=await supabaseClient.from('recruiting_contacts').update(payload).eq('id',c.id).eq('owner_user_id',DASHBOARD_OWNER_ID).select('*').single();if(error){alert('CRM save failed: '+error.message);return}
- crmContacts.set(data.university_id+':'+data.coach_key,data);crmCurrentContact=data;const events=[];
- if(prev.status!==status)events.push({event_type:'status_changed',from_status:prev.status,to_status:status,note:note||null});
- if(prev.next!==next||prev.follow!==follow)events.push({event_type:'follow_up_set',note:note||null});
- if(prev.visit!==visit)events.push({event_type:'visit_camp_updated',note:visit||null});
- if(prev.count!==count||prev.last!==data.last_contact_at||prev.response!==response||prev.followCount!==followCount||prev.autoFollow!==autoFollow)events.push({event_type:'contact_logged',note:note||'Contact details updated'});
- if(note&&!events.some(e=>e.note===note))events.push({event_type:'note',note});
- if(events.length){const hr=await supabaseClient.from('recruiting_contact_history').insert(events.map(e=>({...e,owner_user_id:DASHBOARD_OWNER_ID,contact_id:data.id})));if(hr.error)console.warn('CRM history insert failed:',hr.error)}
- renderCrmSummary();renderCrmActionList();applyFilters();await loadCrmHistory(data.id);alert('CRM saved.')
-}
-
-function createPopupContent(u){const {hcLink,acLink}=getEmailLinks(u);const c=getCost(u);const igText=u.ig_verified?'Instagram ✓':'Instagram';return `<div style="min-width:280px"><div class="popup-header"><b>${u.name}</b><button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button></div><span class="badge ${badgeClass(u.div)}">${u.div}</span><div style="font-size:11px;margin-top:5px;line-height:1.35">${u.desc}</div><div style="font-size:10px;color:#4a5568;margin-top:5px"><b>HC:</b> ${staffFlag(u)} ${u.hc_name||'Coach'} | <b>AC:</b> ${u.ac_name||'Coach'}</div><div style="font-size:10px;color:#334155;margin-top:5px"><b>費用:</b> Tuition ${money(c.tuition)} / On-campus ${money(c.living)}${c.total!=null?` / <b>Annual Total ${money(c.total)}</b>`:''} <span style="color:#718096">(${c.year})</span></div><div style="font-size:9px;color:#718096;margin-top:4px">${u.staff_status_label}</div><div class="popup-links"><a class="btn-link btn-fac" href="${u.facility}" target="_blank" rel="noopener noreferrer">Facility</a><a class="btn-link btn-ros" href="${u.roster}" target="_blank" rel="noopener noreferrer">Roster</a><a class="btn-link btn-ig" href="${u.ig}" target="_blank" rel="noopener noreferrer">${igText}</a><button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'head_coach')">Gmail HC</button><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'head_coach')">HC管理</button><button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'assistant_coach')">Gmail AC</button><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'assistant_coach')">AC管理</button></div></div>`}
-
-function renderTable(){const tbody=document.getElementById('table-body');tbody.innerHTML='';universities.forEach(u=>{const tr=document.createElement('tr');const {hcLink,acLink}=getEmailLinks(u);const igLabel=u.ig_verified?'IG ✓':'IG';tr.id=`row-${u.id}`;tr.innerHTML=`<td><button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button></td><td>${u.id}</td><td><strong>${u.name}</strong></td><td><span class="badge ${badgeClass(u.div)}">${u.div}</span></td><td>${u.conf}</td><td><select class="status-select ${getStatusClass(u.status)}" onchange="updateStatus(${u.id},this.value)"><option value="未接触" ${u.status==='未接触'?'selected':''}>未接触</option><option value="メール送信済" ${u.status==='メール送信済'?'selected':''}>メール送信済</option><option value="返信・関心あり" ${u.status==='返信・関心あり'?'selected':''}>返信・関心あり</option><option value="IDキャンプ済" ${u.status==='IDキャンプ済'?'selected':''}>IDキャンプ済</option><option value="オファー獲得" ${u.status==='オファー獲得'?'selected':''}>オファー獲得</option></select></td><td><a class="btn-link btn-ig" href="${u.ig}" target="_blank" rel="noopener noreferrer">${igLabel}</a></td><td><a class="btn-link btn-fac" href="${u.facility}" target="_blank" rel="noopener noreferrer">施設</a><a class="btn-link btn-ros" href="${u.roster}" target="_blank" rel="noopener noreferrer">Roster</a></td><td>${u.desc}</td><td>${costHtml(u)}</td><td style="font-size:10px"><div><b>HC:</b> ${staffFlag(u)} ${u.hc_name||'Coach'}</div><div><b>AC:</b> ${u.ac_name||'Coach'}</div><div class="${u.staff_status==='verified'?'staff-flag':u.staff_status==='partial'?'staff-flag partial':'staff-flag review'}">${u.staff_status_label}</div></td><td class="action-cell"><button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'head_coach')">Gmail HC</button><button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'assistant_coach')">Gmail AC</button></td><td class="action-cell"><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'head_coach')">CRM HC</button><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'assistant_coach')">CRM AC</button></td>`;tbody.appendChild(tr)})}
-
-function getStatusClass(status){switch(status){case'メール送信済':return'status-sent';case'返信・関心あり':return'status-replied';case'IDキャンプ済':return'status-camp';case'オファー獲得':return'status-offer';default:return'status-uncontacted'}}
-
-function toggleFav(id){const u=universities.find(x=>x.id===id);if(!u)return;u.fav=!u.fav;const row=document.getElementById(`row-${id}`);if(row)row.querySelector('.star-btn')?.classList.toggle('active',u.fav);const mo=markers.find(m=>m.data.id===id);if(mo&&mo.instance.isPopupOpen())mo.instance.setPopupContent(createPopupContent(u));applyFilters();saveDataToCloud()}
-
-function toggleFavFilter(){showFavOnly=!showFavOnly;document.getElementById('btn-fav-only').classList.toggle('active',showFavOnly);applyFilters();saveDataToCloud()}
-
-function updateStatus(id,newStatus){const u=universities.find(x=>x.id===id);if(!u)return;u.status=newStatus;const el=document.querySelector(`#row-${id} .status-select`);if(el)el.className=`status-select ${getStatusClass(newStatus)}`;saveDataToCloud()}
-
-function applyFilters(){const reg=document.getElementById('filter-region')?.value||'all';const div=document.getElementById('filter-div')?.value||'all';const stat=document.getElementById('filter-status')?.value||'all';const search=(document.getElementById('search-input')?.value||'').toLowerCase();const bounds=window.L&&map?L.latLngBounds():null;let visible=0;universities.forEach(u=>{const okReg=reg==='all'||u.cat===reg;const okDiv=div==='all'||u.div===div;const okStat=stat==='all'||u.status===stat;const q=(u.name+' '+u.conf+' '+(u.hc_name||'')+' '+(u.ac_name||'')).toLowerCase();const okSearch=q.includes(search);const okFav=!showFavOnly||u.fav;const crmRows=crmCoachRows(u);const okCrm=crmFilter==='all'||crmRows.some(c=>{const row=crmContacts.get(u.id+':'+crmCoachKey(c.role,c.name,c.email));return row&&(row.contact_status===crmFilter||(crmInterestFilter==='high'&&row.interest_level==='high'&&row.contact_status==='responded'))});const ok=okReg&&okDiv&&okStat&&okSearch&&okFav&&okCrm;const row=document.getElementById(`row-${u.id}`);if(row)row.style.display=ok?'':'none';const marker=markers.find(m=>m.data.id===u.id);if(marker&&map){if(ok){marker.instance.addTo(map);bounds&&bounds.extend([u.lat,u.lng]);visible++;}else{if(map.hasLayer(marker.instance))map.removeLayer(marker.instance);}}else if(ok){visible++;}});if(map&&bounds&&visible>0&&reg!=='all')map.fitBounds(bounds,{padding:[30,30]});else if(map&&reg==='all')map.setView([37.0902,-95.7129],4)}
-
-function switchView(view){currentView=view;const mapEl=document.getElementById('map-view');const listEl=document.getElementById('list-view');document.getElementById('btn-map').classList.toggle('active',view==='map');document.getElementById('btn-list').classList.toggle('active',view==='list');mapEl.style.display=view==='map'?'block':'none';listEl.style.display=view==='list'?'block':'none';if(view==='map'&&map){setTimeout(()=>{map.invalidateSize({pan:false});applyFilters()},50);setTimeout(()=>map.invalidateSize({pan:false}),250)}}
-async function loadDataFromCloud(){
-    if(!supabaseClient){
-        initCloudDefaults();
-        SYNC_STATE.recruiting.status='local';
-        SYNC_STATE.recruiting.updatedAt=null;
-        renderSyncBanner();
-        return;
-    }
-    try{
-        const {data,error}=await supabaseClient.from('recruiting_records').select('content,updated_at').eq('id','akihiro_dashboard').single();
-        if(error) throw error;
-        if(data&&data.content){
-            universities.forEach(u=>{u.fav=Array.isArray(data.content.favs)&&data.content.favs.includes(u.id);u.status=data.content.statuses?.[u.id]||'未接触'});
-            showFavOnly=Boolean(data.content.showFavOnly);
-            SYNC_STATE.recruiting.status='ok';
-            SYNC_STATE.recruiting.updatedAt=data.updated_at||null;
-        }else{
-            initCloudDefaults();
-            SYNC_STATE.recruiting.status='ok';
-            SYNC_STATE.recruiting.updatedAt=null;
-        }
-    }catch(err){
-        console.warn('Cloud load fallback:',err);
-        initCloudDefaults();
-        SYNC_STATE.recruiting.status='error';
-        SYNC_STATE.recruiting.updatedAt=null;
-    }
-    document.getElementById('btn-fav-only').classList.toggle('active',showFavOnly);
-}
-
-async function saveDataToCloud(){const favs=universities.filter(u=>u.fav).map(u=>u.id);const statuses={};universities.forEach(u=>statuses[u.id]=u.status);const content={favs,statuses,showFavOnly};localStorage.setItem('recruiting_dashboard_backup',JSON.stringify(content));if(!supabaseClient)return;try{updateBanner('☁️ 保存中...');const {error}=await supabaseClient.from('recruiting_records').upsert({id:'akihiro_dashboard',owner_user_id:DASHBOARD_OWNER_ID,content,updated_at:new Date().toISOString()},{onConflict:'id'});if(error)throw error;SYNC_STATE.recruiting.status='ok';SYNC_STATE.recruiting.updatedAt=new Date().toISOString();updateBanner('');}catch(err){console.error('Cloud save error:',err);SYNC_STATE.recruiting.status='error';updateBanner('⚠️ クラウド保存失敗（ローカルに一時保存）')}}
-document.addEventListener('DOMContentLoaded',()=>{
-    initializeAuth();
-});
-window.addEventListener('resize',()=>{if(currentView==='map'&&map)map.invalidateSize()});window.addEventListener('load',()=>{if(gmailConfigured())setTimeout(initGmailOAuthClient,500)});
-</script>
-</body>
-</html>
