@@ -382,7 +382,7 @@ table td:nth-child(11)>div{
 <div class="crm-kpi"><button type="button" onclick="setCrmFilter('no_response')"><b id="crm-kpi-no-response">0</b><span>返信なし</span></button></div>
 <div class="crm-summary-tools"><label for="crm-filter">連絡状況で絞り込み</label><select id="crm-filter" onchange="setCrmFilter(this.value)"><option value="all">すべて</option><option value="not_contacted">未連絡</option><option value="draft_ready">メール準備済み</option><option value="contacted">連絡済み</option><option value="follow_up_due">フォローアップ必要</option><option value="responded">返信あり</option><option value="no_response">返信なし</option><option value="not_a_fit">対象外</option><option value="closed">終了</option></select><span id="crm-summary-note" style="font-size:9px;color:#718096">連絡情報を読み込み中...</span></div>
 </div>
-<div id="crm-actions-panel" class="crm-actions-panel" aria-label="CRM 次のアクション"><div class="crm-action-box priority"><h3>🔥 要優先確認</h3><div id="crm-priority-list" class="crm-action-empty">読み込み中...</div></div><div class="crm-action-box"><h3>今日・期限超過</h3><div id="crm-due-list" class="crm-action-empty">読み込み中...</div></div><div class="crm-action-box"><h3>次のアクション</h3><div id="crm-next-list" class="crm-action-empty">読み込み中...</div></div></div>
+<div id="crm-actions-panel" class="crm-actions-panel" aria-label="CRM 次のアクション"><div class="crm-action-box priority"><h3>🔥 要優先確認</h3><div id="crm-priority-list" class="crm-action-empty">読み込み中...</div></div><div class="crm-action-box"><h3>📥 New Inbound Lead <span id="crm-inbound-count"></span></h3><div id="crm-inbound-list" class="crm-action-empty">読み込み中...</div></div><div class="crm-action-box"><h3>今日・期限超過</h3><div id="crm-due-list" class="crm-action-empty">読み込み中...</div></div><div class="crm-action-box"><h3>次のアクション</h3><div id="crm-next-list" class="crm-action-empty">読み込み中...</div></div></div>
 <div class="cost-note"><b>費用(参考)</b>：学費は原則として2025年の比較データに基づく参考値（公立はOut-of-State、私立/NAIAは通常のTuition）。寮・食費相当は「On-campus living」の参考値です。TuitionとOn-campus livingの両方が確認できる学校は、<b>年間合計 = Tuition + On-campus living</b>として表示します。学校別に取得できなかったものは「School-specific ref pending」と表示。奨学金・編入後の実費・2026-27公式COAとは異なる場合があります。</div>
 
 <div class="main-content"><div id="map-view"></div><div id="list-view"><!-- .table-wrapper owns both vertical/horizontal scroll so the header can remain sticky --><div class="table-wrapper"><table>
@@ -937,13 +937,38 @@ function mailButton(label,href,kind){return href?`<a class="btn-link ${kind}" hr
 
 
 const CRM_STATUS_LABELS={not_contacted:'未連絡',draft_ready:'メール準備済み',contacted:'連絡済み',follow_up_due:'フォローアップ必要',responded:'返信あり',no_response:'返信なし',not_a_fit:'対象外',closed:'終了'};
-let crmContacts=new Map(),crmHistory=[],crmCurrentContact=null,crmAvailable=false,crmFilter='all';
+let crmContacts=new Map(),crmHistory=[],crmInboundLeads=[],crmCurrentContact=null,crmAvailable=false,crmFilter='all';
 function crmCoachKey(role,name,email){const e=(email||'').trim().toLowerCase(),n=(name||'').trim().toLowerCase().replace(/\s+/g,' ');return role+':'+(e?'email:'+e:'name:'+n)}
 function crmEsc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function crmCoachRows(u){return [{role:'head_coach',name:u.hc_name||'Coach',email:u.hc_email||''},{role:'assistant_coach',name:u.ac_name||'Coach',email:u.ac_email||''}]}
 async function loadCrmContacts(){
  crmContacts.clear();crmHistory=[];crmAvailable=false;if(!supabaseClient||!DASHBOARD_OWNER_ID)return false;
- try{const {data,error}=await supabaseClient.from('recruiting_contacts').select('*').eq('owner_user_id',DASHBOARD_OWNER_ID);if(error)throw error;(data||[]).forEach(c=>crmContacts.set(c.university_id+':'+c.coach_key,c));crmAvailable=true;await ensureMissingCrmContacts();renderCrmSummary();renderCrmActionList();return true}catch(err){console.warn('CRM load unavailable:',err);return false}
+ try{const {data,error}=await supabaseClient.from('recruiting_contacts').select('*').eq('owner_user_id',DASHBOARD_OWNER_ID);if(error)throw error;(data||[]).forEach(c=>crmContacts.set(c.university_id+':'+c.coach_key,c));crmAvailable=true;await ensureMissingCrmContacts();await loadInboundLeads();renderCrmSummary();renderCrmActionList();return true}catch(err){console.warn('CRM load unavailable:',err);return false}
+}
+async function loadInboundLeads(){
+ crmInboundLeads=[];
+ if(!supabaseClient||!DASHBOARD_OWNER_ID)return false;
+ try{
+  const {data,error}=await supabaseClient.from('recruiting_inbound_leads').select('*').eq('owner_user_id',DASHBOARD_OWNER_ID).eq('lead_status','new').order('created_at',{ascending:false}).limit(20);
+  if(error)throw error;crmInboundLeads=data||[];return true;
+ }catch(err){console.warn('Inbound lead load unavailable:',err);return false}
+}
+function crmContactByEmail(email){
+ const target=String(email||'').trim().toLowerCase();if(!target)return null;
+ return Array.from(crmContacts.values()).find(c=>String(c.coach_email||'').trim().toLowerCase()===target)||null;
+}
+function renderInboundLeads(){
+ const el=document.getElementById('crm-inbound-list'),countEl=document.getElementById('crm-inbound-count');if(!el)return;
+ if(countEl)countEl.textContent=crmInboundLeads.length?'('+crmInboundLeads.length+')':'';
+ if(!crmInboundLeads.length){el.innerHTML='<div class="crm-action-empty">新しいProfile経由の問い合わせはありません。</div>';return}
+ el.innerHTML=crmInboundLeads.slice(0,6).map(lead=>{
+  const match=crmContactByEmail(lead.coach_email);
+  const message=String(lead.message_body||'').replace(/\s+/g,' ').trim();
+  const excerpt=message.length>110?message.slice(0,110)+'…':message;
+  const status=match?'既存CRM一致':'新規問い合わせ';
+  const when=crmDateDisplay(lead.created_at);
+  return '<div class="crm-action-item"><div class="crm-action-main"><b>'+crmEsc(lead.coach_name)+'</b><div class="crm-action-meta">'+crmEsc(lead.coach_email)+' · '+crmEsc(lead.inquiry_type)+' · '+crmEsc(status)+'</div><div class="crm-action-meta">'+crmEsc(excerpt||'メッセージなし')+' · '+crmEsc(when)+'</div></div></div>';
+ }).join('');
 }
 async function ensureMissingCrmContacts(){
  if(!crmAvailable)return;const missing=[];
@@ -973,6 +998,7 @@ function crmDateOnlyLocal(v){if(!v)return null;const d=new Date(v+'T00:00:00');r
 function crmActionRecord(c){const u=universities.find(x=>x.id===Number(c.university_id));if(!u)return null;const role=c.coach_role==='head_coach'?'head_coach':'assistant_coach';return {contact:c,university:u,role}}
 function openCrmFromContact(contactId){const c=Array.from(crmContacts.values()).find(x=>x.id===contactId);if(!c)return;openCrmDrawer(c.university_id,c.coach_role)}
 function renderCrmActionList(){
+ renderInboundLeads();
  const dueEl=document.getElementById('crm-due-list'),nextEl=document.getElementById('crm-next-list'),priorityEl=document.getElementById('crm-priority-list');if(!dueEl||!nextEl||!priorityEl)return;
  const today=new Date();today.setHours(0,0,0,0);
  const records=crmFavoriteContacts().map(crmActionRecord).filter(Boolean);
