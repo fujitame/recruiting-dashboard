@@ -265,6 +265,77 @@ table td:nth-child(11)>div{
   }
 }
 
+
+/* UI Phase 3: compact Cost / Coach presentation */
+.cost-cell{
+  min-width:0;
+  line-height:1.15;
+}
+.cost-row{
+  display:grid;
+  grid-template-columns:48px 1fr;
+  align-items:center;
+  gap:5px;
+  white-space:nowrap;
+  font-size:9px;
+  color:#64748b;
+}
+.cost-row b{
+  text-align:right;
+  color:#334155;
+  font-size:9.5px;
+  font-weight:700;
+}
+.cost-row.cost-total{
+  margin-top:2px;
+  padding-top:2px;
+  border-top:1px solid #e2e8f0;
+}
+.cost-row.cost-total span,
+.cost-row.cost-total b{
+  color:#1d4ed8;
+  font-weight:800;
+}
+.cost-year{
+  margin-top:2px;
+  color:#94a3b8;
+  font-size:7.5px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.coach-cell{
+  font-size:9px;
+  line-height:1.15;
+}
+.coach-row{
+  display:grid;
+  grid-template-columns:20px minmax(0,1fr);
+  gap:4px;
+  align-items:center;
+  margin-bottom:2px;
+}
+.coach-row span{
+  color:#64748b;
+  font-size:8px;
+  font-weight:800;
+}
+.coach-row b{
+  min-width:0;
+  font-size:9px;
+  font-weight:700;
+  color:#334155;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.coach-cell .staff-flag{
+  margin-top:3px;
+  font-size:8px;
+  line-height:1;
+}
+
 </style>
 </head>
 <body>
@@ -814,7 +885,7 @@ function getCost(u){const v=COSTS[u.id]||[null,null,'School-specific ref pending
 
 function money(v){return v==null?'—':`$${Number(v).toLocaleString('en-US')}`}
 
-function costHtml(u){const c=getCost(u);if(c.tuition==null&&c.living==null)return `<div class="cost-cell"><div class="cost-sub">参考値未確認</div><div class="cost-sub">${c.year}</div></div>`;return `<div class="cost-cell"><div class="cost-main">Tuition: ${money(c.tuition)}</div><div class="cost-sub">On-campus: ${money(c.living)}</div>${c.total!=null?`<div class="cost-total">Annual Total: ${money(c.total)}</div>`:'<div class="cost-sub">Annual Total: —</div>'}<div class="cost-sub">${c.year}</div></div>`}
+function costHtml(u){const c=getCost(u);const shortMoney=v=>v==null?'—':`$${(Number(v)/1000).toFixed(1)}K`;if(c.tuition==null&&c.living==null)return `<div class="cost-cell"><div class="cost-sub">Cost pending</div><div class="cost-year">${c.year}</div></div>`;return `<div class="cost-cell"><div class="cost-row"><span>Tuition</span><b>${shortMoney(c.tuition)}</b></div><div class="cost-row"><span>Living</span><b>${shortMoney(c.living)}</b></div><div class="cost-row cost-total"><span>TOTAL</span><b>${shortMoney(c.total)}</b></div><div class="cost-year">${c.year}</div></div>`}
 
 function badgeClass(div){return div==='NCAA D1'?'badge-d1':(div==='NCAA D2'?'badge-d2':'badge-naia')}
 
@@ -943,7 +1014,7 @@ async function saveCrmContact(){
 
 function createPopupContent(u){const {hcLink,acLink}=getEmailLinks(u);const c=getCost(u);const igText=u.ig_verified?'Instagram ✓':'Instagram';return `<div style="min-width:280px"><div class="popup-header"><b>${u.name}</b><button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button></div><span class="badge ${badgeClass(u.div)}">${u.div}</span><div style="font-size:11px;margin-top:5px;line-height:1.35">${u.desc}</div><div style="font-size:10px;color:#4a5568;margin-top:5px"><b>HC:</b> ${staffFlag(u)} ${u.hc_name||'Coach'} | <b>AC:</b> ${u.ac_name||'Coach'}</div><div style="font-size:10px;color:#334155;margin-top:5px"><b>費用:</b> Tuition ${money(c.tuition)} / On-campus ${money(c.living)}${c.total!=null?` / <b>Annual Total ${money(c.total)}</b>`:''} <span style="color:#718096">(${c.year})</span></div><div style="font-size:9px;color:#718096;margin-top:4px">${u.staff_status_label}</div><div class="popup-links"><a class="btn-link btn-fac" href="${u.facility}" target="_blank" rel="noopener noreferrer">Facility</a><a class="btn-link btn-ros" href="${u.roster}" target="_blank" rel="noopener noreferrer">Roster</a><a class="btn-link btn-ig" href="${u.ig}" target="_blank" rel="noopener noreferrer">${igText}</a><button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'head_coach')">Gmail HC</button><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'head_coach')">HC管理</button><button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'assistant_coach')">Gmail AC</button><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'assistant_coach')">AC管理</button></div></div>`}
 
-function renderTable(){const tbody=document.getElementById('table-body');tbody.innerHTML='';universities.forEach(u=>{const tr=document.createElement('tr');const {hcLink,acLink}=getEmailLinks(u);const igLabel=u.ig_verified?'IG ✓':'IG';tr.id=`row-${u.id}`;tr.innerHTML=`<td><button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button></td><td>${u.id}</td><td><strong>${u.name}</strong></td><td><span class="badge ${badgeClass(u.div)}">${u.div}</span></td><td>${u.conf}</td><td><select class="status-select ${getStatusClass(u.status)}" onchange="updateStatus(${u.id},this.value)"><option value="未接触" ${u.status==='未接触'?'selected':''}>未接触</option><option value="メール送信済" ${u.status==='メール送信済'?'selected':''}>メール送信済</option><option value="返信・関心あり" ${u.status==='返信・関心あり'?'selected':''}>返信・関心あり</option><option value="IDキャンプ済" ${u.status==='IDキャンプ済'?'selected':''}>IDキャンプ済</option><option value="オファー獲得" ${u.status==='オファー獲得'?'selected':''}>オファー獲得</option></select></td><td><a class="btn-link btn-ig" href="${u.ig}" target="_blank" rel="noopener noreferrer">${igLabel}</a></td><td><a class="btn-link btn-fac" href="${u.facility}" target="_blank" rel="noopener noreferrer">施設</a><a class="btn-link btn-ros" href="${u.roster}" target="_blank" rel="noopener noreferrer">Roster</a></td><td>${u.desc}</td><td>${costHtml(u)}</td><td style="font-size:10px"><div><b>HC:</b> ${staffFlag(u)} ${u.hc_name||'Coach'}</div><div><b>AC:</b> ${u.ac_name||'Coach'}</div><div class="${u.staff_status==='verified'?'staff-flag':u.staff_status==='partial'?'staff-flag partial':'staff-flag review'}">${u.staff_status_label}</div></td><td class="action-cell"><button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'head_coach')">Gmail HC</button><button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'assistant_coach')">Gmail AC</button></td><td class="action-cell"><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'head_coach')">CRM HC</button><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'assistant_coach')">CRM AC</button></td>`;tbody.appendChild(tr)})}
+function renderTable(){const tbody=document.getElementById('table-body');tbody.innerHTML='';universities.forEach(u=>{const tr=document.createElement('tr');const {hcLink,acLink}=getEmailLinks(u);const igLabel=u.ig_verified?'IG ✓':'IG';tr.id=`row-${u.id}`;tr.innerHTML=`<td><button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button></td><td>${u.id}</td><td><strong>${u.name}</strong></td><td><span class="badge ${badgeClass(u.div)}">${u.div}</span></td><td>${u.conf}</td><td><select class="status-select ${getStatusClass(u.status)}" onchange="updateStatus(${u.id},this.value)"><option value="未接触" ${u.status==='未接触'?'selected':''}>未接触</option><option value="メール送信済" ${u.status==='メール送信済'?'selected':''}>メール送信済</option><option value="返信・関心あり" ${u.status==='返信・関心あり'?'selected':''}>返信・関心あり</option><option value="IDキャンプ済" ${u.status==='IDキャンプ済'?'selected':''}>IDキャンプ済</option><option value="オファー獲得" ${u.status==='オファー獲得'?'selected':''}>オファー獲得</option></select></td><td><a class="btn-link btn-ig" href="${u.ig}" target="_blank" rel="noopener noreferrer">${igLabel}</a></td><td><a class="btn-link btn-fac" href="${u.facility}" target="_blank" rel="noopener noreferrer">施設</a><a class="btn-link btn-ros" href="${u.roster}" target="_blank" rel="noopener noreferrer">Roster</a></td><td>${u.desc}</td><td>${costHtml(u)}</td><td class="coach-cell"><div class="coach-row"><span>HC</span><b>${u.hc_name||'Coach'}</b></div><div class="coach-row"><span>AC</span><b>${u.ac_name||'Coach'}</b></div><div class="${u.staff_status==='verified'?'staff-flag':u.staff_status==='partial'?'staff-flag partial':'staff-flag review'}">${u.staff_status==='verified'?'✓ Verified':u.staff_status==='partial'?'△ Verify':'⚠ Verify'}</div></td><td class="action-cell"><button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'head_coach')">Gmail HC</button><button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'assistant_coach')">Gmail AC</button></td><td class="action-cell"><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'head_coach')">CRM HC</button><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'assistant_coach')">CRM AC</button></td>`;tbody.appendChild(tr)})}
 
 function getStatusClass(status){switch(status){case'メール送信済':return'status-sent';case'返信・関心あり':return'status-replied';case'IDキャンプ済':return'status-camp';case'オファー獲得':return'status-offer';default:return'status-uncontacted'}}
 
