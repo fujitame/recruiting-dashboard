@@ -6,6 +6,7 @@ const GOOGLE_CLIENT_ID = Deno.env.get("GOOGLE_OAUTH_CLIENT_ID")!;
 const GOOGLE_CLIENT_SECRET = Deno.env.get("GOOGLE_OAUTH_CLIENT_SECRET")!;
 const GOOGLE_REFRESH_TOKEN = Deno.env.get("GOOGLE_OAUTH_REFRESH_TOKEN")!;
 const GMAIL_ACCOUNT = (Deno.env.get("GMAIL_ACCOUNT") || "fujiakihiro8@gmail.com").toLowerCase();
+const FOLLOWUP_SECRET = Deno.env.get("RECRUITING_FOLLOWUP_SECRET") || "";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
@@ -97,6 +98,9 @@ Email: fujiakihiro8@gmail.com`;
 
 Deno.serve(async (req) => {
   if (req.method !== "POST") return json({ error: "POST required" }, 405);
+  if (!FOLLOWUP_SECRET || req.headers.get("x-recruiting-followup-secret") !== FOLLOWUP_SECRET) {
+    return json({ error: "Unauthorized" }, 401);
+  }
   try {
     const token = await googleAccessToken();
     const today = new Date().toISOString().slice(0, 10);
