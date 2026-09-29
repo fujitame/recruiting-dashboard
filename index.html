@@ -227,6 +227,44 @@ table td:nth-child(11)>div{
   .main-content{min-height:260px}
 }
 
+
+/* UI Phase 3 follow-up: restore frozen University column for PC table */
+@media(min-width:769px){
+  .table-wrapper table th:nth-child(1),
+  .table-wrapper table td:nth-child(1){
+    position:sticky;
+    left:0;
+    z-index:31;
+    background:#fff;
+  }
+  .table-wrapper table th:nth-child(2),
+  .table-wrapper table td:nth-child(2){
+    position:sticky;
+    left:28px;
+    z-index:30;
+    background:#fff;
+  }
+  .table-wrapper table th:nth-child(3),
+  .table-wrapper table td:nth-child(3){
+    position:sticky;
+    left:62px;
+    z-index:29;
+    background:#fff;
+    box-shadow:2px 0 4px rgba(0,0,0,.08);
+  }
+  .table-wrapper table th:nth-child(1),
+  .table-wrapper table th:nth-child(2),
+  .table-wrapper table th:nth-child(3){
+    background:#edf2f7;
+    z-index:40;
+  }
+  .table-wrapper table tr:hover td:nth-child(1),
+  .table-wrapper table tr:hover td:nth-child(2),
+  .table-wrapper table tr:hover td:nth-child(3){
+    background:#f8fafc;
+  }
+}
+
 </style>
 </head>
 <body>
