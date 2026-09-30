@@ -2961,9 +2961,45 @@ async function dismissInboundLead(leadId){
  }
 }
 async function ensureMissingCrmContacts(){
- if(!crmAvailable)return;const missing=[];
- universities.forEach(u=>crmCoachRows(u).forEach(c=>{const k=crmCoachKey(c.role,c.name,c.email);if(!crmContacts.has(u.id+':'+k))missing.push({owner_user_id:DASHBOARD_OWNER_ID,university_id:u.id,coach_role:c.role,coach_key:k,coach_name:c.name,coach_email:c.email})}));
- if(!missing.length)return;const {data,error}=await supabaseClient.from('recruiting_contacts').upsert(missing,{onConflict:'owner_user_id,university_id,coach_key',ignoreDuplicates:true}).select('*');if(error)throw error;(data||[]).forEach(c=>crmContacts.set(c.university_id+':'+c.coach_key,c));
+ if(!crmAvailable)return;
+ const missing=[];
+ const existingContacts=Array.from(crmContacts.values());
+
+ universities.forEach(u=>crmCoachRows(u).forEach(c=>{
+  const k=crmCoachKey(c.role,c.name,c.email);
+  const exactExists=crmContacts.has(u.id+':'+k);
+  const sameRoleExists=existingContacts.some(row=>
+   Number(row.university_id)===Number(u.id) &&
+   row.coach_role===c.role
+  );
+
+  if(!exactExists&&!sameRoleExists){
+   missing.push({
+    owner_user_id:DASHBOARD_OWNER_ID,
+    university_id:u.id,
+    coach_role:c.role,
+    coach_key:k,
+    coach_name:c.name,
+    coach_email:c.email
+   });
+  }
+ }));
+
+ if(!missing.length)return;
+
+ const {data,error}=await supabaseClient
+  .from('recruiting_contacts')
+  .upsert(missing,{
+   onConflict:'owner_user_id,university_id,coach_key',
+   ignoreDuplicates:true
+  })
+  .select('*');
+
+ if(error)throw error;
+
+ (data||[]).forEach(c=>
+  crmContacts.set(c.university_id+':'+c.coach_key,c)
+ );
 }
 function crmDateInput(v){if(!v)return '';const d=new Date(v);return Number.isNaN(d.getTime())?'':new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16)}
 function crmDateDisplay(v){if(!v)return '—';const d=new Date(v);return Number.isNaN(d.getTime())?String(v):d.toLocaleString('ja-JP')}
