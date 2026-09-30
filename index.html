@@ -967,8 +967,127 @@ function renderInboundLeads(){
   const excerpt=message.length>110?message.slice(0,110)+'…':message;
   const status=match?'既存CRM一致':'新規問い合わせ';
   const when=crmDateDisplay(lead.created_at);
-  return '<div class="crm-action-item"><div class="crm-action-main"><b>'+crmEsc(lead.coach_name)+'</b><div class="crm-action-meta">'+crmEsc(lead.coach_email)+' · '+crmEsc(lead.inquiry_type)+' · '+crmEsc(status)+'</div><div class="crm-action-meta">'+crmEsc(excerpt||'メッセージなし')+' · '+crmEsc(when)+'</div></div></div>';
+  const linkBtn=match?'<button class="crm-action-btn" type="button" onclick="linkInboundLeadToCrm(\''+crmEsc(lead.id)+'\',\''+crmEsc(match.id)+'\')">CRMへ紐付け</button>':'';
+  const dismissBtn='<button class="crm-action-btn" type="button" onclick="dismissInboundLead(\''+crmEsc(lead.id)+'\')">処理済み</button>';
+  return '<div class="crm-action-item"><div class="crm-action-main"><b>'+crmEsc(lead.coach_name)+'</b><div class="crm-action-meta">'+crmEsc(lead.coach_email)+' · '+crmEsc(lead.inquiry_type)+' · '+crmEsc(status)+'</div><div class="crm-action-meta">'+crmEsc(excerpt||'メッセージなし')+' · '+crmEsc(when)+'</div></div><div style="display:flex;gap:4px;align-items:flex-start">'+linkBtn+dismissBtn+'</div></div>';
  }).join('');
+}
+function inboundNextAction(type){
+ const t=String(type||'').trim().toLowerCase();
+ if(t.includes('full match'))return 'Full match filmを送付';
+ if(t.includes('highlight'))return 'Highlight videoを送付';
+ if(t.includes('transcript')||t.includes('academic'))return 'Academic informationを送付';
+ return 'Profile問い合わせ内容を確認して返信';
+}
+async function linkInboundLeadToCrm(leadId,contactId){
+ if(!supabaseClient||!DASHBOARD_OWNER_ID)return;
+ const lead=crmInboundLeads.find(x=>x.id===leadId);
+ const contact=Array.from(crmContacts.values()).find(x=>x.id===contactId);
+ if(!lead||!contact){
+  alert('LeadまたはCRM情報を確認できません。Dashboardを再読み込みしてください。');
+  return;
+ }
+ try{
+  const receivedDate=new Date(lead.created_at);
+  const receivedAt=Number.isNaN(receivedDate.getTime())?new Date().toISOString():receivedDate.toISOString();
+
+  const currentLast=contact.last_contact_at?new Date(contact.last_contact_at):null;
+  const lastContactAt=currentLast&&!Number.isNaN(currentLast.getTime())&&currentLast.getTime()>new Date(receivedAt).getTime()
+   ?contact.last_contact_at
+   :receivedAt;
+
+  const requestKey=lead.request_id||lead.id;
+  const marker='[Profile Inquiry '+requestKey+']';
+  const inboundText=[
+   marker,
+   'Type: '+(lead.inquiry_type||'Inquiry'),
+   'From: '+(lead.coach_name||'Coach')+(lead.coach_email?' <'+lead.coach_email+'>':''),
+   'Received: '+crmDateDisplay(receivedAt),
+   'Message: '+(lead.message_body||'No message')
+  ].join('\n');
+
+  const existingResponse=String(contact.coach_response||'').trim();
+  const mergedResponse=existingResponse.includes(marker)
+   ?existingResponse
+   :(existingResponse?existingResponse+'\n\n':'')+inboundText;
+
+  const nextAction=String(contact.next_action||'').trim()||inboundNextAction(lead.inquiry_type);
+
+  const saved=await supabaseClient.from('recruiting_contacts').update({
+   contact_status:'responded',
+   last_contact_at:lastContactAt,
+   coach_response:mergedResponse,
+   next_action:nextAction
+  }).eq('id',contact.id).eq('owner_user_id',DASHBOARD_OWNER_ID).select('*').single();
+
+  if(saved.error)throw saved.error;
+
+  crmContacts.set(saved.data.university_id+':'+saved.data.coach_key,saved.data);
+
+  const historyNote=[
+   'Profile inquiry received',
+   'Request ID: '+requestKey,
+   'Type: '+(lead.inquiry_type||'Inquiry'),
+   'From: '+(lead.coach_name||'Coach')+(lead.coach_email?' <'+lead.coach_email+'>':''),
+   'Message: '+(lead.message_body||'No message')
+  ].join('\n');
+
+  const historyCheck=await supabaseClient
+   .from('recruiting_contact_history')
+   .select('id')
+   .eq('owner_user_id',DASHBOARD_OWNER_ID)
+   .eq('contact_id',contact.id)
+   .eq('event_type','note')
+   .eq('note',historyNote)
+   .limit(1);
+
+  if(historyCheck.error)throw historyCheck.error;
+
+  if(!(historyCheck.data||[]).length){
+   const hr=await supabaseClient.from('recruiting_contact_history').insert({
+    owner_user_id:DASHBOARD_OWNER_ID,
+    contact_id:contact.id,
+    event_type:'note',
+    event_at:receivedAt,
+    from_status:contact.contact_status||'not_contacted',
+    to_status:'responded',
+    note:historyNote
+   });
+   if(hr.error)throw hr.error;
+  }
+
+  const linked=await supabaseClient.from('recruiting_inbound_leads').update({
+   lead_status:'linked',
+   linked_contact_id:contactId,
+   processed_at:new Date().toISOString()
+  }).eq('id',leadId).eq('owner_user_id',DASHBOARD_OWNER_ID);
+
+  if(linked.error)throw linked.error;
+
+  await loadInboundLeads();
+  renderCrmSummary();
+  renderCrmActionList();
+  applyFilters();
+  openCrmFromContact(contactId);
+ }catch(err){
+  console.error('Inbound lead link failed:',err);
+  alert('CRMへの紐付けに失敗しました: '+(err.message||'unknown error'));
+ }
+}
+async function dismissInboundLead(leadId){
+ if(!supabaseClient||!DASHBOARD_OWNER_ID)return;
+ try{
+  const {error}=await supabaseClient.from('recruiting_inbound_leads').update({
+   lead_status:'dismissed',
+   processed_at:new Date().toISOString()
+  }).eq('id',leadId).eq('owner_user_id',DASHBOARD_OWNER_ID);
+  if(error)throw error;
+  await loadInboundLeads();
+  renderCrmActionList();
+ }catch(err){
+  console.error('Inbound lead dismiss failed:',err);
+  alert('Leadの処理に失敗しました。');
+ }
 }
 async function ensureMissingCrmContacts(){
  if(!crmAvailable)return;const missing=[];
