@@ -2036,6 +2036,7 @@ header{
     <summary title="設定" aria-label="設定">⚙️</summary>
     <div class="header-settings-menu">
       <button type="button" onclick="openGmailSelfTest()">自分宛テスト</button>
+      <button id="test-mode-toggle" type="button" onclick="toggleTestMode()">🧪 Test Mode: OFF</button>
     </div>
   </details>
 
@@ -2341,6 +2342,45 @@ const SUPABASE_URL='https://cjrabdfdtrufbpjmqddh.supabase.co';
 const SUPABASE_KEY='sb_publishable_u0hVckGZrWePM3j1BHDBsQ_YImzJ4D2';
 let supabaseClient=null;
 if(window.supabase&&typeof window.supabase.createClient==='function'){supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY)}
+const TEST_UNIVERSITY_ID_MIN=900;
+const TEST_UNIVERSITY_ID_MAX=999;
+let testMode=false;
+
+function isTestUniversityId(id){
+ const n=Number(id);
+ return n>=TEST_UNIVERSITY_ID_MIN&&n<=TEST_UNIVERSITY_ID_MAX;
+}
+
+function visibleUniversities(){
+ return universities.filter(u=>
+  testMode
+   ? isTestUniversityId(u.id)
+   : !isTestUniversityId(u.id)
+ );
+}
+
+function visibleCrmContacts(){
+ return Array.from(crmContacts.values()).filter(c=>
+  testMode
+   ? isTestUniversityId(c.university_id)
+   : !isTestUniversityId(c.university_id)
+ );
+}
+
+function toggleTestMode(){
+ testMode=!testMode;
+
+ const btn=document.getElementById('test-mode-toggle');
+ if(btn){
+  btn.textContent=testMode?'🧪 Test Mode: ON':'🧪 Test Mode: OFF';
+ }
+
+ renderTable();
+ renderCrmSummary();
+ renderCrmActionList();
+ applyFilters();
+}
+
 const universities=[
     {"id": 1, "name": "UC Irvine", "cat": "ca", "div": "NCAA D1", "conf": "Big West", "lat": 33.6405, "lng": -117.8443, "hc_name": "Yossi Raz", "hc_email": "yraz@uci.edu", "ac_name": "Cale Rodriguez", "ac_email": "caler@uci.edu", "facility": "https://ucirvinesports.com/facilities", "roster": "https://ucirvinesports.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/ucimsoc/", "desc": "7/18 IDキャンプ参加済。サイドでの1v1スキルと狭いスペースでの技術を高く評価。", "ig_verified": true, "staff_status": "verified", "staff_status_label": "✓ Official/current contact verified"},
     {"id":2,"name":"UC Riverside","cat":"ca","div":"NCAA D1","conf":"Big West","lat":33.9737,"lng":-117.3281,"hc_name":"Tim Cupello","hc_email":"tim.cupello@ucr.edu","ac_name":"Chris Volk","ac_email":"cvolk@ucr.edu","facility":"https://gohighlanders.com/facilities","roster":"https://gohighlanders.com/sports/mens-soccer/roster","ig":"https://www.instagram.com/ucrmsoccer/","desc":"Chris Volk氏率いるポゼッション主体のプログラム。「展開力と足元技術」で最有力評価。","ig_verified":true,"staff_status":"verified","staff_status_label":"✓ Official/current contact verified"},
@@ -2766,7 +2806,9 @@ async function loadInboundLeads(){
 }
 function crmContactByEmail(email){
  const target=String(email||'').trim().toLowerCase();if(!target)return null;
- return Array.from(crmContacts.values()).find(c=>String(c.coach_email||'').trim().toLowerCase()===target)||null;
+ return visibleCrmContacts().find(c=>
+  String(c.coach_email||'').trim().toLowerCase()===target
+ )||null;
 }
 function renderInboundLeads(){
  const el=document.getElementById('crm-inbound-list'),countEl=document.getElementById('crm-inbound-count');if(!el)return;
@@ -2790,7 +2832,7 @@ function openInboundCreateModal(leadId){
  document.getElementById('crm-inbound-email').value=lead.coach_email||'';
  document.getElementById('crm-inbound-modal-subtitle').textContent=(lead.inquiry_type||'Profile Inquiry');
  const sel=document.getElementById('crm-inbound-university');
- sel.innerHTML='<option value="">大学を選択してください</option>'+universities.map(u=>'<option value="'+u.id+'">'+crmEsc(u.name)+'</option>').join('');
+ sel.innerHTML='<option value="">大学を選択してください</option>'+visibleUniversities().map(u=>'<option value="'+u.id+'">'+crmEsc(u.name)+'</option>').join('');
  document.getElementById('crm-inbound-role').value='other';
  document.getElementById('crm-inbound-modal').classList.add('open');
 }
@@ -2965,7 +3007,7 @@ async function ensureMissingCrmContacts(){
  const missing=[];
  const existingContacts=Array.from(crmContacts.values());
 
- universities.forEach(u=>crmCoachRows(u).forEach(c=>{
+ visibleUniversities().forEach(u=>crmCoachRows(u).forEach(c=>{
   const k=crmCoachKey(c.role,c.name,c.email);
   const exactExists=crmContacts.has(u.id+':'+k);
   const sameRoleExists=existingContacts.some(row=>
@@ -3008,7 +3050,8 @@ function crmIsFavoriteContact(c){
  return Boolean(u?.fav);
 }
 function crmFavoriteContacts(){
- return Array.from(crmContacts.values()).filter(crmIsFavoriteContact);
+ const values=visibleCrmContacts();
+ return testMode ? values : values.filter(crmIsFavoriteContact);
 }
 let currentRecruitingArea='schools';
 
@@ -3040,13 +3083,13 @@ function renderRecruitingNavCounts(){
  const outreachEl=document.getElementById('nav-count-outreach');
  const activeEl=document.getElementById('nav-count-active');
 
- if(schoolsEl)schoolsEl.textContent=universities.length;
+ if(schoolsEl)schoolsEl.textContent=visibleUniversities().length;
 
  const outreachSchools=new Set();
  const activeSchools=new Set();
 
  // Legacy / school-level recruiting status
- universities.forEach(u=>{
+ visibleUniversities().forEach(u=>{
   const status=String(u.status||'').trim();
 
   if(
@@ -3068,7 +3111,7 @@ function renderRecruitingNavCounts(){
  });
 
  // CRM-level evidence
- Array.from(crmContacts.values()).forEach(c=>{
+ visibleCrmContacts().forEach(c=>{
   const universityId=Number(c.university_id);
   if(!universityId)return;
 
@@ -3136,9 +3179,9 @@ function outreachContactRole(c){
 }
 
 function outreachSchoolRecords(){
- const allContacts=Array.from(crmContacts.values());
+ const allContacts=visibleCrmContacts();
 
- return universities.map(u=>{
+ return visibleUniversities().map(u=>{
   const contacts=allContacts.filter(c=>Number(c.university_id)===Number(u.id));
   const sentContacts=contacts.filter(outreachContactHasSentEvidence);
   const legacy=outreachSchoolHasLegacyEvidence(u);
@@ -3303,7 +3346,7 @@ function renderOutreachArea(){
 let activeAreaFilter='all';
 
 function activeSchoolRecords(){
- const contacts=Array.from(crmContacts.values());
+ const contacts=visibleCrmContacts();
 
  const grouped=new Map();
 
@@ -3856,12 +3899,14 @@ function renderMobileSchoolCards(){
  const el=document.getElementById('mobile-school-list');
  if(!el)return;
 
- if(!universities.length){
+ const schools=visibleUniversities();
+
+ if(!schools.length){
   el.innerHTML='<div class="mobile-school-card">学校データがありません。</div>';
   return;
  }
 
- el.innerHTML=universities.map(u=>{
+ el.innerHTML=schools.map(u=>{
   const c=getCost(u);
   const total=c.total!=null ? money(c.total)+' / year' : 'Cost pending';
 
@@ -3948,7 +3993,7 @@ function renderMobileSchoolCards(){
  }).join('');
 }
 
-function renderTable(){renderMobileSchoolCards();const tbody=document.getElementById('table-body');tbody.innerHTML='';universities.forEach(u=>{const tr=document.createElement('tr');const {hcLink,acLink}=getEmailLinks(u);const igLabel='IG';tr.id=`row-${u.id}`;tr.innerHTML=`<td><button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button></td><td>${u.id}</td><td><strong>${u.name}</strong></td><td><span class="badge ${badgeClass(u.div)}">${u.div}</span></td><td>${u.conf}</td><td><select class="status-select ${getStatusClass(u.status)}" onchange="updateStatus(${u.id},this.value)"><option value="未接触" ${u.status==='未接触'?'selected':''}>未接触</option><option value="メール送信済" ${u.status==='メール送信済'?'selected':''}>メール送信済</option><option value="返信・関心あり" ${u.status==='返信・関心あり'?'selected':''}>返信・関心あり</option><option value="IDキャンプ済" ${u.status==='IDキャンプ済'?'selected':''}>IDキャンプ済</option><option value="オファー獲得" ${u.status==='オファー獲得'?'selected':''}>オファー獲得</option></select></td><td><a class="btn-link btn-ig" href="${u.ig}" target="_blank" rel="noopener noreferrer">${igLabel}</a></td><td><a class="btn-link btn-fac" href="${u.facility}" target="_blank" rel="noopener noreferrer">施設</a><a class="btn-link btn-ros" href="${u.roster}" target="_blank" rel="noopener noreferrer">Roster</a></td><td>${u.desc}</td><td>${costHtml(u)}</td><td class="coach-cell"><div class="coach-row"><span>HC</span><b>${u.hc_name||'Coach'}</b></div><div class="coach-row"><span>AC</span><b>${u.ac_name||'Coach'}</b></div><div class="${u.staff_status==='verified'?'staff-flag':u.staff_status==='partial'?'staff-flag partial':'staff-flag review'}">${u.staff_status==='verified'?'✓ Verified':u.staff_status==='partial'?'△ Verify':'⚠ Verify'}</div></td><td class="action-cell"><button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'head_coach')">Gmail HC</button><button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'assistant_coach')">Gmail AC</button></td><td class="action-cell"><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'head_coach')">CRM HC</button><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'assistant_coach')">CRM AC</button></td>`;tbody.appendChild(tr)})}
+function renderTable(){renderMobileSchoolCards();const tbody=document.getElementById('table-body');tbody.innerHTML='';visibleUniversities().forEach(u=>{const tr=document.createElement('tr');const {hcLink,acLink}=getEmailLinks(u);const igLabel='IG';tr.id=`row-${u.id}`;tr.innerHTML=`<td><button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button></td><td>${u.id}</td><td><strong>${u.name}</strong></td><td><span class="badge ${badgeClass(u.div)}">${u.div}</span></td><td>${u.conf}</td><td><select class="status-select ${getStatusClass(u.status)}" onchange="updateStatus(${u.id},this.value)"><option value="未接触" ${u.status==='未接触'?'selected':''}>未接触</option><option value="メール送信済" ${u.status==='メール送信済'?'selected':''}>メール送信済</option><option value="返信・関心あり" ${u.status==='返信・関心あり'?'selected':''}>返信・関心あり</option><option value="IDキャンプ済" ${u.status==='IDキャンプ済'?'selected':''}>IDキャンプ済</option><option value="オファー獲得" ${u.status==='オファー獲得'?'selected':''}>オファー獲得</option></select></td><td><a class="btn-link btn-ig" href="${u.ig}" target="_blank" rel="noopener noreferrer">${igLabel}</a></td><td><a class="btn-link btn-fac" href="${u.facility}" target="_blank" rel="noopener noreferrer">施設</a><a class="btn-link btn-ros" href="${u.roster}" target="_blank" rel="noopener noreferrer">Roster</a></td><td>${u.desc}</td><td>${costHtml(u)}</td><td class="coach-cell"><div class="coach-row"><span>HC</span><b>${u.hc_name||'Coach'}</b></div><div class="coach-row"><span>AC</span><b>${u.ac_name||'Coach'}</b></div><div class="${u.staff_status==='verified'?'staff-flag':u.staff_status==='partial'?'staff-flag partial':'staff-flag review'}">${u.staff_status==='verified'?'✓ Verified':u.staff_status==='partial'?'△ Verify':'⚠ Verify'}</div></td><td class="action-cell"><button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'head_coach')">Gmail HC</button><button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'assistant_coach')">Gmail AC</button></td><td class="action-cell"><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'head_coach')">CRM HC</button><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'assistant_coach')">CRM AC</button></td>`;tbody.appendChild(tr)})}
 
 function getStatusClass(status){switch(status){case'メール送信済':return'status-sent';case'返信・関心あり':return'status-replied';case'IDキャンプ済':return'status-camp';case'オファー獲得':return'status-offer';default:return'status-uncontacted'}}
 
@@ -3981,7 +4026,7 @@ function candidateRegion(u){
  return map[cat]||cat;
 }
 
-function applyFilters(){const reg=document.getElementById('filter-region')?.value||'all';const div=document.getElementById('filter-div')?.value||'all';const stat=document.getElementById('filter-status')?.value||'all';const search=(document.getElementById('search-input')?.value||'').toLowerCase();const bounds=window.L&&map?L.latLngBounds():null;let visible=0;universities.forEach(u=>{const okReg=reg==='all'||candidateRegion(u)===reg;const okDiv=div==='all'||u.div===div;const okStat=stat==='all'||u.status===stat;const q=(u.name+' '+u.conf+' '+(u.hc_name||'')+' '+(u.ac_name||'')).toLowerCase();const okSearch=q.includes(search);const okFav=!showFavOnly||u.fav;const crmRows=crmCoachRows(u);const okCrm=crmFilter==='all'||crmRows.some(c=>{const row=crmContacts.get(u.id+':'+crmCoachKey(c.role,c.name,c.email));return row&&(row.contact_status===crmFilter||(crmInterestFilter==='high'&&row.interest_level==='high'&&row.contact_status==='responded'))});const ok=okReg&&okDiv&&okStat&&okSearch&&okFav&&okCrm;const row=document.getElementById(`row-${u.id}`);if(row)row.style.display=ok?'':'none';const mobileCard=document.getElementById(`mobile-card-${u.id}`);if(mobileCard)mobileCard.style.display=ok?'':'none';const marker=markers.find(m=>m.data.id===u.id);if(marker&&map){if(ok){marker.instance.addTo(map);bounds&&bounds.extend([u.lat,u.lng]);visible++;}else{if(map.hasLayer(marker.instance))map.removeLayer(marker.instance);}}else if(ok){visible++;}});if(map&&bounds&&visible>0&&reg!=='all')map.fitBounds(bounds,{padding:[30,30]});else if(map&&reg==='all')map.setView([37.0902,-95.7129],4)}
+function applyFilters(){const reg=document.getElementById('filter-region')?.value||'all';const div=document.getElementById('filter-div')?.value||'all';const stat=document.getElementById('filter-status')?.value||'all';const search=(document.getElementById('search-input')?.value||'').toLowerCase();const bounds=window.L&&map?L.latLngBounds():null;let visible=0;universities.forEach(u=>{const okMode=testMode?isTestUniversityId(u.id):!isTestUniversityId(u.id);const okReg=reg==='all'||candidateRegion(u)===reg;const okDiv=div==='all'||u.div===div;const okStat=stat==='all'||u.status===stat;const q=(u.name+' '+u.conf+' '+(u.hc_name||'')+' '+(u.ac_name||'')).toLowerCase();const okSearch=q.includes(search);const okFav=!showFavOnly||u.fav;const crmRows=crmCoachRows(u);const okCrm=crmFilter==='all'||crmRows.some(c=>{const row=crmContacts.get(u.id+':'+crmCoachKey(c.role,c.name,c.email));return row&&(row.contact_status===crmFilter||(crmInterestFilter==='high'&&row.interest_level==='high'&&row.contact_status==='responded'))});const ok=okMode&&okReg&&okDiv&&okStat&&okSearch&&okFav&&okCrm;const row=document.getElementById(`row-${u.id}`);if(row)row.style.display=ok?'':'none';const mobileCard=document.getElementById(`mobile-card-${u.id}`);if(mobileCard)mobileCard.style.display=ok?'':'none';const marker=markers.find(m=>m.data.id===u.id);if(marker&&map){if(ok){marker.instance.addTo(map);bounds&&bounds.extend([u.lat,u.lng]);visible++;}else{if(map.hasLayer(marker.instance))map.removeLayer(marker.instance);}}else if(ok){visible++;}});if(map&&bounds&&visible>0&&reg!=='all')map.fitBounds(bounds,{padding:[30,30]});else if(map&&reg==='all')map.setView([37.0902,-95.7129],4)}
 
 function switchView(view){currentView=view;const mapEl=document.getElementById('map-view');const listEl=document.getElementById('list-view');document.getElementById('btn-map').classList.toggle('active',view==='map');document.getElementById('btn-list').classList.toggle('active',view==='list');mapEl.style.display=view==='map'?'block':'none';listEl.style.display=view==='list'?'block':'none';if(view==='map'&&map){setTimeout(()=>{map.invalidateSize({pan:false});applyFilters()},50);setTimeout(()=>map.invalidateSize({pan:false}),250)}}
 async function loadDataFromCloud(){
