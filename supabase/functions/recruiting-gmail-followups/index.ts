@@ -104,8 +104,9 @@ Deno.serve(async (req) => {
   try {
     const token = await googleAccessToken();
     const today = new Date().toISOString().slice(0, 10);
+    const testMode = req.headers.get("x-recruiting-test-mode") === "true";
 
-    const { data: contacts, error } = await supabase
+    let contactQuery = supabase
       .from("recruiting_contacts")
       .select("id,owner_user_id,university_id,coach_name,coach_email,contact_status,last_contact_at,follow_up_date,follow_up_count,contact_count,gmail_thread_id,auto_follow_up_enabled,next_action")
       .eq("auto_follow_up_enabled", true)
@@ -113,6 +114,16 @@ Deno.serve(async (req) => {
       .lte("follow_up_date", today)
       .in("contact_status", ["contacted", "follow_up_due"])
       .lt("follow_up_count", 2);
+
+    if (testMode) {
+      contactQuery = contactQuery
+        .gte("university_id", 900)
+        .lte("university_id", 999);
+    } else {
+      contactQuery = contactQuery.lt("university_id", 900);
+    }
+
+    const { data: contacts, error } = await contactQuery;
 
     if (error) throw error;
 
@@ -192,7 +203,14 @@ Deno.serve(async (req) => {
       sent++;
     }
 
-    return json({ ok: true, date: today, checked, sent, skipped });
+    return json({
+      ok: true,
+      date: today,
+      mode: testMode ? "test" : "production",
+      checked,
+      sent,
+      skipped
+    });
   } catch (error) {
     console.error("Phase 5-E follow-up failed:", error);
     return json({ ok: false, error: error instanceof Error ? error.message : String(error) }, 500);
