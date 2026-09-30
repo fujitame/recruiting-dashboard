@@ -336,6 +336,1672 @@ table td:nth-child(11)>div{
   line-height:1;
 }
 
+
+/* Phase 6-UI-1: primary recruiting navigation */
+.recruiting-nav{
+  display:flex;
+  align-items:stretch;
+  gap:6px;
+  padding:7px 10px;
+  background:#f8fafc;
+  border-bottom:1px solid #dbe3ed;
+}
+.recruiting-nav-btn{
+  flex:1;
+  max-width:220px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  min-height:38px;
+  padding:6px 10px;
+  border:1px solid #cbd5e0;
+  border-radius:7px;
+  background:#fff;
+  color:#475569;
+  font-size:11px;
+  font-weight:800;
+  cursor:default;
+}
+.recruiting-nav-btn.active{
+  background:#1a365d;
+  border-color:#1a365d;
+  color:#fff;
+}
+.recruiting-nav-count{
+  display:inline-flex;
+  min-width:24px;
+  height:20px;
+  align-items:center;
+  justify-content:center;
+  padding:0 6px;
+  border-radius:999px;
+  background:#e2e8f0;
+  color:#1e293b;
+  font-size:10px;
+  font-weight:900;
+}
+.recruiting-nav-btn.active .recruiting-nav-count{
+  background:#fff;
+  color:#1a365d;
+}
+header{
+  align-items:flex-start;
+}
+.header-account{
+  margin-left:auto;
+  align-self:flex-start;
+}
+@media(max-width:700px){
+  .recruiting-nav{
+    position:relative;
+    overflow-x:auto;
+    gap:5px;
+    padding:6px;
+  }
+  .recruiting-nav-btn{
+    flex:0 0 auto;
+    min-width:112px;
+    min-height:34px;
+    font-size:10px;
+    padding:5px 8px;
+  }
+}
+
+
+/* Phase 6-UI-1B: compact header utility controls */
+.gmail-status-wrap{
+  margin-left:0;
+}
+
+.gmail-connect{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  min-width:auto;
+  padding:5px 9px;
+  border:1px solid rgba(255,255,255,.32);
+  border-radius:999px;
+  color:#fff;
+  font-size:10px;
+  font-weight:800;
+  cursor:pointer;
+  transition:background .15s ease,border-color .15s ease;
+}
+
+.gmail-connect.gmail-disconnected{
+  background:#b91c1c;
+  border-color:#ef4444;
+  color:#fff;
+}
+
+.gmail-connect.gmail-connected{
+  background:#2563eb;
+  border-color:#60a5fa;
+  color:#fff;
+}
+
+.gmail-status-dot{
+  width:7px;
+  height:7px;
+  flex:0 0 7px;
+  border-radius:50%;
+  background:currentColor;
+  box-shadow:0 0 0 2px rgba(255,255,255,.18);
+}
+
+.header-settings{
+  position:relative;
+}
+
+.header-settings summary{
+  list-style:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:28px;
+  height:28px;
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:6px;
+  color:#fff;
+  cursor:pointer;
+  user-select:none;
+}
+
+.header-settings summary::-webkit-details-marker{
+  display:none;
+}
+
+.header-settings-menu{
+  position:absolute;
+  right:0;
+  top:34px;
+  z-index:1000;
+  min-width:145px;
+  padding:6px;
+  border:1px solid #cbd5e0;
+  border-radius:7px;
+  background:#fff;
+  box-shadow:0 8px 24px rgba(15,23,42,.18);
+}
+
+.header-settings-menu button{
+  width:100%;
+  border:0;
+  border-radius:5px;
+  padding:7px 9px;
+  background:#f8fafc;
+  color:#1f2937;
+  font-size:10px;
+  font-weight:700;
+  text-align:left;
+  cursor:pointer;
+}
+
+.user-badge{
+  display:none;
+}
+
+/* Map View / Table View are equal display modes */
+.view-toggle-bar{
+  grid-column:1/-1;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  justify-content:space-between;
+  margin-top:2px;
+}
+
+.view-toggle-bar > .fav-btn{
+  flex:0 0 auto;
+  min-width:120px;
+}
+
+.view-mode-toggle{
+  flex:1;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+}
+
+.view-mode-toggle .toggle-btn{
+  width:100%;
+}
+
+@media(max-width:700px){
+  .header-account{
+    gap:5px;
+  }
+
+  .gmail-connect{
+    padding:5px 7px;
+    font-size:9px;
+  }
+
+  .view-toggle-bar{
+    align-items:stretch;
+  }
+
+  .view-toggle-bar > .fav-btn{
+    min-width:100px;
+  }
+
+  .view-mode-toggle{
+    flex:1;
+  }
+}
+
+
+/* Phase 6-UI-1C: responsive workflow navigation */
+.nav-label-short{
+  display:none;
+}
+
+.recruiting-nav{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:6px;
+  overflow:visible;
+}
+
+.recruiting-nav-btn{
+  width:100%;
+  max-width:none;
+  min-width:0;
+  flex:none;
+}
+
+.recruiting-nav-btn > span:first-child{
+  min-width:0;
+}
+
+@media(max-width:620px){
+  .recruiting-nav{
+    gap:4px;
+    padding:5px;
+  }
+
+  .recruiting-nav-btn{
+    min-width:0;
+    min-height:34px;
+    padding:5px 4px;
+    gap:4px;
+    font-size:9px;
+  }
+
+  .nav-label-long{
+    display:none;
+  }
+
+  .nav-label-short{
+    display:inline;
+  }
+
+  .recruiting-nav-count{
+    min-width:20px;
+    height:18px;
+    padding:0 5px;
+    font-size:9px;
+  }
+}
+
+@media(max-width:390px){
+  .recruiting-nav-btn{
+    flex-direction:column;
+    gap:2px;
+    padding:4px 2px;
+    min-height:42px;
+  }
+
+  .recruiting-nav-count{
+    height:16px;
+    min-width:18px;
+    font-size:8px;
+  }
+}
+
+
+/* Phase 6-UI-2A: workflow area separation */
+[data-recruiting-area][hidden]{
+  display:none !important;
+}
+
+.workflow-area-placeholder{
+  padding:12px 14px;
+  background:#f8fafc;
+  border-bottom:1px solid #e2e8f0;
+}
+
+.workflow-area-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  max-width:1100px;
+  margin:0 auto;
+  padding:12px 14px;
+  background:#fff;
+  border:1px solid #e2e8f0;
+  border-radius:9px;
+}
+
+.workflow-area-head h2{
+  margin:0;
+  color:#1a365d;
+  font-size:16px;
+}
+
+.workflow-area-head p{
+  margin:4px 0 0;
+  color:#718096;
+  font-size:10px;
+  line-height:1.45;
+}
+
+.workflow-area-number{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-width:42px;
+  height:32px;
+  padding:0 10px;
+  border-radius:999px;
+  background:#1a365d;
+  color:#fff;
+  font-size:15px;
+  font-weight:900;
+}
+
+.workflow-area-empty{
+  max-width:1100px;
+  margin:8px auto 0;
+  padding:18px 14px;
+  border:1px dashed #cbd5e0;
+  border-radius:8px;
+  background:#fff;
+  color:#94a3b8;
+  font-size:11px;
+  text-align:center;
+}
+
+.crm-area-intro{
+  padding-bottom:0;
+}
+
+.recruiting-nav-btn{
+  cursor:pointer;
+}
+
+@media(max-width:620px){
+  .workflow-area-placeholder{
+    padding:8px;
+  }
+
+  .workflow-area-head{
+    padding:10px;
+  }
+
+  .workflow-area-head h2{
+    font-size:13px;
+  }
+
+  .workflow-area-head p{
+    font-size:9px;
+  }
+
+  .workflow-area-number{
+    min-width:34px;
+    height:28px;
+    font-size:13px;
+  }
+}
+
+
+/* Phase 6-UI-3: contacted schools */
+.outreach-area{
+  min-height:300px;
+}
+
+.outreach-toolbar{
+  max-width:1100px;
+  margin:8px auto 0;
+  display:flex;
+  gap:6px;
+  overflow-x:auto;
+}
+
+.outreach-filter{
+  border:1px solid #cbd5e0;
+  border-radius:999px;
+  background:#fff;
+  color:#475569;
+  padding:6px 11px;
+  font-size:10px;
+  font-weight:800;
+  white-space:nowrap;
+  cursor:pointer;
+}
+
+.outreach-filter.active{
+  background:#1a365d;
+  border-color:#1a365d;
+  color:#fff;
+}
+
+.outreach-school-list{
+  max-width:1100px;
+  margin:8px auto 0;
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+}
+
+.outreach-school-card{
+  background:#fff;
+  border:1px solid #e2e8f0;
+  border-radius:9px;
+  padding:10px;
+  min-width:0;
+}
+
+.outreach-card-head{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  align-items:flex-start;
+}
+
+.outreach-card-head h3{
+  margin:0;
+  color:#1a365d;
+  font-size:13px;
+}
+
+.outreach-school-meta{
+  margin-top:2px;
+  color:#718096;
+  font-size:9px;
+}
+
+.outreach-state{
+  flex:0 0 auto;
+  padding:4px 7px;
+  border-radius:999px;
+  font-size:8px;
+  font-weight:900;
+}
+
+.outreach-state.waiting{
+  background:#fff7ed;
+  color:#c2410c;
+}
+
+.outreach-state.due{
+  background:#fff1f2;
+  color:#be123c;
+}
+
+.outreach-state.responded{
+  background:#ecfdf5;
+  color:#047857;
+}
+
+.outreach-metrics{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:5px;
+  margin-top:8px;
+}
+
+.outreach-metrics > div{
+  padding:6px;
+  background:#f8fafc;
+  border-radius:6px;
+  min-width:0;
+}
+
+.outreach-metrics span{
+  display:block;
+  color:#94a3b8;
+  font-size:8px;
+  font-weight:700;
+}
+
+.outreach-metrics b{
+  display:block;
+  margin-top:2px;
+  color:#334155;
+  font-size:9px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.outreach-metrics .outreach-next{
+  grid-column:1/-1;
+}
+
+.outreach-coaches{
+  margin-top:7px;
+  border-top:1px solid #edf2f7;
+}
+
+.outreach-coach-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  padding:6px 0;
+  border-bottom:1px solid #edf2f7;
+}
+
+.outreach-coach-row:last-child{
+  border-bottom:0;
+  padding-bottom:0;
+}
+
+.outreach-coach-main{
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+
+.outreach-coach-main b{
+  flex:0 0 auto;
+  color:#64748b;
+  font-size:8px;
+}
+
+.outreach-coach-main span{
+  min-width:0;
+  color:#334155;
+  font-size:9px;
+  font-weight:700;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.outreach-coach-side{
+  flex:0 0 auto;
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+
+.outreach-coach-status{
+  color:#94a3b8;
+  font-size:8px;
+  white-space:nowrap;
+}
+
+.outreach-coach-status.sent{
+  color:#2563eb;
+  font-weight:800;
+}
+
+.outreach-detail-btn{
+  border:1px solid #cbd5e0;
+  border-radius:5px;
+  background:#fff;
+  color:#1a365d;
+  padding:3px 6px;
+  font-size:8px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+@media(max-width:760px){
+  .outreach-school-list{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:430px){
+  .outreach-metrics{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .outreach-metrics .outreach-next{
+    grid-column:1/-1;
+  }
+
+  .outreach-coach-row{
+    align-items:flex-start;
+  }
+
+  .outreach-coach-side{
+    flex-direction:column;
+    align-items:flex-end;
+  }
+}
+
+
+/* Phase 6-UI-4: active recruiting schools */
+.active-area{
+  min-height:300px;
+}
+
+.active-summary-strip{
+  max-width:1100px;
+  margin:8px auto 0;
+  display:flex;
+  gap:6px;
+  overflow-x:auto;
+}
+
+.active-summary-chip{
+  border:1px solid #cbd5e0;
+  border-radius:999px;
+  background:#fff;
+  color:#475569;
+  padding:6px 10px;
+  font-size:10px;
+  font-weight:800;
+  white-space:nowrap;
+  cursor:pointer;
+}
+
+.active-summary-chip b{
+  margin-left:4px;
+}
+
+.active-summary-chip.active{
+  background:#1a365d;
+  border-color:#1a365d;
+  color:#fff;
+}
+
+.active-summary-chip.priority:not(.active){
+  color:#b91c1c;
+  border-color:#fecaca;
+  background:#fffafa;
+}
+
+.active-summary-chip.inbound:not(.active){
+  color:#1d4ed8;
+  border-color:#bfdbfe;
+  background:#eff6ff;
+}
+
+.active-school-list{
+  max-width:1100px;
+  margin:8px auto 0;
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+}
+
+.active-school-card{
+  background:#fff;
+  border:1px solid #e2e8f0;
+  border-radius:9px;
+  padding:10px;
+  min-width:0;
+}
+
+.active-card-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:8px;
+}
+
+.active-card-head h3{
+  margin:0;
+  color:#1a365d;
+  font-size:13px;
+}
+
+.active-school-meta{
+  margin-top:2px;
+  color:#718096;
+  font-size:9px;
+}
+
+.active-state{
+  flex:0 0 auto;
+  padding:4px 7px;
+  border-radius:999px;
+  font-size:8px;
+  font-weight:900;
+}
+
+.active-state.responded{
+  background:#ecfdf5;
+  color:#047857;
+}
+
+.active-state.priority{
+  background:#fff1f2;
+  color:#be123c;
+}
+
+.active-state.inbound{
+  background:#eff6ff;
+  color:#1d4ed8;
+}
+
+.active-latest,
+.active-next{
+  margin-top:8px;
+  padding:7px 8px;
+  border-radius:6px;
+  background:#f8fafc;
+}
+
+.active-latest span,
+.active-next span{
+  display:block;
+  color:#94a3b8;
+  font-size:8px;
+  font-weight:800;
+}
+
+.active-latest b,
+.active-next b{
+  display:block;
+  margin-top:2px;
+  color:#334155;
+  font-size:9px;
+}
+
+.active-latest p{
+  margin:5px 0 0;
+  color:#475569;
+  font-size:9px;
+  line-height:1.45;
+}
+
+.active-coaches{
+  margin-top:7px;
+  border-top:1px solid #edf2f7;
+}
+
+.active-coach-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  padding:6px 0;
+  border-bottom:1px solid #edf2f7;
+  color:#334155;
+  font-size:9px;
+}
+
+.active-coach-row:last-child{
+  border-bottom:0;
+  padding-bottom:0;
+}
+
+.active-coach-row b{
+  color:#64748b;
+  font-size:8px;
+}
+
+.active-card-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:5px;
+  margin-top:8px;
+}
+
+.active-card-btn{
+  border:1px solid #cbd5e0;
+  border-radius:5px;
+  background:#fff;
+  color:#1a365d;
+  padding:4px 7px;
+  font-size:8px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.active-card-btn.primary{
+  background:#1a365d;
+  border-color:#1a365d;
+  color:#fff;
+}
+
+@media(max-width:760px){
+  .active-school-list{
+    grid-template-columns:1fr;
+  }
+}
+
+
+/* Phase 6-UI-5A-1: CRM contact list shell */
+.crm-contact-list-section{
+  padding:8px 10px 10px;
+  background:#f8fafc;
+  border-bottom:1px solid #e2e8f0;
+}
+
+.crm-contact-list-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:7px;
+}
+
+.crm-contact-list-head h3{
+  display:inline;
+  margin:0;
+  color:#1a365d;
+  font-size:12px;
+}
+
+.crm-contact-list-head span{
+  margin-left:7px;
+  color:#718096;
+  font-size:9px;
+  font-weight:700;
+}
+
+.crm-contact-list{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.crm-list-empty{
+  padding:18px;
+  border:1px dashed #cbd5e0;
+  border-radius:7px;
+  background:#fff;
+  color:#94a3b8;
+  font-size:10px;
+  text-align:center;
+}
+
+
+/* Phase 6-UI-5A-2: CRM contact rows */
+.crm-contact-row{
+  display:grid;
+  grid-template-columns:minmax(180px,1.2fr) minmax(220px,1.4fr) 110px 58px;
+  align-items:center;
+  gap:8px;
+  padding:7px 8px;
+  border:1px solid #e2e8f0;
+  border-radius:7px;
+  background:#fff;
+}
+
+.crm-contact-school,
+.crm-contact-coach{
+  min-width:0;
+}
+
+.crm-contact-school b,
+.crm-contact-coach b{
+  display:block;
+  color:#334155;
+  font-size:9px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.crm-contact-school span,
+.crm-contact-coach span{
+  display:block;
+  margin-top:2px;
+  color:#94a3b8;
+  font-size:8px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.crm-contact-status span{
+  display:inline-block;
+  padding:3px 6px;
+  border-radius:999px;
+  background:#f1f5f9;
+  color:#475569;
+  font-size:8px;
+  font-weight:800;
+  white-space:nowrap;
+}
+
+.crm-contact-detail{
+  border:1px solid #cbd5e0;
+  border-radius:5px;
+  background:#fff;
+  color:#1a365d;
+  padding:4px 6px;
+  font-size:8px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.crm-contact-detail:hover{
+  background:#eff6ff;
+}
+
+@media(max-width:700px){
+  .crm-contact-row{
+    grid-template-columns:minmax(0,1fr) auto;
+  }
+
+  .crm-contact-coach{
+    grid-column:1;
+  }
+
+  .crm-contact-status{
+    grid-column:2;
+    grid-row:1;
+  }
+
+  .crm-contact-detail{
+    grid-column:2;
+    grid-row:2;
+  }
+}
+
+
+/* Phase 6-UI-5 layout: KPI -> Actions -> CRM Contacts */
+.crm-actions-panel{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:6px;
+}
+
+.crm-action-box{
+  min-width:0;
+}
+
+@media(max-width:900px){
+  .crm-actions-panel{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+
+@media(max-width:560px){
+  .crm-actions-panel{
+    grid-template-columns:1fr;
+  }
+}
+
+
+/* Phase 6-UI-5A-3: CRM KPI -> Contact list filter */
+.crm-kpi.selected{
+  outline:2px solid #3182ce;
+  outline-offset:-2px;
+  box-shadow:0 0 0 1px rgba(49,130,206,.12);
+}
+
+.crm-kpi.selected button b,
+.crm-kpi.selected button span{
+  color:#1d4ed8;
+}
+
+
+/* Phase 6-UI-5 fix: CRM actions are follow-up focused */
+.crm-actions-panel{
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+}
+
+@media(max-width:620px){
+  .crm-actions-panel{
+    grid-template-columns:1fr !important;
+  }
+}
+
+
+/* Mobile candidate-card shell */
+.mobile-school-list{
+  display:none;
+}
+
+@media(max-width:700px){
+  .mobile-school-list{
+    display:none;
+  }
+}
+
+
+/* Mobile candidate-card visual test */
+@media(max-width:700px){
+  #list-view .table-wrapper{
+    display:none;
+  }
+
+  .mobile-school-list{
+    display:block;
+    padding:8px;
+  }
+
+  .mobile-school-card{
+    background:#fff;
+    border:1px solid #e2e8f0;
+    border-radius:10px;
+    padding:10px;
+  }
+
+  .mobile-school-head{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    align-items:flex-start;
+  }
+
+  .mobile-school-head strong{
+    display:block;
+    color:#1a365d;
+    font-size:13px;
+  }
+
+  .mobile-school-head small{
+    display:block;
+    margin-top:2px;
+    color:#718096;
+    font-size:9px;
+  }
+
+  .mobile-school-head > span{
+    font-size:8px;
+    font-weight:800;
+    padding:4px 6px;
+    border-radius:5px;
+    background:#edf2f7;
+    color:#4a5568;
+  }
+
+  .mobile-school-block{
+    margin-top:8px;
+    padding:7px;
+    background:#f8fafc;
+    border-radius:6px;
+  }
+
+  .mobile-school-block b{
+    font-size:8px;
+    color:#718096;
+  }
+
+  .mobile-school-block p{
+    margin:3px 0 0;
+    font-size:9px;
+    color:#334155;
+  }
+
+  .mobile-school-links{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:5px;
+    margin-top:8px;
+  }
+
+  .mobile-school-links span{
+    text-align:center;
+    padding:6px 4px;
+    border:1px solid #e2e8f0;
+    border-radius:6px;
+    font-size:9px;
+    font-weight:800;
+  }
+}
+
+
+/* Candidate card shared UI: Map + Mobile */
+.candidate-card{
+  color:#1e293b;
+}
+
+.candidate-card-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:8px;
+}
+
+.candidate-title-wrap{
+  display:flex;
+  align-items:flex-start;
+  gap:5px;
+  min-width:0;
+}
+
+.candidate-title-wrap > div{
+  min-width:0;
+}
+
+.candidate-title-wrap strong{
+  display:block;
+  color:#1a365d;
+  font-size:13px;
+  line-height:1.2;
+}
+
+.candidate-title-wrap small{
+  display:block;
+  margin-top:2px;
+  color:#64748b;
+  font-size:8px;
+}
+
+.candidate-status{
+  flex:0 0 auto;
+  border-radius:6px;
+  padding:4px 6px;
+  font-size:8px;
+  font-weight:800;
+}
+
+.candidate-info-block{
+  margin-top:7px;
+  padding:7px;
+  border-radius:6px;
+  background:#f8fafc;
+}
+
+.candidate-info-block > b{
+  display:block;
+  color:#64748b;
+  font-size:8px;
+}
+
+.candidate-info-block p{
+  margin:3px 0 0;
+  color:#334155;
+  font-size:9px;
+  line-height:1.4;
+}
+
+.candidate-coaches{
+  margin-top:7px;
+  border-top:1px solid #e2e8f0;
+}
+
+.candidate-coach-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  padding:7px 1px;
+  border-bottom:1px solid #edf2f7;
+}
+
+.candidate-coach-name{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  min-width:0;
+}
+
+.candidate-coach-name span{
+  flex:0 0 auto;
+  min-width:20px;
+  color:#64748b;
+  font-size:8px;
+  font-weight:800;
+}
+
+.candidate-coach-name b{
+  min-width:0;
+  color:#334155;
+  font-size:9px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.candidate-coach-actions{
+  display:flex;
+  flex:0 0 auto;
+  gap:4px;
+}
+
+.candidate-gmail-btn,
+.candidate-detail-btn{
+  border:0;
+  border-radius:5px;
+  padding:5px 7px;
+  font-size:8px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.candidate-gmail-btn{
+  background:#c53030;
+  color:#fff;
+}
+
+.candidate-detail-btn{
+  background:#1a365d;
+  color:#fff;
+}
+
+.candidate-link-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:5px;
+  margin-top:7px;
+}
+
+.candidate-link-grid a,
+.candidate-link-grid > span{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  min-height:32px;
+  padding:5px 4px;
+  border:1px solid #cbd5e1;
+  border-radius:6px;
+  background:#fff;
+  color:#1e3a5f;
+  text-decoration:none;
+  font-size:8px;
+  font-weight:800;
+}
+
+.candidate-link-grid a > span,
+.candidate-link-grid > span > span{
+  font-size:12px;
+}
+
+.candidate-link-grid .disabled{
+  opacity:.4;
+}
+
+/* Leaflet popup */
+.candidate-map-card{
+  width:300px;
+  max-width:72vw;
+}
+
+.leaflet-popup-content{
+  margin:10px 11px;
+}
+
+/* Mobile */
+@media(max-width:700px){
+  .mobile-school-card.candidate-card{
+    padding:10px;
+  }
+
+  .candidate-map-card{
+    width:285px;
+    max-width:76vw;
+  }
+}
+
+
+/* Mobile candidate list: scrolling + shared filter result */
+@media(max-width:700px){
+
+  #list-view{
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior-y:contain;
+    touch-action:pan-y;
+    padding:6px;
+  }
+
+  #list-view .table-wrapper{
+    display:none !important;
+  }
+
+  #mobile-school-list{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+    width:100%;
+    height:auto;
+    min-height:100%;
+    overflow:visible;
+    padding-bottom:24px;
+  }
+
+  .mobile-school-card{
+    flex:0 0 auto;
+    width:100%;
+  }
+}
+
+
+/* PC candidate table compact layout */
+@media(min-width:701px){
+
+  #list-view{
+    padding:4px 6px;
+  }
+
+  .table-wrapper{
+    border-radius:6px;
+  }
+
+  table{
+    min-width:1320px;
+    font-size:9.5px;
+  }
+
+  th,
+  td{
+    padding:4px 4px;
+  }
+
+  th{
+    font-size:8.5px;
+  }
+
+  table td:nth-child(3) strong{
+    font-size:9.5px;
+  }
+
+  .status-select{
+    padding:3px 5px;
+    font-size:8.5px;
+  }
+
+  .btn-link{
+    padding:3px 5px;
+    font-size:8.5px;
+    margin-right:1px;
+    margin-bottom:1px;
+  }
+
+  .gmail-btn,
+  .crm-btn{
+    padding:3px 5px;
+    font-size:8px;
+    margin:1px;
+  }
+
+  .coach-cell{
+    font-size:8.5px;
+  }
+
+  .coach-row{
+    grid-template-columns:18px minmax(0,1fr);
+    gap:3px;
+    margin-bottom:1px;
+  }
+
+  .coach-row span{
+    font-size:7.5px;
+  }
+
+  .coach-row b{
+    font-size:8.5px;
+  }
+
+  .cost-row{
+    grid-template-columns:44px 1fr;
+    gap:3px;
+    font-size:8px;
+  }
+
+  .cost-row b{
+    font-size:8.5px;
+  }
+
+  .cost-year{
+    font-size:7px;
+  }
+
+  /* Column widths */
+  table th:nth-child(1),
+  table td:nth-child(1){width:26px}
+
+  table th:nth-child(2),
+  table td:nth-child(2){width:30px}
+
+  table th:nth-child(3),
+  table td:nth-child(3){
+    min-width:150px;
+    width:160px;
+  }
+
+  table th:nth-child(4),
+  table td:nth-child(4){width:54px}
+
+  table th:nth-child(5),
+  table td:nth-child(5){
+    min-width:68px;
+    width:72px;
+  }
+
+  table th:nth-child(6),
+  table td:nth-child(6){width:82px}
+
+  table th:nth-child(7),
+  table td:nth-child(7){width:38px}
+
+  table th:nth-child(8),
+  table td:nth-child(8){width:88px}
+
+  table th:nth-child(9),
+  table td:nth-child(9){
+    min-width:210px;
+    width:225px;
+    max-width:240px;
+  }
+
+  table th:nth-child(10),
+  table td:nth-child(10){
+    min-width:115px;
+    width:122px;
+    max-width:128px;
+  }
+
+  table th:nth-child(11),
+  table td:nth-child(11){
+    min-width:145px;
+    width:150px;
+    max-width:160px;
+  }
+
+  table th:nth-child(12),
+  table td:nth-child(12),
+  table th:nth-child(13),
+  table td:nth-child(13){
+    min-width:78px;
+    width:82px;
+  }
+}
+
+
+/* PC candidate table readability refinement */
+@media(min-width:701px){
+
+  table{
+    min-width:1330px;
+    font-size:10.5px;
+  }
+
+  th,
+  td{
+    padding:5px 5px;
+  }
+
+  th{
+    font-size:9.5px;
+  }
+
+  table td:nth-child(3) strong{
+    font-size:10.5px;
+  }
+
+  .status-select{
+    font-size:9.5px;
+    padding:4px 6px;
+  }
+
+  .btn-link{
+    font-size:9px;
+    padding:4px 5px;
+  }
+
+  .gmail-btn,
+  .crm-btn{
+    font-size:9px;
+    padding:4px 5px;
+  }
+
+  .coach-cell{
+    font-size:9.5px;
+  }
+
+  .coach-row span{
+    font-size:8.5px;
+  }
+
+  .coach-row b{
+    font-size:9.5px;
+  }
+
+  .cost-row{
+    grid-template-columns:40px 1fr;
+    gap:3px;
+    font-size:8.5px;
+  }
+
+  .cost-row b{
+    font-size:9px;
+  }
+
+  .cost-year{
+    display:none;
+  }
+
+  /* Cost列を少し細く */
+  table th:nth-child(10),
+  table td:nth-child(10){
+    min-width:98px;
+    width:104px;
+    max-width:108px;
+  }
+
+  /* 読みやすさ維持 */
+  table th:nth-child(3),
+  table td:nth-child(3){
+    min-width:155px;
+    width:165px;
+  }
+
+  table th:nth-child(9),
+  table td:nth-child(9){
+    min-width:215px;
+    width:230px;
+    max-width:245px;
+  }
+
+  table th:nth-child(11),
+  table td:nth-child(11){
+    min-width:150px;
+    width:158px;
+    max-width:165px;
+  }
+}
+
+
+/* Emphasize annual total cost in PC table */
+@media(min-width:701px){
+  .cost-row.cost-total{
+    margin-top:3px;
+    padding-top:3px;
+  }
+
+  .cost-row.cost-total span{
+    font-size:9px;
+    font-weight:800;
+  }
+
+  .cost-row.cost-total b{
+    font-size:11px;
+    font-weight:900;
+    line-height:1.1;
+  }
+}
+
+
+/* Candidate cards readability: Mobile + Map */
+.candidate-title-wrap strong{
+  font-size:14px;
+}
+
+.candidate-title-wrap small{
+  font-size:9px;
+}
+
+.candidate-status{
+  font-size:9px;
+  padding:5px 7px;
+}
+
+.candidate-info-block > b{
+  font-size:9px;
+}
+
+.candidate-info-block p{
+  font-size:10.5px;
+  line-height:1.45;
+}
+
+.candidate-coach-name span{
+  font-size:9px;
+}
+
+.candidate-coach-name b{
+  font-size:10.5px;
+}
+
+.candidate-gmail-btn,
+.candidate-detail-btn{
+  font-size:9.5px;
+  padding:6px 8px;
+}
+
+.candidate-link-grid a,
+.candidate-link-grid > span{
+  font-size:9.5px;
+  min-height:35px;
+}
+
+.candidate-link-grid a > span,
+.candidate-link-grid > span > span{
+  font-size:14px;
+}
+
+/* Map popup gets a little more room */
+.candidate-map-card{
+  width:320px;
+  max-width:78vw;
+}
+
+.leaflet-popup-content{
+  font-size:10px;
+}
+
+/* Mobile individual cards */
+@media(max-width:700px){
+  .mobile-school-card.candidate-card{
+    padding:11px;
+  }
+
+  .candidate-title-wrap strong{
+    font-size:14.5px;
+  }
+
+  .candidate-info-block p{
+    font-size:11px;
+  }
+
+  .candidate-coach-name b{
+    font-size:11px;
+  }
+
+  .candidate-map-card{
+    width:300px;
+    max-width:82vw;
+  }
+}
+
+
+/* Map popup shell sizing fix */
+.leaflet-popup-content-wrapper{
+  width:auto !important;
+  max-width:none !important;
+}
+
+.leaflet-popup-content{
+  width:340px !important;
+  max-width:calc(100vw - 56px) !important;
+  margin:12px 13px !important;
+}
+
+.candidate-map-card{
+  width:100% !important;
+  max-width:none !important;
+  box-sizing:border-box;
+}
+
+.candidate-map-card .candidate-link-grid{
+  width:100%;
+}
+
+.candidate-map-card .candidate-coach-row{
+  min-width:0;
+}
+
+.candidate-map-card .candidate-coach-name{
+  min-width:0;
+}
+
+.candidate-map-card .candidate-coach-actions{
+  flex-shrink:0;
+}
+
+@media(max-width:700px){
+  .leaflet-popup-content{
+    width:min(330px,calc(100vw - 48px)) !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -358,34 +2024,153 @@ table td:nth-child(11)>div{
         <p class="auth-note">認証はSupabase Auth、RecruitingデータはRow Level Security (RLS)で保護されています。</p>
     </div>
 </div>
-<header><div><h1 id="dashboard-title">Akihiro Fujikawa - Transfer Dashboard v4.3</h1><div id="player-info" class="player-info">Sophomore | 170cm/68kg | Harcum College (NJCAA D1) | GPA: 3.29 | NCAA ID: 250663641</div></div><div class="header-account"><div class="gmail-status-wrap"><span id="gmail-status" class="gmail-status">Gmail未接続</span><button id="gmail-connect-btn" class="gmail-connect" type="button" onclick="connectGmail()">Gmail接続</button><button class="gmail-test" type="button" onclick="openGmailSelfTest()">自分宛テスト</button></div><span id="auth-user-badge" class="user-badge">Not signed in</span><button id="logout-btn" class="logout-btn" type="button" hidden>Logout</button></div></header>
-<div id="sync-banner" class="sync-banner">☁️ クラウド同期準備中...</div>
-<div class="controls">
+<header><div><h1 id="dashboard-title">Akihiro Fujikawa - Transfer Dashboard v4.3</h1><div id="player-info" class="player-info">Sophomore | 170cm/68kg | Harcum College (NJCAA D1) | GPA: 3.29 | NCAA ID: 250663641</div></div><div class="header-account">
+  <div class="gmail-status-wrap">
+    <button id="gmail-connect-btn" class="gmail-connect gmail-disconnected" type="button" onclick="connectGmail()" title="Gmail未接続">
+      <span id="gmail-status-dot" class="gmail-status-dot" aria-hidden="true"></span>
+      <span id="gmail-status">Gmail</span>
+    </button>
+  </div>
 
-<div class="control-group"><label>優先地域・区分:</label><select id="filter-region" onchange="applyFilters()"><option value="all">全地域・全校</option><option value="ca">1. カリフォルニア州 D1/D2</option><option value="west">2. 西海岸 D1/D2</option><option value="naia-ca">3. カリフォルニア州 NAIA</option><option value="naia-west">3b. 西海岸 NAIA</option><option value="fl">4. フロリダ州 D1/D2</option><option value="naia-fl">4b. フロリダ州 NAIA</option><option value="tx">5. テキサス州 D1/D2</option><option value="naia-tx">5b. テキサス州 NAIA</option><option value="top">6. Top of Top D1</option></select></div>
+  <details class="header-settings">
+    <summary title="設定" aria-label="設定">⚙️</summary>
+    <div class="header-settings-menu">
+      <button type="button" onclick="openGmailSelfTest()">自分宛テスト</button>
+    </div>
+  </details>
+
+  <span id="auth-user-badge" class="user-badge">Not signed in</span>
+  <button id="logout-btn" class="logout-btn" type="button" hidden>Logout</button>
+</div></header>
+<nav id="recruiting-nav" class="recruiting-nav" aria-label="Recruiting workflow">
+  <button class="recruiting-nav-btn active" type="button" data-area="schools" onclick="switchRecruitingArea('schools')">
+    <span class="nav-label-long">候補校</span><span class="nav-label-short">候補</span><span id="nav-count-schools" class="recruiting-nav-count">0</span>
+  </button>
+  <button class="recruiting-nav-btn" type="button" data-area="outreach" onclick="switchRecruitingArea('outreach')">
+    <span class="nav-label-long">連絡後</span><span class="nav-label-short">連絡</span><span id="nav-count-outreach" class="recruiting-nav-count">0</span>
+  </button>
+  <button class="recruiting-nav-btn" type="button" data-area="active" onclick="switchRecruitingArea('active')">
+    <span class="nav-label-long">進行中</span><span class="nav-label-short">進行</span><span id="nav-count-active" class="recruiting-nav-count">0</span>
+  </button>
+  <button class="recruiting-nav-btn" type="button" data-area="crm" onclick="switchRecruitingArea('crm')">
+    <span>CRM</span>
+  </button>
+</nav>
+<div id="sync-banner" class="sync-banner">☁️ クラウド同期準備中...</div>
+<div class="controls" data-recruiting-area="schools">
+
+<div class="control-group">
+<label>優先地域:</label>
+<select id="filter-region" onchange="applyFilters()">
+<option value="all">全地域</option>
+<option value="ca">1. カリフォルニア州</option>
+<option value="west">2. 西海岸</option>
+<option value="fl">3. フロリダ州</option>
+<option value="tx">4. テキサス州</option>
+<option value="top">全国Top（特別枠）</option>
+</select>
+</div>
 
 <div class="control-group"><label>区分:</label><select id="filter-div" onchange="applyFilters()"><option value="all">全区分</option><option value="NCAA D1">NCAA D1</option><option value="NCAA D2">NCAA D2</option><option value="NAIA">NAIA</option></select></div>
 
 <div class="control-group"><label>進捗:</label><select id="filter-status" onchange="applyFilters()"><option value="all">全ステータス</option><option value="未接触">未接触</option><option value="メール送信済">メール送信済</option><option value="返信・関心あり">返信・関心あり</option><option value="IDキャンプ済">IDキャンプ済</option><option value="オファー獲得">オファー獲得</option></select></div>
 <div class="control-group control-group-search"><label>検索:</label><input type="text" id="search-input" placeholder="大学名・カンファレンス・コーチ名..." oninput="applyFilters()"></div>
 
-<div class="view-toggle-bar"><button class="toggle-btn fav-btn" id="btn-fav-only" onclick="toggleFavFilter()">★ お気に入り</button><button class="toggle-btn active" id="btn-map" onclick="switchView('map')">Map View</button><button class="toggle-btn" id="btn-list" onclick="switchView('list')">Table View</button></div>
+<div class="view-toggle-bar">
+  <button class="toggle-btn fav-btn" id="btn-fav-only" onclick="toggleFavFilter()">★ お気に入り</button>
+  <div class="view-mode-toggle" role="group" aria-label="候補校表示形式">
+    <button class="toggle-btn view-mode-btn active" id="btn-map" onclick="switchView('map')">Map View</button>
+    <button class="toggle-btn view-mode-btn" id="btn-list" onclick="switchView('list')">Table View</button>
+  </div>
+</div>
 </div>
 
 
-<div id="crm-summary" class="crm-summary" aria-label="連絡状況サマリー">
+<section class="workflow-area-placeholder outreach-area" data-recruiting-area="outreach" hidden>
+  <div class="workflow-area-head">
+    <div>
+      <h2>連絡した学校のその後</h2>
+      <p>送信済みの学校、返信待ち、Follow-up予定を大学単位で管理します。</p>
+    </div>
+    <span id="outreach-area-count" class="workflow-area-number">0</span>
+  </div>
+
+  <div class="outreach-toolbar">
+    <button type="button" class="outreach-filter active" data-outreach-filter="all" onclick="setOutreachFilter('all')">すべて</button>
+    <button type="button" class="outreach-filter" data-outreach-filter="waiting" onclick="setOutreachFilter('waiting')">返信待ち</button>
+    <button type="button" class="outreach-filter" data-outreach-filter="due" onclick="setOutreachFilter('due')">Follow-up必要</button>
+    <button type="button" class="outreach-filter" data-outreach-filter="responded" onclick="setOutreachFilter('responded')">返信あり</button>
+  </div>
+
+  <div id="outreach-school-list" class="outreach-school-list">
+    <div class="workflow-area-empty">送信済みの学校はまだありません。</div>
+  </div>
+</section>
+
+<section class="workflow-area-placeholder active-area" data-recruiting-area="active" hidden>
+  <div class="workflow-area-head">
+    <div>
+      <h2>返信・受信があった学校の進捗管理</h2>
+      <p>返信・受信・Profile Inquiry・進行中のRecruitingを大学単位で管理します。</p>
+    </div>
+    <span id="active-area-count" class="workflow-area-number">0</span>
+  </div>
+
+  <div class="active-summary-strip">
+    <button type="button" class="active-summary-chip active" data-active-filter="all" onclick="setActiveAreaFilter('all')">
+      進行中 <b id="active-chip-all">0</b>
+    </button>
+    <button type="button" class="active-summary-chip priority" data-active-filter="priority" onclick="setActiveAreaFilter('priority')">
+      🔥 Priority <b id="active-chip-priority">0</b>
+    </button>
+    <button type="button" class="active-summary-chip inbound" data-active-filter="inbound" onclick="setActiveAreaFilter('inbound')">
+      📥 New Inquiry <b id="active-chip-inbound">0</b>
+    </button>
+  </div>
+
+  <div id="active-school-list" class="active-school-list">
+    <div class="workflow-area-empty">現在、進行中の学校はありません。</div>
+  </div>
+</section>
+
+<section class="workflow-area-placeholder crm-area-intro" data-recruiting-area="crm" hidden>
+  <div class="workflow-area-head">
+    <div>
+      <h2>詳細CRM</h2>
+      <p>コーチ単位の連絡状況・履歴・Follow-up・Responseを確認します。</p>
+    </div>
+  </div>
+</section>
+
+<div id="crm-summary" class="crm-summary" data-recruiting-area="crm" hidden aria-label="連絡状況サマリー">
 <div class="crm-kpi total"><button type="button" onclick="setCrmFilter('all')"><b id="crm-kpi-total">0</b><span>連絡先コーチ数</span></button></div>
 <div class="crm-kpi"><button type="button" onclick="setCrmFilter('not_contacted')"><b id="crm-kpi-not-contacted">0</b><span>未連絡</span></button></div>
 <div class="crm-kpi contacted"><button type="button" onclick="setCrmFilter('contacted')"><b id="crm-kpi-contacted">0</b><span>連絡済み</span></button></div>
 <div class="crm-kpi followup"><button type="button" onclick="setCrmFilter('follow_up_due')"><b id="crm-kpi-followup">0</b><span>フォローアップ必要</span></button></div>
-<div class="crm-kpi responded"><button type="button" onclick="setCrmFilter('responded')"><b id="crm-kpi-responded">0</b><span>返信あり</span></button></div><div class="crm-kpi priority"><button type="button" onclick="setCrmInterestFilter('high')"><b id="crm-kpi-priority">0</b><span>🔥 要優先確認</span></button></div>
+<div class="crm-kpi responded"><button type="button" onclick="setCrmFilter('responded')"><b id="crm-kpi-responded">0</b><span>返信・受信あり</span></button></div><div class="crm-kpi priority"><button type="button" onclick="setCrmInterestFilter('high')"><b id="crm-kpi-priority">0</b><span>🔥 要優先確認</span></button></div>
 <div class="crm-kpi"><button type="button" onclick="setCrmFilter('no_response')"><b id="crm-kpi-no-response">0</b><span>返信なし</span></button></div>
 <div class="crm-summary-tools"><label for="crm-filter">連絡状況で絞り込み</label><select id="crm-filter" onchange="setCrmFilter(this.value)"><option value="all">すべて</option><option value="not_contacted">未連絡</option><option value="draft_ready">メール準備済み</option><option value="contacted">連絡済み</option><option value="follow_up_due">フォローアップ必要</option><option value="responded">返信あり</option><option value="no_response">返信なし</option><option value="not_a_fit">対象外</option><option value="closed">終了</option></select><span id="crm-summary-note" style="font-size:9px;color:#718096">連絡情報を読み込み中...</span></div>
 </div>
-<div id="crm-actions-panel" class="crm-actions-panel" aria-label="CRM 次のアクション"><div class="crm-action-box priority"><h3>🔥 要優先確認</h3><div id="crm-priority-list" class="crm-action-empty">読み込み中...</div></div><div class="crm-action-box"><h3>📥 New Inbound Lead <span id="crm-inbound-count"></span></h3><div id="crm-inbound-list" class="crm-action-empty">読み込み中...</div></div><div class="crm-action-box"><h3>今日・期限超過</h3><div id="crm-due-list" class="crm-action-empty">読み込み中...</div></div><div class="crm-action-box"><h3>次のアクション</h3><div id="crm-next-list" class="crm-action-empty">読み込み中...</div></div></div>
-<div class="cost-note"><b>費用(参考)</b>：学費は原則として2025年の比較データに基づく参考値（公立はOut-of-State、私立/NAIAは通常のTuition）。寮・食費相当は「On-campus living」の参考値です。TuitionとOn-campus livingの両方が確認できる学校は、<b>年間合計 = Tuition + On-campus living</b>として表示します。学校別に取得できなかったものは「School-specific ref pending」と表示。奨学金・編入後の実費・2026-27公式COAとは異なる場合があります。</div>
+<section id="crm-contact-list-section" class="crm-contact-list-section" data-recruiting-area="crm" hidden>
+  <div class="crm-contact-list-head">
+    <div>
+      <h3>CRM Contacts</h3>
+      <span>一覧表示準備中</span>
+    </div>
+  </div>
 
-<div class="main-content"><div id="map-view"></div><div id="list-view"><!-- .table-wrapper owns both vertical/horizontal scroll so the header can remain sticky --><div class="table-wrapper"><table>
+  <div id="crm-contact-list" class="crm-contact-list">
+    <div class="crm-list-empty">CRM Contact一覧をここに表示します。</div>
+  </div>
+</section>
+
+<div id="crm-actions-panel" class="crm-actions-panel" data-recruiting-area="crm" hidden aria-label="CRM 次のアクション"><div class="crm-action-box"><h3>今日・期限超過</h3><div id="crm-due-list" class="crm-action-empty">読み込み中...</div></div><div class="crm-action-box"><h3>次のアクション</h3><div id="crm-next-list" class="crm-action-empty">読み込み中...</div></div></div>
+<div class="cost-note" data-recruiting-area="schools"><b>費用(参考)</b>：学費は原則として2025年の比較データに基づく参考値（公立はOut-of-State、私立/NAIAは通常のTuition）。寮・食費相当は「On-campus living」の参考値です。TuitionとOn-campus livingの両方が確認できる学校は、<b>年間合計 = Tuition + On-campus living</b>として表示します。学校別に取得できなかったものは「School-specific ref pending」と表示。奨学金・編入後の実費・2026-27公式COAとは異なる場合があります。</div>
+
+<div class="main-content" data-recruiting-area="schools"><div id="map-view"></div><div id="list-view">
+<div id="mobile-school-list" class="mobile-school-list"></div>
+<!-- .table-wrapper owns both vertical/horizontal scroll so the header can remain sticky -->
+<div class="table-wrapper"><table>
     <thead>
         <tr>
             <th>★</th>
@@ -445,7 +2230,17 @@ const GMAIL_ACCOUNT='fujiakihiro8@gmail.com';
 let gmailTokenClient=null,gmailAccessToken='',gmailTokenExpiresAt=0,gmailCurrentContactId=null,gmailTestMode=false;
 
 function gmailConfigured(){return GOOGLE_OAUTH_CLIENT_ID&&!GOOGLE_OAUTH_CLIENT_ID.startsWith('REPLACE_')}
-function setGmailStatus(text,connected){const e=document.getElementById('gmail-status');if(e)e.textContent=text;const b=document.getElementById('gmail-connect-btn');if(b)b.textContent=connected?'Gmail再接続':'Gmail接続'}
+function setGmailStatus(text,connected){
+ const label=document.getElementById('gmail-status');
+ const btn=document.getElementById('gmail-connect-btn');
+ if(label)label.textContent='Gmail';
+ if(btn){
+  btn.classList.toggle('gmail-connected',Boolean(connected));
+  btn.classList.toggle('gmail-disconnected',!connected);
+  btn.title=connected?'Gmail接続済み — クリックで再接続':'Gmail未接続 — クリックして接続';
+  btn.setAttribute('aria-label',btn.title);
+ }
+}
 function showGmailError(message){const e=document.getElementById('gmail-error');if(!e)return;e.textContent=message||'';e.classList.toggle('show',Boolean(message))}
 function initGmailOAuthClient(){if(!gmailConfigured()||!window.google?.accounts?.oauth2)return false;gmailTokenClient=window.google.accounts.oauth2.initTokenClient({client_id:GOOGLE_OAUTH_CLIENT_ID,scope:GMAIL_SCOPE,callback:()=>{}});return true}
 function connectGmail(){
@@ -901,7 +2696,7 @@ function getCost(u){const v=COSTS[u.id]||[null,null,'School-specific ref pending
 
 function money(v){return v==null?'—':`$${Number(v).toLocaleString('en-US')}`}
 
-function costHtml(u){const c=getCost(u);const shortMoney=v=>v==null?'—':`$${(Number(v)/1000).toFixed(1)}K`;if(c.tuition==null&&c.living==null)return `<div class="cost-cell"><div class="cost-sub">Cost pending</div><div class="cost-year">${c.year}</div></div>`;return `<div class="cost-cell"><div class="cost-row"><span>Tuition</span><b>${shortMoney(c.tuition)}</b></div><div class="cost-row"><span>Living</span><b>${shortMoney(c.living)}</b></div><div class="cost-row cost-total"><span>TOTAL</span><b>${shortMoney(c.total)}</b></div><div class="cost-year">${c.year}</div></div>`}
+function costHtml(u){const c=getCost(u);const shortMoney=v=>v==null?'—':`$${(Number(v)/1000).toFixed(1)}K`;if(c.tuition==null&&c.living==null)return `<div class="cost-cell"><div class="cost-sub">Cost pending</div></div>`;return `<div class="cost-cell"><div class="cost-row"><span>Tuition</span><b>${shortMoney(c.tuition)}</b></div><div class="cost-row"><span>Living</span><b>${shortMoney(c.living)}</b></div><div class="cost-row cost-total"><span>TOTAL</span><b>${shortMoney(c.total)}</b></div></div>`}
 
 function badgeClass(div){return div==='NCAA D1'?'badge-d1':(div==='NCAA D2'?'badge-d2':'badge-naia')}
 
@@ -952,8 +2747,8 @@ function staffFlag(u){const s=u.staff_status;return s==='verified'?'<span class=
 function mailButton(label,href,kind){return href?`<a class="btn-link ${kind}" href="${href}" title="Mail ${label}">${label}</a>`:`<span class="btn-link ${kind} disabled-mail" title="Official/current email not confirmed">${label} —</span>`}
 
 
-const CRM_STATUS_LABELS={not_contacted:'未連絡',draft_ready:'メール準備済み',contacted:'連絡済み',follow_up_due:'フォローアップ必要',responded:'返信あり',no_response:'返信なし',not_a_fit:'対象外',closed:'終了'};
-let crmContacts=new Map(),crmHistory=[],crmInboundLeads=[],crmCurrentContact=null,crmInboundCreateLeadId=null,crmAvailable=false,crmFilter='all';
+const CRM_STATUS_LABELS={not_contacted:'未連絡',draft_ready:'メール準備済み',contacted:'連絡済み',follow_up_due:'フォローアップ必要',responded:'返信・受信あり',no_response:'返信なし',not_a_fit:'対象外',closed:'終了'};
+let crmContacts=new Map(),crmHistory=[],crmInboundLeads=[],crmCurrentContact=null,crmInboundCreateLeadId=null,crmAvailable=false,crmFilter='all',crmInterestFilter='all';
 function crmCoachKey(role,name,email){const e=(email||'').trim().toLowerCase(),n=(name||'').trim().toLowerCase().replace(/\s+/g,' ');return role+':'+(e?'email:'+e:'name:'+n)}
 function crmEsc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function crmCoachRows(u){return [{role:'head_coach',name:u.hc_name||'Coach',email:u.hc_email||''},{role:'assistant_coach',name:u.ac_name||'Coach',email:u.ac_email||''}]}
@@ -1179,7 +2974,620 @@ function crmIsFavoriteContact(c){
 function crmFavoriteContacts(){
  return Array.from(crmContacts.values()).filter(crmIsFavoriteContact);
 }
+let currentRecruitingArea='schools';
+
+function switchRecruitingArea(area){
+ const allowed=['schools','outreach','active','crm'];
+ if(!allowed.includes(area))area='schools';
+ currentRecruitingArea=area;
+
+ document.querySelectorAll('[data-recruiting-area]').forEach(el=>{
+  el.hidden=el.getAttribute('data-recruiting-area')!==area;
+ });
+
+ document.querySelectorAll('.recruiting-nav-btn').forEach(btn=>{
+  btn.classList.toggle('active',btn.dataset.area===area);
+ });
+
+ if(area==='schools' && currentView==='map' && map){
+  setTimeout(()=>{
+   map.invalidateSize({pan:false});
+   applyFilters();
+  },50);
+ }
+
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderRecruitingNavCounts(){
+ const schoolsEl=document.getElementById('nav-count-schools');
+ const outreachEl=document.getElementById('nav-count-outreach');
+ const activeEl=document.getElementById('nav-count-active');
+
+ if(schoolsEl)schoolsEl.textContent=universities.length;
+
+ const outreachSchools=new Set();
+ const activeSchools=new Set();
+
+ // Legacy / school-level recruiting status
+ universities.forEach(u=>{
+  const status=String(u.status||'').trim();
+
+  if(
+   status==='メール送信済' ||
+   status==='返信・関心あり' ||
+   status==='IDキャンプ済' ||
+   status==='オファー獲得'
+  ){
+   outreachSchools.add(Number(u.id));
+  }
+
+  if(
+   status==='返信・関心あり' ||
+   status==='IDキャンプ済' ||
+   status==='オファー獲得'
+  ){
+   activeSchools.add(Number(u.id));
+  }
+ });
+
+ // CRM-level evidence
+ Array.from(crmContacts.values()).forEach(c=>{
+  const universityId=Number(c.university_id);
+  if(!universityId)return;
+
+  const status=String(c.contact_status||'').trim();
+  const hasSentEvidence=
+   Number(c.contact_count||0)>0 ||
+   Boolean(c.gmail_thread_id) ||
+   ['contacted','follow_up_due','responded','no_response'].includes(status);
+
+  const hasActiveEvidence=
+   status==='responded' ||
+   Boolean(String(c.coach_response||'').trim());
+
+  if(hasSentEvidence)outreachSchools.add(universityId);
+  if(hasActiveEvidence){
+   outreachSchools.add(universityId);
+   activeSchools.add(universityId);
+  }
+ });
+
+ if(outreachEl)outreachEl.textContent=outreachSchools.size;
+ if(activeEl)activeEl.textContent=activeSchools.size;
+
+ const outreachAreaEl=document.getElementById('outreach-area-count');
+ const activeAreaEl=document.getElementById('active-area-count');
+ if(outreachAreaEl)outreachAreaEl.textContent=outreachSchools.size;
+ if(activeAreaEl)activeAreaEl.textContent=activeSchools.size;
+}
+
+let outreachFilter='all';
+
+function outreachContactHasSentEvidence(c){
+ const status=String(c?.contact_status||'').trim();
+ return Number(c?.contact_count||0)>0 ||
+        Boolean(c?.gmail_thread_id) ||
+        ['contacted','follow_up_due','responded','no_response'].includes(status);
+}
+
+function outreachSchoolHasLegacyEvidence(u){
+ return ['メール送信済','返信・関心あり','IDキャンプ済','オファー獲得']
+   .includes(String(u?.status||'').trim());
+}
+
+function outreachDaysSince(value){
+ if(!value)return null;
+ const d=new Date(value);
+ if(Number.isNaN(d.getTime()))return null;
+ const now=new Date();
+ const start=new Date(d.getFullYear(),d.getMonth(),d.getDate());
+ const today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+ return Math.max(0,Math.floor((today-start)/86400000));
+}
+
+function outreachDateLabel(value){
+ if(!value)return '—';
+ const d=new Date(value);
+ if(Number.isNaN(d.getTime()))return String(value);
+ return d.toLocaleDateString('ja-JP',{year:'numeric',month:'numeric',day:'numeric'});
+}
+
+function outreachContactRole(c){
+ if(c.coach_role==='head_coach')return 'HC';
+ if(c.coach_role==='assistant_coach')return 'AC';
+ return 'Other';
+}
+
+function outreachSchoolRecords(){
+ const allContacts=Array.from(crmContacts.values());
+
+ return universities.map(u=>{
+  const contacts=allContacts.filter(c=>Number(c.university_id)===Number(u.id));
+  const sentContacts=contacts.filter(outreachContactHasSentEvidence);
+  const legacy=outreachSchoolHasLegacyEvidence(u);
+
+  if(!legacy&&!sentContacts.length)return null;
+
+  const lastDates=sentContacts
+   .map(c=>c.last_contact_at)
+   .filter(Boolean)
+   .sort((a,b)=>new Date(b)-new Date(a));
+
+  const lastContact=lastDates[0]||null;
+  const waitingDays=outreachDaysSince(lastContact);
+
+  const followUps=sentContacts
+   .filter(c=>c.follow_up_date)
+   .map(c=>c.follow_up_date)
+   .sort();
+
+  const nextFollowUp=followUps[0]||null;
+
+  const today=new Date();
+  today.setHours(0,0,0,0);
+
+  const followDate=nextFollowUp?crmDateOnlyLocal(nextFollowUp):null;
+  const due=Boolean(followDate&&followDate<=today);
+
+  const responded=
+   ['返信・関心あり','IDキャンプ済','オファー獲得'].includes(String(u.status||'')) ||
+   sentContacts.some(c=>
+    c.contact_status==='responded' ||
+    Boolean(String(c.coach_response||'').trim())
+   );
+
+  const nextActions=[
+   ...new Set(
+    sentContacts
+     .map(c=>String(c.next_action||'').trim())
+     .filter(Boolean)
+   )
+  ];
+
+  return {
+   university:u,
+   contacts,
+   sentContacts,
+   lastContact,
+   waitingDays,
+   nextFollowUp,
+   due,
+   responded,
+   nextActions
+  };
+ }).filter(Boolean)
+   .sort((a,b)=>{
+    const ad=a.lastContact?new Date(a.lastContact).getTime():0;
+    const bd=b.lastContact?new Date(b.lastContact).getTime():0;
+    return bd-ad;
+   });
+}
+
+function setOutreachFilter(value){
+ outreachFilter=value||'all';
+
+ document.querySelectorAll('.outreach-filter').forEach(btn=>{
+  btn.classList.toggle('active',btn.dataset.outreachFilter===outreachFilter);
+ });
+
+ renderOutreachArea();
+}
+
+function renderOutreachArea(){
+ const el=document.getElementById('outreach-school-list');
+ if(!el)return;
+
+ let records=outreachSchoolRecords();
+
+ if(outreachFilter==='waiting'){
+  records=records.filter(r=>!r.responded);
+ }else if(outreachFilter==='due'){
+  records=records.filter(r=>r.due&&!r.responded);
+ }else if(outreachFilter==='responded'){
+  records=records.filter(r=>r.responded);
+ }
+
+ if(!records.length){
+  const messages={
+   all:'送信済みの学校はまだありません。',
+   waiting:'現在、返信待ちの学校はありません。',
+   due:'現在、Follow-upが必要な学校はありません。',
+   responded:'現在、返信済みの学校はありません。'
+  };
+  el.innerHTML='<div class="workflow-area-empty">'+crmEsc(messages[outreachFilter]||messages.all)+'</div>';
+  return;
+ }
+
+ el.innerHTML=records.map(r=>{
+  const u=r.university;
+
+  const statusClass=r.responded?'responded':r.due?'due':'waiting';
+  const statusText=r.responded?'返信あり':r.due?'Follow-up必要':'返信待ち';
+
+  const waitingText=
+   r.waitingDays===null
+    ? '—'
+    : r.responded
+      ? r.waitingDays+'日前'
+      : r.waitingDays+'日経過';
+
+  const nextText=r.nextActions.length
+   ? r.nextActions.slice(0,2).map(crmEsc).join(' / ')
+   : '未設定';
+
+  const officialRows=crmCoachRows(u);
+
+  const coachHtml=officialRows.map(row=>{
+   const key=crmCoachKey(row.role,row.name,row.email);
+   const c=crmContacts.get(u.id+':'+key);
+   const sent=c&&outreachContactHasSentEvidence(c);
+
+   let detail='未連絡';
+   if(c){
+    detail=crmStatusLabel(c.contact_status||'not_contacted');
+    if(c.last_contact_at)detail+=' · '+outreachDateLabel(c.last_contact_at);
+   }
+
+   return '<div class="outreach-coach-row">'+
+    '<div class="outreach-coach-main">'+
+      '<b>'+crmEsc(row.role==='head_coach'?'HC':'AC')+'</b>'+
+      '<span>'+crmEsc(row.name||'Coach')+'</span>'+
+    '</div>'+
+    '<div class="outreach-coach-side">'+
+      '<span class="outreach-coach-status '+(sent?'sent':'')+'">'+crmEsc(detail)+'</span>'+
+      (c
+       ? '<button type="button" class="outreach-detail-btn" onclick="openCrmFromContact(\''+crmEsc(c.id)+'\')">詳細</button>'
+       : '')+
+    '</div>'+
+   '</div>';
+  }).join('');
+
+  return '<article class="outreach-school-card">'+
+   '<div class="outreach-card-head">'+
+    '<div>'+
+     '<h3>'+crmEsc(u.name)+'</h3>'+
+     '<div class="outreach-school-meta">'+crmEsc(u.div)+' · '+crmEsc(u.conf)+'</div>'+
+    '</div>'+
+    '<span class="outreach-state '+statusClass+'">'+statusText+'</span>'+
+   '</div>'+
+
+   '<div class="outreach-metrics">'+
+    '<div><span>最終送信</span><b>'+crmEsc(outreachDateLabel(r.lastContact))+'</b></div>'+
+    '<div><span>経過</span><b>'+crmEsc(waitingText)+'</b></div>'+
+    '<div><span>Follow-up</span><b>'+crmEsc(r.nextFollowUp||'—')+'</b></div>'+
+    '<div class="outreach-next"><span>次Action</span><b>'+nextText+'</b></div>'+
+   '</div>'+
+
+   '<div class="outreach-coaches">'+coachHtml+'</div>'+
+  '</article>';
+ }).join('');
+}
+
+let activeAreaFilter='all';
+
+function activeSchoolRecords(){
+ const contacts=Array.from(crmContacts.values());
+
+ const grouped=new Map();
+
+ contacts.forEach(c=>{
+  const universityId=Number(c.university_id);
+  if(!universityId)return;
+
+  const responded=
+   c.contact_status==='responded' ||
+   Boolean(String(c.coach_response||'').trim());
+
+  if(!responded)return;
+
+  if(!grouped.has(universityId)){
+   grouped.set(universityId,{
+    university:universities.find(u=>Number(u.id)===universityId),
+    contacts:[]
+   });
+  }
+
+  grouped.get(universityId).contacts.push(c);
+ });
+
+ return Array.from(grouped.values())
+  .filter(r=>r.university)
+  .map(r=>{
+   const priorityContacts=r.contacts.filter(c=>c.interest_level==='high');
+
+   const latestContact=[...r.contacts].sort((a,b)=>{
+    const ad=new Date(a.last_contact_at||a.updated_at||a.created_at||0).getTime();
+    const bd=new Date(b.last_contact_at||b.updated_at||b.created_at||0).getTime();
+    return bd-ad;
+   })[0]||null;
+
+   const nextActions=[
+    ...new Set(
+     r.contacts.map(c=>String(c.next_action||'').trim()).filter(Boolean)
+    )
+   ];
+
+   return {
+    ...r,
+    priority:priorityContacts.length>0,
+    latestContact,
+    nextActions
+   };
+  })
+  .sort((a,b)=>{
+   const ad=new Date(a.latestContact?.last_contact_at||a.latestContact?.updated_at||0).getTime();
+   const bd=new Date(b.latestContact?.last_contact_at||b.latestContact?.updated_at||0).getTime();
+   return bd-ad;
+  });
+}
+
+function setActiveAreaFilter(value){
+ activeAreaFilter=value||'all';
+
+ document.querySelectorAll('.active-summary-chip').forEach(btn=>{
+  btn.classList.toggle('active',btn.dataset.activeFilter===activeAreaFilter);
+ });
+
+ renderActiveArea();
+}
+
+function renderActiveArea(){
+ const el=document.getElementById('active-school-list');
+ if(!el)return;
+
+ const records=activeSchoolRecords();
+
+ const allCount=records.length;
+ const priorityCount=records.filter(r=>r.priority).length;
+ const inboundCount=crmInboundLeads.length;
+
+ const allEl=document.getElementById('active-chip-all');
+ const priorityEl=document.getElementById('active-chip-priority');
+ const inboundEl=document.getElementById('active-chip-inbound');
+
+ if(allEl)allEl.textContent=allCount;
+ if(priorityEl)priorityEl.textContent=priorityCount;
+ if(inboundEl)inboundEl.textContent=inboundCount;
+
+ if(activeAreaFilter==='inbound'){
+  if(!crmInboundLeads.length){
+   el.innerHTML='<div class="workflow-area-empty">新しいProfile経由の問い合わせはありません。</div>';
+   return;
+  }
+
+  el.innerHTML=crmInboundLeads.map(lead=>{
+   const match=crmContactByEmail(lead.coach_email);
+   const message=String(lead.message_body||'').replace(/\s+/g,' ').trim();
+   const excerpt=message.length>140?message.slice(0,140)+'…':message;
+
+   const linkBtn=match
+    ? '<button class="active-card-btn primary" type="button" onclick="linkInboundLeadToCrm(\''+crmEsc(lead.id)+'\',\''+crmEsc(match.id)+'\')">CRMへ紐付け</button>'
+    : '<button class="active-card-btn primary" type="button" onclick="openInboundCreateModal(\''+crmEsc(lead.id)+'\')">新規CRM登録</button>';
+
+   return '<article class="active-school-card inbound-card">'+
+    '<div class="active-card-head">'+
+      '<div>'+
+        '<h3>'+crmEsc(lead.coach_name||'Coach')+'</h3>'+
+        '<div class="active-school-meta">'+crmEsc(lead.coach_email||'')+' · '+crmEsc(lead.inquiry_type||'Profile Inquiry')+'</div>'+
+      '</div>'+
+      '<span class="active-state inbound">New Inquiry</span>'+
+    '</div>'+
+    '<div class="active-latest">'+
+      '<span>Message</span>'+
+      '<b>'+crmEsc(excerpt||'メッセージなし')+'</b>'+
+    '</div>'+
+    '<div class="active-card-actions">'+
+      linkBtn+
+      '<button class="active-card-btn" type="button" onclick="dismissInboundLead(\''+crmEsc(lead.id)+'\')">処理済み</button>'+
+    '</div>'+
+   '</article>';
+  }).join('');
+
+  return;
+ }
+
+ let filtered=records;
+
+ if(activeAreaFilter==='priority'){
+  filtered=records.filter(r=>r.priority);
+ }
+
+ if(!filtered.length){
+  const message=activeAreaFilter==='priority'
+   ? '現在、Priority対象の学校はありません。'
+   : '現在、進行中の学校はありません。';
+
+  el.innerHTML='<div class="workflow-area-empty">'+message+'</div>';
+  return;
+ }
+
+ el.innerHTML=filtered.map(r=>{
+  const u=r.university;
+  const latest=r.latestContact;
+
+  const latestCoach=latest
+   ? (latest.coach_role==='head_coach'?'HC':latest.coach_role==='assistant_coach'?'AC':'Other')+' '+latest.coach_name
+   : '—';
+
+  const response=latest
+   ? String(latest.coach_response||'').replace(/\s+/g,' ').trim()
+   : '';
+
+  const responseExcerpt=response.length>150?response.slice(0,150)+'…':response;
+
+  const nextText=r.nextActions.length
+   ? r.nextActions.slice(0,2).map(crmEsc).join(' / ')
+   : '未設定';
+
+  const coachRows=r.contacts.map(c=>{
+   const role=c.coach_role==='head_coach'?'HC':c.coach_role==='assistant_coach'?'AC':'Other';
+
+   return '<div class="active-coach-row">'+
+    '<div>'+
+      '<b>'+crmEsc(role)+'</b> '+crmEsc(c.coach_name||'Coach')+
+    '</div>'+
+    '<button type="button" class="active-card-btn" onclick="openCrmFromContact(\''+crmEsc(c.id)+'\')">詳細</button>'+
+   '</div>';
+  }).join('');
+
+  return '<article class="active-school-card">'+
+   '<div class="active-card-head">'+
+    '<div>'+
+      '<h3>'+crmEsc(u.name)+'</h3>'+
+      '<div class="active-school-meta">'+crmEsc(u.div)+' · '+crmEsc(u.conf)+'</div>'+
+    '</div>'+
+    '<span class="active-state '+(r.priority?'priority':'responded')+'">'+(r.priority?'Priority':'返信あり')+'</span>'+
+   '</div>'+
+
+   '<div class="active-latest">'+
+    '<span>Latest</span>'+
+    '<b>'+crmEsc(latestCoach)+'</b>'+
+    (responseExcerpt?'<p>'+crmEsc(responseExcerpt)+'</p>':'')+
+   '</div>'+
+
+   '<div class="active-next">'+
+    '<span>Next Action</span>'+
+    '<b>'+nextText+'</b>'+
+   '</div>'+
+
+   '<div class="active-coaches">'+coachRows+'</div>'+
+  '</article>';
+ }).join('');
+}
+
+
+function crmContactMatchesCurrentFilter(c){
+ if(crmInterestFilter==='high'){
+  return c.interest_level==='high' && c.contact_status==='responded';
+ }
+
+ if(crmFilter==='all')return true;
+ return c.contact_status===crmFilter;
+}
+
+function crmContactCurrentFilterLabel(){
+ if(crmInterestFilter==='high')return '🔥 要優先確認';
+
+ const labels={
+  all:'連絡先コーチ',
+  not_contacted:'未連絡',
+  draft_ready:'メール準備済み',
+  contacted:'連絡済み',
+  follow_up_due:'フォローアップ必要',
+  responded:'返信・受信あり',
+  no_response:'返信なし',
+  not_a_fit:'対象外',
+  closed:'終了'
+ };
+
+ return labels[crmFilter]||'CRM Contacts';
+}
+
+function updateCrmKpiSelection(){
+ document.querySelectorAll('.crm-kpi').forEach(kpi=>{
+  kpi.classList.remove('selected');
+ });
+
+ let selector='';
+
+ if(crmInterestFilter==='high'){
+  selector='.crm-kpi.priority';
+ }else{
+  const map={
+   all:'.crm-kpi.total',
+   contacted:'.crm-kpi.contacted',
+   follow_up_due:'.crm-kpi.followup',
+   responded:'.crm-kpi.responded'
+  };
+
+  selector=map[crmFilter]||'';
+ }
+
+ if(selector){
+  document.querySelector(selector)?.classList.add('selected');
+ }else{
+  document.querySelectorAll('.crm-kpi button').forEach(btn=>{
+   const onclick=btn.getAttribute('onclick')||'';
+
+   if(onclick.includes("'"+crmFilter+"'")){
+    btn.closest('.crm-kpi')?.classList.add('selected');
+   }
+  });
+ }
+}
+
+function renderCrmContactList(){
+ updateCrmKpiSelection();
+ const el=document.getElementById('crm-contact-list');
+ const section=document.getElementById('crm-contact-list-section');
+ if(!el||!section)return;
+
+ const contacts=crmFavoriteContacts()
+  .filter(crmContactMatchesCurrentFilter)
+  .map(c=>({
+   contact:c,
+   university:universities.find(u=>Number(u.id)===Number(c.university_id))
+  }))
+  .filter(r=>r.university)
+  .sort((a,b)=>{
+   const school=a.university.name.localeCompare(b.university.name);
+   if(school!==0)return school;
+   const order={head_coach:0,assistant_coach:1,other:2};
+   return (order[a.contact.coach_role]??9)-(order[b.contact.coach_role]??9);
+  });
+
+ const title=section.querySelector('.crm-contact-list-head h3');
+ const count=section.querySelector('.crm-contact-list-head span');
+
+ if(title)title.textContent=crmContactCurrentFilterLabel();
+ if(count)count.textContent=contacts.length+'件';
+
+ if(!contacts.length){
+  el.innerHTML='<div class="crm-list-empty">該当するCRM Contactはありません。</div>';
+  return;
+ }
+
+ el.innerHTML=contacts.map(r=>{
+  const c=r.contact;
+  const u=r.university;
+
+  const role=
+   c.coach_role==='head_coach'?'HC':
+   c.coach_role==='assistant_coach'?'AC':
+   'Other';
+
+  const status=crmStatusLabel(c.contact_status||'not_contacted');
+  const email=String(c.coach_email||'').trim()||'Email未確認';
+
+  return '<div class="crm-contact-row">'+
+    '<div class="crm-contact-school">'+
+      '<b>'+crmEsc(u.name)+'</b>'+
+      '<span>'+crmEsc(u.div)+' · '+crmEsc(u.conf)+'</span>'+
+    '</div>'+
+    '<div class="crm-contact-coach">'+
+      '<b>'+crmEsc(role)+' · '+crmEsc(c.coach_name||'Coach')+'</b>'+
+      '<span>'+crmEsc(email)+'</span>'+
+    '</div>'+
+    '<div class="crm-contact-status">'+
+      '<span>'+crmEsc(status)+'</span>'+
+    '</div>'+
+    '<button type="button" class="crm-contact-detail" data-contact-id="'+crmEsc(c.id)+'">詳細</button>'+
+  '</div>';
+ }).join('');
+
+ el.querySelectorAll('.crm-contact-detail').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+   openCrmFromContact(btn.dataset.contactId);
+  });
+ });
+}
+
 function renderCrmSummary(){
+ renderCrmContactList();
+ renderRecruitingNavCounts();
+ renderOutreachArea();
+ renderActiveArea();
  const values=crmFavoriteContacts();
  const count=s=>values.filter(c=>c.contact_status===s).length;
  const high=values.filter(c=>c.interest_level==='high' && c.contact_status==='responded').length;
@@ -1215,22 +3623,90 @@ function openCrmContactDrawer(contactId){
 }
 function openCrmFromContact(contactId){openCrmContactDrawer(contactId)}
 function renderCrmActionList(){
- renderInboundLeads();
- const dueEl=document.getElementById('crm-due-list'),nextEl=document.getElementById('crm-next-list'),priorityEl=document.getElementById('crm-priority-list');if(!dueEl||!nextEl||!priorityEl)return;
- const today=new Date();today.setHours(0,0,0,0);
- const records=crmFavoriteContacts().map(crmActionRecord).filter(Boolean);
- const active=records.filter(r=>!['closed','not_a_fit'].includes(r.contact.contact_status));
- const priority=active.filter(r=>r.contact.interest_level==='high'&&r.contact.contact_status==='responded').sort((a,b)=>String(b.contact.interest_analyzed_at||'').localeCompare(String(a.contact.interest_analyzed_at||'')));
- const due=active.filter(r=>{const d=crmDateOnlyLocal(r.contact.follow_up_date);return d&&d<=today}).sort((a,b)=>(a.contact.follow_up_date||'').localeCompare(b.contact.follow_up_date||''));
- const upcoming=active.filter(r=>{const d=crmDateOnlyLocal(r.contact.follow_up_date);return d&&d>today}).sort((a,b)=>(a.contact.follow_up_date||'').localeCompare(b.contact.follow_up_date||''));
- const item=r=>{const c=r.contact,u=r.university,role=r.role==='head_coach'?'HC':'AC';const note=c.interest_reason||c.coach_response||c.next_action||'次のアクション未設定';return '<div class="crm-action-item"><div class="crm-action-main"><b>'+crmEsc(u.name)+' · '+crmEsc(role)+' '+crmEsc(c.coach_name)+'</b><div class="crm-action-meta">'+crmEsc(crmStatusLabel(c.contact_status))+' · '+crmEsc(note)+'</div></div><button class="crm-action-btn" type="button" onclick="openCrmFromContact(\''+crmEsc(c.id)+'\')">確認</button></div>'};
- const dueItem=r=>{const c=r.contact,u=r.university,role=r.role==='head_coach'?'HC':'AC';const note=c.coach_response||c.next_action||'次のアクション未設定';return '<div class="crm-action-item"><div class="crm-action-main"><b>'+crmEsc(u.name)+' · '+crmEsc(role)+' '+crmEsc(c.coach_name)+'</b><div class="crm-action-meta">'+crmEsc(c.follow_up_date||'予定日未設定')+' · '+crmEsc(crmStatusLabel(c.contact_status))+' · '+crmEsc(note)+'</div></div><button class="crm-action-btn" type="button" onclick="openCrmFromContact(\''+crmEsc(c.id)+'\')">管理</button></div>'};
- priorityEl.innerHTML=priority.length?priority.slice(0,6).map(item).join(''):'<div class="crm-action-empty">現在、要優先確認の返信はありません。</div>';
- dueEl.innerHTML=due.length?due.slice(0,6).map(dueItem).join(''):'<div class="crm-action-empty">今日・期限超過の連絡はありません。</div>';
- nextEl.innerHTML=upcoming.length?upcoming.slice(0,6).map(dueItem).join(''):'<div class="crm-action-empty">今後の予定はありません。</div>';
+ const dueEl=document.getElementById('crm-due-list');
+ const nextEl=document.getElementById('crm-next-list');
+ if(!dueEl||!nextEl)return;
+
+ const today=new Date();
+ today.setHours(0,0,0,0);
+
+ const records=crmFavoriteContacts()
+  .map(crmActionRecord)
+  .filter(Boolean);
+
+ const active=records.filter(r=>
+  !['closed','not_a_fit'].includes(r.contact.contact_status)
+ );
+
+ const due=active
+  .filter(r=>{
+   const d=crmDateOnlyLocal(r.contact.follow_up_date);
+   return d&&d<=today;
+  })
+  .sort((a,b)=>
+   (a.contact.follow_up_date||'').localeCompare(b.contact.follow_up_date||'')
+  );
+
+ const upcoming=active
+  .filter(r=>{
+   const d=crmDateOnlyLocal(r.contact.follow_up_date);
+   return d&&d>today;
+  })
+  .sort((a,b)=>
+   (a.contact.follow_up_date||'').localeCompare(b.contact.follow_up_date||'')
+  );
+
+ const item=r=>{
+  const c=r.contact;
+  const u=r.university;
+  const role=r.role==='head_coach'?'HC':'AC';
+  const note=c.coach_response||c.next_action||'次のアクション未設定';
+
+  return '<div class="crm-action-item">'+
+   '<div class="crm-action-main">'+
+    '<b>'+crmEsc(u.name)+' · '+crmEsc(role)+' '+crmEsc(c.coach_name)+'</b>'+
+    '<div class="crm-action-meta">'+
+     crmEsc(c.follow_up_date||'予定日未設定')+' · '+
+     crmEsc(crmStatusLabel(c.contact_status))+' · '+
+     crmEsc(note)+
+    '</div>'+
+   '</div>'+
+   '<button class="crm-action-btn" type="button" onclick="openCrmFromContact(\''+
+    crmEsc(c.id)+'\')">管理</button>'+
+  '</div>';
+ };
+
+ dueEl.innerHTML=due.length
+  ?due.slice(0,8).map(item).join('')
+  :'<div class="crm-action-empty">今日・期限超過の連絡はありません。</div>';
+
+ nextEl.innerHTML=upcoming.length
+  ?upcoming.slice(0,8).map(item).join('')
+  :'<div class="crm-action-empty">今後の予定はありません。</div>';
 }
-function setCrmInterestFilter(level){crmInterestFilter=level||'all';renderCrmActionList();}
-function setCrmFilter(value){crmFilter=value||'all';const filter=document.getElementById('crm-filter');if(filter)filter.value=crmFilter;applyFilters()}
+
+function setCrmInterestFilter(level){
+ crmInterestFilter=level||'all';
+
+ if(crmInterestFilter!=='all'){
+  crmFilter='all';
+ }
+
+ const filter=document.getElementById('crm-filter');
+ if(filter)filter.value=crmFilter;
+
+ renderCrmContactList();
+}
+
+function setCrmFilter(value){
+ crmFilter=value||'all';
+ crmInterestFilter='all';
+
+ const filter=document.getElementById('crm-filter');
+ if(filter)filter.value=crmFilter;
+
+ renderCrmContactList();
+}
 function openCrmDrawer(id,role){
  const u=universities.find(x=>x.id===Number(id));if(!u||!crmAvailable){alert('Recruiting CRM is currently unavailable.');return}
  const rows=crmCoachRows(u),coach=rows.find(x=>x.role===role)||rows[0],key=crmCoachKey(coach.role,coach.name,coach.email),c=crmContacts.get(u.id+':'+key);
@@ -1255,19 +3731,221 @@ async function saveCrmContact(){
  renderCrmSummary();renderCrmActionList();applyFilters();await loadCrmHistory(data.id);alert('CRM saved.')
 }
 
-function createPopupContent(u){const {hcLink,acLink}=getEmailLinks(u);const c=getCost(u);const igText=u.ig_verified?'Instagram ✓':'Instagram';return `<div style="min-width:280px"><div class="popup-header"><b>${u.name}</b><button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button></div><span class="badge ${badgeClass(u.div)}">${u.div}</span><div style="font-size:11px;margin-top:5px;line-height:1.35">${u.desc}</div><div style="font-size:10px;color:#4a5568;margin-top:5px"><b>HC:</b> ${staffFlag(u)} ${u.hc_name||'Coach'} | <b>AC:</b> ${u.ac_name||'Coach'}</div><div style="font-size:10px;color:#334155;margin-top:5px"><b>費用:</b> Tuition ${money(c.tuition)} / On-campus ${money(c.living)}${c.total!=null?` / <b>Annual Total ${money(c.total)}</b>`:''} <span style="color:#718096">(${c.year})</span></div><div style="font-size:9px;color:#718096;margin-top:4px">${u.staff_status_label}</div><div class="popup-links"><a class="btn-link btn-fac" href="${u.facility}" target="_blank" rel="noopener noreferrer">Facility</a><a class="btn-link btn-ros" href="${u.roster}" target="_blank" rel="noopener noreferrer">Roster</a><a class="btn-link btn-ig" href="${u.ig}" target="_blank" rel="noopener noreferrer">${igText}</a><button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'head_coach')">Gmail HC</button><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'head_coach')">HC管理</button><button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'assistant_coach')">Gmail AC</button><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'assistant_coach')">AC管理</button></div></div>`}
+function createPopupContent(u){
+ const c=getCost(u);
+ const total=c.total!=null ? money(c.total)+' / year' : 'Cost pending';
 
-function renderTable(){const tbody=document.getElementById('table-body');tbody.innerHTML='';universities.forEach(u=>{const tr=document.createElement('tr');const {hcLink,acLink}=getEmailLinks(u);const igLabel=u.ig_verified?'IG ✓':'IG';tr.id=`row-${u.id}`;tr.innerHTML=`<td><button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button></td><td>${u.id}</td><td><strong>${u.name}</strong></td><td><span class="badge ${badgeClass(u.div)}">${u.div}</span></td><td>${u.conf}</td><td><select class="status-select ${getStatusClass(u.status)}" onchange="updateStatus(${u.id},this.value)"><option value="未接触" ${u.status==='未接触'?'selected':''}>未接触</option><option value="メール送信済" ${u.status==='メール送信済'?'selected':''}>メール送信済</option><option value="返信・関心あり" ${u.status==='返信・関心あり'?'selected':''}>返信・関心あり</option><option value="IDキャンプ済" ${u.status==='IDキャンプ済'?'selected':''}>IDキャンプ済</option><option value="オファー獲得" ${u.status==='オファー獲得'?'selected':''}>オファー獲得</option></select></td><td><a class="btn-link btn-ig" href="${u.ig}" target="_blank" rel="noopener noreferrer">${igLabel}</a></td><td><a class="btn-link btn-fac" href="${u.facility}" target="_blank" rel="noopener noreferrer">施設</a><a class="btn-link btn-ros" href="${u.roster}" target="_blank" rel="noopener noreferrer">Roster</a></td><td>${u.desc}</td><td>${costHtml(u)}</td><td class="coach-cell"><div class="coach-row"><span>HC</span><b>${u.hc_name||'Coach'}</b></div><div class="coach-row"><span>AC</span><b>${u.ac_name||'Coach'}</b></div><div class="${u.staff_status==='verified'?'staff-flag':u.staff_status==='partial'?'staff-flag partial':'staff-flag review'}">${u.staff_status==='verified'?'✓ Verified':u.staff_status==='partial'?'△ Verify':'⚠ Verify'}</div></td><td class="action-cell"><button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'head_coach')">Gmail HC</button><button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'assistant_coach')">Gmail AC</button></td><td class="action-cell"><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'head_coach')">CRM HC</button><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'assistant_coach')">CRM AC</button></td>`;tbody.appendChild(tr)})}
+ const igHref=String(u.ig||'').trim();
+ const facilityHref=String(u.facility||'').trim();
+ const rosterHref=String(u.roster||'').trim();
+
+ return `
+  <div class="candidate-card candidate-map-card">
+
+   <div class="candidate-card-head">
+    <div class="candidate-title-wrap">
+     <button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button>
+     <div>
+      <strong>${crmEsc(u.name)}</strong>
+      <small>${crmEsc(u.div)} · ${crmEsc(u.conf)}</small>
+     </div>
+    </div>
+    <span class="candidate-status ${getStatusClass(u.status)}">${crmEsc(u.status||'未接触')}</span>
+   </div>
+
+   <div class="candidate-info-block">
+    <b>Scouting</b>
+    <p>${crmEsc(u.desc||'—')}</p>
+   </div>
+
+   <div class="candidate-info-block">
+    <b>Cost</b>
+    <p>${crmEsc(total)}</p>
+   </div>
+
+   <div class="candidate-coaches">
+
+    <div class="candidate-coach-row">
+     <div class="candidate-coach-name">
+      <span>HC</span>
+      <b>${crmEsc(u.hc_name||'Coach')}</b>
+     </div>
+     <div class="candidate-coach-actions">
+      <button type="button" class="candidate-gmail-btn"
+       onclick="openGmailComposer(${u.id},'head_coach')">✉ Gmail</button>
+      <button type="button" class="candidate-detail-btn"
+       onclick="openCrmDrawer(${u.id},'head_coach')">詳細</button>
+     </div>
+    </div>
+
+    <div class="candidate-coach-row">
+     <div class="candidate-coach-name">
+      <span>AC</span>
+      <b>${crmEsc(u.ac_name||'Coach')}</b>
+     </div>
+     <div class="candidate-coach-actions">
+      <button type="button" class="candidate-gmail-btn"
+       onclick="openGmailComposer(${u.id},'assistant_coach')">✉ Gmail</button>
+      <button type="button" class="candidate-detail-btn"
+       onclick="openCrmDrawer(${u.id},'assistant_coach')">詳細</button>
+     </div>
+    </div>
+
+   </div>
+
+   <div class="candidate-link-grid">
+    ${igHref
+      ? `<a href="${crmEsc(igHref)}" target="_blank" rel="noopener noreferrer">
+          <span>📸</span><b>IG</b>
+         </a>`
+      : `<span class="disabled"><span>📸</span><b>IG</b></span>`}
+
+    ${facilityHref
+      ? `<a href="${crmEsc(facilityHref)}" target="_blank" rel="noopener noreferrer">
+          <span>🏟️</span><b>Facility</b>
+         </a>`
+      : `<span class="disabled"><span>🏟️</span><b>Facility</b></span>`}
+
+    ${rosterHref
+      ? `<a href="${crmEsc(rosterHref)}" target="_blank" rel="noopener noreferrer">
+          <span>👥</span><b>Roster</b>
+         </a>`
+      : `<span class="disabled"><span>👥</span><b>Roster</b></span>`}
+   </div>
+
+  </div>`;
+}
+
+function renderMobileSchoolCards(){
+ const el=document.getElementById('mobile-school-list');
+ if(!el)return;
+
+ if(!universities.length){
+  el.innerHTML='<div class="mobile-school-card">学校データがありません。</div>';
+  return;
+ }
+
+ el.innerHTML=universities.map(u=>{
+  const c=getCost(u);
+  const total=c.total!=null ? money(c.total)+' / year' : 'Cost pending';
+
+  const igHref=String(u.ig||'').trim();
+  const facilityHref=String(u.facility||'').trim();
+  const rosterHref=String(u.roster||'').trim();
+
+  return `
+   <article class="mobile-school-card candidate-card" id="mobile-card-${u.id}">
+
+    <div class="candidate-card-head">
+     <div class="candidate-title-wrap">
+      <button class="star-btn ${u.fav?'active':''}"
+       onclick="toggleFav(${u.id});renderMobileSchoolCards()">★</button>
+      <div>
+       <strong>${crmEsc(u.name)}</strong>
+       <small>${crmEsc(u.div)} · ${crmEsc(u.conf)}</small>
+      </div>
+     </div>
+     <span class="candidate-status ${getStatusClass(u.status)}">${crmEsc(u.status||'未接触')}</span>
+    </div>
+
+    <div class="candidate-info-block">
+     <b>Scouting</b>
+     <p>${crmEsc(u.desc||'—')}</p>
+    </div>
+
+    <div class="candidate-info-block">
+     <b>Cost</b>
+     <p>${crmEsc(total)}</p>
+    </div>
+
+    <div class="candidate-coaches">
+
+     <div class="candidate-coach-row">
+      <div class="candidate-coach-name">
+       <span>HC</span>
+       <b>${crmEsc(u.hc_name||'Coach')}</b>
+      </div>
+      <div class="candidate-coach-actions">
+       <button type="button" class="candidate-gmail-btn"
+        onclick="openGmailComposer(${u.id},'head_coach')">✉ Gmail</button>
+       <button type="button" class="candidate-detail-btn"
+        onclick="openCrmDrawer(${u.id},'head_coach')">詳細</button>
+      </div>
+     </div>
+
+     <div class="candidate-coach-row">
+      <div class="candidate-coach-name">
+       <span>AC</span>
+       <b>${crmEsc(u.ac_name||'Coach')}</b>
+      </div>
+      <div class="candidate-coach-actions">
+       <button type="button" class="candidate-gmail-btn"
+        onclick="openGmailComposer(${u.id},'assistant_coach')">✉ Gmail</button>
+       <button type="button" class="candidate-detail-btn"
+        onclick="openCrmDrawer(${u.id},'assistant_coach')">詳細</button>
+      </div>
+     </div>
+
+    </div>
+
+    <div class="candidate-link-grid">
+     ${igHref
+       ? `<a href="${crmEsc(igHref)}" target="_blank" rel="noopener noreferrer">
+           <span>📸</span><b>IG</b>
+          </a>`
+       : `<span class="disabled"><span>📸</span><b>IG</b></span>`}
+
+     ${facilityHref
+       ? `<a href="${crmEsc(facilityHref)}" target="_blank" rel="noopener noreferrer">
+           <span>🏟️</span><b>Facility</b>
+          </a>`
+       : `<span class="disabled"><span>🏟️</span><b>Facility</b></span>`}
+
+     ${rosterHref
+       ? `<a href="${crmEsc(rosterHref)}" target="_blank" rel="noopener noreferrer">
+           <span>👥</span><b>Roster</b>
+          </a>`
+       : `<span class="disabled"><span>👥</span><b>Roster</b></span>`}
+    </div>
+
+   </article>`;
+ }).join('');
+}
+
+function renderTable(){renderMobileSchoolCards();const tbody=document.getElementById('table-body');tbody.innerHTML='';universities.forEach(u=>{const tr=document.createElement('tr');const {hcLink,acLink}=getEmailLinks(u);const igLabel='IG';tr.id=`row-${u.id}`;tr.innerHTML=`<td><button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button></td><td>${u.id}</td><td><strong>${u.name}</strong></td><td><span class="badge ${badgeClass(u.div)}">${u.div}</span></td><td>${u.conf}</td><td><select class="status-select ${getStatusClass(u.status)}" onchange="updateStatus(${u.id},this.value)"><option value="未接触" ${u.status==='未接触'?'selected':''}>未接触</option><option value="メール送信済" ${u.status==='メール送信済'?'selected':''}>メール送信済</option><option value="返信・関心あり" ${u.status==='返信・関心あり'?'selected':''}>返信・関心あり</option><option value="IDキャンプ済" ${u.status==='IDキャンプ済'?'selected':''}>IDキャンプ済</option><option value="オファー獲得" ${u.status==='オファー獲得'?'selected':''}>オファー獲得</option></select></td><td><a class="btn-link btn-ig" href="${u.ig}" target="_blank" rel="noopener noreferrer">${igLabel}</a></td><td><a class="btn-link btn-fac" href="${u.facility}" target="_blank" rel="noopener noreferrer">施設</a><a class="btn-link btn-ros" href="${u.roster}" target="_blank" rel="noopener noreferrer">Roster</a></td><td>${u.desc}</td><td>${costHtml(u)}</td><td class="coach-cell"><div class="coach-row"><span>HC</span><b>${u.hc_name||'Coach'}</b></div><div class="coach-row"><span>AC</span><b>${u.ac_name||'Coach'}</b></div><div class="${u.staff_status==='verified'?'staff-flag':u.staff_status==='partial'?'staff-flag partial':'staff-flag review'}">${u.staff_status==='verified'?'✓ Verified':u.staff_status==='partial'?'△ Verify':'⚠ Verify'}</div></td><td class="action-cell"><button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'head_coach')">Gmail HC</button><button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'assistant_coach')">Gmail AC</button></td><td class="action-cell"><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'head_coach')">CRM HC</button><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'assistant_coach')">CRM AC</button></td>`;tbody.appendChild(tr)})}
 
 function getStatusClass(status){switch(status){case'メール送信済':return'status-sent';case'返信・関心あり':return'status-replied';case'IDキャンプ済':return'status-camp';case'オファー獲得':return'status-offer';default:return'status-uncontacted'}}
 
-function toggleFav(id){const u=universities.find(x=>x.id===id);if(!u)return;u.fav=!u.fav;const row=document.getElementById(`row-${id}`);if(row)row.querySelector('.star-btn')?.classList.toggle('active',u.fav);const mo=markers.find(m=>m.data.id===id);if(mo&&mo.instance.isPopupOpen())mo.instance.setPopupContent(createPopupContent(u));applyFilters();saveDataToCloud()}
+function toggleFav(id){const u=universities.find(x=>x.id===id);if(!u)return;u.fav=!u.fav;const row=document.getElementById(`row-${id}`);if(row)row.querySelector('.star-btn')?.classList.toggle('active',u.fav);const mobileCard=document.getElementById(`mobile-card-${id}`);if(mobileCard)mobileCard.querySelector('.star-btn')?.classList.toggle('active',u.fav);const mo=markers.find(m=>m.data.id===id);if(mo&&mo.instance.isPopupOpen())mo.instance.setPopupContent(createPopupContent(u));applyFilters();saveDataToCloud()}
 
 function toggleFavFilter(){showFavOnly=!showFavOnly;document.getElementById('btn-fav-only').classList.toggle('active',showFavOnly);applyFilters();saveDataToCloud()}
 
 function updateStatus(id,newStatus){const u=universities.find(x=>x.id===id);if(!u)return;u.status=newStatus;const el=document.querySelector(`#row-${id} .status-select`);if(el)el.className=`status-select ${getStatusClass(newStatus)}`;saveDataToCloud()}
 
-function applyFilters(){const reg=document.getElementById('filter-region')?.value||'all';const div=document.getElementById('filter-div')?.value||'all';const stat=document.getElementById('filter-status')?.value||'all';const search=(document.getElementById('search-input')?.value||'').toLowerCase();const bounds=window.L&&map?L.latLngBounds():null;let visible=0;universities.forEach(u=>{const okReg=reg==='all'||u.cat===reg;const okDiv=div==='all'||u.div===div;const okStat=stat==='all'||u.status===stat;const q=(u.name+' '+u.conf+' '+(u.hc_name||'')+' '+(u.ac_name||'')).toLowerCase();const okSearch=q.includes(search);const okFav=!showFavOnly||u.fav;const crmRows=crmCoachRows(u);const okCrm=crmFilter==='all'||crmRows.some(c=>{const row=crmContacts.get(u.id+':'+crmCoachKey(c.role,c.name,c.email));return row&&(row.contact_status===crmFilter||(crmInterestFilter==='high'&&row.interest_level==='high'&&row.contact_status==='responded'))});const ok=okReg&&okDiv&&okStat&&okSearch&&okFav&&okCrm;const row=document.getElementById(`row-${u.id}`);if(row)row.style.display=ok?'':'none';const marker=markers.find(m=>m.data.id===u.id);if(marker&&map){if(ok){marker.instance.addTo(map);bounds&&bounds.extend([u.lat,u.lng]);visible++;}else{if(map.hasLayer(marker.instance))map.removeLayer(marker.instance);}}else if(ok){visible++;}});if(map&&bounds&&visible>0&&reg!=='all')map.fitBounds(bounds,{padding:[30,30]});else if(map&&reg==='all')map.setView([37.0902,-95.7129],4)}
+
+function candidateRegion(u){
+ const cat=String(u?.cat||'');
+
+ const map={
+  'ca':'ca',
+  'naia-ca':'ca',
+
+  'west':'west',
+  'naia-west':'west',
+
+  'fl':'fl',
+  'naia-fl':'fl',
+
+  'tx':'tx',
+  'naia-tx':'tx',
+
+  'top':'top'
+ };
+
+ return map[cat]||cat;
+}
+
+function applyFilters(){const reg=document.getElementById('filter-region')?.value||'all';const div=document.getElementById('filter-div')?.value||'all';const stat=document.getElementById('filter-status')?.value||'all';const search=(document.getElementById('search-input')?.value||'').toLowerCase();const bounds=window.L&&map?L.latLngBounds():null;let visible=0;universities.forEach(u=>{const okReg=reg==='all'||candidateRegion(u)===reg;const okDiv=div==='all'||u.div===div;const okStat=stat==='all'||u.status===stat;const q=(u.name+' '+u.conf+' '+(u.hc_name||'')+' '+(u.ac_name||'')).toLowerCase();const okSearch=q.includes(search);const okFav=!showFavOnly||u.fav;const crmRows=crmCoachRows(u);const okCrm=crmFilter==='all'||crmRows.some(c=>{const row=crmContacts.get(u.id+':'+crmCoachKey(c.role,c.name,c.email));return row&&(row.contact_status===crmFilter||(crmInterestFilter==='high'&&row.interest_level==='high'&&row.contact_status==='responded'))});const ok=okReg&&okDiv&&okStat&&okSearch&&okFav&&okCrm;const row=document.getElementById(`row-${u.id}`);if(row)row.style.display=ok?'':'none';const mobileCard=document.getElementById(`mobile-card-${u.id}`);if(mobileCard)mobileCard.style.display=ok?'':'none';const marker=markers.find(m=>m.data.id===u.id);if(marker&&map){if(ok){marker.instance.addTo(map);bounds&&bounds.extend([u.lat,u.lng]);visible++;}else{if(map.hasLayer(marker.instance))map.removeLayer(marker.instance);}}else if(ok){visible++;}});if(map&&bounds&&visible>0&&reg!=='all')map.fitBounds(bounds,{padding:[30,30]});else if(map&&reg==='all')map.setView([37.0902,-95.7129],4)}
 
 function switchView(view){currentView=view;const mapEl=document.getElementById('map-view');const listEl=document.getElementById('list-view');document.getElementById('btn-map').classList.toggle('active',view==='map');document.getElementById('btn-list').classList.toggle('active',view==='list');mapEl.style.display=view==='map'?'block':'none';listEl.style.display=view==='list'?'block':'none';if(view==='map'&&map){setTimeout(()=>{map.invalidateSize({pan:false});applyFilters()},50);setTimeout(()=>map.invalidateSize({pan:false}),250)}}
 async function loadDataFromCloud(){
@@ -1302,6 +3980,13 @@ async function loadDataFromCloud(){
 
 async function saveDataToCloud(){const favs=universities.filter(u=>u.fav).map(u=>u.id);const statuses={};universities.forEach(u=>statuses[u.id]=u.status);const content={favs,statuses,showFavOnly};localStorage.setItem('recruiting_dashboard_backup',JSON.stringify(content));if(!supabaseClient)return;try{updateBanner('☁️ 保存中...');const {error}=await supabaseClient.from('recruiting_records').upsert({id:'akihiro_dashboard',owner_user_id:DASHBOARD_OWNER_ID,content,updated_at:new Date().toISOString()},{onConflict:'id'});if(error)throw error;SYNC_STATE.recruiting.status='ok';SYNC_STATE.recruiting.updatedAt=new Date().toISOString();updateBanner('');}catch(err){console.error('Cloud save error:',err);SYNC_STATE.recruiting.status='error';updateBanner('⚠️ クラウド保存失敗（ローカルに一時保存）')}}
 document.addEventListener('DOMContentLoaded',()=>{
+    const actions=document.getElementById('crm-actions-panel');
+    const contacts=document.getElementById('crm-contact-list-section');
+
+    if(actions&&contacts&&contacts.parentNode){
+        contacts.parentNode.insertBefore(actions,contacts);
+    }
+
     initializeAuth();
 });
 window.addEventListener('resize',()=>{if(currentView==='map'&&map)map.invalidateSize()});window.addEventListener('load',()=>{if(gmailConfigured())setTimeout(initGmailOAuthClient,500)});
