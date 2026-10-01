@@ -2230,7 +2230,7 @@ header{
 const GOOGLE_OAUTH_CLIENT_ID='299023621402-430kfge04dguvf830p6meesqpo2haf2r.apps.googleusercontent.com';
 const GMAIL_SCOPE='https://www.googleapis.com/auth/gmail.send';
 const GMAIL_ACCOUNT='fujiakihiro8@gmail.com';
-let gmailTokenClient=null,gmailAccessToken='',gmailTokenExpiresAt=0,gmailCurrentContactId=null,gmailTestMode=false;
+let gmailTokenClient=null,gmailAccessToken='',gmailTokenExpiresAt=0,gmailCurrentContactId=null,gmailTestMode=false,gmailSendMode='initial';
 
 function gmailConfigured(){return GOOGLE_OAUTH_CLIENT_ID&&!GOOGLE_OAUTH_CLIENT_ID.startsWith('REPLACE_')}
 function setGmailStatus(text,connected){
@@ -2272,8 +2272,65 @@ function getGmailDraft(u,role){
  const body='Dear Coach '+getCoachLastName(coach)+',\n\nMy name is '+CURRENT_PLAYER.name+', a Japanese student-athlete currently playing at '+CURRENT_PLAYER.school+' ('+CURRENT_PLAYER.division+').\nI am writing to express my strong interest in transferring to '+u.name+'\'s soccer program for '+CURRENT_PLAYER.expectedTransfer+'.\n\n==================================================\n★ ONLINE RECRUITING PROFILE & SCOUTING REPORT ★\n👉 Profile Site : https://fujitame.github.io/profile/\n👉 Highlight Video: '+highlightUrl+'\n==================================================\n\n[Player Overview]\n• Primary Position: '+CURRENT_PLAYER.primary+'\n• Secondary Positions: '+CURRENT_PLAYER.secondary+'\n• Height / Weight: '+CURRENT_PLAYER.height+' / '+CURRENT_PLAYER.weight+' | '+CURRENT_PLAYER.foot+'\n• Current Level: '+CURRENT_PLAYER.school+' ('+CURRENT_PLAYER.division+') | '+CURRENT_PLAYER.jersey+'\n• '+CURRENT_PLAYER.season+' Official Freshman Season: '+CURRENT_PLAYER.stats+'\n• Summer 2026: UPSL Irvine FC + D1 Combine Participant\n• Academic Focus: '+CURRENT_PLAYER.academic+' / General Education Coursework\n• GPA: '+CURRENT_PLAYER.gpa+'\n• NCAA ID: '+CURRENT_PLAYER.ncaaId+'\n• Transferable Credits: '+CURRENT_PLAYER.transferableCredits+'\n• Transfer Eligibility: '+CURRENT_PLAYER.eligibility+'\n\nThank you for your time and consideration. Full-match footage is available upon request, and I would appreciate the opportunity to discuss how I can contribute to '+u.name+'.\n\nBest regards,\n\n'+CURRENT_PLAYER.name+'\n'+CURRENT_PLAYER.school+' Men\'s Soccer '+CURRENT_PLAYER.jersey+'\nEmail: '+CURRENT_PLAYER.email+'\nPhone: '+CURRENT_PLAYER.phone+'\nInstagram: @'+CURRENT_PLAYER.instagram;
  return {to:role==='head_coach'?u.hc_email||'':u.ac_email||'',subject:subject,body:body};
 }
+function getFollowUpDraft(u,contact){
+ const coach=contact.coach_name||'Coach';
+ const followNo=Math.min(2,Number(contact.follow_up_count||0)+1);
+ const subject=getGmailDraft(u,contact.coach_role).subject;
+ const highlightUrl=CURRENT_PLAYER.highlightVideo1?'https://youtu.be/'+CURRENT_PLAYER.highlightVideo1:'';
+ const intro=followNo===1
+  ? 'I wanted to follow up on my previous email regarding my interest in transferring to '+u.name+' for '+CURRENT_PLAYER.expectedTransfer+'.'
+  : 'I wanted to send a brief final follow-up regarding my interest in transferring to '+u.name+' for '+CURRENT_PLAYER.expectedTransfer+'.';
+ const ask=followNo===1
+  ? 'I remain very interested in your program and would appreciate any feedback on whether my profile may be a fit for your team.'
+  : 'I remain very interested in your program. If you have a chance, I would be grateful for any feedback on my profile or your recruiting needs.';
+ const body='Dear Coach '+getCoachLastName(coach)+',\n\n'+
+  intro+'\n\n'+
+  ask+'\n\n'+
+  'Profile: https://fujitame.github.io/profile/\n'+
+  (highlightUrl?'Highlight Video: '+highlightUrl+'\n':'')+
+  '\nThank you again for your time and consideration.\n\n'+
+  'Best regards,\n\n'+
+  CURRENT_PLAYER.name+'\n'+
+  CURRENT_PLAYER.school+" Men's Soccer "+CURRENT_PLAYER.jersey+'\n'+
+  'Email: '+CURRENT_PLAYER.email+'\n'+
+  'Phone: '+CURRENT_PLAYER.phone+'\n'+
+  'Instagram: @'+CURRENT_PLAYER.instagram;
+ return {to:contact.coach_email||'',subject,body,followNo};
+}
+
+function openFollowUpComposer(contactId){
+ gmailTestMode=false;
+ gmailSendMode='followup';
+ const contact=Array.from(crmContacts.values()).find(x=>x.id===contactId);
+ if(!contact){alert('CRM Contactが見つかりません。Dashboardを再読み込みしてください。');return}
+ if(!contact.coach_email){alert('このコーチのメールアドレスは登録されていません。');return}
+ if(contact.contact_status==='responded'||String(contact.coach_response||'').trim()){
+  alert('返信済みのためFollow-up対象ではありません。');
+  return;
+ }
+ if(Number(contact.follow_up_count||0)>=2){
+  alert('Follow-upはすでに2回送信済みです。');
+  return;
+ }
+ const u=universities.find(x=>Number(x.id)===Number(contact.university_id));
+ if(!u){alert('大学データが見つかりません。');return}
+ const d=getFollowUpDraft(u,contact);
+ gmailCurrentContactId=contact.id;
+ const roleLabel=contact.coach_role==='head_coach'?'HC':contact.coach_role==='assistant_coach'?'AC':'Other';
+ document.getElementById('gmail-title').textContent=u.name+' — Follow-up #'+d.followNo;
+ document.getElementById('gmail-subtitle').textContent=roleLabel+': '+contact.coach_name+' → '+d.to;
+ const note=document.getElementById('gmail-note');
+ if(note)note.textContent='Follow-up #'+d.followNo+' の文案です。送信前に必ず内容を確認・編集してください。自動送信は行いません。';
+ document.getElementById('gmail-to').value=d.to;
+ document.getElementById('gmail-subject').value=d.subject;
+ document.getElementById('gmail-body').value=d.body;
+ showGmailError('');
+ document.getElementById('gmail-modal').classList.add('open');
+}
+
 function openGmailComposer(id,role){
  gmailTestMode=false;
+ gmailSendMode='initial';
  const note=document.getElementById('gmail-note');if(note)note.textContent='送信前に宛先・件名・本文を確認してください。通常送信ではCRMを「連絡済み」に更新し、GmailのThread IDを保存します。';
  const u=universities.find(x=>x.id===Number(id));if(!u)return;const d=getGmailDraft(u,role);if(!d.to){alert('このコーチのメールアドレスは登録されていません。');return}
  const key=crmCoachKey(role,role==='head_coach'?u.hc_name:u.ac_name,d.to);gmailCurrentContactId=crmContacts.get(u.id+':'+key)?.id||null;
@@ -2306,7 +2363,7 @@ async function openPhase5DTest(){
  document.getElementById('gmail-body').value='Phase 5-D Gmail返信検出テストです。\\n\\nこのメールを受信したら、このメールに「Phase 5-D reply test OK」などと返信してください。\\n\\n実在のコーチには送信していません。CRMのThread ID保存と返信検出だけを確認するテストです。';
  showGmailError('');document.getElementById('gmail-modal').classList.add('open');
 }
-function closeGmailComposer(){document.getElementById('gmail-modal')?.classList.remove('open');gmailCurrentContactId=null;gmailTestMode=false;showGmailError('')}
+function closeGmailComposer(){document.getElementById('gmail-modal')?.classList.remove('open');gmailCurrentContactId=null;gmailTestMode=false;gmailSendMode='initial';showGmailError('')}
 function base64FromUtf8(value){const bytes=new TextEncoder().encode(value);let binary='';for(let i=0;i<bytes.length;i+=0x8000)binary+=String.fromCharCode(...bytes.subarray(i,i+0x8000));return btoa(binary)}
 function base64UrlFromUtf8(value){return base64FromUtf8(value).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 function encodeMimeSubject(value){return '=?UTF-8?B?'+base64FromUtf8(value)+'?='}
@@ -2325,15 +2382,63 @@ async function sendGmailMessage(){
   }else{
    const contact=Array.from(crmContacts.values()).find(x=>x.id===gmailCurrentContactId);
    if(contact){
-    const now=new Date().toISOString(),followDate=new Date(Date.now()+7*86400000).toISOString().slice(0,10),payload={contact_status:'contacted',last_contact_at:now,contact_count:Number(contact.contact_count||0)+1,follow_up_count:0,last_follow_up_at:null,follow_up_date:followDate,auto_follow_up_enabled:true,next_action:'次回フォローアップメール送信',gmail_thread_id:result.threadId||contact.gmail_thread_id||null};
-    const saved=await supabaseClient.from('recruiting_contacts').update(payload).eq('id',contact.id).eq('owner_user_id',DASHBOARD_OWNER_ID).select('*').single();if(saved.error)throw new Error('Gmailは送信されましたがCRM更新に失敗しました: '+saved.error.message);
-    crmContacts.set(saved.data.university_id+':'+saved.data.coach_key,saved.data);crmCurrentContact=saved.data;
-    const school=universities.find(x=>x.id===Number(saved.data.university_id));if(school){school.status='メール送信済';}
-    const hr=await supabaseClient.from('recruiting_contact_history').insert({owner_user_id:DASHBOARD_OWNER_ID,contact_id:saved.data.id,event_type:'contact_logged',note:'Gmail送信: '+subject});
-    await saveDataToCloud();if(hr.error)console.warn('Gmail history insert failed:',hr.error);
+    const now=new Date().toISOString();
+    const followDate=new Date(Date.now()+7*86400000).toISOString().slice(0,10);
+    let payload,historyNote,successMessage;
+
+    if(gmailSendMode==='followup'){
+     const nextFollowCount=Math.min(2,Number(contact.follow_up_count||0)+1);
+     const finalFollowUp=nextFollowCount>=2;
+     payload={
+      contact_status:finalFollowUp?'no_response':'contacted',
+      last_contact_at:now,
+      contact_count:Number(contact.contact_count||0)+1,
+      follow_up_count:nextFollowCount,
+      last_follow_up_at:now,
+      follow_up_date:finalFollowUp?null:followDate,
+      auto_follow_up_enabled:!finalFollowUp,
+      next_action:finalFollowUp?'返信なし — 必要に応じて個別対応':'次回フォローアップメール送信',
+      gmail_thread_id:result.threadId||contact.gmail_thread_id||null
+     };
+     historyNote='Follow-up #'+nextFollowCount+' Gmail送信: '+subject;
+     successMessage=finalFollowUp
+      ?'Follow-up #2を送信しました。CRMを「返信なし」に更新し、自動Follow-upを停止しました。'
+      :'Follow-up #1を送信しました。次回Follow-upを7日後に設定しました。';
+    }else{
+     payload={
+      contact_status:'contacted',
+      last_contact_at:now,
+      contact_count:Number(contact.contact_count||0)+1,
+      follow_up_count:0,
+      last_follow_up_at:null,
+      follow_up_date:followDate,
+      auto_follow_up_enabled:true,
+      next_action:'次回フォローアップメール送信',
+      gmail_thread_id:result.threadId||contact.gmail_thread_id||null
+     };
+     historyNote='Gmail送信: '+subject;
+     successMessage='Gmailを送信しました。CRMも「連絡済み」に更新しました。';
+    }
+
+    const saved=await supabaseClient.from('recruiting_contacts').update(payload).eq('id',contact.id).eq('owner_user_id',DASHBOARD_OWNER_ID).select('*').single();
+    if(saved.error)throw new Error('Gmailは送信されましたがCRM更新に失敗しました: '+saved.error.message);
+    crmContacts.set(saved.data.university_id+':'+saved.data.coach_key,saved.data);
+    crmCurrentContact=saved.data;
+    const school=universities.find(x=>x.id===Number(saved.data.university_id));
+    if(school){school.status='メール送信済';}
+    const hr=await supabaseClient.from('recruiting_contact_history').insert({
+     owner_user_id:DASHBOARD_OWNER_ID,
+     contact_id:saved.data.id,
+     event_type:gmailSendMode==='followup'?'follow_up_sent':'contact_logged',
+     note:historyNote
+    });
+    await saveDataToCloud();
+    if(hr.error)console.warn('Gmail history insert failed:',hr.error);
     renderCrmSummary();renderCrmActionList();applyFilters();
+    alert(successMessage);
+   }else{
+    alert('Gmailは送信されましたが、CRM Contactを特定できませんでした。');
    }
-   alert('Gmailを送信しました。CRMも「連絡済み」に更新しました。');
   }
   closeGmailComposer();
  }catch(err){console.error('Gmail send failed:',err);showGmailError(err.message||'Gmail送信に失敗しました。')}
@@ -2878,7 +2983,52 @@ function crmEsc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':
 function crmCoachRows(u){return [{role:'head_coach',name:u.hc_name||'Coach',email:u.hc_email||''},{role:'assistant_coach',name:u.ac_name||'Coach',email:u.ac_email||''}]}
 async function loadCrmContacts(){
  crmContacts.clear();crmHistory=[];crmAvailable=false;if(!supabaseClient||!DASHBOARD_OWNER_ID)return false;
- try{const {data,error}=await supabaseClient.from('recruiting_contacts').select('*').eq('owner_user_id',DASHBOARD_OWNER_ID);if(error)throw error;(data||[]).forEach(c=>crmContacts.set(c.university_id+':'+c.coach_key,c));crmAvailable=true;await ensureMissingCrmContacts();await loadInboundLeads();renderCrmSummary();renderCrmActionList();return true}catch(err){console.warn('CRM load unavailable:',err);return false}
+ try{
+  const {data,error}=await supabaseClient.from('recruiting_contacts').select('*').eq('owner_user_id',DASHBOARD_OWNER_ID);
+  if(error)throw error;
+  (data||[]).forEach(c=>crmContacts.set(c.university_id+':'+c.coach_key,c));
+  crmAvailable=true;
+  await ensureMissingCrmContacts();
+  await syncFollowUpDueStatuses();
+  await loadInboundLeads();
+  renderCrmSummary();
+  renderCrmActionList();
+  return true;
+ }catch(err){console.warn('CRM load unavailable:',err);return false}
+}
+
+async function syncFollowUpDueStatuses(){
+ if(!crmAvailable||!supabaseClient||!DASHBOARD_OWNER_ID)return;
+ const now=new Date();
+ const y=now.getFullYear();
+ const m=String(now.getMonth()+1).padStart(2,'0');
+ const d=String(now.getDate()).padStart(2,'0');
+ const today=y+'-'+m+'-'+d;
+
+ const targets=Array.from(crmContacts.values()).filter(c=>
+  c.auto_follow_up_enabled!==false &&
+  c.contact_status==='contacted' &&
+  Number(c.follow_up_count||0)<2 &&
+  Boolean(c.follow_up_date) &&
+  String(c.follow_up_date)<=today &&
+  !String(c.coach_response||'').trim()
+ );
+
+ for(const c of targets){
+  const {data,error}=await supabaseClient
+   .from('recruiting_contacts')
+   .update({contact_status:'follow_up_due'})
+   .eq('id',c.id)
+   .eq('owner_user_id',DASHBOARD_OWNER_ID)
+   .select('*')
+   .single();
+
+  if(error){
+   console.warn('Follow-up due sync failed:',c.id,error);
+   continue;
+  }
+  crmContacts.set(data.university_id+':'+data.coach_key,data);
+ }
 }
 async function loadInboundLeads(){
  crmInboundLeads=[];
@@ -3835,8 +3985,17 @@ function renderCrmActionList(){
      crmEsc(note)+
     '</div>'+
    '</div>'+
-   '<button class="crm-action-btn" type="button" onclick="openCrmFromContact(\''+
-    crmEsc(c.id)+'\')">管理</button>'+
+   '<div style="display:flex;gap:6px;align-items:center">'+
+    ((c.follow_up_date&&crmDateOnlyLocal(c.follow_up_date)<=today&&
+      c.contact_status!=='responded'&&
+      !String(c.coach_response||'').trim()&&
+      Number(c.follow_up_count||0)<2&&
+      c.coach_email)
+      ?'<button class="crm-action-btn" type="button" onclick="openFollowUpComposer(\''+crmEsc(c.id)+'\')">Follow-up作成</button>'
+      :'')+
+    '<button class="crm-action-btn" type="button" onclick="openCrmFromContact(\''+
+     crmEsc(c.id)+'\')">管理</button>'+
+   '</div>'+
   '</div>';
  };
 
