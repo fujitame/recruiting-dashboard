@@ -3052,7 +3052,7 @@ async function ensureMissingCrmContacts(){
  const missing=[];
  const existingContacts=Array.from(crmContacts.values());
 
- visibleUniversities().filter(u=>!(Number(u.id)>=68&&Number(u.id)<=106)).forEach(u=>crmCoachRows(u).forEach(c=>{
+ visibleUniversities().forEach(u=>crmCoachRows(u).forEach(c=>{
   const k=crmCoachKey(c.role,c.name,c.email);
   const exactExists=crmContacts.has(u.id+':'+k);
   const sameRoleExists=existingContacts.some(row=>
