@@ -46,7 +46,8 @@ function classifyInterest(text: string) {
     'interested in akihiro','interested in your profile','interested in your player','interested in recruiting',
     'would like to learn more','would like to discuss','let\'s discuss','let us discuss','schedule a call',
     'schedule a meeting','set up a call','send me his highlight','send his highlight','send your transcript',
-    'send me his transcript','send more information','send more info','good fit','great fit','strong fit',
+    'send me your transcript','send me his transcript','full match','full-match','match video','game film',
+    'send more information','send more info','good fit','great fit','strong fit',
     'could be a good fit','we are interested','we\'re interested','interested in having him','interested in having you',
     'transfer candidate','transfer opportunity','visit campus','official visit','unofficial visit','id camp','idcamp'
   ];
@@ -77,6 +78,38 @@ function collectText(part: any): string {
     }
   }
   return "";
+}
+
+function cleanReplyText(value: string): string {
+  let text = String(value || "")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/p\s*>/gi, "\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&amp;/gi, "&")
+    .replace(/\r\n/g, "\n")
+    .replace(/\r/g, "\n");
+
+  const lines = text.split("\n");
+  const kept: string[] = [];
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+
+    if (/^>/.test(trimmed)) break;
+    if (/^-{2,}\s*Original Message\s*-{2,}$/i.test(trimmed)) break;
+    if (/^On .+ wrote:$/i.test(trimmed)) break;
+    if (/^20\d{2}\/\d{1,2}\/\d{1,2}.+メール:$/i.test(trimmed)) break;
+
+    kept.push(line);
+  }
+
+  return kept
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
 }
 
 async function getGmailAccessToken(): Promise<string> {
@@ -158,8 +191,9 @@ Deno.serve(async (req) => {
 
       const from = header(latest.payload?.headers, "From");
       const subject = header(latest.payload?.headers, "Subject");
-      const body = collectText(latest.payload);
-      const interest = classifyInterest(body + "\n" + subject);
+      const rawBody = collectText(latest.payload);
+      const body = cleanReplyText(rawBody);
+      const interest = classifyInterest(body);
       const receivedAt = new Date(Number(latest.internalDate ?? Date.now())).toISOString();
       const note = [
         `Gmail返信: ${subject || "(件名なし)"}`,
@@ -173,6 +207,8 @@ Deno.serve(async (req) => {
           contact_status: "responded",
           coach_response: body.trim().slice(0, 4000) || subject || "Gmail返信あり",
           last_contact_at: receivedAt,
+          follow_up_date: null,
+          auto_follow_up_enabled: false,
           next_action: interest.level === "high" ? "優先確認：返信内容を確認" : "返信内容を確認",
           interest_level: interest.level,
           interest_reason: interest.reason,
