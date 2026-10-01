@@ -2079,7 +2079,7 @@ header{
 <div class="control-group control-group-search"><label>検索:</label><input type="text" id="search-input" placeholder="大学名・カンファレンス・コーチ名..." oninput="applyFilters()"></div>
 
 <div class="view-toggle-bar">
-  <button class="toggle-btn fav-btn" id="btn-fav-only" onclick="toggleFavFilter()">★ お気に入り</button>
+  <button class="toggle-btn fav-btn" id="btn-fav-only" onclick="toggleFavFilter()">★ お気に入り <span id="fav-count">0</span></button>
   <div class="view-mode-toggle" role="group" aria-label="候補校表示形式">
     <button class="toggle-btn view-mode-btn active" id="btn-map" onclick="switchView('map')">Map View</button>
     <button class="toggle-btn view-mode-btn" id="btn-list" onclick="switchView('list')">Table View</button>
@@ -2496,7 +2496,45 @@ const universities=[
     {"id":901,"name":"TEST College Beta","cat":"test","div":"NCAA D2","conf":"TEST","lat":40.0583,"lng":-74.4057,"hc_name":"Test Head Coach Beta","hc_email":"fujiakihiro8+test901hc@gmail.com","ac_name":"Test Assistant Coach Beta","ac_email":"fujiakihiro8+test901ac@gmail.com","facility":"","roster":"","ig":"","desc":"TEST ONLY — Follow-up・Status変更テスト用。実在大学ではありません。","ig_verified":false,"staff_status":"verified","staff_status_label":"🧪 TEST ONLY"},
     {"id":902,"name":"TEST State University","cat":"test","div":"NCAA D1","conf":"TEST","lat":40.7128,"lng":-74.0060,"hc_name":"Test Head Coach Gamma","hc_email":"fujiakihiro8+test902hc@gmail.com","ac_name":"Test Assistant Coach Gamma","ac_email":"fujiakihiro8+test902ac@gmail.com","facility":"","roster":"","ig":"","desc":"TEST ONLY — Profile Inquiry・CRM連携テスト用。実在大学ではありません。","ig_verified":false,"staff_status":"verified","staff_status_label":"🧪 TEST ONLY"}
 ]
-const COSTS={"1":[46640,18991,"2025 ref"],"2":[46524,20691,"2025 ref"],"3":[47676,18970,"2025 ref"],"4":[47332,20279,"2025 ref"],"5":[20070,19080,"2025 ref"],"6":[20058,13804,"2025 ref"],"7":[20618,19174,"2025 ref"],"8":[61867,22026,"2025 ref"],"9":[60522,19764,"2025 ref"],"10":[57803,17600,"2025 ref"],"11":[57080,17190,"2025 ref"],"12":[41228,12140,"2025 ref"],"13":[21010,20971,"2025 ref"],"14":[19764,19696,"2025 ref"],"15":[43480,14270,"2025 ref"],"16":[20381,16682,"2025 ref"],"17":[20054,18444,"2025 ref"],"18":[20682,14152,"2025 ref"],"19":[44458,10704,"2025 ref"],"20":[48984,13130,"2025 ref"],"21":[53584,16960,"2025 ref"],"22":[null,null,"School-specific ref pending"],"23":[56721,null,"2025 ref; living pending"],"24":[58390,17160,"2026-27 official"],"25":[null,null,"School-specific ref pending"],"26":[null,null,"School-specific ref pending"],"27":[null,null,"School-specific ref pending"],"28":[null,null,"School-specific ref pending"],"29":[17670,null,"2025 ref; no on-campus standard listed"],"30":[38125,12950,"2025 ref"],"31":[38728,14378,"2025 ref"],"32":[null,null,"School-specific ref pending"],"33":[null,null,"School-specific ref pending"],"34":[null,null,"School-specific ref pending"],"35":[18964,13080,"2025 ref"],"36":[17324,15860,"2025 ref"],"37":[null,null,"School-specific ref pending"],"38":[null,null,"School-specific ref pending"],"39":[null,null,"School-specific ref pending"],"40":[null,null,"School-specific ref pending"],"41":[null,null,"School-specific ref pending"],"42":[null,null,"School-specific ref pending"],"43":[null,null,"School-specific ref pending"],"44":[22143,10164,"2026-27 official"],"45":[null,null,"School-specific ref pending"],"46":[37090,14296,"2025 ref"],"47":[67040,null,"2025 ref; living pending"],"48":[null,null,"School-specific ref pending"],"49":[51384,14248,"2025 ref"],"50":[38404,null,"2026-27 official; living pending"],"51":[10996,9278,"2025 ref"],"52":[55700,19867,"2026-27 official"],"53":[null,null,"School-specific ref pending"],"54":[41891,13984,"2025 ref"],"55":[40866,13284,"2025 ref"],"56":[null,null,"School-specific ref pending"],"57":[null,null,"School-specific ref pending"],"58":[37963,12694,"2025 ref"],"59":[35800,11300,"2025 ref"],"60":[null,null,"School-specific ref pending"],"61":[null,null,"School-specific ref pending"],"62":[null,null,"School-specific ref pending"],"63":[null,null,"School-specific ref pending"],"64":[null,null,"School-specific ref pending"],"65":[null,null,"School-specific ref pending"],"66":[23782,9654,"2025 ref"],"67":[null,null,"School-specific ref pending"]};
+const COSTS={"1":[46640,18991,"2025 ref"],"2":[46524,20691,"2025 ref"],"3":[47676,18970,"2025 ref"],"4":[47332,20279,"2025 ref"],"5":[20070,19080,"2025 ref"],"6":[20058,13804,"2025 ref"],"7":[20618,19174,"2025 ref"],"8":[61867,22026,"2025 ref"],"9":[60522,19764,"2025 ref"],"10":[57803,17600,"2025 ref"],"11":[57080,17190,"2025 ref"],"12":[41228,12140,"2025 ref"],"13":[21010,20971,"2025 ref"],"14":[19764,19696,"2025 ref"],"15":[43480,14270,"2025 ref"],"16":[20381,16682,"2025 ref"],"17":[20054,18444,"2025 ref"],"18":[20682,14152,"2025 ref"],"19":[44458,10704,"2025 ref"],"20":[48984,13130,"2025 ref"],"21":[53584,16960,"2025 ref"],"22":[null,null,"School-specific ref pending"],"23":[56721,null,"2025 ref; living pending"],"24":[58390,17160,"2026-27 official"],"25":[null,null,"School-specific ref pending"],"26":[null,null,"School-specific ref pending"],"27":[null,null,"School-specific ref pending"],"28":[null,null,"School-specific ref pending"],"29":[17670,null,"2025 ref; no on-campus standard listed"],"30":[38125,12950,"2025 ref"],"31":[38728,14378,"2025 ref"],"32":[null,null,"School-specific ref pending"],"33":[null,null,"School-specific ref pending"],"34":[null,null,"School-specific ref pending"],"35":[18964,13080,"2025 ref"],"36":[17324,15860,"2025 ref"],"37":[null,null,"School-specific ref pending"],"38":[null,null,"School-specific ref pending"],"39":[null,null,"School-specific ref pending"],"40":[null,null,"School-specific ref pending"],"41":[null,null,"School-specific ref pending"],"42":[null,null,"School-specific ref pending"],"43":[null,null,"School-specific ref pending"],"44":[22143,10164,"2026-27 official"],"45":[null,null,"School-specific ref pending"],"46":[37090,14296,"2025 ref"],"47":[67040,null,"2025 ref; living pending"],"48":[null,null,"School-specific ref pending"],"49":[51384,14248,"2025 ref"],"50":[38404,null,"2026-27 official; living pending"],"51":[10996,9278,"2025 ref"],"52":[55700,19867,"2026-27 official"],"53":[null,null,"School-specific ref pending"],"54":[41891,13984,"2025 ref"],"55":[40866,13284,"2025 ref"],"56":[null,null,"School-specific ref pending"],"57":[null,null,"School-specific ref pending"],"58":[37963,12694,"2025 ref"],"59":[35800,11300,"2025 ref"],"60":[null,null,"School-specific ref pending"],"61":[null,null,"School-specific ref pending"],"62":[null,null,"School-specific ref pending"],"63":[null,null,"School-specific ref pending"],"64":[null,null,"School-specific ref pending"],"65":[null,null,"School-specific ref pending"],"66":[23782,9654,"2025 ref"],"67":[null,null,"School-specific ref pending"],"68":[65670,20604,"2026-27 official"],
+"69":[63078,19398,"2026-27 official"],
+"70":[72990,19354,"2026-27 official"],
+"71":[33846,18144,"2026-27 official; Out-of-State"],
+"72":[57940,17312,"2026-27 official; representative on-campus housing + meal"],
+"73":[40500,19870,"2026-27 official; standard double + All Access meal"],
+"74":[19986,15754,"2026-27 official; Out-of-State"],
+"75":[49943,14254,"2026-27 official; East Falls standard housing + 3 Meal Plan"],
+"76":[39600,13250,"2026-27 official; room & board varies; base annual reference"],
+"77":[68140,22120,"2026-27 official"],
+"78":[36831,21943,"2026-27 official; Non-NJ"],
+"79":[53840,19200,"2026-27 official; standard double + meal"],
+"80":[43580,19470,"2026-27 official"],
+"81":[38226,18900,"2026-27 official; Non-NJ"],
+"82":[48894,21768,"2026-27 official; continuing/transfer on-campus COA"],
+"83":[38600,17094,"2026-27 official"],
+"84":[72800,19650,"2026-27 official"],
+"85":[68886,25805,"2026-27 official"],
+"86":[47960,19996,"2026-27 official"],
+"87":[50000,19530,"2026-27 official"],
+"88":[31050,19741,"2026-27 official; Out-of-State"],
+"89":[60936,18440,"2026-27 official/reference; housing+dining varies"],
+"90":[56140,21958,"2026-27 official; Queens Campus on-campus"],
+"91":[69180,20580,"2026-27 official; international/on-campus"],
+"92":[null,null,"Service academy; eligibility restriction / standard tuition comparison not applicable"],
+"93":[50760,22980,"2026-27 official"],
+"94":[48300,17745,"2026-27 official; standard room + Ultimate Dining"],
+"95":[29130,17205,"2026-27 official; Out-of-State"],
+"96":[29840,20179,"2026-27 official; Non-Resident"],
+"97":[73946,21348,"2026-27 official; standard double + dining"],
+"98":[34500,14522,"2026-27 official; Bosch/Frisch double + Griff Unlimited"],
+"99":[39260,14360,"2026-27 official; standard room & board"],
+"100":[43995,16570,"2026-27 official"],
+"101":[52110,20680,"2026-27 official"],
+"102":[23550,16130,"2026-27 official; international tuition + Westchester double R&B"],
+"103":[41610,18600,"2026-27 official"],
+"104":[14880,36454,"2026-27 official; international 12 credits/semester; living estimate"],
+"105":[38996,14634,"2026-27 official"],
+"106":[37290,14540,"2026-27 official; international"]};
 const VERIFIED_IG=new Set([1, 2, 3, 5, 8, 9, 11, 12, 26, 27, 34, 35, 36, 37, 42, 46, 47, 52, 54, 55, 56]);
 const colorMap={ca:'#3182ce',west:'#805ad5','naia-ca':'#38a169','naia-west':'#2f855a',fl:'#dd6b20','naia-fl':'#c05621',tx:'#d69e2e','naia-tx':'#b7791f',pa:'#0f766e',nj:'#0f766e',ny:'#0f766e',top:'#e53e3e'};
 let map=null,markers=[];let showFavOnly=false;let currentView='list';
@@ -4046,6 +4084,12 @@ function getStatusClass(status){switch(status){case'メール送信済':return's
 
 function toggleFav(id){const u=universities.find(x=>x.id===id);if(!u)return;u.fav=!u.fav;const row=document.getElementById(`row-${id}`);if(row)row.querySelector('.star-btn')?.classList.toggle('active',u.fav);const mobileCard=document.getElementById(`mobile-card-${id}`);if(mobileCard)mobileCard.querySelector('.star-btn')?.classList.toggle('active',u.fav);const mo=markers.find(m=>m.data.id===id);if(mo&&mo.instance.isPopupOpen())mo.instance.setPopupContent(createPopupContent(u));applyFilters();saveDataToCloud()}
 
+function updateFavoriteButtonCount(){
+ const el=document.getElementById('fav-count');
+ if(!el)return;
+ el.textContent=visibleUniversities().filter(u=>u.fav).length;
+}
+
 function toggleFavFilter(){showFavOnly=!showFavOnly;document.getElementById('btn-fav-only').classList.toggle('active',showFavOnly);applyFilters();saveDataToCloud()}
 
 function updateStatus(id,newStatus){const u=universities.find(x=>x.id===id);if(!u)return;u.status=newStatus;const el=document.querySelector(`#row-${id} .status-select`);if(el)el.className=`status-select ${getStatusClass(newStatus)}`;saveDataToCloud()}
@@ -4077,7 +4121,7 @@ function candidateRegion(u){
  return map[cat]||cat;
 }
 
-function applyFilters(){const reg=document.getElementById('filter-region')?.value||'all';const div=document.getElementById('filter-div')?.value||'all';const stat=document.getElementById('filter-status')?.value||'all';const search=(document.getElementById('search-input')?.value||'').toLowerCase();const bounds=window.L&&map?L.latLngBounds():null;let visible=0;universities.forEach(u=>{const okMode=testMode?isTestUniversityId(u.id):!isTestUniversityId(u.id);const okReg=reg==='all'||candidateRegion(u)===reg;const okDiv=div==='all'||u.div===div;const okStat=stat==='all'||u.status===stat;const q=(u.name+' '+u.conf+' '+(u.hc_name||'')+' '+(u.ac_name||'')).toLowerCase();const okSearch=q.includes(search);const okFav=!showFavOnly||u.fav;const crmRows=crmCoachRows(u);const okCrm=crmFilter==='all'||crmRows.some(c=>{const row=crmContacts.get(u.id+':'+crmCoachKey(c.role,c.name,c.email));return row&&(row.contact_status===crmFilter||(crmInterestFilter==='high'&&row.interest_level==='high'&&row.contact_status==='responded'))});const ok=okMode&&okReg&&okDiv&&okStat&&okSearch&&okFav&&okCrm;const row=document.getElementById(`row-${u.id}`);if(row)row.style.display=ok?'':'none';const mobileCard=document.getElementById(`mobile-card-${u.id}`);if(mobileCard)mobileCard.style.display=ok?'':'none';const marker=markers.find(m=>m.data.id===u.id);if(marker&&map){if(ok){marker.instance.addTo(map);bounds&&bounds.extend([u.lat,u.lng]);visible++;}else{if(map.hasLayer(marker.instance))map.removeLayer(marker.instance);}}else if(ok){visible++;}});if(map&&bounds&&visible>0&&reg!=='all')map.fitBounds(bounds,{padding:[30,30]});else if(map&&reg==='all')map.setView([37.0902,-95.7129],4)}
+function applyFilters(){updateFavoriteButtonCount();const reg=document.getElementById('filter-region')?.value||'all';const div=document.getElementById('filter-div')?.value||'all';const stat=document.getElementById('filter-status')?.value||'all';const search=(document.getElementById('search-input')?.value||'').toLowerCase();const bounds=window.L&&map?L.latLngBounds():null;let visible=0;universities.forEach(u=>{const okMode=testMode?isTestUniversityId(u.id):!isTestUniversityId(u.id);const okReg=reg==='all'||candidateRegion(u)===reg;const okDiv=div==='all'||u.div===div;const okStat=stat==='all'||u.status===stat;const q=(u.name+' '+u.conf+' '+(u.hc_name||'')+' '+(u.ac_name||'')).toLowerCase();const okSearch=q.includes(search);const okFav=!showFavOnly||u.fav;const crmRows=crmCoachRows(u);const okCrm=crmFilter==='all'||crmRows.some(c=>{const row=crmContacts.get(u.id+':'+crmCoachKey(c.role,c.name,c.email));return row&&(row.contact_status===crmFilter||(crmInterestFilter==='high'&&row.interest_level==='high'&&row.contact_status==='responded'))});const ok=okMode&&okReg&&okDiv&&okStat&&okSearch&&okFav&&okCrm;const row=document.getElementById(`row-${u.id}`);if(row)row.style.display=ok?'':'none';const mobileCard=document.getElementById(`mobile-card-${u.id}`);if(mobileCard)mobileCard.style.display=ok?'':'none';const marker=markers.find(m=>m.data.id===u.id);if(marker&&map){if(ok){marker.instance.addTo(map);bounds&&bounds.extend([u.lat,u.lng]);visible++;}else{if(map.hasLayer(marker.instance))map.removeLayer(marker.instance);}}else if(ok){visible++;}});if(map&&bounds&&visible>0&&reg!=='all')map.fitBounds(bounds,{padding:[30,30]});else if(map&&reg==='all')map.setView([37.0902,-95.7129],4)}
 
 function switchView(view){currentView=view;const mapEl=document.getElementById('map-view');const listEl=document.getElementById('list-view');document.getElementById('btn-map').classList.toggle('active',view==='map');document.getElementById('btn-list').classList.toggle('active',view==='list');mapEl.style.display=view==='map'?'block':'none';listEl.style.display=view==='list'?'block':'none';if(view==='map'&&map){setTimeout(()=>{map.invalidateSize({pan:false});applyFilters()},50);setTimeout(()=>map.invalidateSize({pan:false}),250)}}
 async function loadDataFromCloud(){
