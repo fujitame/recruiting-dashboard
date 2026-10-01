@@ -10,7 +10,7 @@
     -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
+
 <style>
 :root{--primary:#1a365d;--accent:#3182ce;--bg:#f7fafc;--text:#2d3748;--fav:#d69e2e;--green:#38a169;--muted:#718096}
 *{box-sizing:border-box}
@@ -72,7 +72,7 @@ select:focus,input:focus{outline:none;border-color:var(--accent)}
 .crm-summary-tools{grid-column:1/-1;display:flex;align-items:center;gap:7px}.crm-summary-tools label{color:#4a5568;font-size:10px}.crm-summary-tools select{max-width:190px;background:#fff;color:#1f2937;border:1px solid #cbd5e0;padding:5px 7px}
 .crm-actions-panel{padding:8px 10px;background:#f8fafc;border-bottom:1px solid #e2e8f0;display:grid;grid-template-columns:1fr 1fr;gap:8px}.crm-action-box{background:#fff;border:1px solid #e2e8f0;border-radius:7px;padding:8px}.crm-action-box h3{margin:0 0 6px;font-size:11px;color:#1a365d}.crm-action-box.priority{border-color:#fecaca;background:#fffafa}.crm-action-box.priority h3{color:#c53030}.crm-action-item{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-top:1px solid #edf2f7;font-size:10px;line-height:1.35}.crm-action-item:first-child{border-top:0}.crm-action-main{min-width:0}.crm-action-main b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.crm-action-meta{color:#718096;font-size:9px}.crm-action-btn{border:1px solid #cbd5e0;background:#fff;color:#1a365d;border-radius:4px;padding:3px 6px;font-size:9px;font-weight:800;cursor:pointer;white-space:nowrap}.crm-inbound-modal{position:fixed;inset:0;z-index:12000;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;padding:18px}.crm-inbound-modal.open{display:flex}.crm-inbound-card{width:min(460px,100%);background:#fff;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden}.crm-inbound-head{background:#1a365d;color:#fff;padding:13px 15px;display:flex;justify-content:space-between;align-items:flex-start}.crm-inbound-head h3{margin:0;font-size:14px}.crm-inbound-head small{display:block;margin-top:3px;color:#cbd5e0;font-size:9px}.crm-inbound-close{border:0;background:transparent;color:#fff;font-size:20px;cursor:pointer}.crm-inbound-body{padding:14px}.crm-inbound-field{margin-bottom:10px}.crm-inbound-field label{display:block;font-size:10px;font-weight:800;color:#374151;margin-bottom:4px}.crm-inbound-field input,.crm-inbound-field select{width:100%;padding:8px;border:1px solid #cbd5e0;border-radius:6px;background:#fff;color:#1f2937;font-size:11px}.crm-inbound-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:12px}.crm-action-empty{color:#94a3b8;font-size:10px;padding:5px 0}@media(max-width:700px){.crm-actions-panel{grid-template-columns:1fr}}@media(max-width:900px){.crm-summary{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:520px){.crm-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.crm-summary-tools{display:block}.crm-summary-tools select{max-width:none;margin-top:4px}}
 /* Phase 5-C: Gmail UI */
-.gmail-status-wrap{display:flex;align-items:center;gap:6px;margin-left:8px}.gmail-status{font-size:9px;color:#dbeafe;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);padding:4px 7px;border-radius:999px;white-space:nowrap}.gmail-connect{border:1px solid rgba(255,255,255,.25);background:#fff;color:#1a365d;border-radius:6px;padding:5px 8px;font-size:10px;font-weight:800;cursor:pointer}.gmail-test{border:1px solid rgba(255,255,255,.25);background:#edf2f7;color:#1a365d;border-radius:6px;padding:5px 8px;font-size:10px;font-weight:800;cursor:pointer}.gmail-btn{display:inline-block;padding:4px 6px;border:0;border-radius:4px;background:#c53030;color:#fff;font-size:10px;font-weight:800;cursor:pointer;margin:0 2px 2px 0}.gmail-modal{position:fixed;inset:0;z-index:11000;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;padding:16px}.gmail-modal.open{display:flex}.gmail-card{width:min(720px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.3);color:#1f2937}.gmail-head{padding:13px 16px;background:#1a365d;color:#fff;display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.gmail-head h2{margin:0;font-size:15px}.gmail-head small{display:block;margin-top:3px;color:#cbd5e0;font-size:10px}.gmail-close{border:0;background:transparent;color:#fff;font-size:22px;cursor:pointer}.gmail-body{padding:14px 16px}.gmail-field{margin-bottom:10px}.gmail-field label{display:block;color:#374151;font-size:10px;font-weight:800;margin-bottom:4px}.gmail-field input,.gmail-field textarea{width:100%;border:1px solid #cbd5e0;border-radius:6px;background:#fff;color:#1f2937;padding:8px;font-size:11px}.gmail-field textarea{min-height:300px;resize:vertical;font-family:inherit;line-height:1.45}.gmail-note{padding:8px 10px;border-radius:6px;background:#eff6ff;color:#1e40af;font-size:10px;line-height:1.45;margin-bottom:10px}.gmail-error{padding:8px 10px;border-radius:6px;background:#fff1f2;color:#be123c;font-size:10px;line-height:1.45;margin-bottom:10px;display:none}.gmail-error.show{display:block}.gmail-actions{display:flex;gap:7px;justify-content:flex-end}.gmail-send{border:0;background:#c53030;color:#fff;border-radius:6px;padding:8px 13px;font-weight:800;cursor:pointer}.gmail-send:disabled{opacity:.55;cursor:not-allowed}.gmail-secondary{border:1px solid #cbd5e0;background:#fff;color:#374151;border-radius:6px;padding:8px 12px;font-weight:700;cursor:pointer}@media(max-width:768px){.gmail-status{display:none}.gmail-connect{padding:5px 6px;font-size:9px}.gmail-body{padding:12px}.gmail-field textarea{min-height:260px}}
+.gmail-btn{display:inline-block;padding:4px 6px;border:0;border-radius:4px;background:#c53030;color:#fff;font-size:10px;font-weight:800;cursor:pointer;margin:0 2px 2px 0}.gmail-modal{position:fixed;inset:0;z-index:11000;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;padding:16px}.gmail-modal.open{display:flex}.gmail-card{width:min(720px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.3);color:#1f2937}.gmail-head{padding:13px 16px;background:#1a365d;color:#fff;display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.gmail-head h2{margin:0;font-size:15px}.gmail-head small{display:block;margin-top:3px;color:#cbd5e0;font-size:10px}.gmail-close{border:0;background:transparent;color:#fff;font-size:22px;cursor:pointer}.gmail-body{padding:14px 16px}.gmail-field{margin-bottom:10px}.gmail-field label{display:block;color:#374151;font-size:10px;font-weight:800;margin-bottom:4px}.gmail-field input,.gmail-field textarea{width:100%;border:1px solid #cbd5e0;border-radius:6px;background:#fff;color:#1f2937;padding:8px;font-size:11px}.gmail-field textarea{min-height:300px;resize:vertical;font-family:inherit;line-height:1.45}.gmail-note{padding:8px 10px;border-radius:6px;background:#eff6ff;color:#1e40af;font-size:10px;line-height:1.45;margin-bottom:10px}.gmail-error{padding:8px 10px;border-radius:6px;background:#fff1f2;color:#be123c;font-size:10px;line-height:1.45;margin-bottom:10px;display:none}.gmail-error.show{display:block}.gmail-actions{display:flex;gap:7px;justify-content:flex-end}.gmail-send{border:0;background:#c53030;color:#fff;border-radius:6px;padding:8px 13px;font-weight:800;cursor:pointer}.gmail-send:disabled{opacity:.55;cursor:not-allowed}.gmail-secondary{border:1px solid #cbd5e0;background:#fff;color:#374151;border-radius:6px;padding:8px 12px;font-weight:700;cursor:pointer}@media(max-width:768px){.gmail-body{padding:12px}.gmail-field textarea{min-height:260px}}
 
 /* UI Phase 3 safe patch — CSS only; Phase 5-F JS/auth/CRM logic untouched */
 .crm-summary{
@@ -410,45 +410,15 @@ header{
 
 
 /* Phase 6-UI-1B: compact header utility controls */
-.gmail-status-wrap{
-  margin-left:0;
-}
 
-.gmail-connect{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  min-width:auto;
-  padding:5px 9px;
-  border:1px solid rgba(255,255,255,.32);
-  border-radius:999px;
-  color:#fff;
-  font-size:10px;
-  font-weight:800;
-  cursor:pointer;
-  transition:background .15s ease,border-color .15s ease;
-}
 
-.gmail-connect.gmail-disconnected{
-  background:#b91c1c;
-  border-color:#ef4444;
-  color:#fff;
-}
 
-.gmail-connect.gmail-connected{
-  background:#2563eb;
-  border-color:#60a5fa;
-  color:#fff;
-}
 
-.gmail-status-dot{
-  width:7px;
-  height:7px;
-  flex:0 0 7px;
-  border-radius:50%;
-  background:currentColor;
-  box-shadow:0 0 0 2px rgba(255,255,255,.18);
-}
+
+
+
+
+
 
 .header-settings{
   position:relative;
@@ -533,10 +503,7 @@ header{
     gap:5px;
   }
 
-  .gmail-connect{
-    padding:5px 7px;
-    font-size:9px;
-  }
+
 
   .view-toggle-bar{
     align-items:stretch;
@@ -2025,17 +1992,12 @@ header{
     </div>
 </div>
 <header><div><h1 id="dashboard-title">Akihiro Fujikawa - Transfer Dashboard v4.3</h1><div id="player-info" class="player-info">Sophomore | 170cm/68kg | Harcum College (NJCAA D1) | GPA: 3.29 | NCAA ID: 250663641</div></div><div class="header-account">
-  <div class="gmail-status-wrap">
-    <button id="gmail-connect-btn" class="gmail-connect gmail-disconnected" type="button" onclick="connectGmail()" title="Gmail未接続">
-      <span id="gmail-status-dot" class="gmail-status-dot" aria-hidden="true"></span>
-      <span id="gmail-status">Gmail</span>
-    </button>
-  </div>
+
 
   <details class="header-settings">
     <summary title="設定" aria-label="設定">⚙️</summary>
     <div class="header-settings-menu">
-      <button type="button" onclick="openGmailSelfTest()">自分宛テスト</button>
+
       <button id="test-mode-toggle" type="button" onclick="toggleTestMode()">🧪 Test Mode: OFF</button>
     </div>
   </details>
@@ -2222,49 +2184,26 @@ header{
 <div class="crm-field"><label for="crm-visit">訪問・キャンプ</label><input id="crm-visit" type="text" placeholder="ID Camp / 訪問 / 面談"></div>
 <div class="crm-field full"><label for="crm-response">コーチからの反応</label><textarea id="crm-response" placeholder="コーチからの反応・返信内容を記録"></textarea></div>
 <div class="crm-field full"><label for="crm-note">履歴メモ</label><textarea id="crm-note" placeholder="この連絡についてのメモ"></textarea></div>
-</div><div class="crm-actions"><button class="crm-save" type="button" onclick="saveCrmContact()">保存</button><button class="gmail-btn" type="button" onclick="openGmailComposerFromCrm()">Gmailで送信</button><button class="crm-secondary" type="button" onclick="closeCrmDrawer()">閉じる</button></div>
+</div><div class="crm-actions"><button class="crm-save" type="button" onclick="saveCrmContact()">保存</button><button id="crm-ai-reply-btn" class="crm-secondary" type="button" onclick="generateAiReplyDraft()">✨ AI返信案を作成</button><button id="crm-followup-btn" class="gmail-btn" type="button" onclick="crmCurrentContact&&openFollowUpComposer(crmCurrentContact.id)">Follow-up</button><button class="gmail-btn" type="button" onclick="openGmailComposerFromCrm()">Gmailで送信</button><button class="crm-secondary" type="button" onclick="closeCrmDrawer()">閉じる</button></div>
+<div id="crm-ai-reply-panel" class="crm-history" hidden>
+<h3>✨ AI返信案</h3>
+<div id="crm-ai-reply-status" class="crm-empty"></div>
+<div class="crm-field full"><label for="crm-ai-subject">件名</label><input id="crm-ai-subject" type="text"></div>
+<div class="crm-field full"><label for="crm-ai-body">本文</label><textarea id="crm-ai-body" style="min-height:220px"></textarea></div>
+<div class="crm-field full"><label for="crm-ai-rationale">生成理由</label><textarea id="crm-ai-rationale" style="min-height:80px" readonly></textarea></div>
+<div class="crm-field full"><label for="crm-ai-items">Coachから求められているもの</label><input id="crm-ai-items" type="text" readonly></div>
+<div class="crm-actions">
+<button id="crm-ai-gmail-btn" class="gmail-btn" type="button" onclick="openAiReplyInGmailComposer()">Gmail編集画面へ移す</button>
+</div>
+</div>
 <div class="crm-history"><h3>連絡履歴</h3><div id="crm-history-list" class="crm-empty">No history yet.</div></div></div></aside>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 
-const GOOGLE_OAUTH_CLIENT_ID='299023621402-430kfge04dguvf830p6meesqpo2haf2r.apps.googleusercontent.com';
-const GMAIL_SCOPE='https://www.googleapis.com/auth/gmail.send';
 const GMAIL_ACCOUNT='fujiakihiro8@gmail.com';
-let gmailTokenClient=null,gmailAccessToken='',gmailTokenExpiresAt=0,gmailCurrentContactId=null,gmailTestMode=false,gmailSendMode='initial';
+let gmailCurrentContactId=null,gmailTestMode=false,gmailSendMode='initial';
 
-function gmailConfigured(){return GOOGLE_OAUTH_CLIENT_ID&&!GOOGLE_OAUTH_CLIENT_ID.startsWith('REPLACE_')}
-function setGmailStatus(text,connected){
- const label=document.getElementById('gmail-status');
- const btn=document.getElementById('gmail-connect-btn');
- if(label)label.textContent='Gmail';
- if(btn){
-  btn.classList.toggle('gmail-connected',Boolean(connected));
-  btn.classList.toggle('gmail-disconnected',!connected);
-  btn.title=connected?'Gmail接続済み — クリックで再接続':'Gmail未接続 — クリックして接続';
-  btn.setAttribute('aria-label',btn.title);
- }
-}
 function showGmailError(message){const e=document.getElementById('gmail-error');if(!e)return;e.textContent=message||'';e.classList.toggle('show',Boolean(message))}
-function initGmailOAuthClient(){if(!gmailConfigured()||!window.google?.accounts?.oauth2)return false;gmailTokenClient=window.google.accounts.oauth2.initTokenClient({client_id:GOOGLE_OAUTH_CLIENT_ID,scope:GMAIL_SCOPE,callback:()=>{}});return true}
-function connectGmail(){
- showGmailError('');
- if(!gmailConfigured()){alert('Gmail OAuthの設定がまだ完了していません。Google CloudでOAuth Client IDを作成し、index.htmlのGOOGLE_OAUTH_CLIENT_IDを設定してください。');return}
- if(!initGmailOAuthClient()){setGmailStatus('Google認証を読み込み中...');setTimeout(connectGmail,700);return}
- gmailTokenClient.callback=async function(response){
-  if(response.error){setGmailStatus('Gmail未接続');showGmailError('Gmail認証に失敗しました: '+(response.error_description||response.error));return}
-  gmailAccessToken=response.access_token||'';gmailTokenExpiresAt=Date.now()+Math.max(60,Number(response.expires_in||3600)-30)*1000;
-  try{
-   if(!gmailAccessToken)throw new Error('Googleからアクセストークンを取得できませんでした。');
-   // Phase 5-C uses the narrow gmail.send scope only. Gmail users.getProfile
-   // requires additional Gmail read/profile scopes, so do not call it here.
-   // The Google account selected in the OAuth consent flow is the account that
-   // will authorize the Gmail API send operation.
-   setGmailStatus('Gmail接続済み',true);
-  }catch(err){gmailAccessToken='';gmailTokenExpiresAt=0;setGmailStatus('Gmail未接続');showGmailError(err.message||'Gmail接続に失敗しました。')}
- };
- gmailTokenClient.requestAccessToken({prompt:'consent'});
-}
-function gmailTokenValid(){return Boolean(gmailAccessToken&&Date.now()<gmailTokenExpiresAt)}
 function getGmailDraft(u,role){
  const coach=role==='head_coach'?u.hc_name:u.ac_name;
  const subject=CURRENT_PLAYER.school+' '+CURRENT_PLAYER.jersey+' - '+CURRENT_PLAYER.name+' (Fall 2027 Transfer Candidate / GPA '+CURRENT_PLAYER.gpa+')';
@@ -2338,111 +2277,396 @@ function openGmailComposer(id,role){
  document.getElementById('gmail-to').value=d.to;document.getElementById('gmail-subject').value=d.subject;document.getElementById('gmail-body').value=d.body;showGmailError('');document.getElementById('gmail-modal').classList.add('open');
 }
 function openGmailComposerFromCrm(){if(!crmCurrentContact)return;openGmailComposer(crmCurrentContact.university_id,crmCurrentContact.coach_role)}
-function openGmailSelfTest(){
- gmailTestMode='self';gmailCurrentContactId=null;
- document.getElementById('gmail-title').textContent='Gmail 自分宛テスト送信';
- document.getElementById('gmail-subtitle').textContent='送信先: '+GMAIL_ACCOUNT;
- const note=document.getElementById('gmail-note');if(note)note.textContent='これはテスト送信です。自分のGmailに送信するだけで、CRMのコーチ情報・連絡回数・ステータス・Thread IDは変更しません。';
- document.getElementById('gmail-to').value=GMAIL_ACCOUNT;
- document.getElementById('gmail-subject').value='[TEST] Akihiro Recruiting Dashboard Gmail送信テスト';
- document.getElementById('gmail-body').value='Akihiro Recruiting Dashboard のGmail送信テストです。\n\nこのメールが届けば、Gmail OAuth認証とGmail API送信処理が正常に動作しています。\n\n送信先: '+GMAIL_ACCOUNT+'\n\nこのテストではCRMデータは変更されません。';
- showGmailError('');document.getElementById('gmail-modal').classList.add('open');
+
+function openAiReplyInGmailComposer(){
+ const c=crmCurrentContact;
+ if(!c){
+  alert('CRM Contactが選択されていません。');
+  return;
+ }
+
+ const subject=document.getElementById('crm-ai-subject')?.value.trim()||'';
+ const body=document.getElementById('crm-ai-body')?.value||'';
+
+ if(!subject||!body){
+  alert('先にAI返信案を作成してください。');
+  return;
+ }
+
+ if(!c.coach_email){
+  alert('このCoachのメールアドレスが登録されていません。');
+  return;
+ }
+
+ gmailTestMode=false;
+ gmailSendMode='reply';
+ gmailCurrentContactId=c.id;
+
+ const u=universities.find(x=>Number(x.id)===Number(c.university_id));
+ const roleLabel=
+  c.coach_role==='head_coach'?'HC':
+  c.coach_role==='assistant_coach'?'AC':
+  'Other';
+
+ document.getElementById('gmail-title').textContent=
+  (u?.name||'Recruiting')+' — AI返信案';
+
+ document.getElementById('gmail-subtitle').textContent=
+  roleLabel+': '+(c.coach_name||'Coach')+' → '+c.coach_email;
+
+ const note=document.getElementById('gmail-note');
+ if(note){
+  note.textContent=
+   'AI返信案をGmail編集画面へ移しました。内容を確認・編集してから「Gmailで返信」を押してください。自動送信は行いません。';
+ }
+
+ document.getElementById('gmail-to').value=c.coach_email;
+ document.getElementById('gmail-subject').value=subject;
+ document.getElementById('gmail-body').value=body;
+
+ const sendBtn=document.getElementById('gmail-send-btn');
+ if(sendBtn){
+  sendBtn.disabled=false;
+  sendBtn.textContent='Gmailで返信';
+ }
+
+ showGmailError('');
+ document.getElementById('gmail-modal').classList.add('open');
 }
-async function openPhase5DTest(){
- if(!supabaseClient){alert('Supabaseに接続できていません。');return}
- const {data,error}=await supabaseClient.from('recruiting_contacts').select('*').eq('owner_user_id',DASHBOARD_OWNER_ID).eq('university_id',67).eq('coach_key','phase5d-test:fujitame@gmail.com').maybeSingle();
- if(error){alert('Phase 5-Dテスト用CRMレコードの取得に失敗しました: '+error.message);return}
- if(!data){alert('Phase 5-Dテスト用CRMレコードが見つかりません。Supabase SQL Editorでテストレコードを作成してください。');return}
- if(!gmailTokenValid()){alert('先に「Gmail接続」を行ってください。');return}
- gmailTestMode='phase5d';gmailCurrentContactId=data.id;crmCurrentContact=data;
- document.getElementById('gmail-title').textContent='Phase 5-D 返信検出テスト';
- document.getElementById('gmail-subtitle').textContent='送信先: '+data.coach_email+' · CRM Thread ID保存テスト';
- const note=document.getElementById('gmail-note');if(note)note.textContent='安全な自分宛テストです。送信元は '+GMAIL_ACCOUNT+'、送信先は '+data.coach_email+'。送信後に受信側から返信し、Phase 5-D Functionで返信検出を確認します。';
- document.getElementById('gmail-to').value=data.coach_email;
- document.getElementById('gmail-subject').value='[Phase 5-D TEST] Gmail返信検出テスト';
- document.getElementById('gmail-body').value='Phase 5-D Gmail返信検出テストです。\\n\\nこのメールを受信したら、このメールに「Phase 5-D reply test OK」などと返信してください。\\n\\n実在のコーチには送信していません。CRMのThread ID保存と返信検出だけを確認するテストです。';
- showGmailError('');document.getElementById('gmail-modal').classList.add('open');
+
+function closeGmailComposer(){
+ document.getElementById('gmail-modal')?.classList.remove('open');
+ gmailCurrentContactId=null;
+ gmailTestMode=false;
+ gmailSendMode='initial';
+ const sendBtn=document.getElementById('gmail-send-btn');
+ if(sendBtn){
+  sendBtn.disabled=false;
+  sendBtn.textContent='Gmailから送信';
+ }
+ showGmailError('');
 }
-function closeGmailComposer(){document.getElementById('gmail-modal')?.classList.remove('open');gmailCurrentContactId=null;gmailTestMode=false;gmailSendMode='initial';showGmailError('')}
 function base64FromUtf8(value){const bytes=new TextEncoder().encode(value);let binary='';for(let i=0;i<bytes.length;i+=0x8000)binary+=String.fromCharCode(...bytes.subarray(i,i+0x8000));return btoa(binary)}
 function base64UrlFromUtf8(value){return base64FromUtf8(value).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 function encodeMimeSubject(value){return '=?UTF-8?B?'+base64FromUtf8(value)+'?='}
 function cleanHeader(value){return String(value||'').replace(/[\r\n]/g,' ').trim()}
-function buildGmailRaw(to,subject,body){const mime=['To: '+cleanHeader(to),'From: '+GMAIL_ACCOUNT,'Subject: '+encodeMimeSubject(subject),'MIME-Version: 1.0','Content-Type: text/plain; charset=UTF-8','Content-Transfer-Encoding: 8bit','',body].join('\r\n');return base64UrlFromUtf8(mime)}
-async function sendGmailMessage(){
- const btn=document.getElementById('gmail-send-btn'),to=document.getElementById('gmail-to').value.trim(),subject=document.getElementById('gmail-subject').value.trim(),body=document.getElementById('gmail-body').value;showGmailError('');
- if(!to||!subject||!body){showGmailError('宛先・件名・本文をすべて確認してください。');return}
- if(!gmailTokenValid()){showGmailError('Gmail接続が必要です。「Gmail接続」からGoogleアカウントを認証してください。');return}
- btn.disabled=true;btn.textContent='送信中...';
+async function sendAiGmailReply(){
+ const btn=document.getElementById('gmail-send-btn');
+ const subject=document.getElementById('gmail-subject').value.trim();
+ const body=document.getElementById('gmail-body').value;
+ const contact=Array.from(crmContacts.values()).find(
+  x=>x.id===gmailCurrentContactId
+ );
+
+ showGmailError('');
+
+ if(!contact){
+  showGmailError('CRM Contactを確認できません。');
+  return;
+ }
+
+ if(!subject||!body.trim()){
+  showGmailError('件名・本文を確認してください。');
+  return;
+ }
+
+
+ if(!confirm(
+  'Test ID '+contact.university_id+' の '+contact.coach_email+
+  ' に、この返信を実際に送信します。よろしいですか？'
+ )){
+  return;
+ }
+
+ btn.disabled=true;
+ btn.textContent='返信送信中...';
+
  try{
-  const r=await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send',{method:'POST',headers:{Authorization:'Bearer '+gmailAccessToken,'Content-Type':'application/json'},body:JSON.stringify({raw:buildGmailRaw(to,subject,body)})});
-  const result=await r.json();if(!r.ok)throw new Error(result.error?.message||'Gmail送信に失敗しました。');
-  if(gmailTestMode==='self'){
-   alert('自分宛テスト送信に成功しました。'+GMAIL_ACCOUNT+' の受信トレイを確認してください。CRMは変更していません。');
-  }else{
-   const contact=Array.from(crmContacts.values()).find(x=>x.id===gmailCurrentContactId);
-   if(contact){
-    const now=new Date().toISOString();
-    const followDate=new Date(Date.now()+7*86400000).toISOString().slice(0,10);
-    let payload,historyNote,successMessage;
-
-    if(gmailSendMode==='followup'){
-     const nextFollowCount=Math.min(2,Number(contact.follow_up_count||0)+1);
-     const finalFollowUp=nextFollowCount>=2;
-     payload={
-      contact_status:finalFollowUp?'no_response':'contacted',
-      last_contact_at:now,
-      contact_count:Number(contact.contact_count||0)+1,
-      follow_up_count:nextFollowCount,
-      last_follow_up_at:now,
-      follow_up_date:finalFollowUp?null:followDate,
-      auto_follow_up_enabled:!finalFollowUp,
-      next_action:finalFollowUp?'返信なし — 必要に応じて個別対応':'次回フォローアップメール送信',
-      gmail_thread_id:result.threadId||contact.gmail_thread_id||null
-     };
-     historyNote='Follow-up #'+nextFollowCount+' Gmail送信: '+subject;
-     successMessage=finalFollowUp
-      ?'Follow-up #2を送信しました。CRMを「返信なし」に更新し、自動Follow-upを停止しました。'
-      :'Follow-up #1を送信しました。次回Follow-upを7日後に設定しました。';
-    }else{
-     payload={
-      contact_status:'contacted',
-      last_contact_at:now,
-      contact_count:Number(contact.contact_count||0)+1,
-      follow_up_count:0,
-      last_follow_up_at:null,
-      follow_up_date:followDate,
-      auto_follow_up_enabled:true,
-      next_action:'次回フォローアップメール送信',
-      gmail_thread_id:result.threadId||contact.gmail_thread_id||null
-     };
-     historyNote='Gmail送信: '+subject;
-     successMessage='Gmailを送信しました。CRMも「連絡済み」に更新しました。';
+  const {data,error}=await supabaseClient.functions.invoke(
+   'recruiting-gmail-reply-send',
+   {
+    body:{
+     contact_id:contact.id,
+     subject,
+     body
     }
-
-    const saved=await supabaseClient.from('recruiting_contacts').update(payload).eq('id',contact.id).eq('owner_user_id',DASHBOARD_OWNER_ID).select('*').single();
-    if(saved.error)throw new Error('Gmailは送信されましたがCRM更新に失敗しました: '+saved.error.message);
-    crmContacts.set(saved.data.university_id+':'+saved.data.coach_key,saved.data);
-    crmCurrentContact=saved.data;
-    const school=universities.find(x=>x.id===Number(saved.data.university_id));
-    if(school){school.status='メール送信済';}
-    const hr=await supabaseClient.from('recruiting_contact_history').insert({
-     owner_user_id:DASHBOARD_OWNER_ID,
-     contact_id:saved.data.id,
-     event_type:gmailSendMode==='followup'?'follow_up_sent':'contact_logged',
-     note:historyNote
-    });
-    await saveDataToCloud();
-    if(hr.error)console.warn('Gmail history insert failed:',hr.error);
-    renderCrmSummary();renderCrmActionList();applyFilters();
-    alert(successMessage);
-   }else{
-    alert('Gmailは送信されましたが、CRM Contactを特定できませんでした。');
    }
+  );
+
+  if(error){
+   let detail='';
+   try{
+    detail=await error.context?.clone?.().text?.();
+   }catch{}
+   throw new Error(detail||error.message||'Gmail返信送信に失敗しました。');
   }
+
+  if(!data?.ok){
+   throw new Error(data?.error||'Gmail返信送信に失敗しました。');
+  }
+
+  const now=new Date().toISOString();
+
+  const saved=await supabaseClient
+   .from('recruiting_contacts')
+   .update({
+    contact_status:'responded',
+    last_contact_at:now,
+    contact_count:Number(contact.contact_count||0)+1,
+    follow_up_date:null,
+    auto_follow_up_enabled:false,
+    next_action:'返信送信済み — Coachからの次の返信を確認',
+    gmail_thread_id:data.gmail_thread_id||contact.gmail_thread_id
+   })
+   .eq('id',contact.id)
+   .eq('owner_user_id',DASHBOARD_OWNER_ID)
+   .select('*')
+   .single();
+
+  if(saved.error){
+   throw new Error(
+    'Gmail返信は送信されましたがCRM更新に失敗しました: '+
+    saved.error.message
+   );
+  }
+
+  crmContacts.set(
+   saved.data.university_id+':'+saved.data.coach_key,
+   saved.data
+  );
+  crmCurrentContact=saved.data;
+
+  const history=await supabaseClient
+   .from('recruiting_contact_history')
+   .insert({
+    owner_user_id:DASHBOARD_OWNER_ID,
+    contact_id:saved.data.id,
+    event_type:'reply_sent',
+    event_at:now,
+    note:'AI返信案を確認・編集後にGmail返信送信: '+subject,
+    to_status:'responded',
+    gmail_message_id:data.gmail_message_id||null,
+    gmail_message_at:now
+   });
+
+  if(history.error){
+   console.warn('Reply history insert failed:',history.error);
+  }
+
+  renderCrmSummary();
+  renderCrmActionList();
+  await loadCrmHistory(saved.data.id);
+
+  alert(
+   'Gmail返信を送信しました。\n\n'+
+   'Thread ID: '+(data.gmail_thread_id||'確認できませんでした')
+  );
+
   closeGmailComposer();
- }catch(err){console.error('Gmail send failed:',err);showGmailError(err.message||'Gmail送信に失敗しました。')}
- finally{btn.disabled=false;btn.textContent='Gmailから送信'}
+
+ }catch(err){
+  console.error('AI Gmail reply send failed:',err);
+  showGmailError(err.message||'Gmail返信送信に失敗しました。');
+ }finally{
+  if(document.getElementById('gmail-modal')?.classList.contains('open')){
+   btn.disabled=false;
+   btn.textContent='Gmailで返信';
+  }
+ }
+}
+
+
+async function sendInitialGmailViaServer(){
+ const btn=document.getElementById('gmail-send-btn');
+ const subject=document.getElementById('gmail-subject').value.trim();
+ const body=document.getElementById('gmail-body').value;
+ const contact=Array.from(crmContacts.values()).find(x=>x.id===gmailCurrentContactId);
+
+ showGmailError('');
+
+ if(!contact){
+  showGmailError('CRM Contactを確認できません。');
+  return;
+ }
+
+
+ if(!subject||!body.trim()){
+  showGmailError('件名・本文を確認してください。');
+  return;
+ }
+
+ btn.disabled=true;
+ btn.textContent='送信中...';
+
+ try{
+  const {data,error}=await supabaseClient.functions.invoke(
+   'recruiting-gmail-initial-send',
+   {
+    body:{
+     contact_id:contact.id,
+     subject,
+     body
+    }
+   }
+  );
+
+  if(error){
+   let detail='';
+   try{detail=await error.context?.clone?.().text?.()}catch{}
+   throw new Error(detail||error.message||'Gmail送信に失敗しました。');
+  }
+
+  if(!data?.ok||!data?.contact){
+   throw new Error(data?.error||'Gmail送信に失敗しました。');
+  }
+
+  const saved=data.contact;
+
+  crmContacts.set(
+   saved.university_id+':'+saved.coach_key,
+   saved
+  );
+  crmCurrentContact=saved;
+
+  const school=universities.find(
+   x=>Number(x.id)===Number(saved.university_id)
+  );
+  if(school)school.status='メール送信済';
+
+  await saveDataToCloud();
+  renderCrmSummary();
+  renderCrmActionList();
+  applyFilters();
+  await loadCrmHistory(saved.id);
+
+  alert('Gmailを送信しました。CRMも「連絡済み」に更新しました。');
+
+  closeGmailComposer();
+
+ }catch(err){
+  console.error('Server initial Gmail send failed:',err);
+  showGmailError(err.message||'Gmail送信に失敗しました。');
+ }finally{
+  if(document.getElementById('gmail-modal')?.classList.contains('open')){
+   btn.disabled=false;
+   btn.textContent='Gmailから送信';
+  }
+ }
+}
+
+async function sendFollowUpGmailViaServer(){
+ const btn=document.getElementById('gmail-send-btn');
+ const subject=document.getElementById('gmail-subject').value.trim();
+ const body=document.getElementById('gmail-body').value;
+ const contact=Array.from(crmContacts.values()).find(x=>x.id===gmailCurrentContactId);
+
+ showGmailError('');
+
+ if(!contact){
+  showGmailError('CRM Contactを確認できません。');
+  return;
+ }
+
+
+ if(!subject||!body.trim()){
+  showGmailError('件名・本文を確認してください。');
+  return;
+ }
+
+ const followUpNumber=Math.min(
+  2,
+  Number(contact.follow_up_count||0)+1
+ );
+
+ if(!confirm(
+  'Follow-up #'+followUpNumber+' を送信します。\n\n'+
+  '送信先: '+contact.coach_email+'\n\n'+
+  'よろしいですか？'
+ )){
+  return;
+ }
+
+ btn.disabled=true;
+ btn.textContent='送信中...';
+
+ try{
+  const {data,error}=await supabaseClient.functions.invoke(
+   'recruiting-gmail-followup-send',
+   {
+    body:{
+     contact_id:contact.id,
+     subject,
+     body,
+     follow_up_number:followUpNumber
+    }
+   }
+  );
+
+  if(error){
+   let detail='';
+   try{detail=await error.context?.clone?.().text?.()}catch{}
+   throw new Error(detail||error.message||'Follow-up送信に失敗しました。');
+  }
+
+  if(!data?.ok||!data?.contact){
+   throw new Error(data?.error||'Follow-up送信に失敗しました。');
+  }
+
+  const saved=data.contact;
+
+  crmContacts.set(
+   saved.university_id+':'+saved.coach_key,
+   saved
+  );
+  crmCurrentContact=saved;
+
+  renderCrmSummary();
+  renderCrmActionList();
+  applyFilters();
+  await loadCrmHistory(saved.id);
+
+  if(data.follow_up_number===2){
+   alert(
+    'Follow-up #2を送信しました。\n'+
+    'CRMを「返信なし」に更新し、自動Follow-upを停止しました。'
+   );
+  }else{
+   alert(
+    'Follow-up #1を送信しました。\n'+
+    '次回Follow-upを7日後に設定しました。'
+   );
+  }
+
+  closeGmailComposer();
+
+ }catch(err){
+  console.error('Server Follow-up send failed:',err);
+  showGmailError(err.message||'Follow-up送信に失敗しました。');
+ }finally{
+  if(document.getElementById('gmail-modal')?.classList.contains('open')){
+   btn.disabled=false;
+   btn.textContent='Gmailから送信';
+  }
+ }
+}
+
+async function sendGmailMessage(){
+ if(gmailSendMode==='reply'){
+  await sendAiGmailReply();
+  return;
+ }
+
+ if(gmailSendMode==='followup'){
+  await sendFollowUpGmailViaServer();
+  return;
+ }
+
+ if(gmailSendMode==='initial'){
+  await sendInitialGmailViaServer();
+  return;
+ }
+
+ showGmailError('送信モードを確認できません。Dashboardを再読み込みしてください。');
 }
 
 const SUPABASE_URL='https://cjrabdfdtrufbpjmqddh.supabase.co';
@@ -3930,12 +4154,92 @@ function openCrmContactDrawer(contactId){
  document.getElementById('crm-response').value=c.coach_response||'';
  document.getElementById('crm-visit').value=c.visit_camp||'';
  document.getElementById('crm-note').value='';
+ const aiPanel=document.getElementById('crm-ai-reply-panel');
+ if(aiPanel)aiPanel.hidden=true;
+ const aiStatus=document.getElementById('crm-ai-reply-status');
+ if(aiStatus)aiStatus.textContent='';
+ const aiSubject=document.getElementById('crm-ai-subject');
+ const aiBody=document.getElementById('crm-ai-body');
+ const aiRationale=document.getElementById('crm-ai-rationale');
+ const aiItems=document.getElementById('crm-ai-items');
+ if(aiSubject)aiSubject.value='';
+ if(aiBody)aiBody.value='';
+ if(aiRationale)aiRationale.value='';
+ if(aiItems)aiItems.value='';
  document.getElementById('crm-backdrop').classList.add('open');
  document.getElementById('crm-drawer').classList.add('open');
  document.getElementById('crm-drawer').setAttribute('aria-hidden','false');
  loadCrmHistory(c.id);
 }
 function openCrmFromContact(contactId){openCrmContactDrawer(contactId)}
+
+async function generateAiReplyDraft(){
+ const c=crmCurrentContact;
+ if(!c){
+  alert('CRM Contactが選択されていません。');
+  return;
+ }
+
+ if(c.contact_status!=='responded' && !String(c.coach_response||'').trim()){
+  alert('Coachからの返信内容がまだありません。AI返信案は返信受信後に作成してください。');
+  return;
+ }
+
+ const panel=document.getElementById('crm-ai-reply-panel');
+ const statusEl=document.getElementById('crm-ai-reply-status');
+ const btn=document.getElementById('crm-ai-reply-btn');
+
+ if(panel)panel.hidden=false;
+ if(statusEl)statusEl.textContent='Geminiで返信案を作成中...';
+ if(btn){
+  btn.disabled=true;
+  btn.textContent='生成中...';
+ }
+
+ try{
+  const {data,error}=await supabaseClient.functions.invoke(
+   'recruiting-ai-reply-draft',
+   {
+    body:{
+     university_id:Number(c.university_id),
+     coach_role:c.coach_role
+    }
+   }
+  );
+
+  if(error){
+   let detail='';
+   try{
+    detail=await error.context?.clone?.().text?.();
+   }catch{}
+   throw new Error(detail||error.message||'AI返信案の生成に失敗しました。');
+  }
+
+  if(!data?.ok || !data?.draft){
+   throw new Error(data?.error||'AI返信案を取得できませんでした。');
+  }
+
+  document.getElementById('crm-ai-subject').value=data.draft.subject||'';
+  document.getElementById('crm-ai-body').value=data.draft.body||'';
+  document.getElementById('crm-ai-rationale').value=data.draft.rationale_ja||'';
+  document.getElementById('crm-ai-items').value=Array.isArray(data.draft.requested_items)
+   ? data.draft.requested_items.join(', ')
+   : '';
+
+  if(statusEl){
+   statusEl.textContent='生成完了 · '+(data.model||'Gemini');
+  }
+ }catch(err){
+  console.error('Phase 9-C AI reply draft failed:',err);
+  if(statusEl)statusEl.textContent='生成失敗: '+(err.message||'unknown error');
+ }finally{
+  if(btn){
+   btn.disabled=false;
+   btn.textContent='✨ AI返信案を作成';
+  }
+ }
+}
+
 function renderCrmActionList(){
  const dueEl=document.getElementById('crm-due-list');
  const nextEl=document.getElementById('crm-next-list');
@@ -4324,7 +4628,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
     initializeAuth();
 });
-window.addEventListener('resize',()=>{if(currentView==='map'&&map)map.invalidateSize()});window.addEventListener('load',()=>{if(gmailConfigured())setTimeout(initGmailOAuthClient,500)});
+window.addEventListener('resize',()=>{if(currentView==='map'&&map)map.invalidateSize()});
 </script>
 </body>
 </html>

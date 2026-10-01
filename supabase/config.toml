@@ -1,2 +1,46 @@
 [functions.recruiting-gmail-followups]
 verify_jwt = false
+
+[functions.recruiting-ai-reply-draft]
+enabled = true
+verify_jwt = false
+import_map = "./functions/recruiting-ai-reply-draft/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/recruiting-ai-reply-draft/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/recruiting-ai-reply-draft/*.html" ]
+
+[functions.recruiting-gmail-reply-send]
+enabled = true
+verify_jwt = false
+import_map = "./functions/recruiting-gmail-reply-send/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/recruiting-gmail-reply-send/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/recruiting-gmail-reply-send/*.html" ]
+
+[functions.recruiting-gmail-initial-send]
+enabled = true
+verify_jwt = false
+import_map = "./functions/recruiting-gmail-initial-send/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/recruiting-gmail-initial-send/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/recruiting-gmail-initial-send/*.html" ]
+
+[functions.recruiting-gmail-followup-send]
+enabled = true
+verify_jwt = false
+import_map = "./functions/recruiting-gmail-followup-send/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/recruiting-gmail-followup-send/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/recruiting-gmail-followup-send/*.html" ]
