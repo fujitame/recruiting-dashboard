@@ -2145,7 +2145,8 @@ header{
 </section>
 
 <div id="crm-summary" class="crm-summary" data-recruiting-area="crm" hidden aria-label="連絡状況サマリー">
-<div class="crm-kpi total"><button type="button" onclick="setCrmFilter('all')"><b id="crm-kpi-total">0</b><span>連絡先コーチ数</span></button></div>
+<div class="crm-kpi total"><button type="button" onclick="setCrmFilter('all')"><b id="crm-kpi-all-contacts">0</b><span>全CRMコーチ</span></button></div>
+<div class="crm-kpi total"><button type="button" onclick="setCrmFilter('all')"><b id="crm-kpi-total">0</b><span>お気に入り校コーチ</span></button></div>
 <div class="crm-kpi"><button type="button" onclick="setCrmFilter('not_contacted')"><b id="crm-kpi-not-contacted">0</b><span>未連絡</span></button></div>
 <div class="crm-kpi contacted"><button type="button" onclick="setCrmFilter('contacted')"><b id="crm-kpi-contacted">0</b><span>連絡済み</span></button></div>
 <div class="crm-kpi followup"><button type="button" onclick="setCrmFilter('follow_up_due')"><b id="crm-kpi-followup">0</b><span>フォローアップ必要</span></button></div>
@@ -3712,13 +3713,14 @@ function renderCrmSummary(){
  renderRecruitingNavCounts();
  renderOutreachArea();
  renderActiveArea();
+ const allValues=visibleCrmContacts();
  const values=crmFavoriteContacts();
  const count=s=>values.filter(c=>c.contact_status===s).length;
  const high=values.filter(c=>c.interest_level==='high' && c.contact_status==='responded').length;
- const ids={'crm-kpi-total':values.length,'crm-kpi-not-contacted':count('not_contacted'),'crm-kpi-contacted':count('contacted'),'crm-kpi-followup':count('follow_up_due'),'crm-kpi-responded':count('responded'),'crm-kpi-no-response':count('no_response'),'crm-kpi-priority':high};
+ const ids={'crm-kpi-all-contacts':allValues.length,'crm-kpi-total':values.length,'crm-kpi-not-contacted':count('not_contacted'),'crm-kpi-contacted':count('contacted'),'crm-kpi-followup':count('follow_up_due'),'crm-kpi-responded':count('responded'),'crm-kpi-no-response':count('no_response'),'crm-kpi-priority':high};
  Object.entries(ids).forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.textContent=v});
  const filter=document.getElementById('crm-filter');if(filter)filter.value=crmFilter;
- const note=document.getElementById('crm-summary-note');if(note)note.textContent=crmAvailable?'お気に入り学校 '+universities.filter(u=>u.fav).length+'校のコーチ '+values.length+'名を管理中。🔥は返信内容から自動的に高関心と判定された案件です。':'CRM data unavailable.';
+ const note=document.getElementById('crm-summary-note');if(note)note.textContent=crmAvailable?'全CRM '+allValues.length+'名 / お気に入り学校 '+universities.filter(u=>u.fav).length+'校・コーチ '+values.length+'名を管理中。未連絡・連絡済み等のKPIはお気に入り校を対象に集計しています。🔥は返信内容から自動的に高関心と判定された案件です。':'CRM data unavailable.';
 }
 function crmStatusLabel(status){return CRM_STATUS_LABELS[status]||status||'未設定'}
 function crmDateOnlyLocal(v){if(!v)return null;const d=new Date(v+'T00:00:00');return Number.isNaN(d.getTime())?null:d}
