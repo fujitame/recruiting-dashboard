@@ -2110,11 +2110,12 @@ header{
 <div class="crm-kpi total"><button type="button" onclick="setCrmFilter('all')"><b id="crm-kpi-all-contacts">0</b><span>全CRMコーチ</span></button></div>
 <div class="crm-kpi total"><button type="button" onclick="setCrmFilter('all')"><b id="crm-kpi-total">0</b><span>お気に入り校コーチ</span></button></div>
 <div class="crm-kpi"><button type="button" onclick="setCrmFilter('not_contacted')"><b id="crm-kpi-not-contacted">0</b><span>未連絡</span></button></div>
+<div class="crm-kpi"><button type="button" onclick="setCrmFilter('deferred')"><b id="crm-kpi-deferred">0</b><span>保留・情報不足</span></button></div>
 <div class="crm-kpi contacted"><button type="button" onclick="setCrmFilter('contacted')"><b id="crm-kpi-contacted">0</b><span>連絡済み</span></button></div>
 <div class="crm-kpi followup"><button type="button" onclick="setCrmFilter('follow_up_due')"><b id="crm-kpi-followup">0</b><span>フォローアップ必要</span></button></div>
 <div class="crm-kpi responded"><button type="button" onclick="setCrmFilter('responded')"><b id="crm-kpi-responded">0</b><span>返信・受信あり</span></button></div><div class="crm-kpi priority"><button type="button" onclick="setCrmInterestFilter('high')"><b id="crm-kpi-priority">0</b><span>🔥 要優先確認</span></button></div>
 <div class="crm-kpi"><button type="button" onclick="setCrmFilter('no_response')"><b id="crm-kpi-no-response">0</b><span>返信なし</span></button></div>
-<div class="crm-summary-tools"><label for="crm-filter">連絡状況で絞り込み</label><select id="crm-filter" onchange="setCrmFilter(this.value)"><option value="all">すべて</option><option value="not_contacted">未連絡</option><option value="draft_ready">メール準備済み</option><option value="contacted">連絡済み</option><option value="follow_up_due">フォローアップ必要</option><option value="responded">返信あり</option><option value="no_response">返信なし</option><option value="not_a_fit">対象外</option><option value="closed">終了</option></select><span id="crm-summary-note" style="font-size:9px;color:#718096">連絡情報を読み込み中...</span></div>
+<div class="crm-summary-tools"><label for="crm-filter">連絡状況で絞り込み</label><select id="crm-filter" onchange="setCrmFilter(this.value)"><option value="all">すべて</option><option value="not_contacted">未連絡</option><option value="deferred">保留・情報不足</option><option value="draft_ready">メール準備済み</option><option value="contacted">連絡済み</option><option value="follow_up_due">フォローアップ必要</option><option value="responded">返信あり</option><option value="no_response">返信なし</option><option value="not_a_fit">対象外</option><option value="closed">終了</option></select><span id="crm-summary-note" style="font-size:9px;color:#718096">連絡情報を読み込み中...</span></div>
 </div>
 <section id="crm-contact-list-section" class="crm-contact-list-section" data-recruiting-area="crm" hidden>
   <div class="crm-contact-list-head">
@@ -3994,12 +3995,30 @@ function renderActiveArea(){
 }
 
 
+function crmContactIsDeferred(c){
+ const action=String(c?.next_action||'').trim();
+ return [
+  '学校接触済み・個人メール非公開',
+  '学校接触済み・別スタッフ経由',
+  'Staff要確認'
+ ].includes(action);
+}
+
 function crmContactMatchesCurrentFilter(c){
  if(crmInterestFilter==='high'){
   return c.interest_level==='high' && c.contact_status==='responded';
  }
 
  if(crmFilter==='all')return true;
+
+ if(crmFilter==='not_contacted'){
+  return c.contact_status==='not_contacted' && !crmContactIsDeferred(c);
+ }
+
+ if(crmFilter==='deferred'){
+  return c.contact_status==='not_contacted' && crmContactIsDeferred(c);
+ }
+
  return c.contact_status===crmFilter;
 }
 
@@ -4009,6 +4028,7 @@ function crmContactCurrentFilterLabel(){
  const labels={
   all:'連絡先コーチ',
   not_contacted:'未連絡',
+  deferred:'保留・情報不足',
   draft_ready:'メール準備済み',
   contacted:'連絡済み',
   follow_up_due:'フォローアップ必要',
@@ -4128,8 +4148,14 @@ function renderCrmSummary(){
  const allValues=visibleCrmContacts();
  const values=crmFavoriteContacts();
  const count=s=>values.filter(c=>c.contact_status===s).length;
+ const actionableNotContacted=values.filter(c=>
+  c.contact_status==='not_contacted' && !crmContactIsDeferred(c)
+ ).length;
+ const deferred=values.filter(c=>
+  c.contact_status==='not_contacted' && crmContactIsDeferred(c)
+ ).length;
  const high=values.filter(c=>c.interest_level==='high' && c.contact_status==='responded').length;
- const ids={'crm-kpi-all-contacts':allValues.length,'crm-kpi-total':values.length,'crm-kpi-not-contacted':count('not_contacted'),'crm-kpi-contacted':count('contacted'),'crm-kpi-followup':count('follow_up_due'),'crm-kpi-responded':count('responded'),'crm-kpi-no-response':count('no_response'),'crm-kpi-priority':high};
+ const ids={'crm-kpi-all-contacts':allValues.length,'crm-kpi-total':values.length,'crm-kpi-not-contacted':actionableNotContacted,'crm-kpi-deferred':deferred,'crm-kpi-contacted':count('contacted'),'crm-kpi-followup':count('follow_up_due'),'crm-kpi-responded':count('responded'),'crm-kpi-no-response':count('no_response'),'crm-kpi-priority':high};
  Object.entries(ids).forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.textContent=v});
  const filter=document.getElementById('crm-filter');if(filter)filter.value=crmFilter;
  const note=document.getElementById('crm-summary-note');if(note)note.textContent=crmAvailable?'全CRM '+allValues.length+'名 / お気に入り学校 '+universities.filter(u=>u.fav).length+'校・コーチ '+values.length+'名を管理中。未連絡・連絡済み等のKPIはお気に入り校を対象に集計しています。🔥は返信内容から自動的に高関心と判定された案件です。':'CRM data unavailable.';
