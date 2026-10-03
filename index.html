@@ -62,7 +62,78 @@ select:focus,input:focus{outline:none;border-color:var(--accent)}
 .crm-backdrop{position:fixed;inset:0;z-index:10000;background:rgba(15,23,42,.42);display:none}.crm-backdrop.open{display:block}
 .crm-drawer{position:fixed;top:0;right:0;width:min(520px,100vw);height:100vh;background:#fff;z-index:10001;box-shadow:-12px 0 40px rgba(0,0,0,.2);transform:translateX(100%);transition:transform .18s ease;display:flex;flex-direction:column;color:#1f2937}.crm-drawer.open{transform:translateX(0)}
 .crm-head{padding:14px 16px;background:#1a365d;color:#fff;display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.crm-head h2{margin:0;font-size:15px}.crm-head small{display:block;margin-top:3px;color:#cbd5e0;font-size:10px}.crm-close{border:0;background:transparent;color:#fff;font-size:22px;line-height:1;cursor:pointer}
-.crm-body{padding:14px 16px;overflow:auto;flex:1}.crm-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.crm-field{display:flex;flex-direction:column;gap:4px}.crm-field.full{grid-column:1/-1}.crm-field label{color:#374151;font-size:10px}.crm-field input,.crm-field select,.crm-field textarea{background:#fff;color:#1f2937;border:1px solid #cbd5e0;border-radius:6px;padding:7px;font-size:11px;width:100%}.crm-field textarea{min-height:70px;resize:vertical}.crm-actions{display:flex;gap:7px;margin-top:12px}.crm-save{border:0;background:#3182ce;color:#fff;border-radius:6px;padding:8px 12px;font-weight:800;cursor:pointer}.crm-secondary{border:1px solid #cbd5e0;background:#fff;color:#374151;border-radius:6px;padding:8px 12px;font-weight:700;cursor:pointer}.crm-history{margin-top:16px}.crm-history h3{font-size:11px;margin:0 0 7px;color:#374151}.crm-history-item{border-top:1px solid #e2e8f0;padding:7px 0;font-size:10px;line-height:1.45}.crm-history-meta{color:#718096;font-size:9px}.crm-empty{color:#94a3b8;font-size:10px;padding:8px 0}.crm-btn{display:inline-block;padding:4px 6px;border:0;border-radius:4px;background:#1a365d;color:#fff;font-size:10px;font-weight:800;cursor:pointer;margin:0 2px 2px 0}.crm-btn:hover{opacity:.88}
+.crm-body{padding:14px 16px;overflow:auto;flex:1}.crm-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.crm-field{display:flex;flex-direction:column;gap:4px}.crm-field.full{grid-column:1/-1}.crm-field label{color:#374151;font-size:10px}.crm-field input,.crm-field select,.crm-field textarea{background:#fff;color:#1f2937;border:1px solid #cbd5e0;border-radius:6px;padding:7px;font-size:11px;width:100%}.crm-field textarea{min-height:70px;resize:vertical}.crm-actions{display:flex;gap:7px;margin-top:12px}.crm-save{border:0;background:#3182ce;color:#fff;border-radius:6px;padding:8px 12px;font-weight:800;cursor:pointer}.crm-secondary{border:1px solid #cbd5e0;background:#fff;color:#374151;border-radius:6px;padding:8px 12px;font-weight:700;cursor:pointer}
+
+.crm-save-section{
+ margin-top:14px;
+ padding-top:12px;
+ border-top:1px solid #e2e8f0;
+}
+.crm-save-row{
+ display:flex;
+ align-items:center;
+ gap:10px;
+ flex-wrap:wrap;
+}
+.crm-save-help{
+ color:#718096;
+ font-size:9px;
+ line-height:1.4;
+}
+.crm-next-actions{
+ margin-top:14px;
+ padding:11px;
+ border:1px solid #e2e8f0;
+ border-radius:8px;
+ background:#f8fafc;
+}
+.crm-next-actions-head{
+ display:flex;
+ align-items:baseline;
+ justify-content:space-between;
+ gap:10px;
+ margin-bottom:8px;
+}
+.crm-next-actions-head strong{
+ color:#1a365d;
+ font-size:11px;
+}
+.crm-next-actions-head span{
+ color:#718096;
+ font-size:9px;
+ text-align:right;
+}
+.crm-next-actions-buttons{
+ display:flex;
+ flex-wrap:wrap;
+ gap:7px;
+}
+.crm-next-actions-buttons .gmail-btn,
+.crm-next-actions-buttons .crm-secondary{
+ padding:8px 10px;
+ font-size:10px;
+ margin:0;
+}
+@media(max-width:520px){
+ .crm-save-row{
+  align-items:flex-start;
+  flex-direction:column;
+ }
+ .crm-next-actions-head{
+  align-items:flex-start;
+  flex-direction:column;
+  gap:3px;
+ }
+ .crm-next-actions-head span{
+  text-align:left;
+ }
+ .crm-next-actions-buttons{
+  flex-direction:column;
+ }
+ .crm-next-actions-buttons button{
+  width:100%;
+ }
+}.crm-history{margin-top:16px}.crm-history h3{font-size:11px;margin:0 0 7px;color:#374151}.crm-history-item{border-top:1px solid #e2e8f0;padding:7px 0;font-size:10px;line-height:1.45}.crm-history-meta{color:#718096;font-size:9px}.crm-empty{color:#94a3b8;font-size:10px;padding:8px 0}.crm-btn{display:inline-block;padding:4px 6px;border:0;border-radius:4px;background:#1a365d;color:#fff;font-size:10px;font-weight:800;cursor:pointer;margin:0 2px 2px 0}.crm-btn:hover{opacity:.88}
 @media(max-width:768px){.crm-grid{grid-template-columns:1fr}.crm-drawer{width:100vw}}
 
 /* Phase 5-B: CRM summary */
@@ -2185,7 +2256,27 @@ header{
 <div class="crm-field"><label for="crm-visit">訪問・キャンプ</label><input id="crm-visit" type="text" placeholder="ID Camp / 訪問 / 面談"></div>
 <div class="crm-field full"><label for="crm-response">コーチからの反応</label><textarea id="crm-response" placeholder="コーチからの反応・返信内容を記録"></textarea></div>
 <div class="crm-field full"><label for="crm-note">履歴メモ</label><textarea id="crm-note" placeholder="この連絡についてのメモ"></textarea></div>
-</div><div class="crm-actions"><button class="crm-save" type="button" onclick="saveCrmContact()">保存</button><button id="crm-ai-reply-btn" class="crm-secondary" type="button" onclick="generateAiReplyDraft()">✨ AI返信案を作成</button><button id="crm-followup-btn" class="gmail-btn" type="button" onclick="crmCurrentContact&&openFollowUpComposer(crmCurrentContact.id)">Follow-up</button><button class="gmail-btn" type="button" onclick="openGmailComposerFromCrm()">Gmailで送信</button><button class="crm-secondary" type="button" onclick="closeCrmDrawer()">閉じる</button></div>
+</div>
+
+<div class="crm-save-section">
+ <div class="crm-save-row">
+  <button class="crm-save" type="button" onclick="saveCrmContact()">CRM情報を保存</button>
+  <span class="crm-save-help">上のステータス・日付・メモを保存します</span>
+ </div>
+</div>
+
+<div class="crm-next-actions">
+ <div class="crm-next-actions-head">
+  <strong>次のアクション</strong>
+  <span id="crm-next-actions-note">送信前に必ず内容を確認します</span>
+ </div>
+ <div class="crm-next-actions-buttons">
+  <button id="crm-ai-reply-btn" class="crm-secondary" type="button" onclick="generateAiReplyDraft()">✨ AI返信案を作成</button>
+  <button id="crm-followup-btn" class="gmail-btn" type="button" onclick="crmCurrentContact&&openFollowUpComposer(crmCurrentContact.id)">Follow-up</button>
+  <button id="crm-initial-btn" class="gmail-btn" type="button" onclick="openGmailComposerFromCrm()">初回メールを作成</button>
+ </div>
+</div>
+
 <div id="crm-ai-reply-panel" class="crm-history" hidden>
 <h3>✨ AI返信案</h3>
 <div id="crm-ai-reply-status" class="crm-empty"></div>
@@ -4617,10 +4708,95 @@ function renderCrmSummary(){
 function crmStatusLabel(status){return CRM_STATUS_LABELS[status]||status||'未設定'}
 function crmDateOnlyLocal(v){if(!v)return null;const d=new Date(v+'T00:00:00');return Number.isNaN(d.getTime())?null:d}
 function crmActionRecord(c){const u=universities.find(x=>x.id===Number(c.university_id));if(!u)return null;const role=c.coach_role==='head_coach'?'head_coach':'assistant_coach';return {contact:c,university:u,role}}
+function updateCrmNextActions(c){
+ const initialBtn=document.getElementById('crm-initial-btn');
+ const followBtn=document.getElementById('crm-followup-btn');
+ const aiBtn=document.getElementById('crm-ai-reply-btn');
+ const note=document.getElementById('crm-next-actions-note');
+
+ if(!initialBtn||!followBtn||!aiBtn||!note)return;
+
+ // Existing button CSS uses display rules, so force visibility here.
+ initialBtn.style.display='none';
+ followBtn.style.display='none';
+ aiBtn.style.display='none';
+
+ const status=String(c?.contact_status||'not_contacted');
+ const hasEmail=Boolean(String(c?.coach_email||'').trim());
+ const hasResponse=Boolean(String(c?.coach_response||'').trim());
+ const followCount=Number(c?.follow_up_count||0);
+ const hasThread=Boolean(String(c?.gmail_thread_id||'').trim());
+
+ if(['not_a_fit','closed'].includes(status)){
+  note.textContent='このContactは終了・対象外のため、送信アクションはありません。';
+  return;
+ }
+
+ if(status==='responded' || hasResponse){
+  if(hasResponse){
+   aiBtn.style.display='inline-block';
+
+   if(crmAiReplyIsGenerated(c)){
+    aiBtn.disabled=true;
+    aiBtn.textContent='✓ AI返信案 作成済み';
+    note.textContent='このCoach返信に対するAI返信案は作成済みです。';
+   }else{
+    aiBtn.disabled=false;
+    aiBtn.textContent='✨ AI返信案を作成';
+    note.textContent='Coachからの返信内容をもとに、AI返信案を作成できます。';
+   }
+  }else{
+   aiBtn.disabled=true;
+   aiBtn.textContent='✨ AI返信案を作成';
+   note.textContent='返信内容を「コーチからの反応」に記録すると、AI返信案を作成できます。';
+  }
+  return;
+ }
+
+ if(status==='no_response' || followCount>=2){
+  note.textContent='Follow-upは完了しています。必要に応じてCRM情報を更新してください。';
+  return;
+ }
+
+ if(['contacted','follow_up_due'].includes(status)){
+  if(!hasEmail){
+   note.textContent='CoachのEmailが未登録のためFollow-upを作成できません。';
+   return;
+  }
+
+  if(!hasThread){
+   note.textContent='初回メールのGmail Thread IDがないためFollow-upを作成できません。';
+   return;
+  }
+
+  followBtn.style.display='inline-block';
+
+  if(c?.follow_up_date){
+   note.textContent='次のアクション：Follow-up（予定日 '+c.follow_up_date+'）';
+  }else{
+   note.textContent='次のアクション：Follow-up';
+  }
+  return;
+ }
+
+ if(['not_contacted','draft_ready'].includes(status)){
+  if(hasEmail){
+   initialBtn.style.display='inline-block';
+   note.textContent='次のアクション：初回メールを作成';
+  }else{
+   note.textContent='CoachのEmailが未登録のため初回メールを作成できません。';
+  }
+  return;
+ }
+
+ note.textContent='現在のCRM状態を確認してください。';
+}
+
 function openCrmContactDrawer(contactId){
  const c=Array.from(crmContacts.values()).find(x=>x.id===contactId);if(!c)return;
  const u=universities.find(x=>x.id===Number(c.university_id));if(!u||!crmAvailable){alert('Recruiting CRM is currently unavailable.');return}
  crmCurrentContact=c;
+ updateCrmNextActions(c);
  const roleLabel=c.coach_role==='head_coach'?'HC':c.coach_role==='assistant_coach'?'AC':'Other';
  document.getElementById('crm-title').textContent=u.name+' — CRM';
  document.getElementById('crm-subtitle').textContent=roleLabel+': '+c.coach_name+' · '+(c.coach_email||'email not confirmed');
@@ -4652,6 +4828,19 @@ function openCrmContactDrawer(contactId){
  loadCrmHistory(c.id);
 }
 function openCrmFromContact(contactId){openCrmContactDrawer(contactId)}
+
+const crmAiReplyGeneratedFor=new Map();
+
+function crmAiReplyIsGenerated(c){
+ if(!c?.id)return false;
+
+ const currentResponse=String(c.coach_response||'').trim();
+
+ return Boolean(
+  currentResponse &&
+  crmAiReplyGeneratedFor.get(c.id)===currentResponse
+ );
+}
 
 async function generateAiReplyDraft(){
  const c=crmCurrentContact;
@@ -4706,6 +4895,11 @@ async function generateAiReplyDraft(){
    ? data.draft.requested_items.join(', ')
    : '';
 
+  crmAiReplyGeneratedFor.set(
+   c.id,
+   String(c.coach_response||'').trim()
+  );
+
   if(statusEl){
    statusEl.textContent='生成完了 · '+(data.model||'Gemini');
   }
@@ -4713,10 +4907,7 @@ async function generateAiReplyDraft(){
   console.error('Phase 9-C AI reply draft failed:',err);
   if(statusEl)statusEl.textContent='生成失敗: '+(err.message||'unknown error');
  }finally{
-  if(btn){
-   btn.disabled=false;
-   btn.textContent='✨ AI返信案を作成';
-  }
+  updateCrmNextActions(c);
  }
 }
 
@@ -4828,7 +5019,7 @@ async function saveCrmContact(){
  const prev={status:c.contact_status||'not_contacted',next:c.next_action||'',follow:c.follow_up_date||null,response:c.coach_response||'',visit:c.visit_camp||'',count:c.contact_count||0,last:c.last_contact_at||null,followCount:c.follow_up_count||0,autoFollow:c.auto_follow_up_enabled!==false};
  const payload={contact_status:status,last_contact_at:last?new Date(last).toISOString():null,next_action:next||null,follow_up_date:follow,contact_count:count,follow_up_count:followCount,auto_follow_up_enabled:autoFollow,coach_response:response||null,visit_camp:visit||null};
  const {data,error}=await supabaseClient.from('recruiting_contacts').update(payload).eq('id',c.id).eq('owner_user_id',DASHBOARD_OWNER_ID).select('*').single();if(error){alert('CRM save failed: '+error.message);return}
- crmContacts.set(data.university_id+':'+data.coach_key,data);crmCurrentContact=data;const events=[];
+ crmContacts.set(data.university_id+':'+data.coach_key,data);crmCurrentContact=data;updateCrmNextActions(data);const events=[];
  if(prev.status!==status)events.push({event_type:'status_changed',from_status:prev.status,to_status:status,note:note||null});
  if(prev.next!==next||prev.follow!==follow)events.push({event_type:'follow_up_set',note:note||null});
  if(prev.visit!==visit)events.push({event_type:'visit_camp_updated',note:visit||null});
