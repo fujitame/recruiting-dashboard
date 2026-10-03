@@ -2027,11 +2027,11 @@ header{
 <select id="filter-region" onchange="applyFilters()">
 <option value="all">全地域</option>
 <option value="ca">1. カリフォルニア州</option>
-<option value="west">2. 西海岸</option>
+<option value="west">2. 西部</option>
 <option value="fl">3. フロリダ州</option>
 <option value="tx">4. テキサス州</option>
-<option value="east">5. 東海岸（PA / NJ / NY）</option>
-<option value="top">全国Top（特別枠）</option>
+<option value="east">5. 東部</option>
+<option value="midwest">6. 中西部</option>
 </select>
 </div>
 
@@ -2713,7 +2713,7 @@ function toggleTestMode(){
  applyFilters();
 }
 
-const universities=[
+const fallbackUniversities=[
     {"id": 1, "name": "UC Irvine", "cat": "ca", "div": "NCAA D1", "conf": "Big West", "lat": 33.6405, "lng": -117.8443, "hc_name": "Yossi Raz", "hc_email": "yraz@uci.edu", "ac_name": "Cale Rodriguez", "ac_email": "caler@uci.edu", "facility": "https://ucirvinesports.com/facilities", "roster": "https://ucirvinesports.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/ucimsoc/", "desc": "7/18 IDキャンプ参加済。サイドでの1v1スキルと狭いスペースでの技術を高く評価。", "ig_verified": true, "staff_status": "verified", "staff_status_label": "✓ Official/current contact verified"},
     {"id":2,"name":"UC Riverside","cat":"ca","div":"NCAA D1","conf":"Big West","lat":33.9737,"lng":-117.3281,"hc_name":"Tim Cupello","hc_email":"tim.cupello@ucr.edu","ac_name":"Chris Volk","ac_email":"cvolk@ucr.edu","facility":"https://gohighlanders.com/facilities","roster":"https://gohighlanders.com/sports/mens-soccer/roster","ig":"https://www.instagram.com/ucrmsoccer/","desc":"Chris Volk氏率いるポゼッション主体のプログラム。「展開力と足元技術」で最有力評価。","ig_verified":true,"staff_status":"verified","staff_status_label":"✓ Official/current contact verified"},
     {"id": 3, "name": "UC San Diego", "cat": "ca", "div": "NCAA D1", "conf": "Big West", "lat": 32.8801, "lng": -117.234, "hc_name": "Jon Pascale", "hc_email": "jpascale@ucsd.edu", "ac_name": "Ryan Hernandez", "ac_email": "ryanhernandez@ucsd.edu", "facility": "https://ucsdtritons.com/facilities", "roster": "https://ucsdtritons.com/sports/mens-soccer/roster", "ig": "https://www.instagram.com/ucsdmsoc/", "desc": "スマートなポゼッションスタイル。高いGPA(3.29)と戦術眼が非常にフィット。", "ig_verified": true, "staff_status": "verified", "staff_status_label": "✓ Official/current contact verified"},
@@ -2825,7 +2825,82 @@ const universities=[
     {"id":900,"name":"TEST University Alpha","cat":"test","div":"NCAA D1","conf":"TEST","lat":39.9526,"lng":-75.1652,"hc_name":"Test Head Coach Alpha","hc_email":"fujiakihiro8+test900hc@gmail.com","ac_name":"Test Assistant Coach Alpha","ac_email":"fujiakihiro8+test900ac@gmail.com","facility":"","roster":"","ig":"","desc":"TEST ONLY — Gmail送信・CRM基本動作用。実在大学ではありません。","ig_verified":false,"staff_status":"verified","staff_status_label":"🧪 TEST ONLY"},
     {"id":901,"name":"TEST College Beta","cat":"test","div":"NCAA D2","conf":"TEST","lat":40.0583,"lng":-74.4057,"hc_name":"Test Head Coach Beta","hc_email":"fujiakihiro8+test901hc@gmail.com","ac_name":"Test Assistant Coach Beta","ac_email":"fujiakihiro8+test901ac@gmail.com","facility":"","roster":"","ig":"","desc":"TEST ONLY — Follow-up・Status変更テスト用。実在大学ではありません。","ig_verified":false,"staff_status":"verified","staff_status_label":"🧪 TEST ONLY"},
     {"id":902,"name":"TEST State University","cat":"test","div":"NCAA D1","conf":"TEST","lat":40.7128,"lng":-74.0060,"hc_name":"Test Head Coach Gamma","hc_email":"fujiakihiro8+test902hc@gmail.com","ac_name":"Test Assistant Coach Gamma","ac_email":"fujiakihiro8+test902ac@gmail.com","facility":"","roster":"","ig":"","desc":"TEST ONLY — Profile Inquiry・CRM連携テスト用。実在大学ではありません。","ig_verified":false,"staff_status":"verified","staff_status_label":"🧪 TEST ONLY"}
-]
+];
+
+
+let universities=[...fallbackUniversities];
+
+function mapUniversityMasterRow(row){
+    return {
+        id:Number(row.id),
+        name:row.name,
+        cat:row.region_code,
+        div:row.division,
+        conf:row.conference,
+        lat:Number(row.latitude),
+        lng:Number(row.longitude),
+        hc_name:row.head_coach_name || '',
+        hc_email:row.head_coach_email || '',
+        ac_name:row.assistant_coach_name || '',
+        ac_email:row.assistant_coach_email || '',
+        facility:row.facility_url || '',
+        roster:row.roster_url || '',
+        ig:row.instagram_url || '',
+        desc:row.description || '',
+        ig_verified:!!row.instagram_verified,
+        staff_status:row.staff_status || 'review',
+        staff_status_label:row.staff_status_label || '',
+        is_test:!!row.is_test
+    };
+}
+
+async function loadUniversityMasterFromSupabase(){
+    if(!supabaseClient){
+        console.warn('University Master: Supabase unavailable; using static fallback.');
+        universities=[...fallbackUniversities];
+        return false;
+    }
+
+    try{
+        const {data,error}=await supabaseClient
+            .from('recruiting_universities')
+            .select('*')
+            .eq('is_active',true)
+            .order('id',{ascending:true});
+
+        if(error) throw error;
+
+        if(!Array.isArray(data) || data.length===0){
+            throw new Error('University Master returned no rows.');
+        }
+
+        const mapped=data.map(mapUniversityMasterRow);
+
+        const uniqueIds=new Set(mapped.map(u=>u.id));
+        if(uniqueIds.size!==mapped.length){
+            throw new Error('University Master contains duplicate IDs.');
+        }
+
+        universities=mapped;
+
+        console.info(
+            `University Master loaded from Supabase: ${universities.length} schools`
+        );
+
+        return true;
+
+    }catch(err){
+        console.warn(
+            'University Master load failed; using static fallback:',
+            err
+        );
+
+        universities=[...fallbackUniversities];
+        return false;
+    }
+}
+
+
 const COSTS={"1":[46640,18991,"2025 ref"],"2":[46524,20691,"2025 ref"],"3":[47676,18970,"2025 ref"],"4":[47332,20279,"2025 ref"],"5":[20070,19080,"2025 ref"],"6":[20058,13804,"2025 ref"],"7":[20618,19174,"2025 ref"],"8":[61867,22026,"2025 ref"],"9":[60522,19764,"2025 ref"],"10":[57803,17600,"2025 ref"],"11":[57080,17190,"2025 ref"],"12":[41228,12140,"2025 ref"],"13":[21010,20971,"2025 ref"],"14":[19764,19696,"2025 ref"],"15":[43480,14270,"2025 ref"],"16":[20381,16682,"2025 ref"],"17":[20054,18444,"2025 ref"],"18":[20682,14152,"2025 ref"],"19":[44458,10704,"2025 ref"],"20":[48984,13130,"2025 ref"],"21":[53584,16960,"2025 ref"],"22":[null,null,"School-specific ref pending"],"23":[56721,null,"2025 ref; living pending"],"24":[58390,17160,"2026-27 official"],"25":[null,null,"School-specific ref pending"],"26":[null,null,"School-specific ref pending"],"27":[null,null,"School-specific ref pending"],"28":[null,null,"School-specific ref pending"],"29":[17670,null,"2025 ref; no on-campus standard listed"],"30":[38125,12950,"2025 ref"],"31":[38728,14378,"2025 ref"],"32":[null,null,"School-specific ref pending"],"33":[null,null,"School-specific ref pending"],"34":[null,null,"School-specific ref pending"],"35":[18964,13080,"2025 ref"],"36":[17324,15860,"2025 ref"],"37":[null,null,"School-specific ref pending"],"38":[null,null,"School-specific ref pending"],"39":[null,null,"School-specific ref pending"],"40":[null,null,"School-specific ref pending"],"41":[null,null,"School-specific ref pending"],"42":[null,null,"School-specific ref pending"],"43":[null,null,"School-specific ref pending"],"44":[22143,10164,"2026-27 official"],"45":[null,null,"School-specific ref pending"],"46":[37090,14296,"2025 ref"],"47":[67040,null,"2025 ref; living pending"],"48":[null,null,"School-specific ref pending"],"49":[51384,14248,"2025 ref"],"50":[38404,null,"2026-27 official; living pending"],"51":[10996,9278,"2025 ref"],"52":[55700,19867,"2026-27 official"],"53":[null,null,"School-specific ref pending"],"54":[41891,13984,"2025 ref"],"55":[40866,13284,"2025 ref"],"56":[null,null,"School-specific ref pending"],"57":[null,null,"School-specific ref pending"],"58":[37963,12694,"2025 ref"],"59":[35800,11300,"2025 ref"],"60":[null,null,"School-specific ref pending"],"61":[null,null,"School-specific ref pending"],"62":[null,null,"School-specific ref pending"],"63":[null,null,"School-specific ref pending"],"64":[null,null,"School-specific ref pending"],"65":[null,null,"School-specific ref pending"],"66":[23782,9654,"2025 ref"],"67":[null,null,"School-specific ref pending"],"68":[65670,20604,"2026-27 official"],
 "69":[63078,19398,"2026-27 official"],
 "70":[72990,19354,"2026-27 official"],
@@ -2866,7 +2941,15 @@ const COSTS={"1":[46640,18991,"2025 ref"],"2":[46524,20691,"2025 ref"],"3":[4767
 "105":[38996,14634,"2026-27 official"],
 "106":[37290,14540,"2026-27 official; international"]};
 const VERIFIED_IG=new Set([1, 2, 3, 5, 8, 9, 11, 12, 26, 27, 34, 35, 36, 37, 42, 46, 47, 52, 54, 55, 56]);
-const colorMap={ca:'#3182ce',west:'#805ad5','naia-ca':'#38a169','naia-west':'#2f855a',fl:'#dd6b20','naia-fl':'#c05621',tx:'#d69e2e','naia-tx':'#b7791f',pa:'#0f766e',nj:'#0f766e',ny:'#0f766e',top:'#e53e3e'};
+const colorMap={
+ ca:'#3182ce',
+ west:'#805ad5',
+ fl:'#dd6b20',
+ tx:'#d69e2e',
+ east:'#0f766e',
+ midwest:'#718096',
+ test:'#64748b'
+};
 let map=null,markers=[];let showFavOnly=false;let currentView='list';
 const DASHBOARD_OWNER_ID='47e7c1a9-a806-4f65-b5ed-2b9b124ef337';
 const PLAYER_MASTER_ID='akihiro-fujikawa';
@@ -2980,6 +3063,7 @@ async function startDashboard(user){
     }
     dashboardStarted=true;
     hideAuthGate(user);
+    await loadUniversityMasterFromSupabase();
     initCloudDefaults();
     SYNC_STATE.operation='認証済み。同期確認中...';
     SYNC_STATE.recruiting.status='checking';
@@ -3001,7 +3085,7 @@ async function startDashboard(user){
                 map=L.map('map-view',{tap:false,zoomControl:true}).setView([37.0902,-95.7129],4);
                 L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:'Tiles &copy; Esri'}).addTo(map);
                 universities.forEach(u=>{
-                    const marker=L.circleMarker([u.lat,u.lng],{radius:7,fillColor:colorMap[u.cat]||'#718096',color:'#fff',weight:1.5,opacity:1,fillOpacity:.85});
+                    const marker=L.circleMarker([u.lat,u.lng],{radius:7,fillColor:colorMap[candidateRegion(u)]||'#718096',color:'#fff',weight:1.5,opacity:1,fillOpacity:.85});
                     marker.bindPopup(()=>createPopupContent(u));
                     marker.addTo(map);
                     markers.push({instance:marker,data:u});
@@ -4587,6 +4671,17 @@ function updateStatus(id,newStatus){const u=universities.find(x=>x.id===id);if(!
 function candidateRegion(u){
  const cat=String(u?.cat||'');
 
+ if(cat==='top'){
+  const legacyTopRegion={
+   52:'ca',
+   53:'east',
+   54:'midwest',
+   55:'east',
+   56:'east'
+  };
+  return legacyTopRegion[Number(u?.id)]||'east';
+ }
+
  const map={
   'ca':'ca',
   'naia-ca':'ca',
@@ -4604,7 +4699,9 @@ function candidateRegion(u){
   'nj':'east',
   'ny':'east',
 
-  'top':'top'
+  'east':'east',
+  'midwest':'midwest',
+  'test':'test'
  };
 
  return map[cat]||cat;
