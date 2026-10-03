@@ -190,6 +190,19 @@ export default {
       const followUpNumber =
         Number(payload.follow_up_number);
 
+      const researchIds =
+        followUpNumber === 1 &&
+        Array.isArray(payload.research_ids)
+          ? payload.research_ids
+              .map((id: unknown) => Number(id))
+              .filter((id: number) =>
+                Number.isFinite(id) &&
+                Number.isInteger(id) &&
+                id > 0
+              )
+              .slice(0, 1)
+          : [];
+
       if (
         !contactId ||
         !subject ||
@@ -494,6 +507,9 @@ export default {
 
             gmail_message_at:
               sentAt,
+
+            research_ids:
+              researchIds,
           });
 
       if (history.error) {

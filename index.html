@@ -2171,7 +2171,7 @@ header{
   </div>
  </div>
 </div>
-<div id="gmail-modal" class="gmail-modal" onclick="if(event.target===this)closeGmailComposer()"><div class="gmail-card" role="dialog" aria-modal="true"><div class="gmail-head"><div><h2 id="gmail-title">Gmail送信</h2><small id="gmail-subtitle"></small></div><button class="gmail-close" type="button" onclick="closeGmailComposer()">×</button></div><div class="gmail-body"><div id="gmail-error" class="gmail-error"></div><div id="gmail-note" class="gmail-note">送信前に宛先・件名・本文を確認してください。通常送信ではCRMを「連絡済み」に更新し、GmailのThread IDを保存します。</div><div class="gmail-field"><label for="gmail-to">宛先</label><input id="gmail-to" type="email" readonly></div><div class="gmail-field"><label for="gmail-subject">件名</label><input id="gmail-subject" type="text"></div><div class="gmail-field"><label for="gmail-body">本文</label><textarea id="gmail-body"></textarea></div><div class="gmail-actions"><button id="gmail-personalize-btn" class="gmail-secondary" type="button" onclick="personalizeInitialGmailDraft()" hidden>✨ Personalize</button><button class="gmail-secondary" type="button" onclick="closeGmailComposer()">キャンセル</button><button id="gmail-send-btn" class="gmail-send" type="button" onclick="sendGmailMessage()">Gmailから送信</button></div></div></div></div>
+<div id="gmail-modal" class="gmail-modal" onclick="if(event.target===this)closeGmailComposer()"><div class="gmail-card" role="dialog" aria-modal="true"><div class="gmail-head"><div><h2 id="gmail-title">Gmail送信</h2><small id="gmail-subtitle"></small></div><button class="gmail-close" type="button" onclick="closeGmailComposer()">×</button></div><div class="gmail-body"><div id="gmail-error" class="gmail-error"></div><div id="gmail-note" class="gmail-note">送信前に宛先・件名・本文を確認してください。通常送信ではCRMを「連絡済み」に更新し、GmailのThread IDを保存します。</div><div class="gmail-field"><label for="gmail-to">宛先</label><input id="gmail-to" type="email" readonly></div><div class="gmail-field"><label for="gmail-subject">件名</label><input id="gmail-subject" type="text"></div><div class="gmail-field"><label for="gmail-body">本文</label><textarea id="gmail-body"></textarea></div><div class="gmail-actions"><button id="gmail-personalize-btn" class="gmail-secondary" type="button" onclick="personalizeGmailDraft()" hidden>✨ Personalize</button><button class="gmail-secondary" type="button" onclick="closeGmailComposer()">キャンセル</button><button id="gmail-send-btn" class="gmail-send" type="button" onclick="sendGmailMessage()">Gmailから送信</button></div></div></div></div>
 <aside id="crm-drawer" class="crm-drawer" aria-hidden="true">
 <div class="crm-head"><div><h2 id="crm-title">Recruiting CRM</h2><small id="crm-subtitle"></small></div><button class="crm-close" type="button" onclick="closeCrmDrawer()" aria-label="Close">×</button></div>
 <div class="crm-body"><div class="crm-grid">
@@ -2205,8 +2205,24 @@ const GMAIL_ACCOUNT='fujiakihiro8@gmail.com';
 let gmailCurrentContactId=null,gmailTestMode=false,gmailSendMode='initial';
 let gmailInitialPersonalized=false;
 let gmailInitialResearchIds=[];
+let gmailFollowUpPersonalized=false;
+let gmailFollowUpResearchIds=[];
 
 function showGmailError(message){const e=document.getElementById('gmail-error');if(!e)return;e.textContent=message||'';e.classList.toggle('show',Boolean(message))}
+
+async function personalizeGmailDraft(){
+ if(gmailSendMode==='initial'){
+  await personalizeInitialGmailDraft();
+  return;
+ }
+
+ if(gmailSendMode==='followup'){
+  await personalizeFollowUpGmailDraft();
+  return;
+ }
+
+ showGmailError('このメールではPersonalizeを利用できません。');
+}
 function getGmailDraft(u,role){
  const coach=role==='head_coach'?u.hc_name:u.ac_name;
  const subject=CURRENT_PLAYER.school+' '+CURRENT_PLAYER.jersey+' - '+CURRENT_PLAYER.name+' (Fall 2027 Transfer Candidate / GPA '+CURRENT_PLAYER.gpa+')';
@@ -2357,6 +2373,171 @@ async function personalizeInitialGmailDraft(){
  }
 }
 
+async function personalizeFollowUpGmailDraft(){
+ if(gmailSendMode!=='followup'){
+  showGmailError('Follow-up PersonalizeはFollow-upメールでのみ利用できます。');
+  return;
+ }
+
+ if(gmailFollowUpPersonalized){
+  showGmailError('このFollow-upにはすでにPersonalization処理を行っています。');
+  return;
+ }
+
+ const contact=Array.from(crmContacts.values()).find(
+  x=>x.id===gmailCurrentContactId
+ );
+
+ if(!contact){
+  showGmailError('CRM Contactを確認できません。');
+  return;
+ }
+
+ const followNo=Math.min(
+  2,
+  Number(contact.follow_up_count||0)+1
+ );
+
+ if(followNo!==1){
+  showGmailError('Research PersonalizationはFollow-up #1でのみ利用できます。');
+  return;
+ }
+
+ const btn=document.getElementById('gmail-personalize-btn');
+
+ if(btn){
+  btn.disabled=true;
+  btn.textContent='生成中...';
+ }
+
+ showGmailError('');
+
+ try{
+  const {data,error}=await supabaseClient.functions.invoke(
+   'recruiting-ai-followup-draft',
+   {
+    body:{
+     contact_id:contact.id
+    }
+   }
+  );
+
+  if(error){
+   let detail='';
+   try{
+    detail=await error.context?.clone?.().text?.();
+   }catch{}
+
+   throw new Error(
+    detail||
+    error.message||
+    'Follow-up Personalization生成に失敗しました。'
+   );
+  }
+
+  if(!data?.ok||!data?.draft){
+   throw new Error(
+    data?.error||
+    'Follow-up Personalizationを取得できませんでした。'
+   );
+  }
+
+  const sentence=String(
+   data.draft.personalization_sentence||''
+  ).trim();
+
+  if(!sentence){
+   gmailFollowUpPersonalized=true;
+   gmailFollowUpResearchIds=[];
+
+   if(btn){
+    btn.disabled=true;
+    btn.textContent='No unused Research';
+   }
+
+   const note=document.getElementById('gmail-note');
+   if(note){
+    note.textContent=
+     '未使用のverified Researchがないため、標準のFollow-up #1文案を使用します。';
+   }
+
+   return;
+  }
+
+  const u=universities.find(
+   x=>Number(x.id)===Number(contact.university_id)
+  );
+
+  const bodyEl=document.getElementById('gmail-body');
+
+  if(!u||!bodyEl){
+   throw new Error('Follow-up本文を確認できません。');
+  }
+
+  const intro=
+   'I wanted to follow up on my previous email regarding my interest in transferring to '+
+   u.name+
+   ' for '+
+   CURRENT_PLAYER.expectedTransfer+
+   '.';
+
+  const target=intro+'\n\n';
+
+  if(!bodyEl.value.includes(target)){
+   throw new Error(
+    'Personalizationの挿入位置を確認できません。本文は変更していません。'
+   );
+  }
+
+  bodyEl.value=bodyEl.value.replace(
+   target,
+   intro+'\n'+sentence+'\n\n'
+  );
+
+  gmailFollowUpResearchIds=
+   Array.isArray(data.draft.research_used)
+    ? data.draft.research_used
+        .map(Number)
+        .filter(Number.isFinite)
+        .slice(0,1)
+    : [];
+
+  gmailFollowUpPersonalized=true;
+
+  if(btn){
+   btn.disabled=true;
+   btn.textContent='✓ Personalized';
+  }
+
+  const note=document.getElementById('gmail-note');
+
+  if(note){
+   note.textContent=
+    'Follow-up #1に未使用ResearchからPersonalizationを1文追加しました。内容を必ず確認・編集してから送信してください。'+
+    (gmailFollowUpResearchIds.length
+      ? ' Research ID: '+gmailFollowUpResearchIds.join(', ')
+      : '');
+  }
+
+ }catch(err){
+  console.error(
+   'Follow-up personalization failed:',
+   err
+  );
+
+  showGmailError(
+   err.message||
+   'Follow-up Personalization生成に失敗しました。'
+  );
+
+ }finally{
+  if(btn&&!gmailFollowUpPersonalized){
+   btn.disabled=false;
+   btn.textContent='✨ Personalize';
+  }
+ }
+}
+
 function getFollowUpDraft(u,contact){
  const coach=contact.coach_name||'Coach';
  const followNo=Math.min(2,Number(contact.follow_up_count||0)+1);
@@ -2388,6 +2569,8 @@ function openFollowUpComposer(contactId){
  gmailSendMode='followup';
  gmailInitialPersonalized=false;
  gmailInitialResearchIds=[];
+ gmailFollowUpPersonalized=false;
+ gmailFollowUpResearchIds=[];
  const personalizeBtn=document.getElementById('gmail-personalize-btn');
  if(personalizeBtn)personalizeBtn.hidden=true;
  const contact=Array.from(crmContacts.values()).find(x=>x.id===contactId);
@@ -2404,6 +2587,13 @@ function openFollowUpComposer(contactId){
  const u=universities.find(x=>Number(x.id)===Number(contact.university_id));
  if(!u){alert('大学データが見つかりません。');return}
  const d=getFollowUpDraft(u,contact);
+
+ if(personalizeBtn){
+  personalizeBtn.hidden=d.followNo!==1;
+  personalizeBtn.disabled=false;
+  personalizeBtn.textContent='✨ Personalize';
+ }
+
  gmailCurrentContactId=contact.id;
  const roleLabel=contact.coach_role==='head_coach'?'HC':contact.coach_role==='assistant_coach'?'AC':'Other';
  document.getElementById('gmail-title').textContent=u.name+' — Follow-up #'+d.followNo;
@@ -2422,6 +2612,8 @@ function openGmailComposer(id,role){
  gmailSendMode='initial';
  gmailInitialPersonalized=false;
  gmailInitialResearchIds=[];
+ gmailFollowUpPersonalized=false;
+ gmailFollowUpResearchIds=[];
  const personalizeBtn=document.getElementById('gmail-personalize-btn');
  if(personalizeBtn){
   personalizeBtn.hidden=false;
@@ -2460,6 +2652,8 @@ function openAiReplyInGmailComposer(){
  gmailSendMode='reply';
  gmailInitialPersonalized=false;
  gmailInitialResearchIds=[];
+ gmailFollowUpPersonalized=false;
+ gmailFollowUpResearchIds=[];
  const personalizeBtn=document.getElementById('gmail-personalize-btn');
  if(personalizeBtn)personalizeBtn.hidden=true;
  gmailCurrentContactId=c.id;
@@ -2503,6 +2697,8 @@ function closeGmailComposer(){
  gmailSendMode='initial';
  gmailInitialPersonalized=false;
  gmailInitialResearchIds=[];
+ gmailFollowUpPersonalized=false;
+ gmailFollowUpResearchIds=[];
  const personalizeBtn=document.getElementById('gmail-personalize-btn');
  if(personalizeBtn){
   personalizeBtn.hidden=true;
@@ -2768,7 +2964,11 @@ async function sendFollowUpGmailViaServer(){
      contact_id:contact.id,
      subject,
      body,
-     follow_up_number:followUpNumber
+     follow_up_number:followUpNumber,
+     research_ids:
+      followUpNumber===1
+       ? gmailFollowUpResearchIds
+       : []
     }
    }
   );
