@@ -2171,7 +2171,7 @@ header{
   </div>
  </div>
 </div>
-<div id="gmail-modal" class="gmail-modal" onclick="if(event.target===this)closeGmailComposer()"><div class="gmail-card" role="dialog" aria-modal="true"><div class="gmail-head"><div><h2 id="gmail-title">Gmail送信</h2><small id="gmail-subtitle"></small></div><button class="gmail-close" type="button" onclick="closeGmailComposer()">×</button></div><div class="gmail-body"><div id="gmail-error" class="gmail-error"></div><div id="gmail-note" class="gmail-note">送信前に宛先・件名・本文を確認してください。通常送信ではCRMを「連絡済み」に更新し、GmailのThread IDを保存します。</div><div class="gmail-field"><label for="gmail-to">宛先</label><input id="gmail-to" type="email" readonly></div><div class="gmail-field"><label for="gmail-subject">件名</label><input id="gmail-subject" type="text"></div><div class="gmail-field"><label for="gmail-body">本文</label><textarea id="gmail-body"></textarea></div><div class="gmail-actions"><button class="gmail-secondary" type="button" onclick="closeGmailComposer()">キャンセル</button><button id="gmail-send-btn" class="gmail-send" type="button" onclick="sendGmailMessage()">Gmailから送信</button></div></div></div></div>
+<div id="gmail-modal" class="gmail-modal" onclick="if(event.target===this)closeGmailComposer()"><div class="gmail-card" role="dialog" aria-modal="true"><div class="gmail-head"><div><h2 id="gmail-title">Gmail送信</h2><small id="gmail-subtitle"></small></div><button class="gmail-close" type="button" onclick="closeGmailComposer()">×</button></div><div class="gmail-body"><div id="gmail-error" class="gmail-error"></div><div id="gmail-note" class="gmail-note">送信前に宛先・件名・本文を確認してください。通常送信ではCRMを「連絡済み」に更新し、GmailのThread IDを保存します。</div><div class="gmail-field"><label for="gmail-to">宛先</label><input id="gmail-to" type="email" readonly></div><div class="gmail-field"><label for="gmail-subject">件名</label><input id="gmail-subject" type="text"></div><div class="gmail-field"><label for="gmail-body">本文</label><textarea id="gmail-body"></textarea></div><div class="gmail-actions"><button id="gmail-personalize-btn" class="gmail-secondary" type="button" onclick="personalizeInitialGmailDraft()" hidden>✨ Personalize</button><button class="gmail-secondary" type="button" onclick="closeGmailComposer()">キャンセル</button><button id="gmail-send-btn" class="gmail-send" type="button" onclick="sendGmailMessage()">Gmailから送信</button></div></div></div></div>
 <aside id="crm-drawer" class="crm-drawer" aria-hidden="true">
 <div class="crm-head"><div><h2 id="crm-title">Recruiting CRM</h2><small id="crm-subtitle"></small></div><button class="crm-close" type="button" onclick="closeCrmDrawer()" aria-label="Close">×</button></div>
 <div class="crm-body"><div class="crm-grid">
@@ -2203,6 +2203,7 @@ header{
 
 const GMAIL_ACCOUNT='fujiakihiro8@gmail.com';
 let gmailCurrentContactId=null,gmailTestMode=false,gmailSendMode='initial';
+let gmailInitialPersonalized=false;
 
 function showGmailError(message){const e=document.getElementById('gmail-error');if(!e)return;e.textContent=message||'';e.classList.toggle('show',Boolean(message))}
 function getGmailDraft(u,role){
@@ -2212,6 +2213,145 @@ function getGmailDraft(u,role){
  const body='Dear Coach '+getCoachLastName(coach)+',\n\nMy name is '+CURRENT_PLAYER.name+', a Japanese student-athlete currently playing at '+CURRENT_PLAYER.school+' ('+CURRENT_PLAYER.division+').\nI am writing to express my strong interest in transferring to '+u.name+'\'s soccer program for '+CURRENT_PLAYER.expectedTransfer+'.\n\n==================================================\n★ ONLINE RECRUITING PROFILE & SCOUTING REPORT ★\n👉 Profile Site : https://fujitame.github.io/profile/\n👉 Highlight Video: '+highlightUrl+'\n==================================================\n\n[Player Overview]\n• Primary Position: '+CURRENT_PLAYER.primary+'\n• Secondary Positions: '+CURRENT_PLAYER.secondary+'\n• Height / Weight: '+CURRENT_PLAYER.height+' / '+CURRENT_PLAYER.weight+' | '+CURRENT_PLAYER.foot+'\n• Current Level: '+CURRENT_PLAYER.school+' ('+CURRENT_PLAYER.division+') | '+CURRENT_PLAYER.jersey+'\n• '+CURRENT_PLAYER.season+' Official Freshman Season: '+CURRENT_PLAYER.stats+'\n• Summer 2026: UPSL Irvine FC + D1 Combine Participant\n• Academic Focus: '+CURRENT_PLAYER.academic+' / General Education Coursework\n• GPA: '+CURRENT_PLAYER.gpa+'\n• NCAA ID: '+CURRENT_PLAYER.ncaaId+'\n• Transferable Credits: '+CURRENT_PLAYER.transferableCredits+'\n• Transfer Eligibility: '+CURRENT_PLAYER.eligibility+'\n\nThank you for your time and consideration. Full-match footage is available upon request, and I would appreciate the opportunity to discuss how I can contribute to '+u.name+'.\n\nBest regards,\n\n'+CURRENT_PLAYER.name+'\n'+CURRENT_PLAYER.school+' Men\'s Soccer '+CURRENT_PLAYER.jersey+'\nEmail: '+CURRENT_PLAYER.email+'\nPhone: '+CURRENT_PLAYER.phone+'\nInstagram: @'+CURRENT_PLAYER.instagram;
  return {to:role==='head_coach'?u.hc_email||'':u.ac_email||'',subject:subject,body:body};
 }
+async function personalizeInitialGmailDraft(){
+ if(gmailSendMode!=='initial'){
+  showGmailError('Personalizeは初回メールでのみ利用できます。');
+  return;
+ }
+
+ if(gmailInitialPersonalized){
+  showGmailError('この初回メールにはすでにPersonalizationを追加しています。');
+  return;
+ }
+
+ const contact=Array.from(crmContacts.values()).find(
+  x=>x.id===gmailCurrentContactId
+ );
+
+ if(!contact){
+  showGmailError('CRM Contactを確認できません。');
+  return;
+ }
+
+ const btn=document.getElementById('gmail-personalize-btn');
+ if(btn){
+  btn.disabled=true;
+  btn.textContent='生成中...';
+ }
+
+ showGmailError('');
+
+ try{
+  const {data,error}=await supabaseClient.functions.invoke(
+   'recruiting-ai-initial-draft',
+   {
+    body:{
+     university_id:Number(contact.university_id),
+     coach_role:contact.coach_role
+    }
+   }
+  );
+
+  if(error){
+   let detail='';
+   try{
+    detail=await error.context?.clone?.().text?.();
+   }catch{}
+   throw new Error(
+    detail||
+    error.message||
+    'Personalization生成に失敗しました。'
+   );
+  }
+
+  if(!data?.ok||!data?.draft){
+   throw new Error(
+    data?.error||
+    'Personalizationを取得できませんでした。'
+   );
+  }
+
+  const sentence=String(
+   data.draft.personalization_sentence||''
+  ).trim();
+
+  if(!sentence){
+   const note=document.getElementById('gmail-note');
+   if(note){
+    note.textContent=
+     'verified Researchがないため、標準の初回メール文案を使用します。送信前に内容を確認してください。';
+   }
+   gmailInitialPersonalized=true;
+   return;
+  }
+
+  const bodyEl=document.getElementById('gmail-body');
+  const currentBody=bodyEl?.value||'';
+
+  const university=universities.find(
+   x=>Number(x.id)===Number(contact.university_id)
+  );
+
+  if(!bodyEl||!university){
+   throw new Error('初回メール本文を確認できません。');
+  }
+
+  const interestLine=
+   'I am writing to express my strong interest in transferring to '+
+   university.name+
+   '\'s soccer program for '+
+   CURRENT_PLAYER.expectedTransfer+
+   '.';
+
+  const target=interestLine+'\n\n';
+
+  if(!currentBody.includes(target)){
+   throw new Error(
+    'Personalizationの挿入位置を確認できません。本文は変更していません。'
+   );
+  }
+
+  bodyEl.value=currentBody.replace(
+   target,
+   interestLine+'\n'+sentence+'\n\n'
+  );
+
+  gmailInitialPersonalized=true;
+
+  if(btn){
+   btn.disabled=true;
+   btn.textContent='✓ Personalized';
+  }
+
+  const researchUsed=
+   Array.isArray(data.draft.research_used)
+    ? data.draft.research_used.join(', ')
+    : '';
+
+  const note=document.getElementById('gmail-note');
+  if(note){
+   note.textContent=
+    'Personalizationを1文追加しました。内容を必ず確認・編集してから送信してください。'+
+    (researchUsed?' Research ID: '+researchUsed:'');
+  }
+
+ }catch(err){
+  console.error(
+   'Initial personalization failed:',
+   err
+  );
+  showGmailError(
+   err.message||
+   'Personalization生成に失敗しました。'
+  );
+ }finally{
+  if(btn&&!gmailInitialPersonalized){
+   btn.disabled=false;
+   btn.textContent='✨ Personalize';
+  }
+ }
+}
+
 function getFollowUpDraft(u,contact){
  const coach=contact.coach_name||'Coach';
  const followNo=Math.min(2,Number(contact.follow_up_count||0)+1);
@@ -2241,6 +2381,9 @@ function getFollowUpDraft(u,contact){
 function openFollowUpComposer(contactId){
  gmailTestMode=false;
  gmailSendMode='followup';
+ gmailInitialPersonalized=false;
+ const personalizeBtn=document.getElementById('gmail-personalize-btn');
+ if(personalizeBtn)personalizeBtn.hidden=true;
  const contact=Array.from(crmContacts.values()).find(x=>x.id===contactId);
  if(!contact){alert('CRM Contactが見つかりません。Dashboardを再読み込みしてください。');return}
  if(!contact.coach_email){alert('このコーチのメールアドレスは登録されていません。');return}
@@ -2271,6 +2414,13 @@ function openFollowUpComposer(contactId){
 function openGmailComposer(id,role){
  gmailTestMode=false;
  gmailSendMode='initial';
+ gmailInitialPersonalized=false;
+ const personalizeBtn=document.getElementById('gmail-personalize-btn');
+ if(personalizeBtn){
+  personalizeBtn.hidden=false;
+  personalizeBtn.disabled=false;
+  personalizeBtn.textContent='✨ Personalize';
+ }
  const note=document.getElementById('gmail-note');if(note)note.textContent='送信前に宛先・件名・本文を確認してください。通常送信ではCRMを「連絡済み」に更新し、GmailのThread IDを保存します。';
  const u=universities.find(x=>x.id===Number(id));if(!u)return;const d=getGmailDraft(u,role);if(!d.to){alert('このコーチのメールアドレスは登録されていません。');return}
  const key=crmCoachKey(role,role==='head_coach'?u.hc_name:u.ac_name,d.to);gmailCurrentContactId=crmContacts.get(u.id+':'+key)?.id||null;
@@ -2301,6 +2451,9 @@ function openAiReplyInGmailComposer(){
 
  gmailTestMode=false;
  gmailSendMode='reply';
+ gmailInitialPersonalized=false;
+ const personalizeBtn=document.getElementById('gmail-personalize-btn');
+ if(personalizeBtn)personalizeBtn.hidden=true;
  gmailCurrentContactId=c.id;
 
  const u=universities.find(x=>Number(x.id)===Number(c.university_id));
@@ -2340,6 +2493,13 @@ function closeGmailComposer(){
  gmailCurrentContactId=null;
  gmailTestMode=false;
  gmailSendMode='initial';
+ gmailInitialPersonalized=false;
+ const personalizeBtn=document.getElementById('gmail-personalize-btn');
+ if(personalizeBtn){
+  personalizeBtn.hidden=true;
+  personalizeBtn.disabled=false;
+  personalizeBtn.textContent='✨ Personalize';
+ }
  const sendBtn=document.getElementById('gmail-send-btn');
  if(sendBtn){
   sendBtn.disabled=false;
