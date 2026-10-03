@@ -52,6 +52,13 @@ export default {
     const universityId = Number(body.university_id);
     const coachRole = safeText(body.coach_role, 50);
 
+    const researchRecipientRole =
+      coachRole === "head_coach"
+        ? "HC"
+        : coachRole === "assistant_coach"
+          ? "AC"
+          : coachRole;
+
     if (!Number.isFinite(universityId) || !coachRole) {
       return json({
         ok: false,
@@ -96,6 +103,37 @@ export default {
 
     if (historyError) throw historyError;
 
+    const { data: researchRows, error: researchError } = await supabase.rpc(
+      "get_personalization_context",
+      {
+        p_university_id: universityId,
+        p_recipient_role: researchRecipientRole,
+        p_recipient_name: safeText(contact.coach_name, 200),
+        p_max_facts: 2,
+      },
+    );
+
+    if (researchError) {
+      console.warn(
+        "Research context unavailable; continuing without it:",
+        researchError.message,
+      );
+    }
+
+    const researchContext = (researchRows ?? []).map((r: any) => ({
+      selection_rank: r.selection_rank,
+      research_id: r.research_id,
+      subject_type: safeText(r.subject_type, 50),
+      subject_name: safeText(r.subject_name, 200),
+      fact_type: safeText(r.fact_type, 100),
+      fact_text: safeText(r.fact_text, 2000),
+      personalization_note: safeText(r.personalization_note, 1200),
+      source_url: safeText(r.source_url, 1000),
+      source_title: safeText(r.source_title, 500),
+      reference_rule: safeText(r.reference_rule, 100),
+      priority_score: Number(r.priority_score) || 0,
+    }));
+
     const player = {
       name: "Akihiro Fujikawa",
       current_school: "Harcum College",
@@ -134,6 +172,19 @@ RULES:
 - If the coach asks for something that is not confirmed as available, acknowledge the request without falsely claiming it has already been sent.
 - Do not include commentary about AI.
 - Do not include markdown.
+- The coach's actual reply is always more important than research context.
+- Preserve the meaning of the coach's reply precisely.
+- Do not convert recruiting-process language into roster, scholarship, roster-space, or positional-need language unless the coach explicitly said so.
+- Personalization research is optional. Use it only when it naturally improves the reply.
+- Never force research into a reply when it is not relevant to what the coach said.
+- Only use research facts supplied in PERSONALIZATION RESEARCH below.
+- Never infer roster needs, scholarship availability, recruiting interest, transfer preference, or positional need from research unless the supplied fact explicitly states it.
+- Paraphrase research naturally. Do not present research text as a direct quotation.
+- If reference_rule is "recipient_self", address that coach as "you" or "your"; do not refer to the recipient in the third person.
+- If reference_rule is "head_coach_for_ac", an AC recipient may be told about the head coach's stated emphasis, naturally attributed to the head coach.
+- If reference_rule is "program", describe it as a program, team, roster, or university fact; do not attribute it to an individual coach.
+- Never attribute an AC's statement to, or use an AC-specific statement in a reply to, the HC.
+- Do not claim Akihiro matches a researched quality unless that quality is supported by the PLAYER information or other supplied context.
 - Return only the requested structured JSON.
 
 COACH / CRM:
@@ -148,6 +199,9 @@ Interest reason: ${safeText(contact.interest_reason)}
 LATEST COACH REPLY:
 ${safeText(contact.coach_response)}
 
+PERSONALIZATION RESEARCH (optional; already filtered for this recipient):
+${JSON.stringify(researchContext, null, 2)}
+
 PLAYER:
 ${JSON.stringify(player, null, 2)}
 
@@ -159,6 +213,7 @@ Create:
 2. body: ready-to-edit English reply email.
 3. rationale_ja: short Japanese explanation of why this reply is appropriate.
 4. requested_items: list of concrete items/actions the coach requested, if any.
+5. research_used: list of research_id values actually used in the email body. Return an empty list if no research fact was used.
 `;
 
     const models = [
@@ -214,12 +269,19 @@ Create:
                       type: "string",
                     },
                   },
+                  research_used: {
+                    type: "array",
+                    items: {
+                      type: "integer",
+                    },
+                  },
                 },
                 required: [
                   "subject",
                   "body",
                   "rationale_ja",
                   "requested_items",
+                  "research_used",
                 ],
               },
             },
@@ -326,6 +388,7 @@ Create:
       university_id: contact.university_id,
       coach_role: contact.coach_role,
       coach_name: contact.coach_name,
+      research_context: researchContext,
       draft,
     });
   } catch (error) {
