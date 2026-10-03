@@ -130,6 +130,17 @@ export default {
       const subject = String(requestBody.subject || "").trim();
       const body = String(requestBody.body || "");
 
+      const researchIds = Array.isArray(requestBody.research_ids)
+        ? requestBody.research_ids
+            .map((id: unknown) => Number(id))
+            .filter((id: number) =>
+              Number.isFinite(id) &&
+              Number.isInteger(id) &&
+              id > 0
+            )
+            .slice(0, 2)
+        : [];
+
       if (!contactId || !subject || !body.trim()) {
         return json(
           {
@@ -227,6 +238,7 @@ export default {
           to_status: "contacted",
           gmail_message_id: result.id || null,
           gmail_message_at: sentAt,
+          research_ids: researchIds,
         });
 
       if (history.error) {

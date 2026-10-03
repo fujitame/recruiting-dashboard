@@ -2204,6 +2204,7 @@ header{
 const GMAIL_ACCOUNT='fujiakihiro8@gmail.com';
 let gmailCurrentContactId=null,gmailTestMode=false,gmailSendMode='initial';
 let gmailInitialPersonalized=false;
+let gmailInitialResearchIds=[];
 
 function showGmailError(message){const e=document.getElementById('gmail-error');if(!e)return;e.textContent=message||'';e.classList.toggle('show',Boolean(message))}
 function getGmailDraft(u,role){
@@ -2323,10 +2324,14 @@ async function personalizeInitialGmailDraft(){
    btn.textContent='✓ Personalized';
   }
 
-  const researchUsed=
+  gmailInitialResearchIds=
    Array.isArray(data.draft.research_used)
-    ? data.draft.research_used.join(', ')
-    : '';
+    ? data.draft.research_used
+        .map(Number)
+        .filter(Number.isFinite)
+    : [];
+
+  const researchUsed=gmailInitialResearchIds.join(', ');
 
   const note=document.getElementById('gmail-note');
   if(note){
@@ -2382,6 +2387,7 @@ function openFollowUpComposer(contactId){
  gmailTestMode=false;
  gmailSendMode='followup';
  gmailInitialPersonalized=false;
+ gmailInitialResearchIds=[];
  const personalizeBtn=document.getElementById('gmail-personalize-btn');
  if(personalizeBtn)personalizeBtn.hidden=true;
  const contact=Array.from(crmContacts.values()).find(x=>x.id===contactId);
@@ -2415,6 +2421,7 @@ function openGmailComposer(id,role){
  gmailTestMode=false;
  gmailSendMode='initial';
  gmailInitialPersonalized=false;
+ gmailInitialResearchIds=[];
  const personalizeBtn=document.getElementById('gmail-personalize-btn');
  if(personalizeBtn){
   personalizeBtn.hidden=false;
@@ -2452,6 +2459,7 @@ function openAiReplyInGmailComposer(){
  gmailTestMode=false;
  gmailSendMode='reply';
  gmailInitialPersonalized=false;
+ gmailInitialResearchIds=[];
  const personalizeBtn=document.getElementById('gmail-personalize-btn');
  if(personalizeBtn)personalizeBtn.hidden=true;
  gmailCurrentContactId=c.id;
@@ -2494,6 +2502,7 @@ function closeGmailComposer(){
  gmailTestMode=false;
  gmailSendMode='initial';
  gmailInitialPersonalized=false;
+ gmailInitialResearchIds=[];
  const personalizeBtn=document.getElementById('gmail-personalize-btn');
  if(personalizeBtn){
   personalizeBtn.hidden=true;
@@ -2666,7 +2675,8 @@ async function sendInitialGmailViaServer(){
     body:{
      contact_id:contact.id,
      subject,
-     body
+     body,
+     research_ids:gmailInitialResearchIds
     }
    }
   );
