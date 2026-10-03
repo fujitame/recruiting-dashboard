@@ -5011,7 +5011,15 @@ function openCrmDrawer(id,role){
  if(!c){alert('CRM contact record is not available yet. Please reload the Dashboard.');return}
  openCrmContactDrawer(c.id);
 }
-function closeCrmDrawer(){document.getElementById('crm-backdrop')?.classList.remove('open');document.getElementById('crm-drawer')?.classList.remove('open');document.getElementById('crm-drawer')?.setAttribute('aria-hidden','true');crmCurrentContact=null}
+function closeCrmDrawer(){
+ if(crmCurrentContact?.id){
+  crmAiReplyGeneratedFor.delete(crmCurrentContact.id);
+ }
+ document.getElementById('crm-backdrop')?.classList.remove('open');
+ document.getElementById('crm-drawer')?.classList.remove('open');
+ document.getElementById('crm-drawer')?.setAttribute('aria-hidden','true');
+ crmCurrentContact=null;
+}
 async function loadCrmHistory(id){const el=document.getElementById('crm-history-list');if(!el)return;el.innerHTML='<div class="crm-empty">Loading…</div>';try{const {data,error}=await supabaseClient.from('recruiting_contact_history').select('*').eq('contact_id',id).order('event_at',{ascending:false});if(error)throw error;crmHistory=data||[];renderCrmHistory()}catch(err){console.warn('CRM history load failed:',err);el.innerHTML='<div class="crm-empty">History unavailable.</div>'}}
 function renderCrmHistory(){const el=document.getElementById('crm-history-list');if(!el)return;if(!crmHistory.length){el.innerHTML='<div class="crm-empty">No history yet.</div>';return}el.innerHTML=crmHistory.map(h=>'<div class="crm-history-item"><b>'+crmEsc(h.event_type)+'</b><div class="crm-history-meta">'+crmEsc(crmDateDisplay(h.event_at))+(h.from_status||h.to_status?' · '+crmEsc(h.from_status||'')+' → '+crmEsc(h.to_status||''):'')+'</div>'+(h.note?'<div>'+crmEsc(h.note)+'</div>':'')+'</div>').join('')}
 async function saveCrmContact(){
