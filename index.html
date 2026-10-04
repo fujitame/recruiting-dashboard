@@ -2748,6 +2748,17 @@ table td:nth-child(13) .crm-btn{
  </div>
 </div>
 
+<div id="crm-ai-stage-panel" class="crm-history" hidden>
+ <h3>✨ AI Recruiting Stage提案</h3>
+ <div id="crm-ai-stage-label" style="font-weight:700;margin-bottom:8px"></div>
+ <div id="crm-ai-stage-reason" class="crm-empty" style="margin-bottom:6px"></div>
+ <div id="crm-ai-stage-evidence" class="crm-empty" style="margin-bottom:10px"></div>
+ <div class="crm-actions">
+  <button id="crm-ai-stage-apply-btn" class="gmail-btn" type="button" onclick="applyAiStageSuggestion()">Stageを変更</button>
+  <button id="crm-ai-stage-dismiss-btn" class="crm-secondary" type="button" onclick="dismissAiStageSuggestion()">変更しない</button>
+ </div>
+</div>
+
 <div id="crm-ai-reply-panel" class="crm-history" hidden>
 <h3>✨ AI返信案</h3>
 <div id="crm-ai-reply-status" class="crm-empty"></div>
@@ -2759,6 +2770,7 @@ table td:nth-child(13) .crm-btn{
 <button id="crm-ai-gmail-btn" class="gmail-btn" type="button" onclick="openAiReplyInGmailComposer()">Gmail編集画面へ移す</button>
 </div>
 </div>
+
 <div class="crm-history"><h3>連絡履歴</h3><div id="crm-history-list" class="crm-empty">No history yet.</div></div></div></aside>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
@@ -3301,6 +3313,24 @@ function openGmailComposerFromCrm(){if(!crmCurrentContact)return;openGmailCompos
 
 function openAiReplyInGmailComposer(){
  const c=crmCurrentContact;
+
+ if(c?.id){
+  const suggestion=crmAiStageSuggestionFor.get(c.id);
+  const decision=crmAiStageDecisionFor.get(c.id);
+
+  if(
+   suggestion &&
+   suggestion.stage &&
+   suggestion.stage!=='none' &&
+   decision==='pending'
+  ){
+   alert(
+    '先にAI Recruiting Stage提案について、\n'+
+    '「Stageを変更」または「変更しない」を選択してください。'
+   );
+   return;
+  }
+ }
  if(!c){
   alert('CRM Contactが選択されていません。');
   return;
@@ -5836,11 +5866,160 @@ function openCrmContactDrawer(contactId){
  document.getElementById('crm-backdrop').classList.add('open');
  document.getElementById('crm-drawer').classList.add('open');
  document.getElementById('crm-drawer').setAttribute('aria-hidden','false');
+ renderCrmAiStageSuggestion(c);
  loadCrmHistory(c.id);
 }
 function openCrmFromContact(contactId){openCrmContactDrawer(contactId)}
 
 const crmAiReplyGeneratedFor=new Map();
+const crmAiStageSuggestionFor=new Map();
+const crmAiStageDecisionFor=new Map();
+
+function updateAiGmailStageGate(c){
+ const gmailBtn=document.getElementById('crm-ai-gmail-btn');
+ if(!gmailBtn)return;
+
+ const suggestion=c?.id
+  ?crmAiStageSuggestionFor.get(c.id)
+  :null;
+
+ const decision=c?.id
+  ?crmAiStageDecisionFor.get(c.id)
+  :null;
+
+ const pending=Boolean(
+  suggestion &&
+  suggestion.stage &&
+  suggestion.stage!=='none' &&
+  decision==='pending'
+ );
+
+ gmailBtn.disabled=pending;
+ gmailBtn.style.opacity=pending?'0.4':'';
+ gmailBtn.style.cursor=pending?'not-allowed':'';
+ gmailBtn.title=pending
+  ?'先にRecruiting Stage提案の「変更する／変更しない」を確定してください。'
+  :'';
+}
+
+function renderCrmAiStageSuggestion(c){
+ const panel=document.getElementById('crm-ai-stage-panel');
+ const label=document.getElementById('crm-ai-stage-label');
+ const reason=document.getElementById('crm-ai-stage-reason');
+ const evidence=document.getElementById('crm-ai-stage-evidence');
+ const applyBtn=document.getElementById('crm-ai-stage-apply-btn');
+ const dismissBtn=document.getElementById('crm-ai-stage-dismiss-btn');
+
+ if(!panel||!label||!reason||!evidence||!applyBtn||!dismissBtn)return;
+
+ panel.hidden=true;
+ updateAiGmailStageGate(c);
+
+ if(!c?.id)return;
+
+ const suggestion=crmAiStageSuggestionFor.get(c.id);
+
+ if(!suggestion || suggestion.stage==='none'){
+  updateAiGmailStageGate(c);
+  return;
+ }
+
+ const allowed=Object.keys(RECRUITING_STAGE_LABELS);
+ if(!allowed.includes(suggestion.stage))return;
+
+ const currentStage=getRecruitingSchoolStage(c.university_id);
+
+ label.textContent=
+  '提案: '+
+  recruitingStageLabel(suggestion.stage)+
+  ' / 信頼度: '+
+  String(suggestion.confidence||'—');
+
+ reason.textContent=
+  '理由: '+
+  String(suggestion.reason_ja||'—');
+
+ evidence.textContent=
+  '根拠: '+
+  String(suggestion.evidence||'—');
+
+ const decision=crmAiStageDecisionFor.get(c.id)||'pending';
+
+ if(decision==='applied'){
+  applyBtn.disabled=true;
+  applyBtn.textContent='✓ Stage確定済み';
+  dismissBtn.style.display='none';
+ }else if(decision==='dismissed'){
+  applyBtn.style.display='none';
+  dismissBtn.style.display='inline-block';
+  dismissBtn.disabled=true;
+  dismissBtn.textContent='✓ 変更なしで確定';
+ }else{
+  applyBtn.style.display='inline-block';
+  dismissBtn.style.display='inline-block';
+  dismissBtn.disabled=false;
+  dismissBtn.textContent='変更しない';
+
+  if(currentStage===suggestion.stage){
+   applyBtn.disabled=true;
+   applyBtn.textContent='現在のStageと同じ';
+  }else{
+   applyBtn.disabled=false;
+   applyBtn.textContent='Stageを変更';
+  }
+ }
+
+ panel.hidden=false;
+ updateAiGmailStageGate(c);
+}
+
+async function applyAiStageSuggestion(){
+ const c=crmCurrentContact;
+ if(!c?.id)return;
+
+ const suggestion=crmAiStageSuggestionFor.get(c.id);
+ if(!suggestion || suggestion.stage==='none')return;
+
+ const targetStage=suggestion.stage;
+ const currentStage=getRecruitingSchoolStage(c.university_id);
+
+ if(currentStage===targetStage){
+  renderCrmAiStageSuggestion(c);
+  return;
+ }
+
+ if(!confirm(
+  'Recruiting Stageを変更します。\n\n'+
+  recruitingStageLabel(currentStage)+
+  ' → '+
+  recruitingStageLabel(targetStage)+
+  '\n\nAIは提案のみで、この操作で初めて保存されます。'
+ )){
+  return;
+ }
+
+ const ok=await saveRecruitingSchoolStage(
+  c.university_id,
+  targetStage
+ );
+
+ if(!ok)return;
+
+ crmAiStageDecisionFor.set(c.id,'applied');
+
+ renderTable();
+ applyFilters();
+ renderCrmSummary();
+ renderCrmAiStageSuggestion(c);
+}
+
+function dismissAiStageSuggestion(){
+ const c=crmCurrentContact;
+ if(!c?.id)return;
+
+ crmAiStageDecisionFor.set(c.id,'dismissed');
+ renderCrmAiStageSuggestion(c);
+}
 
 function crmAiReplyIsGenerated(c){
  if(!c?.id)return false;
@@ -5905,6 +6084,31 @@ async function generateAiReplyDraft(){
   document.getElementById('crm-ai-items').value=Array.isArray(data.draft.requested_items)
    ? data.draft.requested_items.join(', ')
    : '';
+
+  console.log(
+   'AI Recruiting Stage Suggestion:',
+   data.draft.stage_suggestion
+  );
+
+  const stageSuggestion=data.draft.stage_suggestion;
+
+  if(
+   stageSuggestion &&
+   typeof stageSuggestion==='object' &&
+   stageSuggestion.stage &&
+   stageSuggestion.stage!=='none'
+  ){
+   crmAiStageSuggestionFor.set(
+    c.id,
+    stageSuggestion
+   );
+   crmAiStageDecisionFor.set(c.id,'pending');
+  }else{
+   crmAiStageSuggestionFor.delete(c.id);
+   crmAiStageDecisionFor.set(c.id,'none');
+  }
+
+  renderCrmAiStageSuggestion(c);
 
   crmAiReplyGeneratedFor.set(
    c.id,

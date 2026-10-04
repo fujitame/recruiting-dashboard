@@ -187,6 +187,19 @@ RULES:
 - Do not claim Akihiro matches a researched quality unless that quality is supported by the PLAYER information or other supplied context.
 - Return only the requested structured JSON.
 
+RECRUITING STAGE SUGGESTION RULES:
+- This is only a suggestion. Never claim that the CRM stage has been changed.
+- Base the stage suggestion primarily on the coach's actual reply, not on research.
+- Use "none" when the reply does not clearly support a recruiting-stage change.
+- "id_camp_candidate": the coach mentions an ID camp, camp attendance, or camp as a meaningful next recruiting step, but no specific attendance is confirmed yet.
+- "id_camp_scheduled": only when the coach's reply clearly indicates a concrete planned or expected camp attendance/date. Do not infer merely from a generic camp link.
+- "id_camp_attended": only when the reply clearly confirms the player has already attended the camp.
+- "offer_candidate": only when the coach explicitly communicates strong recruiting advancement or serious offer-level consideration, but no actual offer has been made.
+- "offer_received": only when the coach explicitly makes or confirms an offer. Scholarship discussion alone is not automatically an offer unless the coach clearly states an offer.
+- Never infer an offer from praise, interest, roster discussion, scholarship information, or continued evaluation.
+- If uncertain, return "none".
+- Give a short Japanese reason and a short exact-or-near-exact evidence summary from the coach reply. Do not invent evidence.
+
 COACH / CRM:
 Coach name: ${safeText(contact.coach_name)}
 Coach email: ${safeText(contact.coach_email)}
@@ -214,6 +227,11 @@ Create:
 3. rationale_ja: short Japanese explanation of why this reply is appropriate.
 4. requested_items: list of concrete items/actions the coach requested, if any.
 5. research_used: list of research_id values actually used in the email body. Return an empty list if no research fact was used.
+6. stage_suggestion:
+   - stage: one of "none", "id_camp_candidate", "id_camp_scheduled", "id_camp_attended", "offer_candidate", "offer_received"
+   - confidence: one of "none", "low", "medium", "high"
+   - reason_ja: short Japanese explanation
+   - evidence: short evidence summary based only on the coach's actual reply
 `;
 
     const models = [
@@ -275,6 +293,43 @@ Create:
                       type: "integer",
                     },
                   },
+                  stage_suggestion: {
+                    type: "object",
+                    properties: {
+                      stage: {
+                        type: "string",
+                        enum: [
+                          "none",
+                          "id_camp_candidate",
+                          "id_camp_scheduled",
+                          "id_camp_attended",
+                          "offer_candidate",
+                          "offer_received"
+                        ],
+                      },
+                      confidence: {
+                        type: "string",
+                        enum: [
+                          "none",
+                          "low",
+                          "medium",
+                          "high"
+                        ],
+                      },
+                      reason_ja: {
+                        type: "string",
+                      },
+                      evidence: {
+                        type: "string",
+                      },
+                    },
+                    required: [
+                      "stage",
+                      "confidence",
+                      "reason_ja",
+                      "evidence"
+                    ],
+                  },
                 },
                 required: [
                   "subject",
@@ -282,6 +337,7 @@ Create:
                   "rationale_ja",
                   "requested_items",
                   "research_used",
+                  "stage_suggestion",
                 ],
               },
             },
