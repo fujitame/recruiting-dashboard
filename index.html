@@ -142,6 +142,137 @@ select:focus,input:focus{outline:none;border-color:var(--accent)}
 .crm-kpi.total{background:#edf2f7}.crm-kpi.contacted{background:#ebf8ff}.crm-kpi.followup{background:#fffaf0}.crm-kpi.responded{background:#f0fff4}.crm-kpi.priority{background:#fff5f5;border-color:#fecaca}.crm-kpi.priority b{color:#c53030}.crm-kpi button{border:0;background:none;padding:0;text-align:left;cursor:pointer;width:100%}.crm-kpi button:hover b{text-decoration:underline}
 .crm-summary-tools{grid-column:1/-1;display:flex;align-items:center;gap:7px}.crm-summary-tools label{color:#4a5568;font-size:10px}.crm-summary-tools select{max-width:190px;background:#fff;color:#1f2937;border:1px solid #cbd5e0;padding:5px 7px}
 .crm-actions-panel{padding:8px 10px;background:#f8fafc;border-bottom:1px solid #e2e8f0;display:grid;grid-template-columns:1fr 1fr;gap:8px}.crm-action-box{background:#fff;border:1px solid #e2e8f0;border-radius:7px;padding:8px}.crm-action-box h3{margin:0 0 6px;font-size:11px;color:#1a365d}.crm-action-box.priority{border-color:#fecaca;background:#fffafa}.crm-action-box.priority h3{color:#c53030}.crm-action-item{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-top:1px solid #edf2f7;font-size:10px;line-height:1.35}.crm-action-item:first-child{border-top:0}.crm-action-main{min-width:0}.crm-action-main b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.crm-action-meta{color:#718096;font-size:9px}.crm-action-btn{border:1px solid #cbd5e0;background:#fff;color:#1a365d;border-radius:4px;padding:3px 6px;font-size:9px;font-weight:800;cursor:pointer;white-space:nowrap}.crm-inbound-modal{position:fixed;inset:0;z-index:12000;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;padding:18px}.crm-inbound-modal.open{display:flex}.crm-inbound-card{width:min(460px,100%);background:#fff;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden}.crm-inbound-head{background:#1a365d;color:#fff;padding:13px 15px;display:flex;justify-content:space-between;align-items:flex-start}.crm-inbound-head h3{margin:0;font-size:14px}.crm-inbound-head small{display:block;margin-top:3px;color:#cbd5e0;font-size:9px}.crm-inbound-close{border:0;background:transparent;color:#fff;font-size:20px;cursor:pointer}.crm-inbound-body{padding:14px}.crm-inbound-field{margin-bottom:10px}.crm-inbound-field label{display:block;font-size:10px;font-weight:800;color:#374151;margin-bottom:4px}.crm-inbound-field input,.crm-inbound-field select{width:100%;padding:8px;border:1px solid #cbd5e0;border-radius:6px;background:#fff;color:#1f2937;font-size:11px}.crm-inbound-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:12px}.crm-action-empty{color:#94a3b8;font-size:10px;padding:5px 0}@media(max-width:700px){.crm-actions-panel{grid-template-columns:1fr}}@media(max-width:900px){.crm-summary{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:520px){.crm-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.crm-summary-tools{display:block}.crm-summary-tools select{max-width:none;margin-top:4px}}
+
+/* CRM KPI semantic grouping */
+.crm-summary{
+ display:block;
+ padding:5px 8px;
+}
+.crm-summary-group{
+ display:grid;
+ gap:4px;
+}
+.crm-summary-overview{
+ grid-template-columns:repeat(4,minmax(0,1fr));
+ padding-bottom:5px;
+ margin-bottom:5px;
+ border-bottom:1px solid #e2e8f0;
+}
+.crm-summary-pipeline{
+ grid-template-columns:repeat(6,minmax(0,1fr));
+}
+.crm-summary-tools{
+ margin-top:5px;
+}
+.crm-kpi-closed{
+ background:#f8fafc;
+}
+
+@media(max-width:900px){
+ .crm-summary-overview{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+ }
+ .crm-summary-pipeline{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+ }
+}
+
+@media(max-width:520px){
+ .crm-summary-overview{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+ }
+ .crm-summary-pipeline{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+ }
+}
+
+
+/* CRM search controls */
+.crm-search-tools{
+ display:grid;
+ grid-template-columns:170px 140px minmax(220px,1fr);
+ gap:6px;
+ align-items:end;
+}
+.crm-search-field{
+ min-width:0;
+}
+.crm-search-field label{
+ display:block;
+ margin-bottom:3px;
+ font-size:8px;
+ color:#4a5568;
+ font-weight:700;
+}
+.crm-search-field select,
+.crm-search-field input{
+ width:100%;
+ border:1px solid #cbd5e0;
+ border-radius:5px;
+ background:#fff;
+ color:#1f2937;
+ padding:5px 7px;
+ font-size:9px;
+}
+.crm-search-freeword{
+ min-width:220px;
+}
+.crm-search-tools #crm-summary-note{
+ display:none;
+}
+
+@media(max-width:700px){
+ .crm-search-tools{
+  grid-template-columns:1fr;
+ }
+ .crm-search-freeword{
+  min-width:0;
+ }
+}
+
+
+.crm-school-status{
+ display:inline-block;
+ cursor:default;
+ white-space:normal;
+ line-height:1.2;
+ text-align:center;
+}
+
+
+.stage-select{
+ width:100%;
+ min-width:105px;
+ max-width:125px;
+ padding:4px 5px;
+ border:1px solid #cbd5e0;
+ border-radius:5px;
+ background:#fff;
+ color:#334155;
+ font-size:8.5px;
+ font-weight:700;
+ cursor:pointer;
+}
+.stage-select:disabled{
+ opacity:.6;
+ cursor:wait;
+}
+
+
+/* Compact Contact / CRM columns */
+table td:nth-child(13),
+table td:nth-child(14){
+ white-space:nowrap;
+}
+
+table td:nth-child(13) .gmail-btn,
+table td:nth-child(14) .crm-btn{
+ min-width:24px;
+ padding:3px 4px;
+ margin:0 1px;
+ text-align:center;
+}
+
 /* Phase 5-C: Gmail UI */
 .gmail-btn{display:inline-block;padding:4px 6px;border:0;border-radius:4px;background:#c53030;color:#fff;font-size:10px;font-weight:800;cursor:pointer;margin:0 2px 2px 0}.gmail-modal{position:fixed;inset:0;z-index:11000;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;padding:16px}.gmail-modal.open{display:flex}.gmail-card{width:min(720px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.3);color:#1f2937}.gmail-head{padding:13px 16px;background:#1a365d;color:#fff;display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.gmail-head h2{margin:0;font-size:15px}.gmail-head small{display:block;margin-top:3px;color:#cbd5e0;font-size:10px}.gmail-close{border:0;background:transparent;color:#fff;font-size:22px;cursor:pointer}.gmail-body{padding:14px 16px}.gmail-field{margin-bottom:10px}.gmail-field label{display:block;color:#374151;font-size:10px;font-weight:800;margin-bottom:4px}.gmail-field input,.gmail-field textarea{width:100%;border:1px solid #cbd5e0;border-radius:6px;background:#fff;color:#1f2937;padding:8px;font-size:11px}.gmail-field textarea{min-height:300px;resize:vertical;font-family:inherit;line-height:1.45}.gmail-note{padding:8px 10px;border-radius:6px;background:#eff6ff;color:#1e40af;font-size:10px;line-height:1.45;margin-bottom:10px}.gmail-error{padding:8px 10px;border-radius:6px;background:#fff1f2;color:#be123c;font-size:10px;line-height:1.45;margin-bottom:10px;display:none}.gmail-error.show{display:block}.gmail-actions{display:flex;gap:7px;justify-content:flex-end}.gmail-send{border:0;background:#c53030;color:#fff;border-radius:6px;padding:8px 13px;font-weight:800;cursor:pointer}.gmail-send:disabled{opacity:.55;cursor:not-allowed}.gmail-secondary{border:1px solid #cbd5e0;background:#fff;color:#374151;border-radius:6px;padding:8px 12px;font-weight:700;cursor:pointer}@media(max-width:768px){.gmail-body{padding:12px}.gmail-field textarea{min-height:260px}}
 
@@ -215,7 +346,7 @@ select:focus,input:focus{outline:none;border-color:var(--accent)}
 
 #list-view{padding:6px}
 table{
-  min-width:1410px;
+  min-width:1370px;
   font-size:10px;
 }
 th,td{padding:5px 5px}
@@ -224,48 +355,50 @@ th{font-size:9px}
 /* Table column widths: preserve Scouting, Cost and Coach */
 table th:nth-child(1),table td:nth-child(1){width:28px}
 table th:nth-child(2),table td:nth-child(2){width:34px;text-align:center;color:#718096}
-table th:nth-child(3),table td:nth-child(3){min-width:165px;width:175px}
+table th:nth-child(3),table td:nth-child(3){min-width:155px;width:165px}
 table th:nth-child(4),table td:nth-child(4){width:58px}
-table th:nth-child(5),table td:nth-child(5){width:78px;min-width:72px}
-table th:nth-child(6),table td:nth-child(6){width:88px}
-table th:nth-child(7),table td:nth-child(7){width:42px}
-table th:nth-child(8),table td:nth-child(8){width:96px}
-table th:nth-child(9),table td:nth-child(9){
-  width:245px;
-  min-width:230px;
-  max-width:260px;
-}
+table th:nth-child(5),table td:nth-child(5){width:72px;min-width:68px}
+table th:nth-child(6),table td:nth-child(6){width:110px;min-width:100px}
+table th:nth-child(7),table td:nth-child(7){width:110px;min-width:105px}
+table th:nth-child(8),table td:nth-child(8){width:42px}
+table th:nth-child(9),table td:nth-child(9){width:82px}
 table th:nth-child(10),table td:nth-child(10){
-  width:132px;
-  min-width:125px;
-  max-width:140px;
+  width:215px;
+  min-width:200px;
+  max-width:225px;
 }
 table th:nth-child(11),table td:nth-child(11){
-  width:165px;
-  min-width:155px;
-  max-width:175px;
+  width:120px;
+  min-width:115px;
+  max-width:125px;
 }
-table th:nth-child(12),table td:nth-child(12),
-table th:nth-child(13),table td:nth-child(13){
-  width:98px;
-  min-width:92px;
+table th:nth-child(12),table td:nth-child(12){
+  width:150px;
+  min-width:145px;
+  max-width:160px;
+}
+table th:nth-child(13),table td:nth-child(13),
+table th:nth-child(14),table td:nth-child(14){
+  width:62px;
+  min-width:58px;
+  text-align:center;
 }
 table td:nth-child(3) strong{font-size:10px}
-table td:nth-child(9){
+table td:nth-child(10){
   color:#4a5568;
   line-height:1.25;
   white-space:normal;
   overflow:hidden;
 }
-table td:nth-child(10){
+table td:nth-child(11){
   white-space:nowrap;
   line-height:1.2;
 }
-table td:nth-child(11){
+table td:nth-child(12){
   line-height:1.2;
   white-space:normal;
 }
-table td:nth-child(11)>div{
+table td:nth-child(12)>div{
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
@@ -298,6 +431,134 @@ table td:nth-child(11)>div{
   .main-content{min-height:260px}
 }
 
+
+
+/* Table width rebalance after CRM Stage + merged external links */
+table{
+ min-width:1320px;
+}
+
+/* 1 ★ */
+table th:nth-child(1),table td:nth-child(1){width:28px}
+
+/* 2 No. */
+table th:nth-child(2),table td:nth-child(2){width:34px}
+
+/* 3 University */
+table th:nth-child(3),table td:nth-child(3){
+ width:165px;
+ min-width:155px;
+}
+
+/* 4 Division */
+table th:nth-child(4),table td:nth-child(4){width:58px}
+
+/* 5 Conference */
+table th:nth-child(5),table td:nth-child(5){
+ width:70px;
+ min-width:66px;
+}
+
+/* 6 CRM状況 */
+table th:nth-child(6),table td:nth-child(6){
+ width:124px;
+ min-width:120px;
+}
+
+/* 7 Stage */
+table th:nth-child(7),table td:nth-child(7){
+ width:96px;
+ min-width:92px;
+}
+
+/* 8 SNS / Links */
+table th:nth-child(8),table td:nth-child(8){
+ width:105px;
+ min-width:100px;
+}
+
+/* 9 Scouting — width priority */
+table th:nth-child(9),table td:nth-child(9){
+ width:250px;
+ min-width:235px;
+ max-width:270px;
+}
+
+/* 10 Cost — compact */
+table th:nth-child(10),table td:nth-child(10){
+ width:108px;
+ min-width:102px;
+ max-width:112px;
+}
+
+/* 11 Coach — full names priority */
+table th:nth-child(11),table td:nth-child(11){
+ width:168px;
+ min-width:160px;
+ max-width:none;
+}
+
+/* 12 Contact / 13 CRM */
+table th:nth-child(12),table td:nth-child(12),
+table th:nth-child(13),table td:nth-child(13){
+ width:60px;
+ min-width:56px;
+ text-align:center;
+}
+
+/* external links: compact */
+.external-link-cell{
+ white-space:normal;
+ line-height:1.15;
+}
+.external-link-cell .btn-link{
+ padding:3px 4px;
+ margin:1px;
+ font-size:8px;
+}
+
+/* Scouting */
+table td:nth-child(9){
+ color:#4a5568;
+ line-height:1.25;
+ white-space:normal;
+ overflow:hidden;
+}
+
+/* Cost */
+table td:nth-child(10){
+ white-space:nowrap;
+ line-height:1.15;
+}
+
+/* Coach: never ellipsis names */
+table td:nth-child(11){
+ line-height:1.2;
+ white-space:normal;
+}
+table td:nth-child(11)>div{
+ white-space:normal;
+ overflow:visible;
+ text-overflow:clip;
+}
+table td:nth-child(11) b{
+ white-space:normal;
+ overflow:visible;
+ text-overflow:clip;
+}
+
+/* compact HC / AC action buttons */
+table td:nth-child(12),
+table td:nth-child(13){
+ white-space:nowrap;
+}
+table td:nth-child(12) .gmail-btn,
+table td:nth-child(13) .crm-btn{
+ min-width:24px;
+ padding:3px 4px;
+ margin:0 1px;
+ text-align:center;
+}
 
 /* UI Phase 3 follow-up: restore frozen University column for PC table */
 @media(min-width:769px){
@@ -2040,6 +2301,172 @@ header{
   }
 }
 
+
+
+/* === FINAL TABLE VIEW BALANCE START === */
+
+/* PC Table View final width balance */
+table{
+  min-width:1375px;
+}
+
+/* 1 ★ */
+table th:nth-child(1),
+table td:nth-child(1){
+  width:28px;
+  min-width:28px;
+}
+
+/* 2 No. */
+table th:nth-child(2),
+table td:nth-child(2){
+  width:34px;
+  min-width:34px;
+}
+
+/* 3 University */
+table th:nth-child(3),
+table td:nth-child(3){
+  width:180px;
+  min-width:175px;
+}
+
+/* 4 Division */
+table th:nth-child(4),
+table td:nth-child(4){
+  width:60px;
+  min-width:58px;
+}
+
+/* 5 Conference */
+table th:nth-child(5),
+table td:nth-child(5){
+  width:75px;
+  min-width:70px;
+}
+
+/* 6 CRM状況 */
+table th:nth-child(6),
+table td:nth-child(6){
+  width:126px;
+  min-width:122px;
+}
+
+/* CRM状況ラベルは必ず1行 */
+.crm-school-status{
+  display:inline-flex !important;
+  align-items:center;
+  justify-content:center;
+  width:auto !important;
+  max-width:none !important;
+  white-space:nowrap !important;
+  overflow:visible !important;
+  text-overflow:clip !important;
+  padding-left:6px;
+  padding-right:6px;
+}
+
+/* 7 Stage */
+table th:nth-child(7),
+table td:nth-child(7){
+  width:96px;
+  min-width:92px;
+}
+
+.stage-select{
+  width:100%;
+  min-width:0;
+  max-width:none;
+  padding-left:5px;
+  padding-right:5px;
+}
+
+/* 8 SNS / Links */
+table th:nth-child(8),
+table td:nth-child(8){
+  width:92px;
+  min-width:88px;
+}
+
+.external-link-cell{
+  white-space:nowrap;
+}
+
+.external-link-cell .btn-link{
+  padding:3px 3px;
+  margin:0 1px;
+}
+
+/* 9 Scouting — 情報量を優先 */
+table th:nth-child(9),
+table td:nth-child(9){
+  width:270px;
+  min-width:255px;
+  max-width:285px;
+}
+
+table td:nth-child(9){
+  white-space:normal;
+  line-height:1.25;
+}
+
+/* 10 Cost — コンパクト */
+table th:nth-child(10),
+table td:nth-child(10){
+  width:100px;
+  min-width:96px;
+  max-width:104px;
+}
+
+table td:nth-child(10){
+  white-space:nowrap;
+}
+
+/* 11 Coach — 氏名全文を優先 */
+table th:nth-child(11),
+table td:nth-child(11){
+  width:200px;
+  min-width:190px;
+  max-width:none;
+}
+
+table td:nth-child(11),
+table td:nth-child(11) > div,
+table td:nth-child(11) b{
+  white-space:normal !important;
+  overflow:visible !important;
+  text-overflow:clip !important;
+}
+
+table td:nth-child(11) b{
+  word-break:normal;
+  overflow-wrap:normal;
+}
+
+/* 12 連絡 / 13 CRM */
+table th:nth-child(12),
+table td:nth-child(12),
+table th:nth-child(13),
+table td:nth-child(13){
+  width:58px;
+  min-width:56px;
+  text-align:center;
+}
+
+table td:nth-child(12),
+table td:nth-child(13){
+  white-space:nowrap;
+}
+
+table td:nth-child(12) .gmail-btn,
+table td:nth-child(13) .crm-btn{
+  min-width:24px;
+  padding:3px 4px;
+  margin:0 1px;
+}
+
+/* === FINAL TABLE VIEW BALANCE END === */
+
 </style>
 </head>
 <body>
@@ -2108,7 +2535,7 @@ header{
 
 <div class="control-group"><label>区分:</label><select id="filter-div" onchange="applyFilters()"><option value="all">全区分</option><option value="NCAA D1">NCAA D1</option><option value="NCAA D2">NCAA D2</option><option value="NAIA">NAIA</option></select></div>
 
-<div class="control-group"><label>進捗:</label><select id="filter-status" onchange="applyFilters()"><option value="all">全ステータス</option><option value="未接触">未接触</option><option value="メール送信済">メール送信済</option><option value="返信・関心あり">返信・関心あり</option><option value="IDキャンプ済">IDキャンプ済</option><option value="オファー獲得">オファー獲得</option></select></div>
+<div class="control-group"><label>CRM状況:</label><select id="filter-status" onchange="applyFilters()"><option value="all">全ステータス</option><option value="not_contacted">未連絡</option><option value="deferred">情報不足</option><option value="contacted">送信済・返信待</option><option value="follow_up_due">要Follow-up</option><option value="responded">返信有・対応中</option><option value="no_response">返信無（Follow-up完了）</option><option value="not_a_fit">候補外</option><option value="closed">Close</option></select></div>
 <div class="control-group control-group-search"><label>検索:</label><input type="text" id="search-input" placeholder="大学名・カンファレンス・コーチ名..." oninput="applyFilters()"></div>
 
 <div class="view-toggle-bar">
@@ -2133,7 +2560,7 @@ header{
   <div class="outreach-toolbar">
     <button type="button" class="outreach-filter active" data-outreach-filter="all" onclick="setOutreachFilter('all')">すべて</button>
     <button type="button" class="outreach-filter" data-outreach-filter="waiting" onclick="setOutreachFilter('waiting')">返信待ち</button>
-    <button type="button" class="outreach-filter" data-outreach-filter="due" onclick="setOutreachFilter('due')">Follow-up必要</button>
+    <button type="button" class="outreach-filter" data-outreach-filter="due" onclick="setOutreachFilter('due')">要Follow-up</button>
     <button type="button" class="outreach-filter" data-outreach-filter="responded" onclick="setOutreachFilter('responded')">返信あり</button>
   </div>
 
@@ -2178,15 +2605,59 @@ header{
 </section>
 
 <div id="crm-summary" class="crm-summary" data-recruiting-area="crm" hidden aria-label="連絡状況サマリー">
-<div class="crm-kpi total"><button type="button" onclick="setCrmFilter('all')"><b id="crm-kpi-all-contacts">0</b><span>全CRMコーチ</span></button></div>
-<div class="crm-kpi total"><button type="button" onclick="setCrmFilter('all')"><b id="crm-kpi-total">0</b><span>お気に入り校コーチ</span></button></div>
-<div class="crm-kpi"><button type="button" onclick="setCrmFilter('not_contacted')"><b id="crm-kpi-not-contacted">0</b><span>未連絡</span></button></div>
-<div class="crm-kpi"><button type="button" onclick="setCrmFilter('deferred')"><b id="crm-kpi-deferred">0</b><span>保留・情報不足</span></button></div>
-<div class="crm-kpi contacted"><button type="button" onclick="setCrmFilter('contacted')"><b id="crm-kpi-contacted">0</b><span>連絡済み</span></button></div>
-<div class="crm-kpi followup"><button type="button" onclick="setCrmFilter('follow_up_due')"><b id="crm-kpi-followup">0</b><span>フォローアップ必要</span></button></div>
-<div class="crm-kpi responded"><button type="button" onclick="setCrmFilter('responded')"><b id="crm-kpi-responded">0</b><span>返信・受信あり</span></button></div><div class="crm-kpi priority"><button type="button" onclick="setCrmInterestFilter('high')"><b id="crm-kpi-priority">0</b><span>🔥 要優先確認</span></button></div>
-<div class="crm-kpi"><button type="button" onclick="setCrmFilter('no_response')"><b id="crm-kpi-no-response">0</b><span>返信なし</span></button></div>
-<div class="crm-summary-tools"><label for="crm-filter">連絡状況で絞り込み</label><select id="crm-filter" onchange="setCrmFilter(this.value)"><option value="all">すべて</option><option value="not_contacted">未連絡</option><option value="deferred">保留・情報不足</option><option value="draft_ready">メール準備済み</option><option value="contacted">連絡済み</option><option value="follow_up_due">フォローアップ必要</option><option value="responded">返信あり</option><option value="no_response">返信なし</option><option value="not_a_fit">対象外</option><option value="closed">終了</option></select><span id="crm-summary-note" style="font-size:9px;color:#718096">連絡情報を読み込み中...</span></div>
+
+<div class="crm-summary-group crm-summary-overview">
+ <div class="crm-kpi total"><button type="button" onclick="setCrmFilter('all')"><b id="crm-kpi-all-contacts">0</b><span>全コーチ</span></button></div>
+ <div class="crm-kpi total"><button type="button" onclick="setCrmFilter('all')"><b id="crm-kpi-total">0</b><span>⭐️校コーチ</span></button></div>
+ <div class="crm-kpi"><button type="button" onclick="setCrmFilter('deferred')"><b id="crm-kpi-deferred">0</b><span>情報不足</span></button></div>
+ <div class="crm-kpi crm-kpi-closed"><button type="button" onclick="setCrmFilter('closed')"><b id="crm-kpi-closed">0</b><span>Close</span></button></div>
+</div>
+
+<div class="crm-summary-group crm-summary-pipeline">
+ <div class="crm-kpi"><button type="button" onclick="setCrmFilter('not_contacted')"><b id="crm-kpi-not-contacted">0</b><span>未連絡</span></button></div>
+ <div class="crm-kpi contacted"><button type="button" onclick="setCrmFilter('contacted')"><b id="crm-kpi-contacted">0</b><span>送信済・返信待</span></button></div>
+ <div class="crm-kpi followup"><button type="button" onclick="setCrmFilter('follow_up_due')"><b id="crm-kpi-followup">0</b><span>要Follow-up</span></button></div>
+ <div class="crm-kpi responded"><button type="button" onclick="setCrmFilter('responded')"><b id="crm-kpi-responded">0</b><span>返信有・対応中</span></button></div>
+ <div class="crm-kpi priority"><button type="button" onclick="setCrmInterestFilter('high')"><b id="crm-kpi-priority">0</b><span>🔥 要確認</span></button></div>
+ <div class="crm-kpi"><button type="button" onclick="setCrmFilter('no_response')"><b id="crm-kpi-no-response">0</b><span>返信無<br>（Follow-up完了）</span></button></div>
+</div>
+
+<div class="crm-summary-tools crm-search-tools">
+ <div class="crm-search-field">
+  <label for="crm-search-region">地区</label>
+  <select id="crm-search-region" onchange="renderCrmContactList()">
+   <option value="all">全地域</option>
+   <option value="ca">1. カリフォルニア州</option>
+   <option value="west">2. 西部</option>
+   <option value="fl">3. フロリダ州</option>
+   <option value="tx">4. テキサス州</option>
+   <option value="east">5. 東部</option>
+   <option value="midwest">6. 中西部</option>
+  </select>
+ </div>
+
+ <div class="crm-search-field">
+  <label for="crm-search-div">Division</label>
+  <select id="crm-search-div" onchange="renderCrmContactList()">
+   <option value="all">全区分</option>
+   <option value="NCAA D1">NCAA D1</option>
+   <option value="NCAA D2">NCAA D2</option>
+   <option value="NAIA">NAIA</option>
+  </select>
+ </div>
+
+ <div class="crm-search-field crm-search-freeword">
+  <label for="crm-search-text">Freeword</label>
+  <input
+   id="crm-search-text"
+   type="text"
+   placeholder="大学名・Conference・Coach名..."
+   oninput="renderCrmContactList()"
+  >
+ </div>
+
+ <span id="crm-summary-note" style="font-size:9px;color:#718096">連絡情報を読み込み中...</span>
+</div>
 </div>
 <section id="crm-contact-list-section" class="crm-contact-list-section" data-recruiting-area="crm" hidden>
   <div class="crm-contact-list-head">
@@ -2215,9 +2686,8 @@ header{
             <th>大学名</th>
             <th>Division</th>
             <th>Conference</th>
-            <th>Status</th>
-            <th>IG</th>
-            <th>Links</th>
+            <th>CRM状況</th><th>Stage</th>
+            <th>SNS / Links</th>
             <th>Scouting</th>
             <th>Cost (Ref./Yr.)</th>
             <th>Coach</th>
@@ -2242,11 +2712,11 @@ header{
   </div>
  </div>
 </div>
-<div id="gmail-modal" class="gmail-modal" onclick="if(event.target===this)closeGmailComposer()"><div class="gmail-card" role="dialog" aria-modal="true"><div class="gmail-head"><div><h2 id="gmail-title">Gmail送信</h2><small id="gmail-subtitle"></small></div><button class="gmail-close" type="button" onclick="closeGmailComposer()">×</button></div><div class="gmail-body"><div id="gmail-error" class="gmail-error"></div><div id="gmail-note" class="gmail-note">送信前に宛先・件名・本文を確認してください。通常送信ではCRMを「連絡済み」に更新し、GmailのThread IDを保存します。</div><div class="gmail-field"><label for="gmail-to">宛先</label><input id="gmail-to" type="email" readonly></div><div class="gmail-field"><label for="gmail-subject">件名</label><input id="gmail-subject" type="text"></div><div class="gmail-field"><label for="gmail-body">本文</label><textarea id="gmail-body"></textarea></div><div class="gmail-actions"><button id="gmail-personalize-btn" class="gmail-secondary" type="button" onclick="personalizeGmailDraft()" hidden>✨ Personalize</button><button class="gmail-secondary" type="button" onclick="closeGmailComposer()">キャンセル</button><button id="gmail-send-btn" class="gmail-send" type="button" onclick="sendGmailMessage()">Gmailから送信</button></div></div></div></div>
+<div id="gmail-modal" class="gmail-modal" onclick="if(event.target===this)closeGmailComposer()"><div class="gmail-card" role="dialog" aria-modal="true"><div class="gmail-head"><div><h2 id="gmail-title">Gmail送信</h2><small id="gmail-subtitle"></small></div><button class="gmail-close" type="button" onclick="closeGmailComposer()">×</button></div><div class="gmail-body"><div id="gmail-error" class="gmail-error"></div><div id="gmail-note" class="gmail-note">送信前に宛先・件名・本文を確認してください。通常送信ではCRMを「送信済・返信待」に更新し、GmailのThread IDを保存します。</div><div class="gmail-field"><label for="gmail-to">宛先</label><input id="gmail-to" type="email" readonly></div><div class="gmail-field"><label for="gmail-subject">件名</label><input id="gmail-subject" type="text"></div><div class="gmail-field"><label for="gmail-body">本文</label><textarea id="gmail-body"></textarea></div><div class="gmail-actions"><button id="gmail-personalize-btn" class="gmail-secondary" type="button" onclick="personalizeGmailDraft()" hidden>✨ Personalize</button><button class="gmail-secondary" type="button" onclick="closeGmailComposer()">キャンセル</button><button id="gmail-send-btn" class="gmail-send" type="button" onclick="sendGmailMessage()">Gmailから送信</button></div></div></div></div>
 <aside id="crm-drawer" class="crm-drawer" aria-hidden="true">
 <div class="crm-head"><div><h2 id="crm-title">Recruiting CRM</h2><small id="crm-subtitle"></small></div><button class="crm-close" type="button" onclick="closeCrmDrawer()" aria-label="Close">×</button></div>
 <div class="crm-body"><div class="crm-grid">
-<div class="crm-field"><label for="crm-status">連絡状況</label><select id="crm-status"><option value="not_contacted">未連絡</option><option value="draft_ready">メール準備済み</option><option value="contacted">連絡済み</option><option value="follow_up_due">フォローアップ必要</option><option value="responded">返信あり</option><option value="no_response">返信なし</option><option value="not_a_fit">対象外</option><option value="closed">終了</option></select></div>
+<div class="crm-field"><label for="crm-status">連絡状況</label><select id="crm-status"><option value="not_contacted">未連絡</option><option value="contacted">送信済・返信待</option><option value="follow_up_due">要Follow-up</option><option value="responded">返信有・対応中</option><option value="no_response">返信無（Follow-up完了）</option><option value="not_a_fit">対象外</option><option value="closed">Close</option></select></div>
 <div class="crm-field"><label for="crm-last-contact">最終連絡日</label><input id="crm-last-contact" type="datetime-local"></div>
 <div class="crm-field"><label for="crm-next-action">次のアクション</label><input id="crm-next-action" type="text" placeholder="例：フォローアップメール送信"></div>
 <div class="crm-field"><label for="crm-follow-up">フォローアップ予定日</label><input id="crm-follow-up" type="date"></div>
@@ -2711,7 +3181,7 @@ function openGmailComposer(id,role){
   personalizeBtn.disabled=false;
   personalizeBtn.textContent='✨ Personalize';
  }
- const note=document.getElementById('gmail-note');if(note)note.textContent='送信前に宛先・件名・本文を確認してください。通常送信ではCRMを「連絡済み」に更新し、GmailのThread IDを保存します。';
+ const note=document.getElementById('gmail-note');if(note)note.textContent='送信前に宛先・件名・本文を確認してください。通常送信ではCRMを「送信済・返信待」に更新し、GmailのThread IDを保存します。';
  const u=universities.find(x=>x.id===Number(id));if(!u)return;const d=getGmailDraft(u,role);if(!d.to){alert('このコーチのメールアドレスは登録されていません。');return}
  const key=crmCoachKey(role,role==='head_coach'?u.hc_name:u.ac_name,d.to);gmailCurrentContactId=crmContacts.get(u.id+':'+key)?.id||null;
  document.getElementById('gmail-title').textContent=u.name+' — Gmail送信';document.getElementById('gmail-subtitle').textContent=(role==='head_coach'?'HC':'AC')+': '+(role==='head_coach'?u.hc_name:u.ac_name)+' → '+d.to;
@@ -2997,7 +3467,7 @@ async function sendInitialGmailViaServer(){
   applyFilters();
   await loadCrmHistory(saved.id);
 
-  alert('Gmailを送信しました。CRMも「連絡済み」に更新しました。');
+  alert('Gmailを送信しました。CRMも「送信済・返信待」に更新しました。');
 
   closeGmailComposer();
 
@@ -3090,7 +3560,7 @@ async function sendFollowUpGmailViaServer(){
   if(data.follow_up_number===2){
    alert(
     'Follow-up #2を送信しました。\n'+
-    'CRMを「返信なし」に更新し、自動Follow-upを停止しました。'
+    'CRMを「返信無（Follow-up完了）」に更新し、自動Follow-upを停止しました。'
    );
   }else{
    alert(
@@ -3746,7 +4216,65 @@ function staffFlag(u){const s=u.staff_status;return s==='verified'?'<span class=
 function mailButton(label,href,kind){return href?`<a class="btn-link ${kind}" href="${href}" title="Mail ${label}">${label}</a>`:`<span class="btn-link ${kind} disabled-mail" title="Official/current email not confirmed">${label} —</span>`}
 
 
-const CRM_STATUS_LABELS={not_contacted:'未連絡',draft_ready:'メール準備済み',contacted:'連絡済み',follow_up_due:'フォローアップ必要',responded:'返信・受信あり',no_response:'返信なし',not_a_fit:'対象外',closed:'終了'};
+const recruitingSchoolPipeline=new Map();
+
+const RECRUITING_STAGE_LABELS={
+ none:'No Stage',
+ id_camp_candidate:'ID Camp候補',
+ id_camp_scheduled:'ID Camp予定',
+ id_camp_attended:'ID Camp参加済',
+ offer_candidate:'Offer候補',
+ offer_received:'Offer獲得'
+};
+
+function recruitingStageLabel(stage){
+ return RECRUITING_STAGE_LABELS[stage]||'No Stage';
+}
+
+function getRecruitingSchoolStage(universityId){
+ const row=recruitingSchoolPipeline.get(Number(universityId));
+ return row?.recruiting_stage||'none';
+}
+
+async function saveRecruitingSchoolStage(universityId,stage){
+ const allowed=Object.keys(RECRUITING_STAGE_LABELS);
+
+ if(!allowed.includes(stage)){
+  alert('Recruiting Stageの値が不正です。');
+  return false;
+ }
+
+ const payload={
+  owner_user_id:DASHBOARD_OWNER_ID,
+  university_id:Number(universityId),
+  recruiting_stage:stage,
+  updated_at:new Date().toISOString()
+ };
+
+ const {data,error}=await supabaseClient
+  .from('recruiting_school_pipeline')
+  .upsert(
+   payload,
+   {onConflict:'owner_user_id,university_id'}
+  )
+  .select('*')
+  .single();
+
+ if(error){
+  console.error('Recruiting Stage save failed:',error);
+  alert('Recruiting Stageの保存に失敗しました: '+error.message);
+  return false;
+ }
+
+ recruitingSchoolPipeline.set(
+  Number(data.university_id),
+  data
+ );
+
+ return true;
+}
+
+const CRM_STATUS_LABELS={not_contacted:'未連絡',draft_ready:'未連絡',contacted:'送信済・返信待',follow_up_due:'要Follow-up',responded:'返信有・対応中',no_response:'返信無（Follow-up完了）',not_a_fit:'対象外',closed:'Close'};
 let crmContacts=new Map(),crmHistory=[],crmInboundLeads=[],crmCurrentContact=null,crmInboundCreateLeadId=null,crmAvailable=false,crmFilter='all',crmInterestFilter='all';
 function crmCoachKey(role,name,email){const e=(email||'').trim().toLowerCase(),n=(name||'').trim().toLowerCase().replace(/\s+/g,' ');return role+':'+(e?'email:'+e:'name:'+n)}
 function crmEsc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -3761,6 +4289,7 @@ async function loadCrmContacts(){
   await ensureMissingCrmContacts();
   await syncFollowUpDueStatuses();
   await loadInboundLeads();
+  await loadRecruitingSchoolPipeline();
   renderCrmSummary();
   renderCrmActionList();
   return true;
@@ -3800,6 +4329,35 @@ async function syncFollowUpDueStatuses(){
   crmContacts.set(data.university_id+':'+data.coach_key,data);
  }
 }
+async function loadRecruitingSchoolPipeline(){
+ recruitingSchoolPipeline.clear();
+
+ if(!supabaseClient||!DASHBOARD_OWNER_ID){
+  return false;
+ }
+
+ try{
+  const {data,error}=await supabaseClient
+   .from('recruiting_school_pipeline')
+   .select('*')
+   .eq('owner_user_id',DASHBOARD_OWNER_ID);
+
+  if(error)throw error;
+
+  (data||[]).forEach(row=>{
+   recruitingSchoolPipeline.set(
+    Number(row.university_id),
+    row
+   );
+  });
+
+  return true;
+ }catch(err){
+  console.warn('Recruiting school pipeline load failed:',err);
+  return false;
+ }
+}
+
 async function loadInboundLeads(){
  crmInboundLeads=[];
  if(!supabaseClient||!DASHBOARD_OWNER_ID)return false;
@@ -4286,7 +4844,7 @@ function renderOutreachArea(){
   const u=r.university;
 
   const statusClass=r.responded?'responded':r.due?'due':'waiting';
-  const statusText=r.responded?'返信あり':r.due?'Follow-up必要':'返信待ち';
+  const statusText=r.responded?'返信あり':r.due?'要Follow-up':'返信待ち';
 
   const waitingText=
    r.waitingDays===null
@@ -4568,19 +5126,19 @@ function crmContactMatchesCurrentFilter(c){
 }
 
 function crmContactCurrentFilterLabel(){
- if(crmInterestFilter==='high')return '🔥 要優先確認';
+ if(crmInterestFilter==='high')return '🔥 要確認';
 
  const labels={
   all:'連絡先コーチ',
   not_contacted:'未連絡',
   deferred:'保留・情報不足',
-  draft_ready:'メール準備済み',
-  contacted:'連絡済み',
-  follow_up_due:'フォローアップ必要',
-  responded:'返信・受信あり',
-  no_response:'返信なし',
+  draft_ready:'未連絡',
+  contacted:'送信済・返信待',
+  follow_up_due:'要Follow-up',
+  responded:'返信有・対応中',
+  no_response:'返信無（Follow-up完了）',
   not_a_fit:'対象外',
-  closed:'終了'
+  closed:'Close'
  };
 
  return labels[crmFilter]||'CRM Contacts';
@@ -4625,6 +5183,12 @@ function renderCrmContactList(){
  const section=document.getElementById('crm-contact-list-section');
  if(!el||!section)return;
 
+ const crmRegion=document.getElementById('crm-search-region')?.value||'all';
+ const crmDiv=document.getElementById('crm-search-div')?.value||'all';
+ const crmSearch=(document.getElementById('crm-search-text')?.value||'')
+  .trim()
+  .toLowerCase();
+
  const contacts=crmFavoriteContacts()
   .filter(crmContactMatchesCurrentFilter)
   .map(c=>({
@@ -4632,6 +5196,35 @@ function renderCrmContactList(){
    university:universities.find(u=>Number(u.id)===Number(c.university_id))
   }))
   .filter(r=>r.university)
+  .filter(r=>{
+   const c=r.contact;
+   const u=r.university;
+
+   const regionOk=
+    crmRegion==='all' ||
+    candidateRegion(u)===crmRegion;
+
+   const divOk=
+    crmDiv==='all' ||
+    u.div===crmDiv;
+
+   const freeword=[
+    u.name,
+    u.conf,
+    c.coach_name,
+    c.coach_email,
+    c.coach_role
+   ]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase();
+
+   const searchOk=
+    !crmSearch ||
+    freeword.includes(crmSearch);
+
+   return regionOk && divOk && searchOk;
+  })
   .sort((a,b)=>{
    const school=a.university.name.localeCompare(b.university.name);
    if(school!==0)return school;
@@ -4700,10 +5293,10 @@ function renderCrmSummary(){
   c.contact_status==='not_contacted' && crmContactIsDeferred(c)
  ).length;
  const high=values.filter(c=>c.interest_level==='high' && c.contact_status==='responded').length;
- const ids={'crm-kpi-all-contacts':allValues.length,'crm-kpi-total':values.length,'crm-kpi-not-contacted':actionableNotContacted,'crm-kpi-deferred':deferred,'crm-kpi-contacted':count('contacted'),'crm-kpi-followup':count('follow_up_due'),'crm-kpi-responded':count('responded'),'crm-kpi-no-response':count('no_response'),'crm-kpi-priority':high};
+ const ids={'crm-kpi-all-contacts':allValues.length,'crm-kpi-total':values.length,'crm-kpi-deferred':deferred,'crm-kpi-closed':count('closed'),'crm-kpi-not-contacted':actionableNotContacted,'crm-kpi-contacted':count('contacted'),'crm-kpi-followup':count('follow_up_due'),'crm-kpi-responded':count('responded'),'crm-kpi-no-response':count('no_response'),'crm-kpi-priority':high};
  Object.entries(ids).forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.textContent=v});
  const filter=document.getElementById('crm-filter');if(filter)filter.value=crmFilter;
- const note=document.getElementById('crm-summary-note');if(note)note.textContent=crmAvailable?'全CRM '+allValues.length+'名 / お気に入り学校 '+universities.filter(u=>u.fav).length+'校・コーチ '+values.length+'名を管理中。未連絡・連絡済み等のKPIはお気に入り校を対象に集計しています。🔥は返信内容から自動的に高関心と判定された案件です。':'CRM data unavailable.';
+ const note=document.getElementById('crm-summary-note');if(note)note.textContent=crmAvailable?'全CRM '+allValues.length+'名 / お気に入り学校 '+universities.filter(u=>u.fav).length+'校・コーチ '+values.length+'名を管理中。未連絡・送信済・返信待等のKPIはお気に入り校を対象に集計しています。🔥は返信内容から自動的に高関心と判定された案件です。':'CRM data unavailable.';
 }
 function crmStatusLabel(status){return CRM_STATUS_LABELS[status]||status||'未設定'}
 function crmDateOnlyLocal(v){if(!v)return null;const d=new Date(v+'T00:00:00');return Number.isNaN(d.getTime())?null:d}
@@ -5056,7 +5649,7 @@ function createPopupContent(u){
       <small>${crmEsc(u.div)} · ${crmEsc(u.conf)}</small>
      </div>
     </div>
-    <span class="candidate-status ${getStatusClass(u.status)}">${crmEsc(u.status||'未接触')}</span>
+    ${(()=>{const s=schoolCrmState(u);return `<span class="candidate-status ${schoolCrmStatusClass(s.state)}">${crmEsc(s.label)}</span>`})()}
    </div>
 
    <div class="candidate-info-block">
@@ -5153,7 +5746,7 @@ function renderMobileSchoolCards(){
        <small>${crmEsc(u.div)} · ${crmEsc(u.conf)}</small>
       </div>
      </div>
-     <span class="candidate-status ${getStatusClass(u.status)}">${crmEsc(u.status||'未接触')}</span>
+     ${(()=>{const s=schoolCrmState(u);return `<span class="candidate-status ${schoolCrmStatusClass(s.state)}">${crmEsc(s.label)}</span>`})()}
     </div>
 
     <div class="candidate-info-block">
@@ -5220,7 +5813,194 @@ function renderMobileSchoolCards(){
  }).join('');
 }
 
-function renderTable(){renderMobileSchoolCards();const tbody=document.getElementById('table-body');tbody.innerHTML='';visibleUniversities().forEach(u=>{const tr=document.createElement('tr');const {hcLink,acLink}=getEmailLinks(u);const igLabel='IG';tr.id=`row-${u.id}`;tr.innerHTML=`<td><button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button></td><td>${u.id}</td><td><strong>${u.name}</strong></td><td><span class="badge ${badgeClass(u.div)}">${u.div}</span></td><td>${u.conf}</td><td><select class="status-select ${getStatusClass(u.status)}" onchange="updateStatus(${u.id},this.value)"><option value="未接触" ${u.status==='未接触'?'selected':''}>未接触</option><option value="メール送信済" ${u.status==='メール送信済'?'selected':''}>メール送信済</option><option value="返信・関心あり" ${u.status==='返信・関心あり'?'selected':''}>返信・関心あり</option><option value="IDキャンプ済" ${u.status==='IDキャンプ済'?'selected':''}>IDキャンプ済</option><option value="オファー獲得" ${u.status==='オファー獲得'?'selected':''}>オファー獲得</option></select></td><td><a class="btn-link btn-ig" href="${u.ig}" target="_blank" rel="noopener noreferrer">${igLabel}</a></td><td><a class="btn-link btn-fac" href="${u.facility}" target="_blank" rel="noopener noreferrer">施設</a><a class="btn-link btn-ros" href="${u.roster}" target="_blank" rel="noopener noreferrer">Roster</a></td><td>${u.desc}</td><td>${costHtml(u)}</td><td class="coach-cell"><div class="coach-row"><span>HC</span><b>${u.hc_name||'Coach'}</b></div><div class="coach-row"><span>AC</span><b>${u.ac_name||'Coach'}</b></div><div class="${u.staff_status==='verified'?'staff-flag':u.staff_status==='partial'?'staff-flag partial':'staff-flag review'}">${u.staff_status==='verified'?'✓ Verified':u.staff_status==='partial'?'△ Verify':'⚠ Verify'}</div></td><td class="action-cell"><button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'head_coach')">Gmail HC</button><button class="gmail-btn" type="button" onclick="openGmailComposer(${u.id},'assistant_coach')">Gmail AC</button></td><td class="action-cell"><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'head_coach')">CRM HC</button><button class="crm-btn" type="button" onclick="openCrmDrawer(${u.id},'assistant_coach')">CRM AC</button></td>`;tbody.appendChild(tr)})}
+function schoolCrmState(u){
+ const rows=crmCoachRows(u)
+  .map(coach=>{
+   const key=crmCoachKey(
+    coach.role,
+    coach.name,
+    coach.email
+   );
+   return crmContacts.get(u.id+':'+key)||null;
+  })
+  .filter(Boolean);
+
+ if(!rows.length){
+  return {
+   state:'not_contacted',
+   label:'未連絡',
+   priority:false
+  };
+ }
+
+ const hasHigh=rows.some(c=>
+  c.contact_status==='responded' &&
+  c.interest_level==='high'
+ );
+
+ const hasResponded=rows.some(c=>
+  c.contact_status==='responded' ||
+  Boolean(String(c.coach_response||'').trim())
+ );
+
+ if(hasResponded){
+  return {
+   state:'responded',
+   label:hasHigh
+    ? '🔥 返信有・対応中'
+    : '返信有・対応中',
+   priority:hasHigh
+  };
+ }
+
+ if(rows.some(c=>c.contact_status==='follow_up_due')){
+  return {
+   state:'follow_up_due',
+   label:'要Follow-up',
+   priority:false
+  };
+ }
+
+ if(rows.some(c=>c.contact_status==='contacted')){
+  return {
+   state:'contacted',
+   label:'送信済・返信待',
+   priority:false
+  };
+ }
+
+ const actionableNotContacted=rows.some(c=>
+  c.contact_status==='not_contacted' &&
+  !crmContactIsDeferred(c)
+ );
+
+ if(actionableNotContacted){
+  return {
+   state:'not_contacted',
+   label:'未連絡',
+   priority:false
+  };
+ }
+
+ const deferred=rows.some(c=>
+  c.contact_status==='not_contacted' &&
+  crmContactIsDeferred(c)
+ );
+
+ if(deferred){
+  return {
+   state:'deferred',
+   label:'情報不足',
+   priority:false
+  };
+ }
+
+ if(rows.some(c=>c.contact_status==='no_response')){
+  return {
+   state:'no_response',
+   label:'返信無（Follow-up完了）',
+   priority:false
+  };
+ }
+
+ const allClosed=rows.every(c=>
+  c.contact_status==='closed'
+ );
+
+ if(allClosed){
+  return {
+   state:'closed',
+   label:'Close',
+   priority:false
+  };
+ }
+
+ const allTerminal=rows.every(c=>
+  ['closed','not_a_fit'].includes(c.contact_status)
+ );
+
+ if(allTerminal){
+  return {
+   state:'not_a_fit',
+   label:'候補外',
+   priority:false
+  };
+ }
+
+ return {
+  state:'not_contacted',
+  label:'未連絡',
+  priority:false
+ };
+}
+
+function recruitingStageSelectHtml(u){
+ const current=getRecruitingSchoolStage(u.id);
+
+ return `
+  <select
+   class="stage-select"
+   data-university-id="${u.id}"
+   data-current-stage="${crmEsc(current)}"
+   onchange="updateRecruitingSchoolStage(${u.id},this)"
+  >
+   <option value="none" ${current==='none'?'selected':''}>No Stage</option>
+   <option value="id_camp_candidate" ${current==='id_camp_candidate'?'selected':''}>ID Camp候補</option>
+   <option value="id_camp_scheduled" ${current==='id_camp_scheduled'?'selected':''}>ID Camp予定</option>
+   <option value="id_camp_attended" ${current==='id_camp_attended'?'selected':''}>ID Camp参加済</option>
+   <option value="offer_candidate" ${current==='offer_candidate'?'selected':''}>Offer候補</option>
+   <option value="offer_received" ${current==='offer_received'?'selected':''}>Offer獲得</option>
+  </select>
+ `;
+}
+
+async function updateRecruitingSchoolStage(universityId,selectEl){
+ const newStage=selectEl.value;
+ const previousStage=
+  selectEl.dataset.currentStage ||
+  getRecruitingSchoolStage(universityId);
+
+ selectEl.disabled=true;
+
+ try{
+  const ok=await saveRecruitingSchoolStage(
+   universityId,
+   newStage
+  );
+
+  if(!ok){
+   selectEl.value=previousStage;
+   return;
+  }
+
+  selectEl.dataset.currentStage=newStage;
+ }catch(err){
+  console.error('Recruiting Stage update failed:',err);
+  selectEl.value=previousStage;
+  alert(
+   'Recruiting Stageの保存に失敗しました: '+
+   (err?.message||'unknown error')
+  );
+ }finally{
+  selectEl.disabled=false;
+ }
+}
+
+function schoolCrmStatusClass(state){
+ const map={
+  not_contacted:'status-uncontacted',
+  deferred:'status-uncontacted',
+  contacted:'status-sent',
+  follow_up_due:'status-sent',
+  responded:'status-replied',
+  no_response:'status-uncontacted',
+  not_a_fit:'status-uncontacted',
+  closed:'status-uncontacted'
+ };
+ return map[state]||'status-uncontacted';
+}
+
+function renderTable(){renderMobileSchoolCards();const tbody=document.getElementById('table-body');tbody.innerHTML='';visibleUniversities().forEach(u=>{const tr=document.createElement('tr');const {hcLink,acLink}=getEmailLinks(u);const igLabel='IG';tr.id=`row-${u.id}`;tr.innerHTML=`<td><button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button></td><td>${u.id}</td><td><strong>${u.name}</strong></td><td><span class="badge ${badgeClass(u.div)}">${u.div}</span></td><td>${u.conf}</td><td>${(()=>{const s=schoolCrmState(u);return `<span class="status-select ${schoolCrmStatusClass(s.state)} crm-school-status">${crmEsc(s.label)}</span>`})()}</td><td>${recruitingStageSelectHtml(u)}</td><td class="external-link-cell"><a class="btn-link btn-ig" href="${u.ig}" target="_blank" rel="noopener noreferrer">IG</a><a class="btn-link btn-fac" href="${u.facility}" target="_blank" rel="noopener noreferrer">施設</a><a class="btn-link btn-ros" href="${u.roster}" target="_blank" rel="noopener noreferrer">Roster</a></td><td>${u.desc}</td><td>${costHtml(u)}</td><td class="coach-cell"><div class="coach-row"><span>HC</span><b>${u.hc_name||'Coach'}</b></div><div class="coach-row"><span>AC</span><b>${u.ac_name||'Coach'}</b></div><div class="${u.staff_status==='verified'?'staff-flag':u.staff_status==='partial'?'staff-flag partial':'staff-flag review'}">${u.staff_status==='verified'?'✓ Verified':u.staff_status==='partial'?'△ Verify':'⚠ Verify'}</div></td><td class="action-cell"><button class="gmail-btn" type="button" title="HCへメール" onclick="openGmailComposer(${u.id},'head_coach')">HC</button><button class="gmail-btn" type="button" title="ACへメール" onclick="openGmailComposer(${u.id},'assistant_coach')">AC</button></td><td class="action-cell"><button class="crm-btn" type="button" title="HCのCRM" onclick="openCrmDrawer(${u.id},'head_coach')">HC</button><button class="crm-btn" type="button" title="ACのCRM" onclick="openCrmDrawer(${u.id},'assistant_coach')">AC</button></td>`;tbody.appendChild(tr)})}
 
 function getStatusClass(status){switch(status){case'メール送信済':return'status-sent';case'返信・関心あり':return'status-replied';case'IDキャンプ済':return'status-camp';case'オファー獲得':return'status-offer';default:return'status-uncontacted'}}
 
@@ -5276,7 +6056,7 @@ function candidateRegion(u){
  return map[cat]||cat;
 }
 
-function applyFilters(){updateFavoriteButtonCount();const reg=document.getElementById('filter-region')?.value||'all';const div=document.getElementById('filter-div')?.value||'all';const stat=document.getElementById('filter-status')?.value||'all';const search=(document.getElementById('search-input')?.value||'').toLowerCase();const bounds=window.L&&map?L.latLngBounds():null;let visible=0;universities.forEach(u=>{const okMode=testMode?isTestUniversityId(u.id):!isTestUniversityId(u.id);const okReg=reg==='all'||candidateRegion(u)===reg;const okDiv=div==='all'||u.div===div;const okStat=stat==='all'||u.status===stat;const q=(u.name+' '+u.conf+' '+(u.hc_name||'')+' '+(u.ac_name||'')).toLowerCase();const okSearch=q.includes(search);const okFav=!showFavOnly||u.fav;const crmRows=crmCoachRows(u);const okCrm=crmFilter==='all'||crmRows.some(c=>{const row=crmContacts.get(u.id+':'+crmCoachKey(c.role,c.name,c.email));return row&&(row.contact_status===crmFilter||(crmInterestFilter==='high'&&row.interest_level==='high'&&row.contact_status==='responded'))});const ok=okMode&&okReg&&okDiv&&okStat&&okSearch&&okFav&&okCrm;const row=document.getElementById(`row-${u.id}`);if(row)row.style.display=ok?'':'none';const mobileCard=document.getElementById(`mobile-card-${u.id}`);if(mobileCard)mobileCard.style.display=ok?'':'none';const marker=markers.find(m=>m.data.id===u.id);if(marker&&map){if(ok){marker.instance.addTo(map);bounds&&bounds.extend([u.lat,u.lng]);visible++;}else{if(map.hasLayer(marker.instance))map.removeLayer(marker.instance);}}else if(ok){visible++;}});if(map&&bounds&&visible>0&&reg!=='all')map.fitBounds(bounds,{padding:[30,30]});else if(map&&reg==='all')map.setView([37.0902,-95.7129],4)}
+function applyFilters(){updateFavoriteButtonCount();const reg=document.getElementById('filter-region')?.value||'all';const div=document.getElementById('filter-div')?.value||'all';const stat=document.getElementById('filter-status')?.value||'all';const search=(document.getElementById('search-input')?.value||'').toLowerCase();const bounds=window.L&&map?L.latLngBounds():null;let visible=0;universities.forEach(u=>{const okMode=testMode?isTestUniversityId(u.id):!isTestUniversityId(u.id);const okReg=reg==='all'||candidateRegion(u)===reg;const okDiv=div==='all'||u.div===div;const schoolStatus=schoolCrmState(u);const okStat=stat==='all'||schoolStatus.state===stat;const q=(u.name+' '+u.conf+' '+(u.hc_name||'')+' '+(u.ac_name||'')).toLowerCase();const okSearch=q.includes(search);const okFav=!showFavOnly||u.fav;const crmRows=crmCoachRows(u);const okCrm=crmFilter==='all'||crmRows.some(c=>{const row=crmContacts.get(u.id+':'+crmCoachKey(c.role,c.name,c.email));return row&&(row.contact_status===crmFilter||(crmInterestFilter==='high'&&row.interest_level==='high'&&row.contact_status==='responded'))});const ok=okMode&&okReg&&okDiv&&okStat&&okSearch&&okFav&&okCrm;const row=document.getElementById(`row-${u.id}`);if(row)row.style.display=ok?'':'none';const mobileCard=document.getElementById(`mobile-card-${u.id}`);if(mobileCard)mobileCard.style.display=ok?'':'none';const marker=markers.find(m=>m.data.id===u.id);if(marker&&map){if(ok){marker.instance.addTo(map);bounds&&bounds.extend([u.lat,u.lng]);visible++;}else{if(map.hasLayer(marker.instance))map.removeLayer(marker.instance);}}else if(ok){visible++;}});if(map&&bounds&&visible>0&&reg!=='all')map.fitBounds(bounds,{padding:[30,30]});else if(map&&reg==='all')map.setView([37.0902,-95.7129],4)}
 
 function switchView(view){currentView=view;const mapEl=document.getElementById('map-view');const listEl=document.getElementById('list-view');document.getElementById('btn-map').classList.toggle('active',view==='map');document.getElementById('btn-list').classList.toggle('active',view==='list');mapEl.style.display=view==='map'?'block':'none';listEl.style.display=view==='list'?'block':'none';if(view==='map'&&map){setTimeout(()=>{map.invalidateSize({pan:false});applyFilters()},50);setTimeout(()=>map.invalidateSize({pan:false}),250)}}
 async function loadDataFromCloud(){
