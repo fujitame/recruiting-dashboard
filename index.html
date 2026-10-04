@@ -3125,6 +3125,115 @@ function getFollowUpDraft(u,contact){
  return {to:contact.coach_email||'',subject,body,followNo};
 }
 
+function getConversationFollowUpDraft(u,contact){
+ const coach=contact.coach_name||'Coach';
+ const subject=getGmailDraft(u,contact.coach_role).subject;
+
+ const body=
+  'Dear Coach '+getCoachLastName(coach)+',\n\n'+
+  'I wanted to follow up on my previous message and see if there have been any updates.\n\n'+
+  'I remain very interested in '+u.name+
+  ' and would appreciate any feedback when you have a chance.\n\n'+
+  'Thank you again for your time.\n\n'+
+  'Best regards,\n\n'+
+  CURRENT_PLAYER.name+'\n'+
+  CURRENT_PLAYER.school+" Men's Soccer "+CURRENT_PLAYER.jersey+'\n'+
+  'Email: '+CURRENT_PLAYER.email+'\n'+
+  'Phone: '+CURRENT_PLAYER.phone+'\n'+
+  'Instagram: @'+CURRENT_PLAYER.instagram;
+
+ return {
+  to:contact.coach_email||'',
+  subject,
+  body
+ };
+}
+
+function openConversationFollowUpComposer(contactId){
+ gmailTestMode=false;
+ gmailSendMode='conversation_followup';
+
+ gmailInitialPersonalized=false;
+ gmailInitialResearchIds=[];
+ gmailFollowUpPersonalized=false;
+ gmailFollowUpResearchIds=[];
+
+ const personalizeBtn=document.getElementById('gmail-personalize-btn');
+ if(personalizeBtn)personalizeBtn.hidden=true;
+
+ const contact=Array.from(crmContacts.values())
+  .find(x=>x.id===contactId);
+
+ if(!contact){
+  alert('CRM Contactが見つかりません。Dashboardを再読み込みしてください。');
+  return;
+ }
+
+ if(!contact.coach_email){
+  alert('このコーチのメールアドレスは登録されていません。');
+  return;
+ }
+
+ if(!contact.gmail_thread_id){
+  alert('Gmail Thread IDがないためConversation Follow-upを作成できません。');
+  return;
+ }
+
+ if(contact.contact_status!=='responded'){
+  alert('Conversation Follow-upは返信ありのContactのみ対象です。');
+  return;
+ }
+
+ const conversation=crmConversationState(contact.id);
+
+ if(conversation.state!=='conversation_follow_up_due'){
+  alert('このContactはまだConversation Follow-up期限ではありません。');
+  return;
+ }
+
+ const u=universities.find(
+  x=>Number(x.id)===Number(contact.university_id)
+ );
+
+ if(!u){
+  alert('大学データが見つかりません。');
+  return;
+ }
+
+ const d=getConversationFollowUpDraft(u,contact);
+
+ gmailCurrentContactId=contact.id;
+
+ const roleLabel=
+  contact.coach_role==='head_coach'
+   ?'HC'
+   :contact.coach_role==='assistant_coach'
+    ?'AC'
+    :'Other';
+
+ document.getElementById('gmail-title').textContent=
+  u.name+' — Conversation Follow-up';
+
+ document.getElementById('gmail-subtitle').textContent=
+  roleLabel+': '+contact.coach_name+' → '+d.to;
+
+ const note=document.getElementById('gmail-note');
+
+ if(note){
+  note.textContent=
+   'Conversation Follow-upの文案です。送信前に必ず内容を確認・編集してください。自動送信は行いません。';
+ }
+
+ document.getElementById('gmail-to').value=d.to;
+ document.getElementById('gmail-subject').value=d.subject;
+ document.getElementById('gmail-body').value=d.body;
+
+ document.getElementById('gmail-error').textContent='';
+
+ document.getElementById('gmail-modal').classList.add('open');
+ document.getElementById('gmail-modal').setAttribute('aria-hidden','false');
+}
+
 function openFollowUpComposer(contactId){
  gmailTestMode=false;
  gmailSendMode='followup';
@@ -3582,7 +3691,142 @@ async function sendFollowUpGmailViaServer(){
  }
 }
 
+async function sendConversationFollowUpGmailViaServer(){
+ const btn=document.getElementById('gmail-send-btn');
+ const subject=document.getElementById('gmail-subject').value.trim();
+ const body=document.getElementById('gmail-body').value;
+
+ const contact=Array.from(crmContacts.values())
+  .find(x=>x.id===gmailCurrentContactId);
+
+ showGmailError('');
+
+ if(!contact){
+  showGmailError('CRM Contactを確認できません。');
+  return;
+ }
+
+ if(!subject||!body.trim()){
+  showGmailError('件名・本文を確認してください。');
+  return;
+ }
+
+ const conversation=crmConversationState(contact.id);
+
+ if(conversation.state!=='conversation_follow_up_due'){
+  showGmailError(
+   'Conversation Follow-up期限ではありません。Coachから新しい返信がないか確認してください。'
+  );
+  return;
+ }
+
+ if(!confirm(
+  'Conversation Follow-upを送信します。\n\n'+
+  '送信先: '+contact.coach_email+'\n\n'+
+  '通常のFollow-up回数には加算されません。\n\n'+
+  'よろしいですか？'
+ )){
+  return;
+ }
+
+ btn.disabled=true;
+ btn.textContent='送信中...';
+
+ try{
+  const {data,error}=await supabaseClient.functions.invoke(
+   'recruiting-gmail-conversation-followup-send',
+   {
+    body:{
+     contact_id:contact.id,
+     subject,
+     body,
+     test_force_due:
+      testMode &&
+      Number(contact.university_id)>=900 &&
+      Number(contact.university_id)<=999
+    }
+   }
+  );
+
+  if(error){
+   let detail='';
+   try{
+    detail=await error.context?.clone?.().text?.();
+   }catch{}
+
+   throw new Error(
+    detail||
+    error.message||
+    'Conversation Follow-up送信に失敗しました。'
+   );
+  }
+
+  if(!data?.ok||!data?.contact){
+   throw new Error(
+    data?.error||
+    'Conversation Follow-up送信に失敗しました。'
+   );
+  }
+
+  const saved=data.contact;
+
+  crmContacts.set(
+   saved.university_id+':'+saved.coach_key,
+   saved
+  );
+
+  crmCurrentContact=saved;
+
+  await loadConversationReplyTimeline();
+
+  renderCrmSummary();
+  renderCrmActionList();
+  applyFilters();
+
+  if(
+   document.getElementById('crm-drawer')
+    ?.classList.contains('open')
+  ){
+   updateCrmNextActions(saved);
+   await loadCrmHistory(saved.id);
+  }
+
+  alert(
+   'Conversation Follow-upを送信しました。\n'+
+   'CRM Statusは「返信有・対応中」のままです。\n'+
+   '通常のFollow-up回数には加算していません。'
+  );
+
+  closeGmailComposer();
+
+ }catch(err){
+  console.error(
+   'Conversation Follow-up Gmail send failed:',
+   err
+  );
+
+  showGmailError(
+   err.message||
+   'Conversation Follow-up送信に失敗しました。'
+  );
+
+ }finally{
+  if(
+   document.getElementById('gmail-modal')
+    ?.classList.contains('open')
+  ){
+   btn.disabled=false;
+   btn.textContent='Gmailから送信';
+  }
+ }
+}
+
 async function sendGmailMessage(){
+ if(gmailSendMode==='conversation_followup'){
+  await sendConversationFollowUpGmailViaServer();
+  return;
+ }
+
  if(gmailSendMode==='reply'){
   await sendAiGmailReply();
   return;
@@ -4276,6 +4520,7 @@ async function saveRecruitingSchoolStage(universityId,stage){
 
 const CRM_STATUS_LABELS={not_contacted:'未連絡',draft_ready:'未連絡',contacted:'送信済・返信待',follow_up_due:'要Follow-up',responded:'返信有・対応中',no_response:'返信無（Follow-up完了）',not_a_fit:'対象外',closed:'Close'};
 let crmContacts=new Map(),crmHistory=[],crmInboundLeads=[],crmCurrentContact=null,crmInboundCreateLeadId=null,crmAvailable=false,crmFilter='all',crmInterestFilter='all';
+const crmConversationLatest=new Map();
 function crmCoachKey(role,name,email){const e=(email||'').trim().toLowerCase(),n=(name||'').trim().toLowerCase().replace(/\s+/g,' ');return role+':'+(e?'email:'+e:'name:'+n)}
 function crmEsc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function crmCoachRows(u){return [{role:'head_coach',name:u.hc_name||'Coach',email:u.hc_email||''},{role:'assistant_coach',name:u.ac_name||'Coach',email:u.ac_email||''}]}
@@ -4289,6 +4534,7 @@ async function loadCrmContacts(){
   await ensureMissingCrmContacts();
   await syncFollowUpDueStatuses();
   await loadInboundLeads();
+  await loadConversationReplyTimeline();
   await loadRecruitingSchoolPipeline();
   renderCrmSummary();
   renderCrmActionList();
@@ -4329,6 +4575,115 @@ async function syncFollowUpDueStatuses(){
   crmContacts.set(data.university_id+':'+data.coach_key,data);
  }
 }
+async function loadConversationReplyTimeline(){
+ crmConversationLatest.clear();
+
+ if(!supabaseClient||!DASHBOARD_OWNER_ID)return false;
+
+ try{
+  const {data,error}=await supabaseClient
+   .from('recruiting_contact_history')
+   .select('contact_id,event_type,event_at,gmail_message_at,created_at')
+   .eq('owner_user_id',DASHBOARD_OWNER_ID)
+   .in(
+    'event_type',
+    [
+      'reply_received',
+      'reply_sent',
+      'conversation_follow_up_sent'
+    ]
+   );
+
+  if(error)throw error;
+
+  (data||[]).forEach(row=>{
+   const eventTime=
+    row.gmail_message_at ||
+    row.event_at ||
+    row.created_at;
+
+   if(!eventTime)return;
+
+   const previous=crmConversationLatest.get(row.contact_id);
+
+   if(
+    !previous ||
+    new Date(eventTime).getTime() >
+      new Date(previous.event_time).getTime()
+   ){
+    crmConversationLatest.set(row.contact_id,{
+     event_type:row.event_type,
+     event_time:eventTime
+    });
+   }
+  });
+
+  return true;
+ }catch(err){
+  console.warn('Conversation reply timeline load failed:',err);
+  return false;
+ }
+}
+
+function crmConversationState(contactId){
+ const latest=crmConversationLatest.get(contactId);
+
+ if(!latest){
+  return {
+   state:'none',
+   latest_event:null,
+   event_time:null,
+   due_at:null
+  };
+ }
+
+ const eventTime=new Date(latest.event_time);
+
+ if(Number.isNaN(eventTime.getTime())){
+  return {
+   state:'none',
+   latest_event:latest.event_type,
+   event_time:latest.event_time,
+   due_at:null
+  };
+ }
+
+ if(latest.event_type==='reply_received'){
+  return {
+   state:'coach_reply_pending_action',
+   latest_event:'reply_received',
+   event_time:latest.event_time,
+   due_at:null
+  };
+ }
+
+ if(
+  latest.event_type==='reply_sent' ||
+  latest.event_type==='conversation_follow_up_sent'
+ ){
+  const dueAt=new Date(
+   eventTime.getTime() + 7*24*60*60*1000
+  );
+
+  return {
+   state:
+    Date.now()>=dueAt.getTime()
+     ?'conversation_follow_up_due'
+     :'waiting',
+   latest_event:latest.event_type,
+   event_time:latest.event_time,
+   due_at:dueAt.toISOString()
+  };
+ }
+
+ return {
+  state:'none',
+  latest_event:latest.event_type,
+  event_time:latest.event_time,
+  due_at:null
+ };
+}
+
 async function loadRecruitingSchoolPipeline(){
  recruitingSchoolPipeline.clear();
 
@@ -5319,6 +5674,7 @@ function updateCrmNextActions(c){
  const hasResponse=Boolean(String(c?.coach_response||'').trim());
  const followCount=Number(c?.follow_up_count||0);
  const hasThread=Boolean(String(c?.gmail_thread_id||'').trim());
+ const conversation=crmConversationState(c?.id);
 
  if(['not_a_fit','closed'].includes(status)){
   note.textContent='このContactは終了・対象外のため、送信アクションはありません。';
@@ -5326,6 +5682,50 @@ function updateCrmNextActions(c){
  }
 
  if(status==='responded' || hasResponse){
+
+  // Coachからの最新返信にまだこちらが対応していない
+  if(conversation.state==='coach_reply_pending_action'){
+   if(hasResponse){
+    aiBtn.style.display='inline-block';
+
+    if(crmAiReplyIsGenerated(c)){
+     aiBtn.disabled=true;
+     aiBtn.textContent='✓ AI返信案 作成済み';
+     note.textContent='このCoach返信に対するAI返信案は作成済みです。';
+    }else{
+     aiBtn.disabled=false;
+     aiBtn.textContent='✨ AI返信案を作成';
+     note.textContent='Coachからの返信内容をもとに、AI返信案を作成できます。';
+    }
+   }else{
+    aiBtn.disabled=true;
+    aiBtn.textContent='✨ AI返信案を作成';
+    note.textContent='Coachからの返信内容を確認してください。';
+   }
+   return;
+  }
+
+  // こちらから返信済み。Coachからの次の返信待ち
+  if(conversation.state==='waiting'){
+   const dueLabel=conversation.due_at
+    ?crmDateDisplay(conversation.due_at)
+    :'—';
+
+   note.textContent=
+    '返信送信済み — Coachからの次の返信を待っています。'+
+    ' Conversation Follow-up判定：'+dueLabel;
+   return;
+  }
+
+  // こちらの返信後7日間、新しいCoach返信なし
+  if(conversation.state==='conversation_follow_up_due'){
+   note.textContent=
+    'Conversation Follow-upが必要です。'+
+    'こちらの返信後7日間、Coachから新しい返信がありません。';
+   return;
+  }
+
+  // 旧データなど、返信履歴がまだない場合の安全なfallback
   if(hasResponse){
    aiBtn.style.display='inline-block';
 
@@ -5339,10 +5739,9 @@ function updateCrmNextActions(c){
     note.textContent='Coachからの返信内容をもとに、AI返信案を作成できます。';
    }
   }else{
-   aiBtn.disabled=true;
-   aiBtn.textContent='✨ AI返信案を作成';
-   note.textContent='返信内容を「コーチからの反応」に記録すると、AI返信案を作成できます。';
+   note.textContent='現在の返信履歴を確認してください。';
   }
+
   return;
  }
 
@@ -5520,59 +5919,137 @@ function renderCrmActionList(){
   !['closed','not_a_fit'].includes(r.contact.contact_status)
  );
 
- const due=active
+ // -------------------------------------------------------
+ // 通常の Recruiting Follow-up
+ // Coachから返信済みの案件はここには入れない
+ // -------------------------------------------------------
+ const regularActive=active.filter(r=>
+  r.contact.contact_status!=='responded' &&
+  !String(r.contact.coach_response||'').trim()
+ );
+
+ const due=regularActive
   .filter(r=>{
    const d=crmDateOnlyLocal(r.contact.follow_up_date);
    return d&&d<=today;
   })
   .sort((a,b)=>
-   (a.contact.follow_up_date||'').localeCompare(b.contact.follow_up_date||'')
+   (a.contact.follow_up_date||'').localeCompare(
+    b.contact.follow_up_date||''
+   )
   );
 
- const upcoming=active
+ const upcoming=regularActive
   .filter(r=>{
    const d=crmDateOnlyLocal(r.contact.follow_up_date);
    return d&&d>today;
   })
   .sort((a,b)=>
-   (a.contact.follow_up_date||'').localeCompare(b.contact.follow_up_date||'')
+   (a.contact.follow_up_date||'').localeCompare(
+    b.contact.follow_up_date||''
+   )
   );
 
- const item=r=>{
+ // -------------------------------------------------------
+ // Conversation Follow-up
+ // Coach返信 → こちらから返信済み → 7日間Coach返信なし
+ // -------------------------------------------------------
+ const conversationDue=active
+  .filter(r=>
+   crmConversationState(r.contact.id).state===
+   'conversation_follow_up_due'
+  )
+  .sort((a,b)=>{
+   const aDue=
+    crmConversationState(a.contact.id).due_at||'';
+   const bDue=
+    crmConversationState(b.contact.id).due_at||'';
+
+   return aDue.localeCompare(bDue);
+  });
+
+ const item=(r,kind='regular')=>{
   const c=r.contact;
   const u=r.university;
   const role=r.role==='head_coach'?'HC':'AC';
-  const note=c.coach_response||c.next_action||'次のアクション未設定';
+
+  const isConversation=kind==='conversation';
+  const conversation=crmConversationState(c.id);
+
+  const dateLabel=isConversation
+   ?(
+     conversation.due_at
+      ?crmDateDisplay(conversation.due_at)
+      :'予定日未設定'
+    )
+   :(c.follow_up_date||'予定日未設定');
+
+  const note=isConversation
+   ?'Conversation Follow-up必要'
+   :(c.coach_response||c.next_action||'次のアクション未設定');
+
+  const conversationFollowUpButton=
+   isConversation &&
+   c.coach_email &&
+   c.gmail_thread_id
+    ?'<button class="crm-action-btn" type="button" onclick="openConversationFollowUpComposer(\''+
+      crmEsc(c.id)+
+      '\')">Conversation Follow-up作成</button>'
+    :'';
+
+  const regularFollowUpButton=
+   !isConversation &&
+   c.follow_up_date &&
+   crmDateOnlyLocal(c.follow_up_date)<=today &&
+   c.contact_status!=='responded' &&
+   !String(c.coach_response||'').trim() &&
+   Number(c.follow_up_count||0)<2 &&
+   c.coach_email
+    ?'<button class="crm-action-btn" type="button" onclick="openFollowUpComposer(\''+
+      crmEsc(c.id)+
+      '\')">Follow-up作成</button>'
+    :'';
 
   return '<div class="crm-action-item">'+
    '<div class="crm-action-main">'+
-    '<b>'+crmEsc(u.name)+' · '+crmEsc(role)+' '+crmEsc(c.coach_name)+'</b>'+
+    '<b>'+
+     crmEsc(u.name)+
+     ' · '+
+     crmEsc(role)+
+     ' '+
+     crmEsc(c.coach_name)+
+    '</b>'+
     '<div class="crm-action-meta">'+
-     crmEsc(c.follow_up_date||'予定日未設定')+' · '+
-     crmEsc(crmStatusLabel(c.contact_status))+' · '+
+     crmEsc(dateLabel)+
+     ' · '+
+     crmEsc(crmStatusLabel(c.contact_status))+
+     ' · '+
      crmEsc(note)+
     '</div>'+
    '</div>'+
    '<div style="display:flex;gap:6px;align-items:center">'+
-    ((c.follow_up_date&&crmDateOnlyLocal(c.follow_up_date)<=today&&
-      c.contact_status!=='responded'&&
-      !String(c.coach_response||'').trim()&&
-      Number(c.follow_up_count||0)<2&&
-      c.coach_email)
-      ?'<button class="crm-action-btn" type="button" onclick="openFollowUpComposer(\''+crmEsc(c.id)+'\')">Follow-up作成</button>'
-      :'')+
+    regularFollowUpButton+
+    conversationFollowUpButton+
     '<button class="crm-action-btn" type="button" onclick="openCrmFromContact(\''+
-     crmEsc(c.id)+'\')">管理</button>'+
+     crmEsc(c.id)+
+     '\')">管理</button>'+
    '</div>'+
   '</div>';
  };
 
- dueEl.innerHTML=due.length
-  ?due.slice(0,8).map(item).join('')
+ // 通常Follow-up + Conversation Follow-upを
+ // 「今日・期限超過」にまとめて表示
+ const dueHtml=[
+  ...due.map(r=>item(r,'regular')),
+  ...conversationDue.map(r=>item(r,'conversation'))
+ ];
+
+ dueEl.innerHTML=dueHtml.length
+  ?dueHtml.slice(0,8).join('')
   :'<div class="crm-action-empty">今日・期限超過の連絡はありません。</div>';
 
  nextEl.innerHTML=upcoming.length
-  ?upcoming.slice(0,8).map(item).join('')
+  ?upcoming.slice(0,8).map(r=>item(r,'regular')).join('')
   :'<div class="crm-action-empty">今後の予定はありません。</div>';
 }
 

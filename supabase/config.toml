@@ -48,3 +48,8 @@ entrypoint = "./functions/recruiting-gmail-followup-send/index.ts"
 [functions.recruiting-gmail-replies]
 enabled = true
 verify_jwt = false
+
+[functions.recruiting-gmail-conversation-followup-send]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/recruiting-gmail-conversation-followup-send/index.ts"
