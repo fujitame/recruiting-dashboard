@@ -2742,6 +2742,7 @@ table td:nth-child(13) .crm-btn{
  </div>
  <div class="crm-next-actions-buttons">
   <button id="crm-ai-reply-btn" class="crm-secondary" type="button" onclick="generateAiReplyDraft()">✨ AI返信案を作成</button>
+  <button id="crm-conversation-followup-btn" class="gmail-btn" type="button" onclick="crmCurrentContact&&openConversationFollowUpComposer(crmCurrentContact.id)">Conversation Follow-up作成</button>
   <button id="crm-followup-btn" class="gmail-btn" type="button" onclick="crmCurrentContact&&openFollowUpComposer(crmCurrentContact.id)">Follow-up</button>
   <button id="crm-initial-btn" class="gmail-btn" type="button" onclick="openGmailComposerFromCrm()">初回メールを作成</button>
  </div>
@@ -5659,14 +5660,16 @@ function crmActionRecord(c){const u=universities.find(x=>x.id===Number(c.univers
 function updateCrmNextActions(c){
  const initialBtn=document.getElementById('crm-initial-btn');
  const followBtn=document.getElementById('crm-followup-btn');
+ const conversationFollowBtn=document.getElementById('crm-conversation-followup-btn');
  const aiBtn=document.getElementById('crm-ai-reply-btn');
  const note=document.getElementById('crm-next-actions-note');
 
- if(!initialBtn||!followBtn||!aiBtn||!note)return;
+ if(!initialBtn||!followBtn||!conversationFollowBtn||!aiBtn||!note)return;
 
  // Existing button CSS uses display rules, so force visibility here.
  initialBtn.style.display='none';
  followBtn.style.display='none';
+ conversationFollowBtn.style.display='none';
  aiBtn.style.display='none';
 
  const status=String(c?.contact_status||'not_contacted');
@@ -5719,6 +5722,22 @@ function updateCrmNextActions(c){
 
   // こちらの返信後7日間、新しいCoach返信なし
   if(conversation.state==='conversation_follow_up_due'){
+   if(!hasEmail){
+    note.textContent=
+     'Conversation Follow-up期限ですが、CoachのEmailが未登録です。';
+    return;
+   }
+
+   if(!hasThread){
+    note.textContent=
+     'Conversation Follow-up期限ですが、Gmail Thread IDがありません。';
+    return;
+   }
+
+   conversationFollowBtn.style.display='inline-block';
+   conversationFollowBtn.disabled=false;
+   conversationFollowBtn.textContent='Conversation Follow-up作成';
+
    note.textContent=
     'Conversation Follow-upが必要です。'+
     'こちらの返信後7日間、Coachから新しい返信がありません。';
