@@ -6327,6 +6327,35 @@ async function saveCrmContact(){
  if(prev.count!==count||prev.last!==data.last_contact_at||prev.response!==response||prev.followCount!==followCount||prev.autoFollow!==autoFollow)events.push({event_type:'contact_logged',note:note||'Contact details updated'});
  if(note&&!events.some(e=>e.note===note))events.push({event_type:'note',note});
  if(events.length){const hr=await supabaseClient.from('recruiting_contact_history').insert(events.map(e=>({...e,owner_user_id:DASHBOARD_OWNER_ID,contact_id:data.id})));if(hr.error)console.warn('CRM history insert failed:',hr.error)}
+
+ // Gmail label sync — TEST universities only for Closed / 対象外 transitions.
+ // This also removes Recruiting/Closed if a TEST contact is later reopened.
+ const closedStates=['closed','not_a_fit'];
+ if(
+  Number(data.university_id)>=900 &&
+  Number(data.university_id)<=999 &&
+  (
+   closedStates.includes(prev.status) ||
+   closedStates.includes(status)
+  )
+ ){
+  try{
+   const {data:labelSyncData,error:labelSyncError}=
+    await supabaseClient.functions.invoke(
+     'recruiting-gmail-label-sync',
+     {body:{contact_id:data.id}}
+    );
+
+   if(labelSyncError){
+    console.warn('CRM Gmail label sync failed:',labelSyncError);
+   }else if(!labelSyncData?.ok){
+    console.warn('CRM Gmail label sync returned:',labelSyncData);
+   }
+  }catch(labelSyncError){
+   console.warn('CRM Gmail label sync failed:',labelSyncError);
+  }
+ }
+
  renderCrmSummary();renderCrmActionList();applyFilters();await loadCrmHistory(data.id);alert('CRM saved.')
 }
 

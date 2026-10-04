@@ -53,3 +53,8 @@ verify_jwt = false
 enabled = true
 verify_jwt = false
 entrypoint = "./functions/recruiting-gmail-conversation-followup-send/index.ts"
+
+[functions.recruiting-gmail-label-sync]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/recruiting-gmail-label-sync/index.ts"

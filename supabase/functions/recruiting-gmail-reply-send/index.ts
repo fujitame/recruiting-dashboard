@@ -1,5 +1,9 @@
 import { withSupabase } from "npm:@supabase/server@1";
 
+import {
+  syncRecruitingThreadLabels,
+} from "../_shared/recruiting-gmail-labels.ts";
+
 const GMAIL_ACCOUNT =
   (Deno.env.get("GMAIL_ACCOUNT") || "fujiakihiro8@gmail.com").toLowerCase();
 
@@ -335,6 +339,27 @@ export default {
         contact.gmail_thread_id,
         token,
       );
+
+      // Gmail label sync — TEST universities only for now.
+      // Label failure must not turn a successful reply send
+      // into a send failure.
+      if (
+        universityId >= 900 &&
+        universityId <= 999
+      ) {
+        try {
+          await syncRecruitingThreadLabels(
+            result.threadId ||
+              contact.gmail_thread_id,
+            "Recruiting/Waiting Coach",
+          );
+        } catch (labelError) {
+          console.warn(
+            "Reply Gmail label sync failed:",
+            labelError,
+          );
+        }
+      }
 
       return json({
         ok: true,
