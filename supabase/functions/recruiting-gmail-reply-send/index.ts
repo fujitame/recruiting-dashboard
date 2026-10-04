@@ -340,25 +340,20 @@ export default {
         token,
       );
 
-      // Gmail label sync — TEST universities only for now.
+      // Gmail label sync.
       // Label failure must not turn a successful reply send
       // into a send failure.
-      if (
-        universityId >= 900 &&
-        universityId <= 999
-      ) {
-        try {
-          await syncRecruitingThreadLabels(
-            result.threadId ||
-              contact.gmail_thread_id,
-            "Recruiting/Waiting Coach",
-          );
-        } catch (labelError) {
-          console.warn(
-            "Reply Gmail label sync failed:",
-            labelError,
-          );
-        }
+      try {
+        await syncRecruitingThreadLabels(
+          result.threadId ||
+            contact.gmail_thread_id,
+          "Recruiting/Waiting Coach",
+        );
+      } catch (labelError) {
+        console.warn(
+          "Reply Gmail label sync failed:",
+          labelError,
+        );
       }
 
       return json({

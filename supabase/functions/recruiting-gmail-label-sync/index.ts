@@ -111,20 +111,6 @@ export default {
             contact.university_id,
           );
 
-        // 現段階ではTEST大学だけ許可
-        if (
-          universityId < 900 ||
-          universityId > 999
-        ) {
-          return json(
-            {
-              ok: false,
-              error:
-                "Label sync is currently restricted to TEST universities 900-999.",
-            },
-            403,
-          );
-        }
 
         if (
           !contact.gmail_thread_id

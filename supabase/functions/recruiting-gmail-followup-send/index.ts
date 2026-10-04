@@ -523,28 +523,23 @@ export default {
         );
       }
 
-      // Gmail label sync — TEST universities only for now.
+      // Gmail label sync.
       // #1 => Waiting Coach
       // #2 => No Response
-      if (
-        universityId >= 900 &&
-        universityId <= 999
-      ) {
-        try {
-          await syncRecruitingThreadLabels(
-            result.threadId ||
-              updated.gmail_thread_id ||
-              contact.gmail_thread_id,
-            exhausted
-              ? "Recruiting/No Response"
-              : "Recruiting/Waiting Coach",
-          );
-        } catch (labelError) {
-          console.warn(
-            "Follow-up Gmail label sync failed:",
-            labelError,
-          );
-        }
+      try {
+        await syncRecruitingThreadLabels(
+          result.threadId ||
+            updated.gmail_thread_id ||
+            contact.gmail_thread_id,
+          exhausted
+            ? "Recruiting/No Response"
+            : "Recruiting/Waiting Coach",
+        );
+      } catch (labelError) {
+        console.warn(
+          "Follow-up Gmail label sync failed:",
+          labelError,
+        );
       }
 
       return json({

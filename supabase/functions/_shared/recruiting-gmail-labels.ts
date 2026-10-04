@@ -123,9 +123,6 @@ export function chooseRecruitingStateLabel(
     return "Recruiting/No Response";
   }
 
-  if (status === "follow_up_due") {
-    return "Recruiting/Follow-up Due";
-  }
 
   if (status === "contacted") {
     return "Recruiting/Waiting Coach";

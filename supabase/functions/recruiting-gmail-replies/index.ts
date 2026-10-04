@@ -985,19 +985,10 @@ Deno.serve(
             throw historyError;
           }
 
-          // Gmail label sync — TEST universities only for now.
+          // Gmail label sync.
           // A label failure must not invalidate a successfully
           // detected and stored Coach reply.
-          const universityId =
-            Number(
-              contact.university_id,
-            );
-
-          if (
-            universityId >= 900 &&
-            universityId <= 999 &&
-            candidate.threadId
-          ) {
+          if (candidate.threadId) {
             try {
               await syncRecruitingThreadLabels(
                 candidate.threadId,

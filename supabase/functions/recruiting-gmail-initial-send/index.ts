@@ -252,16 +252,12 @@ export default {
         );
       }
 
-      // Gmail label sync — TEST universities only for now.
+      // Gmail label sync.
       // Label failure must never make a successfully sent email
       // appear as a send failure.
       if (
-        universityId >= 900 &&
-        universityId <= 999 &&
-        (
-          result.threadId ||
-          updated.gmail_thread_id
-        )
+        result.threadId ||
+        updated.gmail_thread_id
       ) {
         try {
           await syncRecruitingThreadLabels(

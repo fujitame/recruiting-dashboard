@@ -560,26 +560,21 @@ export default {
         );
       }
 
-      // Gmail label sync — TEST universities only for now.
+      // Gmail label sync.
       // Label failure must not turn a successful Conversation
       // Follow-up send into a send failure.
-      if (
-        universityId >= 900 &&
-        universityId <= 999
-      ) {
-        try {
-          await syncRecruitingThreadLabels(
-            result.threadId ||
-              updated.gmail_thread_id ||
-              contact.gmail_thread_id,
-            "Recruiting/Waiting Coach",
-          );
-        } catch (labelError) {
-          console.warn(
-            "Conversation Follow-up Gmail label sync failed:",
-            labelError,
-          );
-        }
+      try {
+        await syncRecruitingThreadLabels(
+          result.threadId ||
+            updated.gmail_thread_id ||
+            contact.gmail_thread_id,
+          "Recruiting/Waiting Coach",
+        );
+      } catch (labelError) {
+        console.warn(
+          "Conversation Follow-up Gmail label sync failed:",
+          labelError,
+        );
       }
 
       return json({
