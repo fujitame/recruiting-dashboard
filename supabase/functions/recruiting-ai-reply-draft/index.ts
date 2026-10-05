@@ -90,6 +90,24 @@ export default {
       return json({ ok: false, error: "CRM contact not found" }, 404);
     }
 
+    // Read the current highlight from Player Master for every reply draft.
+    // This keeps AI replies in sync with the same source used by the dashboard.
+    const { data: playerProfile, error: playerProfileError } = await supabase
+      .from("player_profile")
+      .select("highlight_video_1_id")
+      .eq("id", "akihiro-fujikawa")
+      .maybeSingle();
+
+    if (playerProfileError) throw playerProfileError;
+
+    const highlightVideoId = safeText(
+      playerProfile?.highlight_video_1_id,
+      100,
+    );
+    const highlightVideoUrl = highlightVideoId
+      ? `https://youtu.be/${highlightVideoId}`
+      : "";
+
     if (!safeText(contact.coach_response)) {
       return json({ ok: false, error: "Coach response is empty" }, 400);
     }
@@ -144,7 +162,7 @@ export default {
       transfer_target: "Fall 2027",
       gpa: "3.28",
       profile_url: "https://fujitame.github.io/profile/",
-      highlight_video: "https://youtu.be/GYwZrTe9pqw",
+      highlight_video: highlightVideoUrl,
       email: "fujiakihiro8@gmail.com",
       phone: "+1 610-529-3326",
       instagram: "@a93914",
