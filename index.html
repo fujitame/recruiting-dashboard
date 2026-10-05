@@ -108,6 +108,28 @@ select:focus,input:focus{outline:none;border-color:var(--accent)}
  flex-wrap:wrap;
  gap:7px;
 }
+.crm-action-section{
+ display:none;
+ margin-top:8px;
+ padding:10px;
+ border:1px solid #e2e8f0;
+ border-radius:7px;
+ background:#fff;
+}
+.crm-action-section:has(button[style*="inline-block"]){
+ display:block;
+}
+.crm-action-section h3{
+ margin:0 0 4px;
+ color:#1a365d;
+ font-size:10px;
+}
+.crm-action-section p{
+ margin:0 0 8px;
+ color:#718096;
+ font-size:9px;
+ line-height:1.45;
+}
 .crm-next-actions-buttons .gmail-btn,
 .crm-next-actions-buttons .crm-secondary{
  padding:8px 10px;
@@ -2740,12 +2762,34 @@ table td:nth-child(13) .crm-btn{
   <strong>次のアクション</strong>
   <span id="crm-next-actions-note">送信前に必ず内容を確認します</span>
  </div>
- <div class="crm-next-actions-buttons">
-  <button id="crm-ai-reply-btn" class="crm-secondary" type="button" onclick="generateAiReplyDraft()">✨ AI返信案を作成</button>
-  <button id="crm-conversation-followup-btn" class="gmail-btn" type="button" onclick="crmCurrentContact&&openConversationFollowUpComposer(crmCurrentContact.id)">Conversation Follow-up作成</button>
-  <button id="crm-followup-btn" class="gmail-btn" type="button" onclick="crmCurrentContact&&openFollowUpComposer(crmCurrentContact.id)">Follow-up</button>
-  <button id="crm-initial-btn" class="gmail-btn" type="button" onclick="openGmailComposerFromCrm()">初回メールを作成</button>
- </div>
+ <section class="crm-action-section">
+  <h3>初回連絡</h3>
+  <p>Coachへ最初のメールを作成し、Gmailの送信画面で内容を確認します。</p>
+  <div class="crm-next-actions-buttons">
+   <button id="crm-initial-btn" class="gmail-btn" type="button" onclick="openGmailComposerFromCrm()">初回メールを作成</button>
+  </div>
+ </section>
+ <section class="crm-action-section">
+  <h3>通常のFollow-up</h3>
+  <p>初回メールへの返信がない場合に、同じGmailスレッドへのFollow-upを作成します。</p>
+  <div class="crm-next-actions-buttons">
+   <button id="crm-followup-btn" class="gmail-btn" type="button" onclick="crmCurrentContact&&openFollowUpComposer(crmCurrentContact.id)">Follow-upメールを作成</button>
+  </div>
+ </section>
+ <section class="crm-action-section">
+  <h3>Coachへの返信案</h3>
+  <p>記録されたCoachの返信をもとに、AIが返信案を作成します。送信前に内容を確認できます。</p>
+  <div class="crm-next-actions-buttons">
+   <button id="crm-ai-reply-btn" class="crm-secondary" type="button" onclick="generateAiReplyDraft()">✨ AI返信案を作成</button>
+  </div>
+ </section>
+ <section class="crm-action-section">
+  <h3>返信後のConversation Follow-up</h3>
+  <p>こちらから返信した後、7日間Coachから新しい返信がない場合に、同じGmailスレッドで作成します。</p>
+  <div class="crm-next-actions-buttons">
+   <button id="crm-conversation-followup-btn" class="gmail-btn" type="button" onclick="crmCurrentContact&&openConversationFollowUpComposer(crmCurrentContact.id)">Conversation Follow-upを作成</button>
+  </div>
+ </section>
 </div>
 
 <div id="crm-ai-stage-panel" class="crm-history" hidden>
