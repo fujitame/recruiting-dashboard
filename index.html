@@ -2694,7 +2694,8 @@ table td:nth-child(13) .crm-btn{
   </div>
 </section>
 
-<div id="crm-actions-panel" class="crm-actions-panel" data-recruiting-area="crm" hidden aria-label="CRM 次のアクション"><div class="crm-action-box"><h3>今日・期限超過</h3><div id="crm-due-list" class="crm-action-empty">読み込み中...</div></div><div class="crm-action-box"><h3>次のアクション</h3><div id="crm-next-list" class="crm-action-empty">読み込み中...</div></div></div>
+<div id="crm-actions-panel" class="crm-actions-panel" data-recruiting-area="crm" hidden aria-label="CRM 次のアクション"><div class="crm-action-box"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h3>今日・期限超過</h3><button id="crm-batch-followup-button" class="crm-action-btn" type="button" onclick="openFollowUpBatchReview()" hidden>Follow-upを一括確認</button></div><div id="crm-due-list" class="crm-action-empty">読み込み中...</div></div><div class="crm-action-box"><h3>次のアクション</h3><div id="crm-next-list" class="crm-action-empty">読み込み中...</div></div></div>
+<div id="crm-batch-followup-modal" class="gmail-modal" onclick="if(event.target===this)closeFollowUpBatchReview()"><div class="gmail-card" role="dialog" aria-modal="true" style="width:min(920px,96vw);max-height:92vh;overflow:auto"><div class="gmail-head"><div><h2>Follow-up 一括確認</h2><small id="crm-batch-followup-summary"></small></div><button class="gmail-close" type="button" onclick="closeFollowUpBatchReview()">×</button></div><div class="gmail-body"><div id="crm-batch-followup-status" class="gmail-note">対象校と個別文面を準備します。</div><div id="crm-batch-followup-list"></div><label style="display:flex;gap:8px;align-items:flex-start;margin:14px 0"><input id="crm-batch-followup-reviewed" type="checkbox" onchange="updateFollowUpBatchReserveState()"><span>宛先・学校別文面・各校の木曜10時（現地時間）を全件確認しました。</span></label><div class="gmail-actions"><button class="gmail-secondary" type="button" onclick="closeFollowUpBatchReview()">閉じる</button><button id="crm-batch-followup-reserve" class="gmail-send" type="button" onclick="reserveFollowUpBatch()" disabled>確認した文面を予約</button></div></div></div></div>
 <div class="cost-note" data-recruiting-area="schools"><b>費用(参考)</b>：学費は原則として2025年の比較データに基づく参考値（公立はOut-of-State、私立/NAIAは通常のTuition）。寮・食費相当は「On-campus living」の参考値です。TuitionとOn-campus livingの両方が確認できる学校は、<b>年間合計 = Tuition + On-campus living</b>として表示します。学校別に取得できなかったものは「School-specific ref pending」と表示。奨学金・編入後の実費・2026-27公式COAとは異なる場合があります。</div>
 
 <div class="main-content" data-recruiting-area="schools"><div id="map-view"></div><div id="list-view">
@@ -3682,6 +3683,21 @@ async function sendFollowUpGmailViaServer(){
 
  if(!subject||!body.trim()){
   showGmailError('件名・本文を確認してください。');
+  return;
+ }
+
+ const {data:activeBatch,error:batchLookupError}=await supabaseClient
+  .from('recruiting_followup_batch_items')
+  .select('id')
+  .eq('contact_id',contact.id)
+  .in('status',['pending','sending'])
+  .limit(1);
+ if(batchLookupError){
+  showGmailError('予約状態を確認できないため送信を停止しました。');
+  return;
+ }
+ if(activeBatch?.length){
+  showGmailError('このContactはFollow-up予約中です。先に予約をキャンセルしてください。');
   return;
  }
 
@@ -6171,6 +6187,11 @@ async function generateAiReplyDraft(){
 }
 
 function renderCrmActionList(){
+ const batchBtn=document.getElementById('crm-batch-followup-button');
+ if(batchBtn){
+  const eligible=batchFollowUpBaseContacts();
+  batchBtn.hidden=!eligible.length;
+ }
  const dueEl=document.getElementById('crm-due-list');
  const nextEl=document.getElementById('crm-next-list');
  if(!dueEl||!nextEl)return;
@@ -6318,6 +6339,161 @@ function renderCrmActionList(){
  nextEl.innerHTML=upcoming.length
   ?upcoming.slice(0,8).map(r=>item(r,'regular')).join('')
   :'<div class="crm-action-empty">今後の予定はありません。</div>';
+}
+
+let crmFollowUpBatchDrafts=[];
+let crmFollowUpBatchTimes=new Map();
+
+function closeFollowUpBatchReview(){
+ document.getElementById('crm-batch-followup-modal')?.classList.remove('open');
+ crmFollowUpBatchDrafts=[];
+ crmFollowUpBatchTimes=new Map();
+}
+function updateFollowUpBatchReserveState(){
+ const btn=document.getElementById('crm-batch-followup-reserve');
+ const reviewed=document.getElementById('crm-batch-followup-reviewed');
+ if(btn)btn.disabled=!reviewed?.checked||!crmFollowUpBatchDrafts.length;
+}
+function batchFollowUpBaseContacts(){
+ const all=Array.from(crmContacts.values()).filter(c=>
+  !isTestUniversityId(c.university_id)
+ );
+ const bySchool=new Map();
+ all.forEach(c=>{
+  const id=Number(c.university_id);
+  if(!bySchool.has(id))bySchool.set(id,[]);
+  bySchool.get(id).push(c);
+ });
+ const candidates=[];
+ for(const [id,contacts] of bySchool){
+  const school=universities.find(u=>Number(u.id)===id);
+  if(!school||school.is_test||id>=900&&id<=999)continue;
+  if(contacts.some(c=>c.contact_status==='responded'||String(c.coach_response||'').trim()))continue;
+  contacts.filter(c=>
+   c.coach_email&&c.gmail_thread_id&&c.follow_up_date&&
+   Number(c.follow_up_count||0)===0&&
+   ['contacted','follow_up_due'].includes(c.contact_status)
+  ).forEach(c=>candidates.push({contact:c,school}));
+ }
+ return candidates;
+}
+function batchLocalDate(iso,timezone){
+ const parts=new Intl.DateTimeFormat('en-CA',{timeZone:timezone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(iso));
+ const get=t=>parts.find(p=>p.type===t)?.value||'';
+ return get('year')+'-'+get('month')+'-'+get('day');
+}
+async function openFollowUpBatchReview(){
+ const modal=document.getElementById('crm-batch-followup-modal');
+ const status=document.getElementById('crm-batch-followup-status');
+ const list=document.getElementById('crm-batch-followup-list');
+ const reviewed=document.getElementById('crm-batch-followup-reviewed');
+ const reserve=document.getElementById('crm-batch-followup-reserve');
+ crmFollowUpBatchDrafts=[];
+ crmFollowUpBatchTimes=new Map();
+ if(reviewed)reviewed.checked=false;
+ if(reserve)reserve.disabled=true;
+ if(list)list.innerHTML='';
+ if(status)status.textContent='対象校と学校別Follow-up文面を準備しています…';
+ modal?.classList.add('open');
+ try{
+  const candidates=batchFollowUpBaseContacts();
+  if(!candidates.length){
+   if(status)status.textContent='予約可能なFollow-up #1はありません。返信済みの学校、テスト校、期限未到来、メール/Thread ID不足のContactは除外します。';
+   return;
+  }
+  const ids=[...new Set(candidates.map(x=>Number(x.school.id)))];
+  const {data:tzData,error:tzError}=await supabaseClient.functions.invoke(
+   'recruiting-gmail-followup-batch-preview',
+   {body:{university_ids:ids}}
+  );
+  if(tzError||!tzData?.ok)throw new Error(tzData?.error||tzError?.message||'学校別時刻を計算できません。');
+  const timeMap=new Map((tzData.schools||[]).filter(x=>x.timezone&&x.scheduled_at).map(x=>[Number(x.university_id),x]));
+  const due=candidates.filter(x=>{
+   const t=timeMap.get(Number(x.school.id));
+   return t&&x.contact.follow_up_date<=batchLocalDate(t.scheduled_at,t.timezone);
+  });
+  if(!due.length){
+   if(status)status.textContent='木曜10時（各校現地時間）までに期限を迎えるFollow-upはありません。';
+   return;
+  }
+  const drafts=[];
+  for(let i=0;i<due.length;i++){
+   const {contact,school}=due[i];
+   const schedule=timeMap.get(Number(school.id));
+   const draft=getFollowUpDraft(school,contact);
+   const {data,error}=await supabaseClient.functions.invoke(
+    'recruiting-ai-followup-draft',
+    {body:{contact_id:contact.id}}
+   );
+   if(error||!data?.ok||!data?.draft)throw new Error((data?.error||error?.message||'学校別文面の生成に失敗しました。')+' ('+school.name+')');
+   const sentence=String(data.draft.personalization_sentence||'').trim();
+   if(sentence){
+    const intro='I wanted to follow up on my previous email regarding my interest in transferring to '+school.name+' for '+CURRENT_PLAYER.expectedTransfer+'.';
+    const target=intro+'\n\n';
+    if(!draft.body.includes(target))throw new Error('文面のPersonalize挿入位置が確認できません ('+school.name+')');
+    draft.body=draft.body.replace(target,intro+'\n'+sentence+'\n\n');
+   }
+   draft.researchIds=Array.isArray(data.draft.research_used)?data.draft.research_used.map(Number).filter(Number.isFinite).slice(0,1):[];
+   drafts.push({contact,school,draft,timezone:schedule.timezone,scheduledAt:schedule.scheduled_at});
+   if(status)status.textContent='個別文面を準備中… '+(i+1)+' / '+due.length;
+  }
+  crmFollowUpBatchDrafts=drafts;
+  crmFollowUpBatchTimes=timeMap;
+  const fmt=x=>new Intl.DateTimeFormat('ja-JP',{timeZone:x.timezone,weekday:'short',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(x.scheduledAt));
+  list.innerHTML=drafts.map((x,i)=>
+   '<details class="crm-history-item" open style="margin:8px 0">'+
+    '<summary><b>'+crmEsc(x.school.name)+' · '+crmEsc(x.contact.coach_name||'Coach')+'</b> — '+crmEsc(x.contact.coach_email)+' — '+crmEsc(fmt(x))+'</summary>'+
+    '<div class="gmail-field"><label>件名</label><input data-batch-subject="'+i+'" value="'+crmEsc(x.draft.subject)+'"></div>'+
+    '<div class="gmail-field"><label>本文</label><textarea data-batch-body="'+i+'" style="min-height:150px">'+crmEsc(x.draft.body)+'</textarea></div>'+
+    (x.draft.researchIds.length?'<small>学校別Researchを反映済み</small>':'<small>未使用Researchなし：標準Follow-up文面</small>')+
+   '</details>'
+  ).join('');
+  const summary=document.getElementById('crm-batch-followup-summary');
+  if(summary)summary.textContent=drafts.length+'件 · 各校の現地時間で木曜10:00に予約';
+  if(status)status.textContent='すべての下書きを確認・編集できます。予約前に返信が判明した学校は、送信時に自動除外します。';
+  updateFollowUpBatchReserveState();
+ }catch(error){
+  console.error('Follow-up batch preview failed:',error);
+  if(status)status.textContent=error.message||'一括プレビューを作成できませんでした。予約は作成されていません。';
+ }
+}
+async function reserveFollowUpBatch(){
+ const status=document.getElementById('crm-batch-followup-status');
+ const btn=document.getElementById('crm-batch-followup-reserve');
+ const reviewed=document.getElementById('crm-batch-followup-reviewed');
+ if(!reviewed?.checked||!crmFollowUpBatchDrafts.length)return;
+ if(!confirm(crmFollowUpBatchDrafts.length+'件のFollow-up #1を各校の木曜10時に予約します。送信時に返信済みの学校は除外されます。予約しますか？'))return;
+ btn.disabled=true;
+ if(status)status.textContent='予約を保存しています…';
+ let batchId=null;
+ try{
+  const {data:userData,error:userError}=await supabaseClient.auth.getUser();
+  if(userError||!userData?.user?.id)throw new Error('Dashboardにログインしてください。');
+  const ownerId=userData.user.id;
+  const {data:batch,error:batchError}=await supabaseClient.from('recruiting_followup_batches').insert({owner_user_id:ownerId,status:'approved'}).select('id').single();
+  if(batchError||!batch?.id)throw batchError||new Error('予約を作成できません。');
+  batchId=batch.id;
+  const items=crmFollowUpBatchDrafts.map((x,i)=>({
+   batch_id:batchId,owner_user_id:ownerId,contact_id:x.contact.id,
+   university_id:Number(x.school.id),follow_up_number:1,
+   scheduled_at:x.scheduledAt,timezone:x.timezone,to_email:x.contact.coach_email,
+   subject:document.querySelector('[data-batch-subject="'+i+'"]')?.value?.trim()||'',
+   body:document.querySelector('[data-batch-body="'+i+'"]')?.value||'',
+   research_ids:x.draft.researchIds||[]
+  }));
+  if(items.some(x=>!x.subject||!x.body.trim()))throw new Error('件名または本文が空の項目があります。');
+  const {error:itemError}=await supabaseClient.from('recruiting_followup_batch_items').insert(items);
+  if(itemError)throw itemError;
+  if(status)status.textContent=items.length+'件を予約しました。CRM内で予約状況を保存しました。';
+  setTimeout(closeFollowUpBatchReview,1200);
+ }catch(error){
+  if(batchId){
+   await supabaseClient.rpc('cancel_recruiting_followup_batch',{p_batch_id:batchId}).catch(()=>{});
+  }
+  console.error('Follow-up batch reservation failed:',error);
+  if(status)status.textContent=(error.message||'予約に失敗しました。')+' メール送信は行われていません。';
+  if(btn)btn.disabled=false;
+ }
 }
 
 function setCrmInterestFilter(level){
