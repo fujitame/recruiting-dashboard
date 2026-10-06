@@ -6477,7 +6477,7 @@ async function openFollowUpBatchReview(){
   crmFollowUpBatchTimes=timeMap;
   const fmt=x=>new Intl.DateTimeFormat('ja-JP',{timeZone:x.timezone,weekday:'short',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(x.scheduledAt));
   list.innerHTML=drafts.map((x,i)=>
-   '<details class="crm-history-item" open style="margin:8px 0">'+
+   '<details class="crm-history-item"'+(i===0?' open':'')+' style="margin:8px 0">'+
     '<summary><b>'+crmEsc(x.school.name)+' · '+crmEsc(x.contact.coach_name||'Coach')+'</b> — '+crmEsc(x.contact.coach_email)+' — '+crmEsc(fmt(x))+'</summary>'+
     '<div class="gmail-field"><label>件名</label><input data-batch-subject="'+i+'" value="'+crmEsc(x.draft.subject)+'"></div>'+
     '<div class="gmail-field"><label>本文</label><textarea data-batch-body="'+i+'" style="min-height:150px">'+crmEsc(x.draft.body)+'</textarea></div>'+
