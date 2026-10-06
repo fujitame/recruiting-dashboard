@@ -31,7 +31,7 @@ function nextThursdayAtTen(timeZone: string, now: Date) {
   const local = dateParts(now, timeZone);
   const weekday = new Date(Date.UTC(local.year, local.month - 1, local.day)).getUTCDay();
   let daysUntil = (4 - weekday + 7) % 7;
-  if (daysUntil === 0 && local.hour >= 10) daysUntil = 7;
+  if (daysUntil === 0 && (local.hour >= 10 || (local.hour === 9 && local.minute >= 55))) daysUntil = 7;
 
   const target = new Date(Date.UTC(local.year, local.month - 1, local.day + daysUntil));
   const year = target.getUTCFullYear();
