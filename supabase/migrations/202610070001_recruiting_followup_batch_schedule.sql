@@ -69,6 +69,10 @@ create policy recruiting_followup_items_insert_own
     owner_user_id = auth.uid()
     and status = 'pending'
     and follow_up_number = 1
+    and exists (
+      select 1 from public.recruiting_followup_batches b
+      where b.id = batch_id and b.owner_user_id = auth.uid()
+    )
   );
 
 create or replace function public.cancel_recruiting_followup_batch(p_batch_id uuid)
@@ -137,3 +141,42 @@ $$;
 
 revoke all on function public.claim_due_recruiting_followup_batch_items(integer) from public, anon, authenticated;
 grant execute on function public.claim_due_recruiting_followup_batch_items(integer) to service_role;
+
+
+create or replace function public.guard_recruiting_followup_batch_item()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not exists (
+    select 1
+    from public.recruiting_contacts c
+    join public.recruiting_followup_batches b on b.id = new.batch_id
+    join public.recruiting_universities u on u.id = c.university_id
+    where c.id = new.contact_id
+      and c.university_id = new.university_id
+      and c.owner_user_id = new.owner_user_id
+      and b.owner_user_id = new.owner_user_id
+      and lower(trim(c.coach_email)) = lower(trim(new.to_email))
+      and c.gmail_thread_id is not null
+      and c.follow_up_count = 0
+      and c.contact_status in ('contacted', 'follow_up_due')
+      and nullif(trim(coalesce(c.coach_response, '')), '') is null
+      and coalesce(u.is_test, false) = false
+      and u.id not between 900 and 999
+  ) then
+    raise exception 'Contact is not eligible for a reviewed Follow-up #1 batch';
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists recruiting_followup_batch_item_guard
+  on public.recruiting_followup_batch_items;
+create trigger recruiting_followup_batch_item_guard
+  before insert on public.recruiting_followup_batch_items
+  for each row execute function public.guard_recruiting_followup_batch_item();
+
+revoke all on function public.guard_recruiting_followup_batch_item() from public, anon, authenticated;
