@@ -40,6 +40,10 @@ create index if not exists recruiting_followup_batch_due_idx
 create index if not exists recruiting_followup_batch_owner_idx
   on public.recruiting_followup_batch_items(owner_user_id, created_at desc);
 
+create unique index if not exists recruiting_followup_one_active_batch_per_contact
+  on public.recruiting_followup_batch_items(contact_id)
+  where status in ('pending', 'sending');
+
 alter table public.recruiting_followup_batches enable row level security;
 alter table public.recruiting_followup_batch_items enable row level security;
 
@@ -150,6 +154,14 @@ security definer
 set search_path = public
 as $$
 begin
+  if not exists (select 1 from pg_timezone_names where name = new.timezone)
+     or new.scheduled_at < now() + interval '5 minutes'
+     or extract(dow from (new.scheduled_at at time zone new.timezone)) <> 4
+     or extract(hour from (new.scheduled_at at time zone new.timezone)) <> 10
+     or extract(minute from (new.scheduled_at at time zone new.timezone)) <> 0 then
+    raise exception 'Scheduled time must be a future Thursday at 10:00 in a valid school timezone';
+  end if;
+
   if not exists (
     select 1
     from public.recruiting_contacts c
@@ -162,6 +174,8 @@ begin
       and lower(trim(c.coach_email)) = lower(trim(new.to_email))
       and c.gmail_thread_id is not null
       and c.follow_up_count = 0
+      and c.follow_up_date is not null
+      and c.follow_up_date <= (new.scheduled_at at time zone new.timezone)::date
       and c.contact_status in ('contacted', 'follow_up_due')
       and nullif(trim(coalesce(c.coach_response, '')), '') is null
       and coalesce(u.is_test, false) = false
