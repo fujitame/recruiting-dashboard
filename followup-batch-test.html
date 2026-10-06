@@ -116,8 +116,8 @@ byId('send').addEventListener('click',async()=>{
  if(items.some(x=>!x.subject||!x.body.trim()||!x.body.includes(x.personalization_sentence))){message(byId('send-status'),'件名・本文を確認してください。個別文面の削除はできません。','error');return;}
  if(!confirm(items.length+'通のメールを fujitame@gmail.com に今すぐ送信します。学校のコーチには送られません。送信しますか？'))return;
  byId('send').disabled=true;message(byId('send-status'),'送信中…');
- const {data,error}=await client.functions.invoke('recruiting-gmail-followup-batch-test-send',{body:{items:items.map(x=>({contact_id:x.contact_id,subject:x.subject,body:x.body,personalization_sentence:x.personalization_sentence}))}});
- if(error||!data?.ok){message(byId('send-status'),(data?.error||error?.message||'送信結果を確認できません。')+' Gmailの受信トレイを確認してから再試行してください。','error');return;}
+ const {data,error}=await client.functions.invoke('recruiting-gmail-followup-batch-test-send',{body:{confirm_test_send:true,items:items.map(x=>({contact_id:x.contact_id,subject:x.subject,body:x.body,personalization_sentence:x.personalization_sentence}))}});
+ if(error||!data?.ok){message(byId('send-status'),(data?.sent_count?data.sent_count+'通送信後に停止しました。 ':'')+(data?.error||error?.message||'送信結果を確認できません。')+' Gmailの受信トレイを確認してから再試行してください。','error');return;}
  message(byId('send-status'),data.sent_count+'通を '+TEST_TO+' に送信しました。Gmail受信トレイで確認してください。','success');
 });
 byId('login-button').addEventListener('click',async()=>{
