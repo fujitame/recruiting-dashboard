@@ -274,6 +274,34 @@ export default {
         );
       }
 
+      const { data: activeBatchItems, error: activeBatchError } =
+        await supabase
+          .from("recruiting_followup_batch_items")
+          .select("id")
+          .eq("contact_id", contact.id)
+          .in("status", ["pending", "sending"])
+          .limit(1);
+
+      if (activeBatchError) {
+        return json(
+          {
+            ok: false,
+            error: "Could not verify Follow-up reservations. Send stopped.",
+          },
+          503,
+        );
+      }
+
+      if (activeBatchItems?.length) {
+        return json(
+          {
+            ok: false,
+            error: "This Contact has a reserved Follow-up. Cancel the reservation before manual sending.",
+          },
+          409,
+        );
+      }
+
       const currentFollowUpCount =
         Number(contact.follow_up_count || 0);
 
