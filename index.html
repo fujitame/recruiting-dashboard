@@ -6479,14 +6479,15 @@ async function openFollowUpBatchReview(){
   list.innerHTML=drafts.map((x,i)=>
    '<details class="crm-history-item"'+(i===0?' open':'')+' style="margin:8px 0">'+
     '<summary><b>'+crmEsc(x.school.name)+' · '+crmEsc(x.contact.coach_name||'Coach')+'</b> — '+crmEsc(x.contact.coach_email)+' — '+crmEsc(fmt(x))+'</summary>'+
-    '<div class="gmail-field"><label>件名</label><input data-batch-subject="'+i+'" value="'+crmEsc(x.draft.subject)+'"></div>'+
-    '<div class="gmail-field"><label>本文</label><textarea data-batch-body="'+i+'" style="min-height:150px">'+crmEsc(x.draft.body)+'</textarea></div>'+
+    '<div class="gmail-field"><label>件名</label><input data-batch-subject="'+i+'" oninput="document.getElementById(\'crm-batch-followup-reviewed\').checked=false;updateFollowUpBatchReserveState()" value="'+crmEsc(x.draft.subject)+'"></div>'+
+    '<div class="gmail-field"><label>本文</label><textarea data-batch-body="'+i+'" oninput="document.getElementById(\'crm-batch-followup-reviewed\').checked=false;updateFollowUpBatchReserveState()" style="min-height:150px">'+crmEsc(x.draft.body)+'</textarea></div>'+
     (x.draft.researchIds.length?'<small>学校別Researchを反映済み</small>':'<small>未使用Researchなし：標準Follow-up文面</small>')+
    '</details>'
   ).join('');
   const summary=document.getElementById('crm-batch-followup-summary');
-  if(summary)summary.textContent=drafts.length+'件 · 各校の現地時間で木曜10:00に予約';
-  if(status)status.textContent='すべての下書きを確認・編集できます。予約前に返信が判明した学校は、送信時に自動除外します。';
+  const timezoneSkipped=ids.filter(id=>!timeMap.has(Number(id))).map(id=>universities.find(u=>Number(u.id)===Number(id))?.name||String(id));
+  if(summary)summary.textContent=drafts.length+'件 · 各校の現地時間で木曜10:00に予約'+(timezoneSkipped.length?' · タイムゾーン未確定で除外 '+timezoneSkipped.length+'校':'');
+  if(status)status.textContent='すべての下書きを確認・編集できます。予約前に返信が判明した学校は、送信時に自動除外します。'+(timezoneSkipped.length?' 位置情報からタイムゾーンを一意に確認できない学校は予約対象外です。':'');
   updateFollowUpBatchReserveState();
  }catch(error){
   console.error('Follow-up batch preview failed:',error);
