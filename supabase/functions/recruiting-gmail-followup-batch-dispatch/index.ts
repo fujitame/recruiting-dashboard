@@ -97,12 +97,11 @@ async function gmailSend(raw: string, threadId: string, token: string) {
   return data;
 }
 
-function threadHasReply(thread: any, coachEmail: string) {
-  const target = String(coachEmail || "").trim().toLowerCase();
+function threadHasReply(thread: any) {
   const messages = Array.isArray(thread?.messages) ? thread.messages : [];
   return messages.some((message: any) => {
     const from = emailAddress(header(message.payload?.headers || [], "From"));
-    return from && from !== GMAIL_ACCOUNT && from === target;
+    return from && from !== GMAIL_ACCOUNT;
   });
 }
 
@@ -199,7 +198,7 @@ async function processItem(item: any, token: string) {
     if (!schoolContact.coach_email || !schoolContact.gmail_thread_id) continue;
     const thread = await gmailGet(`threads/${encodeURIComponent(schoolContact.gmail_thread_id)}?format=full`, token);
     threads.set(schoolContact.id, thread);
-    if (threadHasReply(thread, schoolContact.coach_email)) {
+    if (threadHasReply(thread)) {
       await markSchoolReplied(item.owner_user_id, item.university_id, schoolContact);
       await finishItem(item.id, "skipped", { outcome_note: "A coach at this school has replied" });
       return "skipped";
