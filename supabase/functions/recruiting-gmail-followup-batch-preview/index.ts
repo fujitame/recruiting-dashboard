@@ -78,16 +78,20 @@ export default {
         if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
           return { university_id: school.id, error: "Missing verified coordinates" };
         }
-        const zones = find(latitude, longitude);
-        if (!Array.isArray(zones) || zones.length !== 1) {
-          return { university_id: school.id, error: "Timezone is ambiguous at the stored coordinates" };
+        try {
+          const zones = find(latitude, longitude);
+          if (!Array.isArray(zones) || zones.length !== 1) {
+            return { university_id: school.id, error: "Timezone is ambiguous at the stored coordinates" };
+          }
+          const timezone = zones[0];
+          return {
+            university_id: school.id,
+            timezone,
+            scheduled_at: nextThursdayAtTen(timezone, now),
+          };
+        } catch {
+          return { university_id: school.id, error: "Timezone could not be resolved from the stored coordinates" };
         }
-        const timezone = zones[0];
-        return {
-          university_id: school.id,
-          timezone,
-          scheduled_at: nextThursdayAtTen(timezone, now),
-        };
       });
 
       return json({ ok: true, schools: results });
