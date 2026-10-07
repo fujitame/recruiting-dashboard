@@ -25,13 +25,13 @@ async function load(){
  const {data:schools,error:se}=await sb.from('recruiting_universities').select('id,name,latitude,longitude,is_test').in('id',TEST_IDS).eq('is_test',true).order('id');
  if(se){showError('loadMsg',se);return}
  if(!schools||schools.length!==3){$('contacts').innerHTML='';$('loadMsg').innerHTML='<span class="error">900・901・902のTEST校が揃っていません。送信対象は作成できません。</span>';return}
- const {data,error}=await sb.from('recruiting_contacts').select('id,owner_user_id,university_id,coach_name,coach_role,contact_status,coach_response,follow_up_count').eq('owner_user_id',OWNER).in('university_id',TEST_IDS).lt('follow_up_count',2).order('university_id');
+ const {data,error}=await sb.from('recruiting_contacts').select('id,owner_user_id,university_id,coach_name,coach_role,contact_status,coach_response,follow_up_count').eq('owner_user_id',OWNER).in('university_id',TEST_IDS).eq('follow_up_count',0).order('university_id');
  if(error){showError('loadMsg',error);return}
  const bySchool=new Map(schools.map(x=>[Number(x.id),x]));
  const eligible=(data||[]).filter(c=>bySchool.has(Number(c.university_id))&&['head_coach','assistant_coach'].includes(c.coach_role)&&c.contact_status!=='responded'&&!String(c.coach_response||'').trim());
  const seenSchools=new Set();contacts=eligible.filter(c=>{const id=Number(c.university_id);if(seenSchools.has(id))return false;seenSchools.add(id);return true});
  const names=new Map(schools.map(s=>[Number(s.id),s.name]));
- $('contacts').innerHTML=contacts.map(c=>'<label class="coach"><input type="checkbox" class="pick" value="'+esc(c.id)+'"><span><b>'+esc(names.get(Number(c.university_id)))+'</b><br>'+esc(c.coach_name||'Coach')+' · '+(Number(c.follow_up_count||0)===0?'Follow-up #1':'Follow-up #2')+'</span><span class="tag">Test school '+esc(c.university_id)+'</span></label>').join('')||'<p class="muted">対象Contactがありません</p>';
+ $('contacts').innerHTML=contacts.map(c=>'<label class="coach"><input type="checkbox" class="pick" value="'+esc(c.id)+'"><span><b>'+esc(names.get(Number(c.university_id)))+'</b><br>'+esc(c.coach_name||'Coach')+' · '+'Follow-up #1'+'</span><span class="tag">Test school '+esc(c.university_id)+'</span></label>').join('')||'<p class="muted">対象Contactがありません</p>';
  if(!$('date').value){const now=new Date();$('date').value=new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,10)}
  const p=await sb.from('player_profile').select('highlight_video_1_id').eq('id',PLAYER).single();if(!p.error)videoId=p.data.highlight_video_1_id||'';
  $('loadMsg').textContent='TEST校3校のみ。選択した学校ごとにAI案を作成します。';
