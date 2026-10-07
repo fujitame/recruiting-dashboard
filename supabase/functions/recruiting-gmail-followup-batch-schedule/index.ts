@@ -34,7 +34,7 @@ export default {fetch:withSupabase({auth:"user"},async(req,ctx)=>{
   for(const c of contacts){
    const item:any=im.get(String(c.id)),school:any=sm.get(Number(c.university_id));
    if(!school||school.is_test!==true||![900,901,902].includes(Number(c.university_id)))throw new Error("Only TEST schools 900, 901, and 902 are enabled in this release.");
-   if(!["head_coach","assistant_coach"].includes(c.coach_role)||c.contact_status==="responded"||String(c.coach_response||"").trim()||Number(c.follow_up_count||0)>1)
+   if(!["head_coach","assistant_coach"].includes(c.coach_role)||c.contact_status==="responded"||String(c.coach_response||"").trim()||Number(c.follow_up_count||0)!==0)
      throw new Error(school.name+" is no longer eligible for a TEST Follow-up.");
    if(Number(item.follow_up_count)!==Number(c.follow_up_count||0))throw new Error(school.name+" Follow-up state changed; generate the preview again.");
    const zone=timezoneForCoordinates(Number(school.latitude),Number(school.longitude));
