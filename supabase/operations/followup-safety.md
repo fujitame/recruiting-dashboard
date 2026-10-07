@@ -20,7 +20,7 @@ A shared HC/AC Gmail thread has one label. All associated contacts and conversat
 - Selection, preview, reservation RPC and worker enforce waiting statuses and counts 0 or 1.
 - A reply to any Coach at the school blocks every regular Follow-up at that school.
 - The worker reads all known school Gmail threads, then rechecks CRM immediately before sending.
-- Manual and legacy automated regular Follow-ups use the same school reply gate and refuse contacts already owned by a reservation.
+- Manual regular Follow-ups use the same school reply gate and refuse contacts already owned by a reservation.
 - Production sends preserve the original Gmail thread, subject and recipient snapshot. Changed data stops the reservation.
 - #2 does not add Research personalization. #1 Research IDs are checked against unused verified facts.
 - A second initial send cannot reset an existing contact's stage to zero.
