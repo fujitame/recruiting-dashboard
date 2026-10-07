@@ -18,7 +18,7 @@ create table if not exists public.recruiting_followup_batch_items (
   owner_user_id uuid not null references auth.users(id) on delete cascade,
   contact_id uuid not null references public.recruiting_contacts(id) on delete cascade,
   university_id integer not null check (university_id between 900 and 902),
-  expected_follow_up_count integer not null check (expected_follow_up_count between 0 and 1),
+  expected_follow_up_count integer not null check (expected_follow_up_count = 0),
   recipient_email text not null default 'fujitame@gmail.com' check (lower(trim(recipient_email)) = 'fujitame@gmail.com'),
   subject text not null check (char_length(trim(subject)) between 1 and 180),
   body text not null check (char_length(trim(body)) between 1 and 10000),
@@ -89,7 +89,7 @@ begin
       select 1 from public.recruiting_universities u where u.id=v_contact.university_id and u.is_test=true
     ) then raise exception 'Only TEST schools 900, 901, and 902 are enabled in this stage'; end if;
     if v_contact.contact_status='responded' or nullif(trim(coalesce(v_contact.coach_response,'')),'') is not null
-      or v_contact.follow_up_count not between 0 and 1 then raise exception 'Test contact is not eligible for Follow-up'; end if;
+      or v_contact.follow_up_count <> 0 then raise exception 'Test contact is not eligible for Follow-up'; end if;
 
     insert into public.recruiting_followup_batch_items(
       batch_id,owner_user_id,contact_id,university_id,expected_follow_up_count,recipient_email,
