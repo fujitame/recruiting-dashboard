@@ -24,7 +24,7 @@ Deno.serve(async req => {
   let sent=0, skipped=0, unknown=0;
   for(const item of items || []) {
     try {
-      const {data:contact,error:ce}=await supabase.from("recruiting_contacts").select("id,owner_user_id,university_id,coach_email,coach_response,contact_status,follow_up_count,follow_up_date,gmail_thread_id").eq("id",item.contact_id).eq("owner_user_id",item.owner_user_id).maybeSingle();
+      const {data:contact,error:ce}=await supabase.from("recruiting_contacts").select("id,owner_user_id,university_id,coach_email,coach_response,contact_status,follow_up_count,follow_up_date,gmail_thread_id,contact_count").eq("id",item.contact_id).eq("owner_user_id",item.owner_user_id).maybeSingle();
       if(ce) throw ce;
       if(!contact || !["contacted","follow_up_due"].includes(contact.contact_status) || Number(contact.follow_up_count||0)!==Number(item.expected_follow_up_count) || contact.coach_response || !contact.gmail_thread_id || contact.gmail_thread_id===null) {
         await finishItem(item,"skipped_changed","CRM状態が予約時から変更されています。"); skipped++; continue;
