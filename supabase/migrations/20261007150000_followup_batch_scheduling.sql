@@ -178,7 +178,7 @@ security definer
 set search_path = public
 as $$
 begin
-  if auth.role() <> 'service_role' then raise exception 'Service role required'; end if;
+  if coalesce(auth.role(), '') <> 'service_role' then raise exception 'Service role required'; end if;
 
   -- A terminated worker is never retried automatically because Gmail may have accepted the send.
   update public.recruiting_followup_batch_items
