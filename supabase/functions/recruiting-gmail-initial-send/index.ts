@@ -1,7 +1,7 @@
 import { withSupabase } from "npm:@supabase/server@1";
 
 import {
-  syncRecruitingThreadLabels,
+  syncContactThreadLabels,
 } from "../_shared/recruiting-gmail-labels.ts";
 
 const GMAIL_ACCOUNT =
@@ -169,6 +169,7 @@ export default {
         );
       }
 
+      if(contact.contact_status!=='not_contacted'||Number(contact.follow_up_count||0)!==0||contact.gmail_thread_id||String(contact.coach_response||'').trim())return json({ok:false,error:'Initial email has already been sent or this contact is no longer eligible.'},409);
       const universityId = Number(contact.university_id);
 
       if (!contact.coach_email) {
@@ -260,11 +261,7 @@ export default {
         updated.gmail_thread_id
       ) {
         try {
-          await syncRecruitingThreadLabels(
-            result.threadId ||
-              updated.gmail_thread_id,
-            "Recruiting/Waiting Coach",
-          );
+          await syncContactThreadLabels(supabase,updated);
         } catch (labelError) {
           console.warn(
             "Initial Gmail label sync failed:",

@@ -1,7 +1,8 @@
+import { guardSchoolFollowUp } from "../_shared/followup-school-guard.ts";
 import { withSupabase } from "npm:@supabase/server@1";
 
 import {
-  syncRecruitingThreadLabels,
+  syncContactThreadLabels,
 } from "../_shared/recruiting-gmail-labels.ts";
 
 const GMAIL_ACCOUNT =
@@ -242,6 +243,7 @@ export default {
 
       const universityId =
         Number(contact.university_id);
+      if(universityId>=900)return json({ok:false,error:"Use fixed-recipient Test Mode reservations."},409);
 
       if (!contact.coach_email) {
         return json(
@@ -305,6 +307,8 @@ export default {
       const token =
         await googleAccessToken();
 
+      const gate=await guardSchoolFollowUp(supabase,contact,token);
+      if(gate.blocked)return json({ok:false,error:gate.reason},409);
       const thread =
         await gmailGet(
           `threads/${encodeURIComponent(
@@ -338,14 +342,7 @@ export default {
           ),
         );
 
-        return (
-          from &&
-          from !== GMAIL_ACCOUNT &&
-          from ===
-            String(contact.coach_email)
-              .trim()
-              .toLowerCase()
-        );
+        return from && from !== GMAIL_ACCOUNT;
       });
 
       if (inbound.length) {
@@ -527,14 +524,7 @@ export default {
       // #1 => Waiting Coach
       // #2 => No Response
       try {
-        await syncRecruitingThreadLabels(
-          result.threadId ||
-            updated.gmail_thread_id ||
-            contact.gmail_thread_id,
-          exhausted
-            ? "Recruiting/No Response"
-            : "Recruiting/Waiting Coach",
-        );
+        await syncContactThreadLabels(supabase,updated);
       } catch (labelError) {
         console.warn(
           "Follow-up Gmail label sync failed:",

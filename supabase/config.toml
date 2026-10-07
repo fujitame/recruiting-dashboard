@@ -63,3 +63,18 @@ entrypoint = "./functions/recruiting-gmail-label-sync/index.ts"
 enabled = true
 verify_jwt = false
 entrypoint = "./functions/recruiting-gmail-followup-batch-test-send/index.ts"
+
+[functions.recruiting-gmail-followup-batch-prepare]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/recruiting-gmail-followup-batch-prepare/index.ts"
+
+[functions.recruiting-gmail-followup-batch-schedule]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/recruiting-gmail-followup-batch-schedule/index.ts"
+
+[functions.recruiting-gmail-followup-batch-worker]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/recruiting-gmail-followup-batch-worker/index.ts"

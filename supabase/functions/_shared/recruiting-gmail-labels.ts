@@ -1,3 +1,4 @@
+import { gmailGetThread, googleAccessToken as batchAccessToken, threadReplyFrom } from "./followup-batch-gmail.ts";
 const GOOGLE_CLIENT_ID =
   Deno.env.get("GOOGLE_OAUTH_CLIENT_ID");
 
@@ -119,10 +120,13 @@ export function chooseRecruitingStateLabel(
     return "Recruiting/Closed";
   }
 
-  if (status === "no_response") {
+  if (status !== "responded" && String(contact?.coach_response || "").trim()) return "Recruiting/Needs Reply";
+  if (status === "no_response" || (["contacted","follow_up_due"].includes(status) && Number(contact?.follow_up_count||0)>=2)) {
     return "Recruiting/No Response";
   }
 
+
+  if (status === "follow_up_due") return "Recruiting/Follow-up Due";
 
   if (status === "contacted") {
     return "Recruiting/Waiting Coach";
@@ -266,4 +270,24 @@ export async function syncRecruitingThreadLabels(
     target_label:
       targetLabel,
   };
+}
+
+// A Gmail thread can belong to both HC and AC. Resolve its label from all contacts.
+export async function syncContactThreadLabels(db: any, contact: any) {
+ const {data:contacts,error}=await db.from('recruiting_contacts').select('*').eq('owner_user_id',contact.owner_user_id).eq('gmail_thread_id',contact.gmail_thread_id);
+ if(error)throw error;
+ if(!contacts?.length)throw new Error('CRM contacts for Gmail thread unavailable');
+ const {data:history,error:historyError}=await db.from('recruiting_contact_history').select('event_type,event_at,created_at,gmail_message_at').eq('owner_user_id',contact.owner_user_id).in('contact_id',contacts.map((c:any)=>c.id)).in('event_type',['reply_received','reply_sent','conversation_follow_up_sent']);
+ if(historyError)throw historyError;
+ let target:string|null;
+ if(contacts.some((c:any)=>c.contact_status==='responded'||String(c.coach_response||'').trim())) {
+   target=chooseRecruitingStateLabel({...contacts.find((c:any)=>c.contact_status==='responded'||String(c.coach_response||'').trim()),contact_status:'responded'},history||[])||'Recruiting/Needs Reply';
+ }else{
+   const states=contacts.map((c:any)=>chooseRecruitingStateLabel(c,[]));
+   target=['Recruiting/Follow-up Due','Recruiting/Waiting Coach','Recruiting/No Response','Recruiting/Closed'].find(label=>states.includes(label))||null;
+ }
+ const liveThread=await gmailGetThread(contact.gmail_thread_id,await batchAccessToken());
+ if(threadReplyFrom(liveThread,''))target='Recruiting/Needs Reply';
+ await syncRecruitingThreadLabels(contact.gmail_thread_id,target);
+ return target;
 }

@@ -87,8 +87,8 @@ export default {
         return json({ ok: false, error: "Explicit test-send confirmation is required" }, 400);
       }
       const items = payload.items;
-      if (items.length < 2 || items.length > 5) {
-        return json({ ok: false, error: "Choose 2 to 5 test schools" }, 400);
+      if (items.length < 1 || items.length > 6) {
+        return json({ ok: false, error: "Choose 1 to 6 TEST contacts (schools 900–902)" }, 400);
       }
 
       const contactIds = items.map((item: any) => String(item.contact_id || ""));
@@ -107,11 +107,8 @@ export default {
       }
 
       const universityIds = contacts.map((contact: any) => Number(contact.university_id));
-      if (new Set(universityIds).size !== universityIds.length) {
-        return json({ ok: false, error: "Use one Contact from each test school" }, 400);
-      }
-      if (universityIds.some((id: number) => id < 900 || id > 999)) {
-        return json({ ok: false, error: "Only test universities (IDs 900–999) are accepted" }, 403);
+      if (universityIds.some((id: number) => ![900, 901, 902].includes(id))) {
+        return json({ ok: false, error: "Only TEST schools 900, 901, and 902 are enabled in this stage" }, 403);
       }
 
       const { data: schools, error: schoolError } = await ctx.supabase
@@ -119,14 +116,20 @@ export default {
         .select("id,name,is_test")
         .in("id", universityIds);
       if (schoolError) throw schoolError;
-      if (!schools || schools.length !== universityIds.length || schools.some((school: any) => school.is_test !== true)) {
+      if (!schools || schools.length !== new Set(universityIds).size || schools.some((school: any) => school.is_test !== true)) {
         return json({ ok: false, error: "Every university must be marked as a test school" }, 403);
       }
 
+      const { data: schoolContacts, error: replyError } = await ctx.supabase.from("recruiting_contacts")
+        .select("university_id,contact_status,coach_response").eq("owner_user_id", ownerId).in("university_id", universityIds);
+      if (replyError) throw replyError;
+      if ((schoolContacts || []).some((c: any) => c.contact_status === "responded" || String(c.coach_response || "").trim())) {
+        return json({ ok: false, error: "A coach at a selected school has replied; school-wide Follow-up is blocked" }, 409);
+      }
       const contactById = new Map(contacts.map((contact: any) => [String(contact.id), contact]));
       const schoolById = new Map(schools.map((school: any) => [Number(school.id), school]));
       const normalized = [];
-      const uniqueSentences = new Set<string>();
+      const sentenceSchools = new Map<string, number>();
 
       for (const item of items) {
         const contact = contactById.get(String(item.contact_id));
@@ -148,10 +151,10 @@ export default {
           return json({ ok: false, error: school.name + " is missing its generated school-specific sentence" }, 400);
         }
         const sentenceKey = sentence.toLowerCase().replace(/\s+/g, " ").trim();
-        if (uniqueSentences.has(sentenceKey)) {
+        if (sentenceSchools.has(sentenceKey) && sentenceSchools.get(sentenceKey) !== Number(contact.university_id)) {
           return json({ ok: false, error: "Each school must have a different personalization sentence" }, 400);
         }
-        uniqueSentences.add(sentenceKey);
+        sentenceSchools.set(sentenceKey, Number(contact.university_id));
         if (!subject || subject.length > 180 || !body.trim() || body.length > 10000) {
           return json({ ok: false, error: school.name + " has an invalid subject or body" }, 400);
         }
