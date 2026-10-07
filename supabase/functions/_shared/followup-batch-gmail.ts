@@ -71,6 +71,17 @@ export function threadReplyFrom(thread: any, _coachEmail: string): any | null {
     return from && from !== GMAIL_ACCOUNT && Number(message.internalDate || 0) > lastSentAt;
   }) || null;
 }
+export function anyThreadReply(thread: any): any | null {
+  return (Array.isArray(thread?.messages) ? thread.messages : []).find((message: any) => {
+    const from = emailAddress(getHeader(message.payload?.headers || [], "From"));
+    return from && from !== GMAIL_ACCOUNT;
+  }) || null;
+}
+export function outboundIncludesRecipient(message: any, recipient: string): boolean {
+  const headers = message?.payload?.headers || [];
+  return [getHeader(headers,"To"),getHeader(headers,"Cc")].join(",")
+    .split(/[,;]/).some(value => emailAddress(value) === recipient.trim().toLowerCase());
+}
 export function latestOutbound(thread: any): any | null {
   const messages = Array.isArray(thread?.messages) ? thread.messages : [];
   return [...messages].reverse().find((message) =>
@@ -116,7 +127,7 @@ export function buildReplyRaw(args: {
   for (let i = 0; i < bytes.length; i += 0x8000) {
     binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
   }
-  const encodedBody = btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+  const encodedBody = btoa(binary);
   const encodedSubject = "=?UTF-8?B?" + btoa(unescape(encodeURIComponent(args.subject))) + "?=";
   const clean = (value: string) => value.replace(/[\r\n]/g, " ").trim();
   const references = [args.references, args.messageId].filter(Boolean).join(" ").trim();

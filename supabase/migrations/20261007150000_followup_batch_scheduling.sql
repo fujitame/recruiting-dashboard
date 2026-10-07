@@ -21,7 +21,8 @@ create table if not exists public.recruiting_followup_batch_items (
   expected_follow_up_count integer not null check (expected_follow_up_count = 0),
   recipient_email text not null default 'fujitame@gmail.com' check (lower(trim(recipient_email)) = 'fujitame@gmail.com'),
   subject text not null check (char_length(trim(subject)) between 1 and 180),
-  body text not null check (char_length(trim(body)) between 1 and 10000),
+  body text not null check (char_length(trim(body)) between 1 and 10000)
+    check (left(body, 60) = 'TEST MODE — This message is sent only to fujitame@gmail.com.'),
   personalization_sentence text not null check (char_length(trim(personalization_sentence)) between 1 and 1000),
   research_ids integer[] not null check (cardinality(research_ids) > 0),
   school_timezone text not null,
@@ -77,7 +78,8 @@ begin
     if (v_at at time zone v_zone)::date<>p_local_date or to_char(v_at at time zone v_zone,'HH24:MI')<>to_char(p_local_time,'HH24:MI') then
       raise exception 'Scheduled instant does not match test-school local time';
     end if;
-    if v_sentence is null or v_sentence='' or coalesce(cardinality(v_ids),0)=0 or position(v_sentence in coalesce(v_item->>'body',''))=0 then
+    if left(coalesce(v_item->>'body',''),60)<>'TEST MODE — This message is sent only to fujitame@gmail.com.'
+      or v_sentence is null or v_sentence='' or coalesce(cardinality(v_ids),0)=0 or position(v_sentence in coalesce(v_item->>'body',''))=0 then
       raise exception 'Each test email must retain its verified school-specific Research sentence';
     end if;
     if length(trim(v_item->>'subject'))>180 or length(trim(v_item->>'body'))>10000 then raise exception 'Subject or body too long'; end if;

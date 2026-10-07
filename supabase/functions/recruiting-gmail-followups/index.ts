@@ -1,3 +1,5 @@
+import { guardSchoolFollowUp } from "../_shared/followup-school-guard.ts";
+import { syncContactThreadLabels } from "../_shared/recruiting-gmail-labels.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -106,9 +108,10 @@ Deno.serve(async (req) => {
     const today = new Date().toISOString().slice(0, 10);
     const testMode = req.headers.get("x-recruiting-test-mode") === "true";
 
+    if(testMode)return json({ok:false,error:"Use fixed-recipient Test Mode reservations."},409);
     let contactQuery = supabase
       .from("recruiting_contacts")
-      .select("id,owner_user_id,university_id,coach_name,coach_email,contact_status,last_contact_at,follow_up_date,follow_up_count,contact_count,gmail_thread_id,auto_follow_up_enabled,next_action")
+      .select("id,owner_user_id,university_id,coach_role,coach_response,coach_name,coach_email,contact_status,last_contact_at,follow_up_date,follow_up_count,contact_count,gmail_thread_id,auto_follow_up_enabled,next_action")
       .eq("auto_follow_up_enabled", true)
       .not("gmail_thread_id", "is", null)
       .lte("follow_up_date", today)
@@ -132,6 +135,8 @@ Deno.serve(async (req) => {
       checked++;
       if (!contact.coach_email || !contact.gmail_thread_id) { skipped++; continue; }
 
+      const gate=await guardSchoolFollowUp(supabase,contact,token);
+      if(gate.blocked){skipped++;continue;}
       // Re-check the thread immediately before sending. If the coach has replied,
       // do not send a follow-up; Phase 5-D/this function will treat the reply as authoritative.
       const thread = await gmailGet(`threads/${encodeURIComponent(contact.gmail_thread_id)}?format=full`, token);
@@ -201,6 +206,7 @@ Deno.serve(async (req) => {
       });
       if (history.error) throw history.error;
       sent++;
+      try{await syncContactThreadLabels(supabase,{...contact,gmail_thread_id:result.threadId||contact.gmail_thread_id})}catch(e){console.warn("Gmail label sync failed",e)}
     }
 
     return json({

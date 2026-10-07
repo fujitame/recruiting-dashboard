@@ -116,6 +116,44 @@ select:focus,input:focus{outline:none;border-color:var(--accent)}
  border-radius:7px;
  background:#fff;
 }
+.crm-reservation-toolbar{padding:8px 16px}.crm-reservation-toolbar button{font-size:12px;padding:8px 16px}.crm-reservation-search{display:block;font-size:11px;color:#243b53}.crm-reservation-search input{width:100%;background:#fff;color:#243b53;border:1px solid #cbd5e0;border-radius:5px;padding:7px;margin-top:4px}.crm-batch-contact-list{max-height:260px;overflow:auto}
+.crm-batch-followup{
+ display:none;
+ margin:8px 10px;
+ padding:12px;
+ border:1px solid #b9d4ef;
+ border-radius:8px;
+ background:#f2f8ff;
+ color:#243b53;
+}
+.crm-batch-followup.is-active{display:block}
+.crm-batch-followup[hidden]{display:none}
+.crm-batch-followup h3{margin:0 0 4px;font-size:12px;color:#17365d}
+.crm-batch-followup p{margin:4px 0 9px;font-size:10px;line-height:1.5;color:#52657b}
+.crm-batch-controls{display:flex;gap:8px;align-items:end;flex-wrap:wrap}
+.crm-batch-controls label{font-size:10px;font-weight:700;color:#52657b}
+.crm-batch-controls input{display:block;margin-top:3px;padding:6px;border:1px solid #cbd5e0;border-radius:5px;background:#fff;color:#24344b}
+.crm-batch-controls button{padding:7px 10px;border:0;border-radius:5px;background:#2563a6;color:#fff;font-size:10px;font-weight:800;cursor:pointer}
+.crm-batch-controls button:disabled,#crm-batch-schedule:disabled{opacity:.55;cursor:wait}
+.crm-batch-controls button,#crm-batch-schedule{padding:7px 10px;border:0;border-radius:5px;background:#2563a6;color:#fff;font-size:10px;font-weight:800;cursor:pointer}
+.crm-batch-contact-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:9px 0}
+.crm-batch-contact{display:flex;gap:8px;align-items:flex-start;padding:9px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;color:#243b53;font-size:11px;line-height:1.4;cursor:pointer;min-width:0}
+.crm-batch-contact span{color:#243b53;min-width:0;overflow-wrap:anywhere}
+.crm-batch-contact span b{color:#17365d}
+.crm-batch-contact input[type="checkbox"]{appearance:auto;-webkit-appearance:checkbox;width:16px;min-width:16px;height:16px;margin:1px 0 0;padding:0;border:0;background:transparent;color:initial;accent-color:#2563a6;cursor:pointer;flex:0 0 16px}
+.crm-batch-contact input[type="checkbox"]:disabled{cursor:not-allowed}
+.crm-batch-contact[hidden]{display:none}
+.crm-batch-contact:has(input:disabled){background:#f8fafc;color:#64748b}
+.crm-batch-contact:has(input:disabled) span,.crm-batch-contact:has(input:disabled) span b{color:#64748b}
+.crm-batch-draft{margin-top:8px;padding:9px;border:1px solid #d7e1ec;border-radius:7px;background:#fff}
+.crm-batch-draft label{color:#243b53}
+.crm-batch-draft textarea{width:100%;min-height:130px;margin-top:5px;padding:7px;border:1px solid #cbd5e0;border-radius:5px;font:inherit;font-size:11px;line-height:1.5;resize:vertical}
+.crm-batch-source{margin-top:6px;padding:7px;background:#f5f8fc;border-radius:5px;font-size:10px}
+.crm-batch-source a{color:#2563a6}
+.crm-batch-error{color:#9b2c2c;font-weight:700}
+.crm-batch-ok{color:#276749;font-weight:700}
+@media(max-width:900px){.crm-batch-contact-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.crm-batch-contact-list{grid-template-columns:1fr}}
 .crm-action-section:has(button[style*="inline-block"]){
  display:block;
 }
@@ -2521,7 +2559,6 @@ table td:nth-child(13) .crm-btn{
       <button id="test-mode-toggle" type="button" onclick="toggleTestMode()">🧪 Test Mode: OFF</button>
     </div>
   </details>
-  <a href="./followup-batch.html" style="color:#fff;background:#2b6cb0;border-radius:6px;padding:6px 9px;font-size:10px;font-weight:800;text-decoration:none">TEST Follow-up予約</a>
 
   <span id="auth-user-badge" class="user-badge">Not signed in</span>
   <button id="logout-btn" class="logout-btn" type="button" hidden>Logout</button>
@@ -2625,6 +2662,26 @@ table td:nth-child(13) .crm-btn{
       <p>コーチ単位の連絡状況・履歴・Follow-up・Responseを確認します。</p>
     </div>
   </div>
+</section>
+
+<div data-recruiting-area="crm" class="crm-reservation-toolbar" hidden><button id="crm-reservation-toggle" class="crm-action-btn" type="button" aria-expanded="false" aria-controls="crm-batch-followup" onclick="toggleCrmReservations()">送信予約</button></div>
+<section id="crm-batch-followup" class="crm-batch-followup" data-recruiting-area="crm" aria-label="送信予約" hidden>
+ <div style="display:flex;justify-content:space-between;align-items:center"><h3 id="crm-reservation-title">送信予約</h3><button class="crm-action-btn" type="button" onclick="toggleCrmReservations(false)">閉じる</button></div>
+ <p id="crm-reservation-description"></p>
+ <label class="crm-reservation-search">対象Coachを検索<input type="search" placeholder="学校名・Coach名で検索" oninput="filterCrmReservationContacts(this.value)"></label>
+ <div id="crm-batch-contact-list" class="crm-batch-contact-list"></div>
+ <div class="crm-batch-controls">
+  <label>日付（各校現地）<input id="crm-batch-date" type="date"></label>
+  <label>時刻（各校現地）<input id="crm-batch-time" type="time" value="10:00"></label>
+  <button id="crm-batch-prepare" type="button" onclick="prepareCrmFollowUpBatch()">選択Contactの案を作成</button>
+ </div>
+ <div id="crm-batch-message" aria-live="polite"></div>
+ <div id="crm-batch-drafts"></div>
+ <div id="crm-batch-reservations" aria-live="polite"></div>
+ <div id="crm-batch-confirm" hidden>
+  <label class="crm-batch-contact"><input id="crm-batch-reviewed" type="checkbox" onchange="updateCrmFollowUpBatchConfirm()">全件の宛先・Research根拠・現地時刻・本文を確認しました。</label>
+  <button id="crm-batch-schedule" class="crm-batch-schedule" type="button" onclick="scheduleCrmFollowUpBatch()" disabled>確認したメールを送信予約</button>
+ </div>
 </section>
 
 <div id="crm-summary" class="crm-summary" data-recruiting-area="crm" hidden aria-label="連絡状況サマリー">
@@ -3951,7 +4008,15 @@ function visibleCrmContacts(){
 }
 
 function toggleTestMode(){
+ if(crmBatchPreparing)return;
  testMode=!testMode;
+ crmReservationsOpen=false;
+ const reservationSearch=document.querySelector('.crm-reservation-search input');if(reservationSearch)reservationSearch.value='';
+ crmFollowUpBatchPrepared=[];
+ crmFollowUpBatchDrafts.clear();
+ const batchConfirm=document.getElementById('crm-batch-confirm');if(batchConfirm)batchConfirm.hidden=true;
+ const batchReviewed=document.getElementById('crm-batch-reviewed');if(batchReviewed)batchReviewed.checked=false;
+ const batchSchedule=document.getElementById('crm-batch-schedule');if(batchSchedule)batchSchedule.disabled=true;
 
  const btn=document.getElementById('test-mode-toggle');
  if(btn){
@@ -3961,7 +4026,14 @@ function toggleTestMode(){
  renderTable();
  renderCrmSummary();
  renderCrmActionList();
+ renderCrmFollowUpBatch();
  applyFilters();
+ if(testMode&&crmAvailable){
+  ensureMissingCrmContacts().then(renderCrmFollowUpBatch).catch(err=>{
+   console.warn('TEST CRM contacts could not be initialized:',err);
+   crmBatchSetMessage('TEST Contact一覧を準備できませんでした。','error');
+  });
+ }
 }
 
 const fallbackUniversities=[
@@ -4600,6 +4672,213 @@ const crmConversationLatest=new Map();
 function crmCoachKey(role,name,email){const e=(email||'').trim().toLowerCase(),n=(name||'').trim().toLowerCase().replace(/\s+/g,' ');return role+':'+(e?'email:'+e:'name:'+n)}
 function crmEsc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function crmCoachRows(u){return [{role:'head_coach',name:u.hc_name||'Coach',email:u.hc_email||''},{role:'assistant_coach',name:u.ac_name||'Coach',email:u.ac_email||''}]}
+const CRM_BATCH_TEST_IDS=[900,901,902];
+const CRM_BATCH_TEST_TO='fujitame@gmail.com';
+let crmReservationsOpen=false;
+let crmBatchPreparing=false;
+let crmFollowUpBatchPrepared=[];
+let crmFollowUpBatchDrafts=new Map();
+function crmBatchSetMessage(message,kind=''){
+ const el=document.getElementById('crm-batch-message');
+ if(!el)return;
+ el.className=kind==='error'?'crm-batch-error':kind==='ok'?'crm-batch-ok':'';
+ el.textContent=message||'';
+}
+function crmBatchSelectedIds(){return Array.from(document.querySelectorAll('.crm-batch-pick:checked')).map(el=>el.value)}
+function crmBatchUpdateSchoolChoices(){
+
+ crmFollowUpBatchPrepared=[];crmFollowUpBatchDrafts.clear();
+ const drafts=document.getElementById('crm-batch-drafts'),confirm=document.getElementById('crm-batch-confirm');
+ if(drafts)drafts.replaceChildren();if(confirm)confirm.hidden=true;
+ const reviewed=document.getElementById('crm-batch-reviewed');if(reviewed)reviewed.checked=false;
+ const schedule=document.getElementById('crm-batch-schedule');if(schedule)schedule.disabled=true;
+}
+function crmCanBatchFollowUp(c){
+ return ['contacted','follow_up_due'].includes(c?.contact_status)&&
+  [0,1].includes(Number(c?.follow_up_count||0))&&
+  !String(c?.coach_response||'').trim()&&
+  ['head_coach','assistant_coach'].includes(c?.coach_role)&&
+  !Array.from(crmContacts.values()).some(other=>Number(other.university_id)===Number(c.university_id)&&
+   (other.contact_status==='responded'||String(other.coach_response||'').trim()));
+}
+function crmBatchInCurrentMode(c){
+ const id=Number(c?.university_id);
+ return testMode?CRM_BATCH_TEST_IDS.includes(id):(id>=1&&id<=900&&!isTestUniversityId(id));
+}
+function toggleCrmReservations(open){
+ crmReservationsOpen=typeof open==='boolean'?open:!crmReservationsOpen;
+ const panel=document.getElementById('crm-batch-followup');
+ panel.hidden=!crmReservationsOpen||currentRecruitingArea!=='crm';panel.classList.toggle('is-active',crmReservationsOpen);
+ document.getElementById('crm-reservation-toggle')?.setAttribute('aria-expanded',String(crmReservationsOpen));
+ if(crmReservationsOpen)loadCrmFollowUpBatchReservations();
+}
+function filterCrmReservationContacts(value){
+ const q=String(value||'').trim().toLowerCase();
+ document.querySelectorAll('.crm-batch-contact-list .crm-batch-contact').forEach(el=>el.hidden=q&&!el.textContent.toLowerCase().includes(q));
+}
+function openCrmBatchNextAction(contactId){
+ const c=Array.from(crmContacts.values()).find(c=>String(c.id)===String(contactId));
+ if(!c||!crmBatchInCurrentMode(c)||!crmCanBatchFollowUp(c))return;
+ closeCrmDrawer();toggleCrmReservations(true);
+ filterCrmReservationContacts('');
+ const search=document.querySelector('.crm-reservation-search input');if(search)search.value='';
+ const selected=crmBatchSelectedIds();
+ const checkbox=Array.from(document.querySelectorAll('.crm-batch-pick')).find(el=>el.value===String(contactId));
+ if(checkbox){checkbox.checked=true;crmBatchUpdateSchoolChoices();}
+ if(!selected.length&&c.follow_up_date)document.getElementById('crm-batch-date').value=c.follow_up_date;
+ document.getElementById('crm-batch-followup')?.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function renderCrmFollowUpBatch(){
+ const panel=document.getElementById('crm-batch-followup'),list=document.getElementById('crm-batch-contact-list');
+ if(!panel||!list)return;
+ panel.hidden=!crmReservationsOpen||currentRecruitingArea!=='crm';panel.classList.toggle('is-active',crmReservationsOpen);
+ document.getElementById('crm-reservation-toggle')?.setAttribute('aria-expanded',String(crmReservationsOpen));
+ document.getElementById('crm-reservation-title').textContent=testMode?'送信予約 · TEST（900–902）':'送信予約 · Follow-up #1 / #2';
+ document.getElementById('crm-reservation-description').textContent=testMode?
+  'Test Mode：送信先はfujitame@gmail.comに固定します。初回送信済みは#1、#1送信済みは#2の対象です。同校の誰かに返信があれば全員対象外です。各校の現地日時と本文を確認して予約してください。':
+  '各Coachのメールアドレスへ、初回メールと同じスレッドで送信します。初回送信済みは#1、#1送信済みは#2の対象です。同校HC・ACをそれぞれ選択できます。同校の誰かに返信があれば全員対象外です。各校の現地日時と本文を確認して予約してください。';
+ const contacts=Array.from(crmContacts.values()).filter(c=>crmBatchInCurrentMode(c)&&crmCanBatchFollowUp(c)&&(testMode||(c.coach_email&&c.gmail_thread_id)))
+  .sort((a,b)=>Number(a.university_id)-Number(b.university_id));
+ list.innerHTML=contacts.map(c=>{
+  const school=universities.find(u=>Number(u.id)===Number(c.university_id));
+  return '<label class="crm-batch-contact"><input type="checkbox" class="crm-batch-pick" value="'+crmEsc(c.id)+'" onchange="crmBatchUpdateSchoolChoices()"><span><b>'+crmEsc(school?.name||String(c.university_id))+'</b><br>'+crmEsc(c.coach_name||'Coach')+' · Follow-up #'+(Number(c.follow_up_count||0)+1)+(c.follow_up_date?' · '+crmEsc(c.follow_up_date):' · 予定日未設定')+'<br>'+crmEsc(testMode?CRM_BATCH_TEST_TO:c.coach_email)+'</span></label>';
+ }).join('')||'<span>送信予約の対象となるContactがありません。</span>';
+ const date=document.getElementById('crm-batch-date');
+ if(date&&!date.value){const now=new Date();date.value=new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,10)}
+ if(crmReservationsOpen)loadCrmFollowUpBatchReservations();
+}
+async function loadCrmFollowUpBatchReservations(){
+ const list=document.getElementById('crm-batch-reservations');
+ if(!list||!supabaseClient||!DASHBOARD_OWNER_ID)return;
+ const reservationMode=testMode?'test':'production';
+ try{
+  const {data:batches,error}=await supabaseClient.from('recruiting_followup_batches').select('id,status,created_at,item_count').eq('owner_user_id',DASHBOARD_OWNER_ID).eq('mode',reservationMode).order('created_at',{ascending:false}).limit(10);
+  if(error)throw error;
+  if(reservationMode!==(testMode?'test':'production'))return;
+  if(!batches?.length){list.replaceChildren();return}
+  const {data:items,error:itemError}=await supabaseClient.from('recruiting_followup_batch_items').select('batch_id,contact_id,scheduled_at,school_timezone,status,error_message').eq('owner_user_id',DASHBOARD_OWNER_ID).in('batch_id',batches.map(b=>b.id));
+  if(itemError)throw itemError;
+  const states={scheduled:'予約済み',processing:'送信処理中',sent:'送信済み',skipped_changed:'状態変更により停止',send_unknown:'送信結果の確認が必要',cancelled:'取消済み',complete:'完了',partial:'一部完了'};
+  list.innerHTML='<h4>送信予約履歴</h4>'+batches.map(batch=>'<article class="crm-batch-draft"><b>'+crmEsc(states[batch.status]||batch.status)+' · '+batch.item_count+' Contact</b>'+((batch.status==='scheduled')?'<button class="crm-action-btn" type="button" onclick="cancelCrmFollowUpBatch(\''+crmEsc(batch.id)+'\')">この予約を取り消す</button>':'')+(items||[]).filter(i=>i.batch_id===batch.id).map(i=>{const c=Array.from(crmContacts.values()).find(c=>String(c.id)===String(i.contact_id));return '<p>'+crmEsc(c?.coach_name||'TEST Contact')+' · '+crmEsc(states[i.status]||i.status)+'<br>'+crmEsc(crmBatchFormatLocal(i.scheduled_at,i.school_timezone))+(i.error_message?'<br>'+crmEsc(i.error_message):'')+'</p>'}).join('')+'</article>').join('');
+ }catch(error){list.textContent='送信予約履歴を読み込めませんでした。';console.error(error)}
+}
+async function cancelCrmFollowUpBatch(batchId){
+ try{
+  const {error}=await supabaseClient.rpc('cancel_recruiting_followup_batch',{p_batch_id:batchId});
+  if(error)throw error;
+  crmBatchSetMessage('送信予約を取り消しました。','ok');
+  await loadCrmContacts();
+ }catch(error){crmBatchSetMessage(error?.message||'送信予約を取り消せませんでした。','error')}
+}
+function crmBatchFormatLocal(iso,zone){
+ try{return new Intl.DateTimeFormat('ja-JP',{timeZone:zone,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23',timeZoneName:'short'}).format(new Date(iso))}
+ catch{return iso+' ('+zone+')'}
+}
+async function prepareCrmFollowUpBatch(){
+ const prepare=document.getElementById('crm-batch-prepare');
+ const draftsEl=document.getElementById('crm-batch-drafts');
+ const confirm=document.getElementById('crm-batch-confirm');
+ const date=document.getElementById('crm-batch-date')?.value;
+ const time=document.getElementById('crm-batch-time')?.value;
+ const ids=crmBatchSelectedIds();
+ crmFollowUpBatchPrepared=[];crmFollowUpBatchDrafts.clear();draftsEl?.replaceChildren();if(confirm)confirm.hidden=true;
+ const reviewed=document.getElementById('crm-batch-reviewed');if(reviewed)reviewed.checked=false;
+ const schedule=document.getElementById('crm-batch-schedule');if(schedule)schedule.disabled=true;
+ const requestTestMode=testMode;
+ if(!ids.length||ids.length>(testMode?6:250)){crmBatchSetMessage('対象Coachを1〜'+(testMode?6:250)+'件選択してください。','error');return}
+ if(!date||!time){crmBatchSetMessage('各校の現地日付と時刻を入力してください。','error');return}
+ if(!supabaseClient){crmBatchSetMessage('Supabase接続を確認できません。','error');return}
+ crmBatchPreparing=true;
+ if(prepare)prepare.disabled=true;crmBatchSetMessage('対象Coachと予約時刻を確認中…');
+ try{
+  const {data,error}=await supabaseClient.functions.invoke('recruiting-gmail-followup-batch-prepare',{
+   body:{test_mode:requestTestMode,contact_ids:ids,local_date:date,local_time:time}
+  });
+  if(error)throw error;
+  if(!data?.ok||data.test_mode!==requestTestMode||(requestTestMode&&data.recipient_email!==CRM_BATCH_TEST_TO))throw new Error(data?.error||'送信予約の対象確認に失敗しました。');
+  for(const skipped of data.skipped||[]){
+   const row=document.createElement('div');row.className='crm-batch-draft crm-batch-error';
+   row.textContent=(skipped.school_name||'対象校')+'：対象外 — '+(skipped.reason||'状態を確認してください。');draftsEl?.append(row);
+  }
+  for(const item of data.items||[]){
+   const contact=Array.from(crmContacts.values()).find(c=>String(c.id)===String(item.contact_id));
+   const isSecond=Number(item.follow_up_count)===1;
+   const {data:draftData,error:draftError}=isSecond?{data:{ok:true,draft:{personalization_sentence:'',research_used:[]},research_context:[]},error:null}:await supabaseClient.functions.invoke('recruiting-ai-followup-draft',{body:{contact_id:item.contact_id}});
+   if(draftError)throw draftError;
+   if(testMode!==requestTestMode)throw new Error('モードが変わりました。案を作り直してください。');
+   if(!draftData?.ok||!draftData?.draft)throw new Error(draftData?.error||item.school_name+'のResearch案を作れませんでした。');
+   const sentence=String(draftData.draft.personalization_sentence||'').trim();
+   const researchIds=Array.isArray(draftData.draft.research_used)?draftData.draft.research_used.map(Number).filter(Number.isInteger):[];
+   const noResearch=!sentence&&researchIds.length===0;
+   if(!noResearch&&(!sentence||researchIds.length!==1))throw new Error(item.school_name+'のResearch案を確認できません。');
+   const facts=(draftData.research_context||[]).filter(f=>researchIds.includes(Number(f.research_id)));
+   if(!noResearch&&facts.length!==1)throw new Error(item.school_name+'のResearch出典を確認できません。');
+   const videoId=String(CURRENT_PLAYER.highlightVideo1||'').trim();
+   const body=(requestTestMode?'TEST MODE — This message is sent only to '+CRM_BATCH_TEST_TO+'.\n\n':'')+'Dear '+(contact?.coach_name||'Coach')+',\n\n'+(isSecond?'I wanted to follow up once more on my previous emails and my interest in your program.':'I wanted to follow up on my previous email and share my updated highlight video.')+(sentence?' '+sentence:'')+'\n\nHere is my video: '+(videoId?'https://www.youtube.com/watch?v='+encodeURIComponent(videoId):'[動画URL未設定]')+'\n\nI remain very interested in learning more about your program. Thank you for your time, and I look forward to hearing from you.\n\nBest,\n'+CURRENT_PLAYER.name;
+   const row={...item,test_mode:requestTestMode,body,personalization_sentence:sentence,research_ids:researchIds};
+   crmFollowUpBatchPrepared.push(row);crmFollowUpBatchDrafts.set(String(item.contact_id),row);
+   const article=document.createElement('article');article.className='crm-batch-draft';
+   const fact=facts[0]||{},sourceUrl=/^https?:\/\//i.test(String(fact.source_url||''))?String(fact.source_url):'';
+   article.dataset.contactId=String(item.contact_id);
+   article.innerHTML='<b>'+crmEsc(item.school_name)+' · '+crmEsc(item.coach_name||'Coach')+'</b><br><span>送信先：'+crmEsc(item.recipient_email)+'</span><br><span>送信予定：'+crmEsc(crmBatchFormatLocal(item.scheduled_at,item.school_timezone))+' · '+crmEsc(item.school_timezone)+'</span><br><span>件名：'+crmEsc(item.subject)+'</span><div class="crm-batch-source"><b>Research根拠</b><p>'+crmEsc(isSecond?'Follow-up #2はResearchを追加しない標準本文です。':noResearch?'未使用のVerified Researchがないため、Researchを追加しない標準本文です。':draftData.draft.rationale_ja||'')+'</p><div>'+crmEsc(fact.fact_text||'')+'</div>'+(sourceUrl?'<a href="'+crmEsc(sourceUrl)+'" target="_blank" rel="noopener">'+crmEsc(fact.source_title||'出典を確認')+'</a>':'<span>Research出典なし（標準本文）</span>')+'</div><label>本文<textarea class="crm-batch-body"></textarea></label>';
+   article.querySelector('textarea').value=body;
+   draftsEl?.append(article);
+  }
+  if(document.getElementById('crm-batch-date').value!==date||document.getElementById('crm-batch-time').value!==time){crmBatchUpdateSchoolChoices();throw new Error('予約日時が変わりました。案を作り直してください。');}
+  if(crmFollowUpBatchPrepared.length){if(confirm)confirm.hidden=false;crmBatchSetMessage(crmFollowUpBatchPrepared.length+'件の案を作成しました。宛先・現地時刻・Research出典・本文を確認してください。');}
+  else crmBatchSetMessage('送信予約できるContactがありません。','error');
+ }catch(error){console.error('TEST Follow-up batch preview failed:',error);crmBatchSetMessage(error?.message||'Follow-up案の作成に失敗しました。','error')}
+ finally{crmBatchPreparing=false;if(prepare)prepare.disabled=false}
+}
+function updateCrmFollowUpBatchConfirm(){
+ const reviewed=Boolean(document.getElementById('crm-batch-reviewed')?.checked);
+ const schedule=document.getElementById('crm-batch-schedule');
+ if(schedule)schedule.disabled=!reviewed||!crmFollowUpBatchPrepared.length;
+}
+async function scheduleCrmFollowUpBatch(){
+ const button=document.getElementById('crm-batch-schedule');
+ if(!document.getElementById('crm-batch-reviewed')?.checked||!crmFollowUpBatchPrepared.length||crmFollowUpBatchPrepared.some(i=>i.test_mode!==testMode)){crmBatchSetMessage('モードと予約内容を確認してください。','error');return}
+ const items=[];
+ for(const item of crmFollowUpBatchPrepared){
+  const article=Array.from(document.querySelectorAll('.crm-batch-draft[data-contact-id]')).find(el=>el.dataset.contactId===String(item.contact_id));
+  const body=article?.querySelector('.crm-batch-body')?.value||'';
+  if((testMode&&!body.startsWith('TEST MODE — This message is sent only to '+CRM_BATCH_TEST_TO+'.'))||!body.trim()||!body.includes(item.personalization_sentence)){
+   crmBatchSetMessage('必須の本文またはResearch文が変更されています。本文を戻すか案を作り直してください。','error');return;
+  }
+  items.push({...item,body});
+ }
+ crmBatchPreparing=true;
+ if(button)button.disabled=true;crmBatchSetMessage('送信予約を登録中…');
+ try{
+  const {data,error}=await supabaseClient.functions.invoke('recruiting-gmail-followup-batch-schedule',{
+   body:{test_mode:testMode,local_date:document.getElementById('crm-batch-date').value,local_time:document.getElementById('crm-batch-time').value,items}
+  });
+  if(error)throw error;
+  if(!data?.ok||data.test_mode!==testMode||(testMode&&data.recipient_email!==CRM_BATCH_TEST_TO))throw new Error(data?.error||'送信予約に失敗しました。');
+  crmBatchSetMessage(data.scheduled_count+'件を送信予約しました。'+(testMode?'送信先：'+CRM_BATCH_TEST_TO:'各Coachの確認済み宛先へ送信します。'),'ok');
+  crmFollowUpBatchPrepared=[];crmFollowUpBatchDrafts.clear();
+  document.getElementById('crm-batch-drafts')?.replaceChildren();
+  const confirm=document.getElementById('crm-batch-confirm');if(confirm)confirm.hidden=true;
+  await loadCrmContacts();
+ }catch(error){console.error('TEST Follow-up batch scheduling failed:',error);crmBatchSetMessage(error?.message||'予約登録に失敗しました。','error');if(button)button.disabled=false}
+ finally{crmBatchPreparing=false}
+}
+document.addEventListener('input',event=>{
+ if(event.target?.matches?.('.crm-batch-body')){
+  const reviewed=document.getElementById('crm-batch-reviewed');if(reviewed)reviewed.checked=false;
+  const schedule=document.getElementById('crm-batch-schedule');if(schedule)schedule.disabled=true;
+ }
+});
+document.addEventListener('change',event=>{
+ if(event.target?.matches?.('#crm-batch-date,#crm-batch-time')){
+  crmFollowUpBatchPrepared=[];crmFollowUpBatchDrafts.clear();
+  document.getElementById('crm-batch-drafts')?.replaceChildren();
+  const confirm=document.getElementById('crm-batch-confirm');if(confirm)confirm.hidden=true;
+  const reviewed=document.getElementById('crm-batch-reviewed');if(reviewed)reviewed.checked=false;
+  const schedule=document.getElementById('crm-batch-schedule');if(schedule)schedule.disabled=true;
+  crmBatchSetMessage('日付または時刻が変わりました。選択Contactの案を作り直してください。');
+ }
+});
 async function loadCrmContacts(){
  crmContacts.clear();crmHistory=[];crmAvailable=false;if(!supabaseClient||!DASHBOARD_OWNER_ID)return false;
  try{
@@ -4614,6 +4893,7 @@ async function loadCrmContacts(){
   await loadRecruitingSchoolPipeline();
   renderCrmSummary();
   renderCrmActionList();
+  renderCrmFollowUpBatch();
   return true;
  }catch(err){console.warn('CRM load unavailable:',err);return false}
 }
@@ -5054,7 +5334,7 @@ function switchRecruitingArea(area){
  currentRecruitingArea=area;
 
  document.querySelectorAll('[data-recruiting-area]').forEach(el=>{
-  el.hidden=el.getAttribute('data-recruiting-area')!==area;
+  el.hidden=el.getAttribute('data-recruiting-area')!==area||(el.id==='crm-batch-followup'&&!crmReservationsOpen);
  });
 
  document.querySelectorAll('.recruiting-nav-btn').forEach(btn=>{
@@ -5844,6 +6124,12 @@ function updateCrmNextActions(c){
   return;
  }
 
+ if(crmBatchInCurrentMode(c)&&['contacted','follow_up_due'].includes(status)){
+  if(!testMode&&(!hasEmail||!hasThread)){note.textContent='CoachのEmailまたは初回メールのGmail Thread IDがないため、送信予約できません。';return;}
+  note.textContent=crmCanBatchFollowUp(c)?'次はFollow-up #'+(followCount+1)+(c?.follow_up_date?'（予定日 '+c.follow_up_date+'）':'（予定日未設定）')+'です。詳細CRMの「送信予約」から選択・確認して予約できます。':'同校のCoachから返信があるため、送信予約の対象外です。個別CRMで対応してください。';
+  return;
+ }
+
  if(['contacted','follow_up_due'].includes(status)){
   if(!hasEmail){
    note.textContent='CoachのEmailが未登録のためFollow-upを作成できません。';
@@ -5858,9 +6144,9 @@ function updateCrmNextActions(c){
   followBtn.style.display='inline-block';
 
   if(c?.follow_up_date){
-   note.textContent='次のアクション：Follow-up（予定日 '+c.follow_up_date+'）';
+   note.textContent='次のアクション：Follow-up #'+(followCount+1)+'（予定日 '+c.follow_up_date+'）';
   }else{
-   note.textContent='次のアクション：Follow-up';
+   note.textContent='次のアクション：Follow-up #'+(followCount+1);
   }
   return;
  }
@@ -6192,8 +6478,7 @@ function renderCrmActionList(){
  // Coachから返信済みの案件はここには入れない
  // -------------------------------------------------------
  const regularActive=active.filter(r=>
-  r.contact.contact_status!=='responded' &&
-  !String(r.contact.coach_response||'').trim()
+  crmCanBatchFollowUp(r.contact)
  );
 
  const due=regularActive
@@ -6210,7 +6495,7 @@ function renderCrmActionList(){
  const upcoming=regularActive
   .filter(r=>{
    const d=crmDateOnlyLocal(r.contact.follow_up_date);
-   return d&&d>today;
+   return (crmCanBatchFollowUp(r.contact)&&!d)||(d&&d>today);
   })
   .sort((a,b)=>
    (a.contact.follow_up_date||'').localeCompare(
@@ -6265,7 +6550,8 @@ function renderCrmActionList(){
       '\')">Conversation Follow-up作成</button>'
     :'';
 
-  const regularFollowUpButton=
+  const testBatchButton=!isConversation&&crmBatchInCurrentMode(c)&&crmCanBatchFollowUp(c)&&(testMode||(c.coach_email&&c.gmail_thread_id));
+  const regularFollowUpButton=testBatchButton?'<button class="crm-action-btn" type="button" onclick="openCrmBatchNextAction(\''+crmEsc(c.id)+'\')">送信予約 #'+(Number(c.follow_up_count||0)+1)+'</button>':
    !isConversation &&
    c.follow_up_date &&
    crmDateOnlyLocal(c.follow_up_date)<=today &&

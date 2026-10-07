@@ -1,8 +1,7 @@
 import { withSupabase } from "npm:@supabase/server@1";
 
 import {
-  chooseRecruitingStateLabel,
-  syncRecruitingThreadLabels,
+  syncContactThreadLabels,
 } from "../_shared/recruiting-gmail-labels.ts";
 
 function json(body: unknown, status = 200) {
@@ -125,46 +124,7 @@ export default {
           );
         }
 
-        const {
-          data: history,
-          error: historyError,
-        } = await supabase
-          .from(
-            "recruiting_contact_history",
-          )
-          .select(`
-            event_type,
-            event_at,
-            created_at,
-            gmail_message_at
-          `)
-          .eq(
-            "contact_id",
-            contact.id,
-          )
-          .in(
-            "event_type",
-            [
-              "reply_received",
-              "reply_sent",
-              "conversation_follow_up_sent",
-            ],
-          );
-
-        if (historyError) {
-          throw historyError;
-        }
-
-        const targetLabel =
-          chooseRecruitingStateLabel(
-            contact,
-            history || [],
-          );
-
-        await syncRecruitingThreadLabels(
-          contact.gmail_thread_id,
-          targetLabel,
-        );
+        const targetLabel = await syncContactThreadLabels(supabase, contact);
 
         return json({
           ok: true,
