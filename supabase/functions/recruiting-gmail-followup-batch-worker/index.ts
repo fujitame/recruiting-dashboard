@@ -49,6 +49,7 @@ Deno.serve(async req => {
         follow_up_count: nextCount,
         contact_count: (Number((contact as any).contact_count)||0)+1,
         last_contact_at: sentAt,
+        last_follow_up_at: sentAt,
         follow_up_date: nextDate,
         auto_follow_up_enabled: false,
         next_action: nextDate ? "次回Follow-upを確認 — "+nextDate+" ("+item.school_timezone+")" : "Follow-up上限到達 — 返信を待つ"
