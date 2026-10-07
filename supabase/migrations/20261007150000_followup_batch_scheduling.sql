@@ -117,8 +117,12 @@ begin
   if coalesce(auth.role(),'')<>'service_role' then raise exception 'Service role required'; end if;
   update public.recruiting_followup_batch_items set status='send_unknown',error_message='Worker timed out; verify test inbox manually'
     where status='processing' and processing_started_at<now()-interval '15 minutes';
-  update public.recruiting_followup_batches b set status='partial'
-    where b.status='scheduled' and exists(select 1 from public.recruiting_followup_batch_items i where i.batch_id=b.id and i.status='send_unknown');
+  update public.recruiting_followup_batches b
+    set status=case when not exists(select 1 from public.recruiting_followup_batch_items i
+      where i.batch_id=b.id and i.status not in ('sent','cancelled')) then 'complete' else 'partial' end
+    where b.status='scheduled'
+      and not exists(select 1 from public.recruiting_followup_batch_items i
+        where i.batch_id=b.id and i.status in ('scheduled','processing'));
   return query
   with due as (
     select i.id from public.recruiting_followup_batch_items i
