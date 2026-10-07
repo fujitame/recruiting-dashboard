@@ -1,23 +1,26 @@
--- Follow-up batch worker: install only after setting the matching Edge Function secret.
+-- Stage 1 cron: TEST MODE only. This worker refuses calls without both the
+-- shared secret and x-recruiting-test-mode: true, and its database RPC only
+-- claims batches whose mode is 'test'. All recipients are fixed to fujitame@gmail.com.
 -- In Supabase Dashboard:
--- 1) Enable pg_cron and pg_net extensions.
--- 2) Add Edge Function secret FOLLOWUP_BATCH_WORKER_SECRET with a new random value.
+-- 1) Enable pg_cron and pg_net.
+-- 2) Set Edge Function secret FOLLOWUP_BATCH_WORKER_SECRET to a new random value.
 -- 3) Add Vault secrets named:
 --      followup_batch_worker_url    = https://cjrabdfdtrufbpjmqddh.supabase.co/functions/v1/recruiting-gmail-followup-batch-worker
---      followup_batch_worker_secret = the exact same random value as the Edge Function secret
--- 4) Run this SQL once. It invokes the worker every minute; the worker claims only due items.
--- Do not put secret values in the repository or run this against a project before deployment.
+--      followup_batch_worker_secret = same random value as the Edge Function secret
+-- 4) Run once after deploying the test-only migration and functions.
+-- Do not use this setup for production schools; production support is a later release.
 
 select cron.schedule(
-  'recruiting-followup-batch-worker',
+  'recruiting-followup-batch-test-worker',
   '* * * * *',
   $job$
   select net.http_post(
-    url := (select decrypted_secret from vault.decrypted_secrets where name = 'followup_batch_worker_url'),
+    url := (select decrypted_secret from vault.decrypted_secrets where name='followup_batch_worker_url'),
     headers := jsonb_build_object(
-      'content-type', 'application/json',
+      'content-type','application/json',
+      'x-recruiting-test-mode','true',
       'x-recruiting-batch-worker-secret',
-      (select decrypted_secret from vault.decrypted_secrets where name = 'followup_batch_worker_secret')
+      (select decrypted_secret from vault.decrypted_secrets where name='followup_batch_worker_secret')
     ),
     body := '{}'::jsonb
   );
