@@ -36,6 +36,7 @@ function renderContacts(){const q=$('search').value.toLowerCase();const rows=con
 function checkedIds(){return [...document.querySelectorAll('.pick:checked')].map(x=>x.value)}
 function fmt(iso,zone){return new Intl.DateTimeFormat('ja-JP',{timeZone:zone,dateStyle:'medium',timeStyle:'short',timeZoneName:'short'}).format(new Date(iso))}
 async function prepare(){
+ $('reviewed').checked=false;$('schedule').disabled=true;$('scheduleMsg').textContent='';
  const ids=checkedIds();if(!ids.length){$('prepMsg').textContent='先に対象校を選んでください。';return}
  if(!$('date').value||!$('time').value){$('prepMsg').textContent='日付と時刻を選択してください。';return}
  $('prepare').disabled=true;$('prepMsg').textContent='対象確認と個別案を作成中…';$('drafts').innerHTML='';prepared=[];drafts.clear();
@@ -66,6 +67,6 @@ async function schedule(){
  try{const {data,error}=await sb.functions.invoke('recruiting-gmail-followup-batch-schedule',{body:{local_date:$('date').value,local_time:$('time').value,items}});if(error)throw error;if(!data?.ok)throw Error(data?.error||'予約に失敗しました');$('scheduleMsg').innerHTML='<p class="ok">'+data.scheduled_count+'件を予約しました。メールは予定時刻に送信されます。Batch ID: '+esc(data.batch_id)+'</p>';prepared=[];$('reviewed').checked=false}
  catch(e){showError('scheduleMsg',e);$('schedule').disabled=false}
 }
-$('login').onclick=authCheck;$('reload').onclick=load;$('search').oninput=renderContacts;$('prepare').onclick=prepare;$('reviewed').onchange=()=>{$('schedule').disabled=!$('reviewed').checked};$('schedule').onclick=schedule;
+$('login').onclick=authCheck;$('reload').onclick=load;$('search').oninput=renderContacts;$('prepare').onclick=prepare;$('reviewed').onchange=()=>{$('schedule').disabled=!$('reviewed').checked};$('drafts').addEventListener('input',e=>{if(e.target.matches('.body')){$('reviewed').checked=false;$('schedule').disabled=true}});$('schedule').onclick=schedule;
 sb.auth.onAuthStateChange((_event,session)=>{if(session)load()}); load();
 </script></body></html>
