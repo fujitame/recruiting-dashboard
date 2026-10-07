@@ -108,13 +108,13 @@ export default {
       const followUpCount =
         Number(contact.follow_up_count || 0);
 
-      // Personalization is intentionally limited to Follow-up #1.
-      if (followUpCount !== 0) {
+      // Up to two Follow-ups are allowed; prior Research IDs are excluded below.
+      if (followUpCount > 1) {
         return json(
           {
             ok: false,
             error:
-              "Research personalization is available only for Follow-up #1.",
+              "Research personalization is unavailable after the second Follow-up.",
           },
           409,
         );
@@ -261,11 +261,11 @@ export default {
       }
 
       const prompt = `
-You are helping a college soccer student-athlete personalize Follow-up #1 of a recruiting email.
+You are helping a college soccer student-athlete personalize Follow-up #${followUpCount + 1} of a recruiting email.
 
 Create ONE short, natural English personalization sentence from Akihiro Fujikawa to the coach.
 
-This sentence will be inserted into an existing Follow-up #1 email.
+This sentence will be inserted into the next existing Follow-up email.
 
 RULES:
 - Use only the verified unused research supplied below.
@@ -273,7 +273,7 @@ RULES:
 - Preserve the strength and scope of the research fact precisely.
 - Do not reuse any previously used research fact.
 - Use at most ONE research fact.
-- The sentence must work naturally in a follow-up email, not an initial introduction.
+- The sentence must work naturally in Follow-up #${followUpCount + 1}, not an initial introduction.
 - Keep it concise and conversational.
 - Do not repeat generic interest language such as "I remain very interested" because the surrounding Follow-up email already expresses continued interest.
 - Prefer a direct program-specific observation such as "I also appreciated..." or "I was particularly interested to see..." when natural.
@@ -301,7 +301,7 @@ VERIFIED UNUSED RESEARCH:
 ${JSON.stringify(researchContext, null, 2)}
 
 Create:
-1. personalization_sentence: exactly one concise English sentence suitable for Follow-up #1.
+1. personalization_sentence: exactly one concise English sentence suitable for Follow-up #${followUpCount + 1}.
 2. rationale_ja: brief Japanese explanation.
 3. research_used: array containing the single research_id actually used.
 `;
