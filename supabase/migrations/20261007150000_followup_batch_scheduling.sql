@@ -173,6 +173,18 @@ as $$
 begin
   if auth.role() <> 'service_role' then raise exception 'Service role required'; end if;
 
+  -- A terminated worker is never retried automatically because Gmail may have accepted the send.
+  update public.recruiting_followup_batch_items
+    set status = 'send_unknown',
+        error_message = 'Worker timed out; verify Gmail manually before taking action'
+    where status = 'processing'
+      and processing_started_at < now() - interval '15 minutes';
+
+  update public.recruiting_followup_batches b
+    set status = 'partial'
+    where b.status = 'scheduled'
+      and exists (select 1 from public.recruiting_followup_batch_items i where i.batch_id = b.id and i.status = 'send_unknown');
+
   return query
   with due as (
     select i.id
