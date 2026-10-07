@@ -18,6 +18,8 @@ create table if not exists public.recruiting_followup_batch_items (
   contact_id uuid not null references public.recruiting_contacts(id) on delete cascade,
   university_id integer not null,
   expected_follow_up_count integer not null check (expected_follow_up_count between 0 and 1),
+  recipient_email text not null,
+  expected_last_message_id text not null,
   subject text not null check (char_length(trim(subject)) between 1 and 180),
   body text not null check (char_length(trim(body)) between 1 and 10000),
   personalization_sentence text not null check (char_length(trim(personalization_sentence)) between 1 and 1000),
@@ -142,10 +144,10 @@ begin
 
     insert into public.recruiting_followup_batch_items(
       batch_id, owner_user_id, contact_id, university_id, expected_follow_up_count,
-      subject, body, personalization_sentence, research_ids, school_timezone, scheduled_at
+      recipient_email, expected_last_message_id, subject, body, personalization_sentence, research_ids, school_timezone, scheduled_at
     ) values (
       v_batch_id, v_owner, v_contact.id, v_contact.university_id, v_contact.follow_up_count,
-      trim(v_item->>'subject'), v_item->>'body', v_sentence, v_ids, v_timezone, v_scheduled_at
+      lower(trim(v_contact.coach_email)), trim(v_item->>'expected_last_message_id'), trim(v_item->>'subject'), v_item->>'body', v_sentence, v_ids, v_timezone, v_scheduled_at
     );
 
     update public.recruiting_contacts
