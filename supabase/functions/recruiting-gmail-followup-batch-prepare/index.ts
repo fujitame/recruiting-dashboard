@@ -32,7 +32,7 @@ export default { fetch: withSupabase({auth:"user"},async(req,ctx)=>{
       const school:any=sm.get(Number(c.university_id));
       const skip=(reason:string)=>skipped.push({contact_id:c.id,school_name:school?.name||String(c.university_id),reason});
       if(!school||school.is_test!==true||![900,901,902].includes(Number(c.university_id))){skip("このリリースのテスト対象校（900–902）ではありません。");continue}
-      if(!["head_coach","assistant_coach"].includes(c.coach_role)||c.contact_status==="responded"||String(c.coach_response||"").trim()||Number(c.follow_up_count||0)>1){skip("返信済み、またはFollow-up上限のため対象外です。");continue}
+      if(!["head_coach","assistant_coach"].includes(c.coach_role)||c.contact_status==="responded"||String(c.coach_response||"").trim()||Number(c.follow_up_count||0)!==0){skip("返信済み、またはFollow-up上限のため対象外です。");continue}
       try{
         const zone=timezoneForCoordinates(Number(school.latitude),Number(school.longitude));
         const scheduledAt=localScheduleToUtc(localDate,localTime,zone);
