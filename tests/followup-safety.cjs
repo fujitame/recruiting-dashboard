@@ -44,7 +44,7 @@ async function run(mode,count,options={}){
  c.threadReplyFrom=()=>({id:'new-inbound'});assert.equal(await shared([{contact_status:'contacted'}]),'Recruiting/Needs Reply');
  console.log('PASS: actual stage label chooser; shared HC/AC thread aggregation; received reply → Needs Reply; individual reply sent → Waiting Coach.');
 })().catch(e=>{console.error(e);process.exitCode=1});
-// The manual and old automated endpoints share this exact school reply gate.
+// The individual regular Follow-up endpoint uses this exact school reply gate.
 (async()=>{
  const policy=fs.readFileSync('supabase/functions/_shared/followup-batch-policy.ts','utf8');
  const guard=fs.readFileSync('supabase/functions/_shared/followup-school-guard.ts','utf8').replace(/^import .*;\n/gm,'');
@@ -59,7 +59,7 @@ async function run(mode,count,options={}){
  assert.equal((await check()).result.blocked,false);
  for(const options of [{dbReply:true},{gmailReply:true},{completed:true},{pending:true}])assert.equal((await check(options)).result.blocked,true);
  assert.equal((await check({dbReply:true})).gmailReads,0);
- console.log('PASS: actual school gate blocks sibling DB reply, unsynced Gmail reply, exhausted stage and existing reservation in manual/legacy paths.');
+ console.log('PASS: actual school gate blocks sibling DB reply, unsynced Gmail reply, exhausted stage and existing reservation in manual paths.');
 })().catch(e=>{console.error(e);process.exitCode=1});
 // Actual frontend deadline synchronization must not enqueue a sibling of a replied Coach.
 (async()=>{

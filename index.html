@@ -2877,7 +2877,6 @@ table td:nth-child(13) .crm-btn{
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 
-const GMAIL_ACCOUNT='fujiakihiro8@gmail.com';
 let gmailCurrentContactId=null,gmailTestMode=false,gmailSendMode='initial';
 let gmailInitialPersonalized=false;
 let gmailInitialResearchIds=[];
@@ -3515,10 +3514,6 @@ function closeGmailComposer(){
  }
  showGmailError('');
 }
-function base64FromUtf8(value){const bytes=new TextEncoder().encode(value);let binary='';for(let i=0;i<bytes.length;i+=0x8000)binary+=String.fromCharCode(...bytes.subarray(i,i+0x8000));return btoa(binary)}
-function base64UrlFromUtf8(value){return base64FromUtf8(value).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
-function encodeMimeSubject(value){return '=?UTF-8?B?'+base64FromUtf8(value)+'?='}
-function cleanHeader(value){return String(value||'').replace(/[\r\n]/g,' ').trim()}
 async function sendAiGmailReply(){
  const btn=document.getElementById('gmail-send-btn');
  const subject=document.getElementById('gmail-subject').value.trim();
@@ -4563,51 +4558,6 @@ function badgeClass(div){return div==='NCAA D1'?'badge-d1':(div==='NCAA D2'?'bad
 
 function getCoachLastName(fullName){if(!fullName||fullName==='Coach')return 'Coach';const p=fullName.trim().split(/\s+/);return p[p.length-1]}
 
-function getEmailLinks(u){
-const subject=encodeURIComponent(`${CURRENT_PLAYER.school} ${CURRENT_PLAYER.jersey} - ${CURRENT_PLAYER.name} (Fall 2027 Transfer Candidate / GPA ${CURRENT_PLAYER.gpa})`);
-const highlightUrl=CURRENT_PLAYER.highlightVideo1?`https://youtu.be/${CURRENT_PLAYER.highlightVideo1}`:'';
-const bodyFor=(lastName)=>encodeURIComponent(`Dear Coach ${lastName},
-
-My name is ${CURRENT_PLAYER.name}, a Japanese student-athlete currently playing at ${CURRENT_PLAYER.school} (${CURRENT_PLAYER.division}).
-I am writing to express my strong interest in transferring to ${u.name}'s soccer program for ${CURRENT_PLAYER.expectedTransfer}.
-
-==================================================
-★ ONLINE RECRUITING PROFILE & SCOUTING REPORT ★
-👉 Profile Site : https://fujitame.github.io/profile/
-👉 Highlight Video: ${highlightUrl}
-==================================================
-
-[Player Overview]
-• Primary Position: ${CURRENT_PLAYER.primary}
-• Secondary Positions: ${CURRENT_PLAYER.secondary}
-• Height / Weight: ${CURRENT_PLAYER.height} / ${CURRENT_PLAYER.weight} | ${CURRENT_PLAYER.foot}
-• Current Level: ${CURRENT_PLAYER.school} (${CURRENT_PLAYER.division}) | ${CURRENT_PLAYER.jersey}
-• ${CURRENT_PLAYER.season} Official Freshman Season: ${CURRENT_PLAYER.stats}
-• Summer 2026: UPSL Irvine FC + D1 Combine Participant
-• Academic Focus: ${CURRENT_PLAYER.academic} / General Education Coursework
-• GPA: ${CURRENT_PLAYER.gpa}
-• NCAA ID: ${CURRENT_PLAYER.ncaaId}
-• Transferable Credits: ${CURRENT_PLAYER.transferableCredits}
-• Transfer Eligibility: ${CURRENT_PLAYER.eligibility}
-
-Thank you for your time and consideration. Full-match footage is available upon request, and I would appreciate the opportunity to discuss how I can contribute to ${u.name}.
-
-Best regards,
-
-${CURRENT_PLAYER.name}
-${CURRENT_PLAYER.school} Men's Soccer ${CURRENT_PLAYER.jersey}
-Email: ${CURRENT_PLAYER.email}
-Phone: ${CURRENT_PLAYER.phone}
-Instagram: @${CURRENT_PLAYER.instagram}`);
-return {
-  hcLink: u.hc_email ? `mailto:${u.hc_email}?subject=${subject}&body=${bodyFor(getCoachLastName(u.hc_name))}` : '',
-  acLink: u.ac_email ? `mailto:${u.ac_email}?subject=${subject}&body=${bodyFor(getCoachLastName(u.ac_name))}` : ''
-};
-}
-function staffFlag(u){const s=u.staff_status;return s==='verified'?'<span class="staff-flag">✓</span>':(s==='partial'?'<span class="staff-flag partial">△</span>':'<span class="staff-flag review">⚠</span>')}
-function mailButton(label,href,kind){return href?`<a class="btn-link ${kind}" href="${href}" title="Mail ${label}">${label}</a>`:`<span class="btn-link ${kind} disabled-mail" title="Official/current email not confirmed">${label} —</span>`}
-
-
 const recruitingSchoolPipeline=new Map();
 
 const RECRUITING_STAGE_LABELS={
@@ -5084,21 +5034,6 @@ function crmContactByEmail(email){
   String(c.coach_email||'').trim().toLowerCase()===target
  )||null;
 }
-function renderInboundLeads(){
- const el=document.getElementById('crm-inbound-list'),countEl=document.getElementById('crm-inbound-count');if(!el)return;
- if(countEl)countEl.textContent=crmInboundLeads.length?'('+crmInboundLeads.length+')':'';
- if(!crmInboundLeads.length){el.innerHTML='<div class="crm-action-empty">新しいProfile経由の問い合わせはありません。</div>';return}
- el.innerHTML=crmInboundLeads.slice(0,6).map(lead=>{
-  const match=crmContactByEmail(lead.coach_email);
-  const message=String(lead.message_body||'').replace(/\s+/g,' ').trim();
-  const excerpt=message.length>110?message.slice(0,110)+'…':message;
-  const status=match?'既存CRM一致':'新規問い合わせ';
-  const when=crmDateDisplay(lead.created_at);
-  const linkBtn=match?'<button class="crm-action-btn" type="button" onclick="linkInboundLeadToCrm(\''+crmEsc(lead.id)+'\',\''+crmEsc(match.id)+'\')">CRMへ紐付け</button>':'<button class="crm-action-btn" type="button" onclick="openInboundCreateModal(\''+crmEsc(lead.id)+'\')">新規CRM登録</button>';
-  const dismissBtn='<button class="crm-action-btn" type="button" onclick="dismissInboundLead(\''+crmEsc(lead.id)+'\')">処理済み</button>';
-  return '<div class="crm-action-item"><div class="crm-action-main"><b>'+crmEsc(lead.coach_name)+'</b><div class="crm-action-meta">'+crmEsc(lead.coach_email)+' · '+crmEsc(lead.inquiry_type)+' · '+crmEsc(status)+'</div><div class="crm-action-meta">'+crmEsc(excerpt||'メッセージなし')+' · '+crmEsc(when)+'</div></div><div style="display:flex;gap:4px;align-items:flex-start">'+linkBtn+dismissBtn+'</div></div>';
- }).join('');
-}
 function openInboundCreateModal(leadId){
  const lead=crmInboundLeads.find(x=>x.id===leadId);if(!lead)return;
  crmInboundCreateLeadId=leadId;
@@ -5444,12 +5379,6 @@ function outreachDateLabel(value){
  const d=new Date(value);
  if(Number.isNaN(d.getTime()))return String(value);
  return d.toLocaleDateString('ja-JP',{year:'numeric',month:'numeric',day:'numeric'});
-}
-
-function outreachContactRole(c){
- if(c.coach_role==='head_coach')return 'HC';
- if(c.coach_role==='assistant_coach')return 'AC';
- return 'Other';
 }
 
 function outreachSchoolRecords(){
@@ -7057,9 +6986,8 @@ function schoolCrmStatusClass(state){
  return map[state]||'status-uncontacted';
 }
 
-function renderTable(){renderMobileSchoolCards();const tbody=document.getElementById('table-body');tbody.innerHTML='';visibleUniversities().forEach(u=>{const tr=document.createElement('tr');const {hcLink,acLink}=getEmailLinks(u);const igLabel='IG';tr.id=`row-${u.id}`;tr.innerHTML=`<td><button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button></td><td>${u.id}</td><td><strong>${u.name}</strong></td><td><span class="badge ${badgeClass(u.div)}">${u.div}</span></td><td>${u.conf}</td><td>${(()=>{const s=schoolCrmState(u);return `<span class="status-select ${schoolCrmStatusClass(s.state)} crm-school-status">${crmEsc(s.label)}</span>`})()}</td><td>${recruitingStageSelectHtml(u)}</td><td class="external-link-cell"><a class="btn-link btn-ig" href="${u.ig}" target="_blank" rel="noopener noreferrer">IG</a><a class="btn-link btn-fac" href="${u.facility}" target="_blank" rel="noopener noreferrer">施設</a><a class="btn-link btn-ros" href="${u.roster}" target="_blank" rel="noopener noreferrer">Roster</a></td><td>${u.desc}</td><td>${costHtml(u)}</td><td class="coach-cell"><div class="coach-row"><span>HC</span><b>${u.hc_name||'Coach'}</b></div><div class="coach-row"><span>AC</span><b>${u.ac_name||'Coach'}</b></div><div class="${u.staff_status==='verified'?'staff-flag':u.staff_status==='partial'?'staff-flag partial':'staff-flag review'}">${u.staff_status==='verified'?'✓ Verified':u.staff_status==='partial'?'△ Verify':'⚠ Verify'}</div></td><td class="action-cell"><button class="gmail-btn" type="button" title="HCへメール" onclick="openGmailComposer(${u.id},'head_coach')">HC</button><button class="gmail-btn" type="button" title="ACへメール" onclick="openGmailComposer(${u.id},'assistant_coach')">AC</button></td><td class="action-cell"><button class="crm-btn" type="button" title="HCのCRM" onclick="openCrmDrawer(${u.id},'head_coach')">HC</button><button class="crm-btn" type="button" title="ACのCRM" onclick="openCrmDrawer(${u.id},'assistant_coach')">AC</button></td>`;tbody.appendChild(tr)})}
+function renderTable(){renderMobileSchoolCards();const tbody=document.getElementById('table-body');tbody.innerHTML='';visibleUniversities().forEach(u=>{const tr=document.createElement('tr');tr.id=`row-${u.id}`;tr.innerHTML=`<td><button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button></td><td>${u.id}</td><td><strong>${u.name}</strong></td><td><span class="badge ${badgeClass(u.div)}">${u.div}</span></td><td>${u.conf}</td><td>${(()=>{const s=schoolCrmState(u);return `<span class="status-select ${schoolCrmStatusClass(s.state)} crm-school-status">${crmEsc(s.label)}</span>`})()}</td><td>${recruitingStageSelectHtml(u)}</td><td class="external-link-cell"><a class="btn-link btn-ig" href="${u.ig}" target="_blank" rel="noopener noreferrer">IG</a><a class="btn-link btn-fac" href="${u.facility}" target="_blank" rel="noopener noreferrer">施設</a><a class="btn-link btn-ros" href="${u.roster}" target="_blank" rel="noopener noreferrer">Roster</a></td><td>${u.desc}</td><td>${costHtml(u)}</td><td class="coach-cell"><div class="coach-row"><span>HC</span><b>${u.hc_name||'Coach'}</b></div><div class="coach-row"><span>AC</span><b>${u.ac_name||'Coach'}</b></div><div class="${u.staff_status==='verified'?'staff-flag':u.staff_status==='partial'?'staff-flag partial':'staff-flag review'}">${u.staff_status==='verified'?'✓ Verified':u.staff_status==='partial'?'△ Verify':'⚠ Verify'}</div></td><td class="action-cell"><button class="gmail-btn" type="button" title="HCへメール" onclick="openGmailComposer(${u.id},'head_coach')">HC</button><button class="gmail-btn" type="button" title="ACへメール" onclick="openGmailComposer(${u.id},'assistant_coach')">AC</button></td><td class="action-cell"><button class="crm-btn" type="button" title="HCのCRM" onclick="openCrmDrawer(${u.id},'head_coach')">HC</button><button class="crm-btn" type="button" title="ACのCRM" onclick="openCrmDrawer(${u.id},'assistant_coach')">AC</button></td>`;tbody.appendChild(tr)})}
 
-function getStatusClass(status){switch(status){case'メール送信済':return'status-sent';case'返信・関心あり':return'status-replied';case'IDキャンプ済':return'status-camp';case'オファー獲得':return'status-offer';default:return'status-uncontacted'}}
 
 function toggleFav(id){const u=universities.find(x=>x.id===id);if(!u)return;u.fav=!u.fav;const row=document.getElementById(`row-${id}`);if(row)row.querySelector('.star-btn')?.classList.toggle('active',u.fav);const mobileCard=document.getElementById(`mobile-card-${id}`);if(mobileCard)mobileCard.querySelector('.star-btn')?.classList.toggle('active',u.fav);const mo=markers.find(m=>m.data.id===id);if(mo&&mo.instance.isPopupOpen())mo.instance.setPopupContent(createPopupContent(u));applyFilters();saveDataToCloud()}
 
@@ -7071,7 +6999,6 @@ function updateFavoriteButtonCount(){
 
 function toggleFavFilter(){showFavOnly=!showFavOnly;document.getElementById('btn-fav-only').classList.toggle('active',showFavOnly);applyFilters();saveDataToCloud()}
 
-function updateStatus(id,newStatus){const u=universities.find(x=>x.id===id);if(!u)return;u.status=newStatus;const el=document.querySelector(`#row-${id} .status-select`);if(el)el.className=`status-select ${getStatusClass(newStatus)}`;saveDataToCloud()}
 
 
 function candidateRegion(u){
