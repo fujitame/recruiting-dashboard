@@ -4907,6 +4907,7 @@ async function syncFollowUpDueStatuses(){
  const today=y+'-'+m+'-'+d;
 
  const targets=Array.from(crmContacts.values()).filter(c=>
+  crmCanBatchFollowUp(c) &&
   c.auto_follow_up_enabled!==false &&
   c.contact_status==='contacted' &&
   Number(c.follow_up_count||0)<2 &&
@@ -5833,7 +5834,7 @@ function crmContactMatchesCurrentFilter(c){
   return c.contact_status==='not_contacted' && crmContactIsDeferred(c);
  }
 
- return c.contact_status===crmFilter;
+ return c.contact_status===crmFilter&&(crmFilter!=='follow_up_due'||crmCanBatchFollowUp(c));
 }
 
 function crmContactCurrentFilterLabel(){
@@ -5996,7 +5997,7 @@ function renderCrmSummary(){
  renderActiveArea();
  const allValues=visibleCrmContacts();
  const values=crmFavoriteContacts();
- const count=s=>values.filter(c=>c.contact_status===s).length;
+ const count=s=>values.filter(c=>c.contact_status===s&&(s!=='follow_up_due'||crmCanBatchFollowUp(c))).length;
  const actionableNotContacted=values.filter(c=>
   c.contact_status==='not_contacted' && !crmContactIsDeferred(c)
  ).length;
@@ -7112,7 +7113,7 @@ function candidateRegion(u){
  return map[cat]||cat;
 }
 
-function applyFilters(){updateFavoriteButtonCount();const reg=document.getElementById('filter-region')?.value||'all';const div=document.getElementById('filter-div')?.value||'all';const stat=document.getElementById('filter-status')?.value||'all';const search=(document.getElementById('search-input')?.value||'').toLowerCase();const bounds=window.L&&map?L.latLngBounds():null;let visible=0;universities.forEach(u=>{const okMode=testMode?isTestUniversityId(u.id):!isTestUniversityId(u.id);const okReg=reg==='all'||candidateRegion(u)===reg;const okDiv=div==='all'||u.div===div;const schoolStatus=schoolCrmState(u);const okStat=stat==='all'||schoolStatus.state===stat;const q=(u.name+' '+u.conf+' '+(u.hc_name||'')+' '+(u.ac_name||'')).toLowerCase();const okSearch=q.includes(search);const okFav=!showFavOnly||u.fav;const crmRows=crmCoachRows(u);const okCrm=crmFilter==='all'||crmRows.some(c=>{const row=crmContacts.get(u.id+':'+crmCoachKey(c.role,c.name,c.email));return row&&(row.contact_status===crmFilter||(crmInterestFilter==='high'&&row.interest_level==='high'&&row.contact_status==='responded'))});const ok=okMode&&okReg&&okDiv&&okStat&&okSearch&&okFav&&okCrm;const row=document.getElementById(`row-${u.id}`);if(row)row.style.display=ok?'':'none';const mobileCard=document.getElementById(`mobile-card-${u.id}`);if(mobileCard)mobileCard.style.display=ok?'':'none';const marker=markers.find(m=>m.data.id===u.id);if(marker&&map){if(ok){marker.instance.addTo(map);bounds&&bounds.extend([u.lat,u.lng]);visible++;}else{if(map.hasLayer(marker.instance))map.removeLayer(marker.instance);}}else if(ok){visible++;}});if(map&&bounds&&visible>0&&reg!=='all')map.fitBounds(bounds,{padding:[30,30]});else if(map&&reg==='all')map.setView([37.0902,-95.7129],4)}
+function applyFilters(){updateFavoriteButtonCount();const reg=document.getElementById('filter-region')?.value||'all';const div=document.getElementById('filter-div')?.value||'all';const stat=document.getElementById('filter-status')?.value||'all';const search=(document.getElementById('search-input')?.value||'').toLowerCase();const bounds=window.L&&map?L.latLngBounds():null;let visible=0;universities.forEach(u=>{const okMode=testMode?isTestUniversityId(u.id):!isTestUniversityId(u.id);const okReg=reg==='all'||candidateRegion(u)===reg;const okDiv=div==='all'||u.div===div;const schoolStatus=schoolCrmState(u);const okStat=stat==='all'||schoolStatus.state===stat;const q=(u.name+' '+u.conf+' '+(u.hc_name||'')+' '+(u.ac_name||'')).toLowerCase();const okSearch=q.includes(search);const okFav=!showFavOnly||u.fav;const crmRows=crmCoachRows(u);const okCrm=crmFilter==='all'||crmRows.some(c=>{const row=crmContacts.get(u.id+':'+crmCoachKey(c.role,c.name,c.email));return row&&((row.contact_status===crmFilter&&(crmFilter!=='follow_up_due'||crmCanBatchFollowUp(row)))||(crmInterestFilter==='high'&&row.interest_level==='high'&&row.contact_status==='responded'))});const ok=okMode&&okReg&&okDiv&&okStat&&okSearch&&okFav&&okCrm;const row=document.getElementById(`row-${u.id}`);if(row)row.style.display=ok?'':'none';const mobileCard=document.getElementById(`mobile-card-${u.id}`);if(mobileCard)mobileCard.style.display=ok?'':'none';const marker=markers.find(m=>m.data.id===u.id);if(marker&&map){if(ok){marker.instance.addTo(map);bounds&&bounds.extend([u.lat,u.lng]);visible++;}else{if(map.hasLayer(marker.instance))map.removeLayer(marker.instance);}}else if(ok){visible++;}});if(map&&bounds&&visible>0&&reg!=='all')map.fitBounds(bounds,{padding:[30,30]});else if(map&&reg==='all')map.setView([37.0902,-95.7129],4)}
 
 function switchView(view){currentView=view;const mapEl=document.getElementById('map-view');const listEl=document.getElementById('list-view');document.getElementById('btn-map').classList.toggle('active',view==='map');document.getElementById('btn-list').classList.toggle('active',view==='list');mapEl.style.display=view==='map'?'block':'none';listEl.style.display=view==='list'?'block':'none';if(view==='map'&&map){setTimeout(()=>{map.invalidateSize({pan:false});applyFilters()},50);setTimeout(()=>map.invalidateSize({pan:false}),250)}}
 async function loadDataFromCloud(){

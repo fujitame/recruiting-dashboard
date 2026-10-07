@@ -61,3 +61,15 @@ async function run(mode,count,options={}){
  assert.equal((await check({dbReply:true})).gmailReads,0);
  console.log('PASS: actual school gate blocks sibling DB reply, unsynced Gmail reply, exhausted stage and existing reservation in manual/legacy paths.');
 })().catch(e=>{console.error(e);process.exitCode=1});
+// Actual frontend deadline synchronization must not enqueue a sibling of a replied Coach.
+(async()=>{
+ const html=fs.readFileSync('index.html','utf8');
+ const eligible=html.slice(html.indexOf('function crmCanBatchFollowUp('),html.indexOf('function crmBatchInCurrentMode('));
+ const deadline=html.slice(html.indexOf('async function syncFollowUpDueStatuses('),html.indexOf('async function loadConversationReplyTimeline('));
+ const fixture=(id,school,role,status)=>({id,university_id:school,coach_role:role,coach_key:role,contact_status:status,follow_up_count:0,follow_up_date:'2000-01-01',auto_follow_up_enabled:true});
+ const contacts=[fixture('replied-HC',1,'head_coach','responded'),fixture('blocked-AC',1,'assistant_coach','contacted'),fixture('eligible-HC',2,'head_coach','contacted')];const updates=[];
+ const db={from:()=>{let id;const q={update:()=>q,eq:(k,v)=>{if(k==='id')id=v;return q},select:()=>q,single:async()=>{updates.push(id);return {data:{...contacts.find(c=>c.id===id),contact_status:'follow_up_due'},error:null}}};return q}};
+ const c={Date,Map,console,crmContacts:new Map(contacts.map(x=>[x.university_id+':'+x.coach_key,x])),crmAvailable:true,supabaseClient:db,DASHBOARD_OWNER_ID:'fixture'};
+ vm.createContext(c);vm.runInContext(eligible+deadline,c);await c.syncFollowUpDueStatuses();assert.deepEqual(updates,['eligible-HC']);assert.equal(c.crmCanBatchFollowUp(contacts[1]),false);
+ console.log('PASS: frontend deadline synchronization excludes a replied-school sibling before changing CRM status.');
+})().catch(e=>{console.error(e);process.exitCode=1});
