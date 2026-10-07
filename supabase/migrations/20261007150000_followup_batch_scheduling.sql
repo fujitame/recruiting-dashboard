@@ -124,7 +124,12 @@ begin
     for update;
 
     if not found then raise exception 'A selected CRM contact is unavailable'; end if;
-    if v_contact.university_id >= 900 then raise exception 'Test schools cannot be scheduled for production sending'; end if;
+    if v_contact.university_id >= 900 or not exists (
+      select 1 from public.recruiting_universities u
+      where u.id = v_contact.university_id and u.is_test = false
+    ) then
+      raise exception 'Test or unverified schools cannot be scheduled for production sending';
+    end if;
     if v_contact.contact_status not in ('contacted','follow_up_due')
       or v_contact.follow_up_count not between 0 and 1
       or nullif(trim(coalesce(v_contact.coach_email,'')),'') is null
