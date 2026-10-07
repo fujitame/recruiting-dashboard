@@ -39,3 +39,9 @@ export function localDateAfterSend(isoTimestamp: string, zone: string, days: num
   if (!sent.isValid) throw new Error("Could not determine the school-local send date.");
   return sent.plus({ days }).toISODate()!;
 }
+
+export function localDateAt(isoTimestamp: string, zone: string): string {
+  const local = DateTime.fromISO(isoTimestamp, { zone: "utc" }).setZone(zone);
+  if (!local.isValid) throw new Error("Could not determine the school-local date.");
+  return local.toISODate()!;
+}
