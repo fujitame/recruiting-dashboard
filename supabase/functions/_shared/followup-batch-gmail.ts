@@ -44,11 +44,11 @@ export async function gmailGetThread(threadId: string, token: string): Promise<a
   return data;
 }
 
-export async function gmailSend(raw: string, threadId: string, token: string): Promise<any> {
+export async function gmailSend(raw: string, threadId: string | null, token: string): Promise<any> {
   const response = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/messages/send", {
     method: "POST",
     headers: { Authorization: "Bearer " + token, "content-type": "application/json" },
-    body: JSON.stringify({ raw, threadId }),
+    body: JSON.stringify(threadId ? { raw, threadId } : { raw }),
   });
   const data = await response.json();
   if (!response.ok || !data.id) {
