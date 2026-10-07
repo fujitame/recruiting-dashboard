@@ -90,6 +90,8 @@ export default {
         const outbound = latestOutbound(thread);
         if (!outbound) throw new Error(school.name + " has no confirmed outbound message in its Gmail thread.");
         const subject = expectedThreadSubject(getHeader(outbound.payload?.headers || [], "Subject"));
+        const expectedLastMessageId = getHeader(outbound.payload?.headers || [], "Message-ID");
+        if (!expectedLastMessageId) throw new Error(school.name + " Gmail message ID is missing; scheduling is blocked.");
         if (String(item.subject || "").trim() !== subject) {
           throw new Error(school.name + " email subject changed since preview. Generate the draft again.");
         }
@@ -131,6 +133,7 @@ export default {
           scheduled_at: scheduledAt,
           school_timezone: timezone,
           subject,
+          expected_last_message_id: expectedLastMessageId,
           body,
           personalization_sentence: sentence,
           research_ids: researchIds,
