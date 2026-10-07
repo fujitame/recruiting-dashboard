@@ -1,0 +1,83 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TEST Follow-up予約</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#263449;background:#f3f6fa}*{box-sizing:border-box}body{margin:0}header{background:#17365d;color:#fff;padding:16px max(16px,calc((100% - 960px)/2));display:flex;justify-content:space-between;align-items:center}header a{color:#dbeafe}main{max-width:960px;margin:22px auto;padding:0 14px}.card{background:white;border:1px solid #dbe3ed;border-radius:12px;padding:18px;margin:14px 0;box-shadow:0 3px 12px #17365d0a}.warning{background:#fff5de;border-color:#edcf81;color:#644e19}.step{color:#2563a6;font-size:12px;font-weight:800;letter-spacing:.04em}h1{font-size:20px;margin:0}h2{font-size:16px;margin:7px 0 12px}p,.muted{color:#627186;font-size:13px;line-height:1.55}button{border:0;border-radius:7px;padding:10px 14px;background:#2563a6;color:white;font-weight:750;cursor:pointer}button:disabled{opacity:.5;cursor:wait}.secondary{background:#e8eef6;color:#20334b}.row{display:flex;gap:12px;align-items:end;flex-wrap:wrap}.row>*{flex:1;min-width:160px}input[type=date],input[type=time],input[type=search]{padding:9px;border:1px solid #c7d1df;border-radius:7px;width:100%;background:white;color:#24344b}.list{border:1px solid #e0e6ee;border-radius:8px}.coach{display:grid;grid-template-columns:24px 1fr auto;gap:8px;padding:10px;border-bottom:1px solid #edf0f4;align-items:center;font-size:13px}.coach:last-child{border:0}.tag{font-size:11px;color:#51647c}.draft{border:1px solid #dce4ee;border-radius:9px;padding:13px;margin:12px 0}.draft-head{display:flex;justify-content:space-between;gap:10px;align-items:start}.draft textarea{width:100%;min-height:175px;border:1px solid #bdc9d8;border-radius:7px;padding:10px;font:inherit;font-size:14px;line-height:1.55;resize:vertical}.source{background:#f5f8fc;padding:9px;border-radius:7px;font-size:12px}.error{color:#9d2525;font-weight:650}.ok{color:#187345;font-weight:650}.hidden{display:none}.small{font-size:11px}.checks{display:flex;gap:8px;align-items:center;margin:12px 0}.badge{background:#edf4fc;color:#345675;padding:4px 8px;border-radius:20px;font-size:11px}a{color:#2563a6}@media(max-width:600px){main{margin:12px auto}.coach{grid-template-columns:24px 1fr}.coach .tag{grid-column:2}}
+</style></head><body>
+<header><div><h1>一括 Follow-up 予約</h1><div class="small">TEST MODE · 900–902のみ</div></div><a href="./index.html">CRMに戻る</a></header>
+<main>
+<div class="card warning"><b>Test Mode専用</b><p>この段階で選べるのはTEST University Alpha（900）、TEST College Beta（901）、TEST State University（902）のみです。メールはすべて <b>fujitame@gmail.com</b> に送られ、コーチには届きません。選択した各校の現地日時に予約送信し、TEST用CRM履歴と次回期限も確認します。</p></div>
+<div id="auth" class="card"><p>CRMと同じSupabaseログインが必要です。</p><button id="login">ログイン状態を確認</button> <span id="authMsg" class="muted"></span></div>
+<section class="card"><div class="step">1 · 対象を選ぶ</div><h2>Test Mode 3校</h2><p>Follow-up上限前で、返信済みでないTEST Contactを表示します。各校1名まで選べます。</p><div id="contacts" class="list"></div><div id="loadMsg" class="muted"></div></section>
+<section class="card"><div class="step">2 · 各校の現地時刻</div><h2>日付と時刻を指定</h2><p>同じ日付・時刻を各校のタイムゾーンとして解釈します。夏時間で存在しない時刻や重複する時刻は予約できません。</p><div class="row"><label>日付（各校現地）<input id="date" type="date"></label><label>時刻（各校現地）<input id="time" type="time" value="10:00"></label><button id="prepare">学校別の案を作成</button></div><div id="prepMsg" class="muted"></div><div id="drafts"></div></section>
+<section id="confirmCard" class="card hidden"><div class="step">3 · 内容確認と予約</div><h2>確認後に予約</h2><p id="confirmText">本文とResearch出典を確認してください。確定時にはまだメールを送りません。</p><label class="checks"><input type="checkbox" id="reviewed"> 全件の送信先・Research根拠・本文を確認しました</label><button id="schedule" disabled>確認したTESTメールを予約</button><div id="scheduleMsg"></div></section>
+</main>
+<script>
+const URL='https://cjrabdfdtrufbpjmqddh.supabase.co',KEY='sb_publishable_u0hVckGZrWePM3j1BHDBsQ_YImzJ4D2';
+const OWNER='47e7c1a9-a806-4f65-b5ed-2b9b124ef337',PLAYER='akihiro-fujikawa',TEST_TO='fujitame@gmail.com';
+const TEST_IDS=[900,901,902],TEST_HEADER={'x-recruiting-test-mode':'true'},sb=window.supabase.createClient(URL,KEY);
+let contacts=[],prepared=[],drafts=new Map(),videoId='';
+const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function showError(target,e){$(target).innerHTML='<span class="error">'+esc(e?.message||e)+'</span>'}
+async function authCheck(){const {data,error}=await sb.auth.getSession();if(error||!data.session){$('authMsg').textContent='ログイン後に一覧を読み込めます。';return false}$('authMsg').textContent='ログイン済み';$('auth').classList.add('hidden');return true}
+async function load(){
+ if(!await authCheck())return;
+ $('contacts').textContent='TEST校を読み込み中…';
+ const {data:schools,error:se}=await sb.from('recruiting_universities').select('id,name,latitude,longitude,is_test').in('id',TEST_IDS).eq('is_test',true).order('id');
+ if(se){showError('loadMsg',se);return}
+ if(!schools||schools.length!==3){$('contacts').innerHTML='';$('loadMsg').innerHTML='<span class="error">900・901・902のTEST校が揃っていません。送信対象は作成できません。</span>';return}
+ const {data,error}=await sb.from('recruiting_contacts').select('id,owner_user_id,university_id,coach_name,coach_role,contact_status,coach_response,follow_up_count').eq('owner_user_id',OWNER).in('university_id',TEST_IDS).lt('follow_up_count',2).order('university_id');
+ if(error){showError('loadMsg',error);return}
+ const bySchool=new Map(schools.map(x=>[Number(x.id),x]));
+ const eligible=(data||[]).filter(c=>bySchool.has(Number(c.university_id))&&['head_coach','assistant_coach'].includes(c.coach_role)&&c.contact_status!=='responded'&&!String(c.coach_response||'').trim());
+ const seenSchools=new Set();contacts=eligible.filter(c=>{const id=Number(c.university_id);if(seenSchools.has(id))return false;seenSchools.add(id);return true});
+ const names=new Map(schools.map(s=>[Number(s.id),s.name]));
+ $('contacts').innerHTML=contacts.map(c=>'<label class="coach"><input type="checkbox" class="pick" value="'+esc(c.id)+'"><span><b>'+esc(names.get(Number(c.university_id)))+'</b><br>'+esc(c.coach_name||'Coach')+' · '+(Number(c.follow_up_count||0)===0?'Follow-up #1':'Follow-up #2')+'</span><span class="tag">Test school '+esc(c.university_id)+'</span></label>').join('')||'<p class="muted">対象Contactがありません</p>';
+ if(!$('date').value){const now=new Date();$('date').value=new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,10)}
+ const p=await sb.from('player_profile').select('highlight_video_1_id').eq('id',PLAYER).single();if(!p.error)videoId=p.data.highlight_video_1_id||'';
+ $('loadMsg').textContent='TEST校3校のみ。選択した学校ごとにAI案を作成します。';
+}
+function checked(){return [...document.querySelectorAll('.pick:checked')].map(x=>x.value)}
+function fmt(iso,zone){return new Intl.DateTimeFormat('ja-JP',{timeZone:zone,dateStyle:'medium',timeStyle:'short',timeZoneName:'short'}).format(new Date(iso))}
+async function prepare(){
+ $('reviewed').checked=false;$('schedule').disabled=true;$('scheduleMsg').textContent='';$('confirmCard').classList.add('hidden');
+ const ids=checked();if(!ids.length){$('prepMsg').textContent='TEST校Contactを選択してください。';return}
+ if(! $('date').value||!$('time').value){$('prepMsg').textContent='日付と時刻を選んでください。';return}
+ $('prepare').disabled=true;$('drafts').innerHTML='';prepared=[];drafts.clear();$('prepMsg').textContent='TEST校と送信時刻を確認中…';
+ try{
+  const {data,error}=await sb.functions.invoke('recruiting-gmail-followup-batch-prepare',{body:{contact_ids:ids,local_date:$('date').value,local_time:$('time').value},headers:TEST_HEADER});
+  if(error)throw error;if(!data?.ok||!data.test_mode||data.recipient_email!==TEST_TO)throw Error(data?.error||'Test Mode確認に失敗しました');
+  for(const skip of data.skipped||[])$('drafts').insertAdjacentHTML('beforeend','<div class="draft"><b>'+esc(skip.school_name)+'</b> <span class="error">対象外: '+esc(skip.reason)+'</span></div>');
+  for(const item of data.items||[]){
+   const c=contacts.find(x=>x.id===item.contact_id);
+   const {data:d,error:e}=await sb.functions.invoke('recruiting-ai-followup-draft',{body:{contact_id:item.contact_id}});
+   if(e)throw e;if(!d?.ok)throw Error(d?.error||item.school_name+'のAI案作成に失敗しました');
+   const sentence=d.draft?.personalization_sentence||'',researchIds=d.draft?.research_used||[];
+   if(!sentence||!researchIds.length)throw Error(item.school_name+'にVerified Researchがないため、このテストは続行できません。');
+   const facts=(d.research_context||[]).filter(f=>researchIds.includes(Number(f.research_id)));
+   const body='TEST MODE — This message is sent only to '+TEST_TO+'.\n\nDear '+(c?.coach_name||'Coach')+',\n\nI wanted to follow up on my previous email and share my updated highlight video. '+sentence+'\n\nHere is my video: '+(videoId?'https://www.youtube.com/watch?v='+encodeURIComponent(videoId):'[動画URL未設定]')+'\n\nI remain very interested in learning more about your program. Thank you for your time, and I look forward to hearing from you.\n\nBest,\nAkihiro Fujikawa';
+   const row={...item,body,personalization_sentence:sentence,research_ids:researchIds};
+   prepared.push(row);drafts.set(item.contact_id,row);
+   const src=facts.map(f=>'<div><b>'+esc(f.source_title||f.fact_type)+'</b><br>'+esc(f.fact_text)+'<br><a href="'+esc(f.source_url)+'" target="_blank" rel="noopener">出典</a></div>').join('');
+   $('drafts').insertAdjacentHTML('beforeend','<article class="draft" data-id="'+esc(item.contact_id)+'"><div class="draft-head"><b>'+esc(item.school_name)+' · '+esc(item.coach_name||'Coach')+'</b><span class="tag">宛先固定: '+TEST_TO+'</span></div><p><span class="badge">'+esc(fmt(item.scheduled_at,item.school_timezone))+' · '+esc(item.school_timezone)+'</span></p><p class="small">件名: '+esc(item.subject)+'</p><div class="source"><b>AIのResearch根拠</b><p>'+esc(d.draft.rationale_ja||'')+'</p>'+src+'</div><label class="small">送信本文（TESTの注記は消さないでください）</label><textarea class="body">'+esc(body)+'</textarea></article>');
+  }
+  if(prepared.length){$('confirmCard').classList.remove('hidden');$('confirmText').textContent=prepared.length+'通を各校の現地日時に予約します。全通の宛先は'+TEST_TO+'で、実際のコーチには送られません。';$('prepMsg').textContent='案を作成しました。予約対象・時刻・出典を確認してください。'}
+  else $('prepMsg').textContent='予約可能なTEST校がありません。';
+ }catch(e){showError('prepMsg',e)}
+ finally{$('prepare').disabled=false}
+}
+async function schedule(){
+ const items=[];
+ for(const x of prepared){const el=document.querySelector('[data-id="'+CSS.escape(x.contact_id)+'"]');if(el)items.push({...drafts.get(x.contact_id),body:el.querySelector('.body').value})}
+ if(!items.length||items.length!==prepared.length)return showError('scheduleMsg','案が揃っていません。選択校を再作成してください。');
+ $('schedule').disabled=true;$('scheduleMsg').textContent='Test Modeの予約を登録中…';
+ try{
+  const {data,error}=await sb.functions.invoke('recruiting-gmail-followup-batch-schedule',{body:{local_date:$('date').value,local_time:$('time').value,items},headers:TEST_HEADER});
+  if(error)throw error;if(!data?.ok||!data.test_mode||data.recipient_email!==TEST_TO)throw Error(data?.error||'Test Mode予約に失敗しました');
+  $('scheduleMsg').innerHTML='<p class="ok">TEST '+data.scheduled_count+'通を予約しました。送信先は'+TEST_TO+'です。CRMの次回期限は送信成功後に更新されます。Batch ID: '+esc(data.batch_id)+'</p>';
+  prepared=[];$('reviewed').checked=false;
+ }catch(e){showError('scheduleMsg',e);$('schedule').disabled=false}
+}
+$('login').onclick=authCheck;$('prepare').onclick=prepare;$('reviewed').onchange=()=>{$('schedule').disabled=!$('reviewed').checked};
+$('drafts').addEventListener('input',e=>{if(e.target.matches('.body')){$('reviewed').checked=false;$('schedule').disabled=true}});
+$('schedule').onclick=schedule;sb.auth.onAuthStateChange((_event,session)=>{if(session)load()});load();
+</script></body></html>
