@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Follow-up Batch Self-Test</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#1c2733;background:#f4f6f8}
+*{box-sizing:border-box}body{margin:0;padding:20px}.wrap{max-width:900px;margin:0 auto}
+header{display:flex;justify-content:space-between;gap:16px;align-items:center;margin:0 0 18px}h1{font-size:23px;margin:0}h2{font-size:17px;margin:0 0 12px}
+.card{background:#fff;border:1px solid #dce2e8;border-radius:10px;padding:18px;margin:14px 0}
+.warning{background:#fff7e5;border-color:#f0d38b;color:#574312}
+.warning strong{display:block;margin-bottom:5px}.muted{color:#687583;font-size:13px}
+button{border:1px solid #c6ced7;background:#fff;color:#243342;border-radius:6px;padding:9px 13px;font:inherit;cursor:pointer}
+button.primary{background:#1769aa;border-color:#1769aa;color:#fff;font-weight:600}button:disabled{opacity:.45;cursor:not-allowed}
+input[type=email],input[type=password],input[type=text],textarea{width:100%;border:1px solid #c6ced7;border-radius:5px;padding:9px 10px;font:inherit}
+textarea{min-height:115px;resize:vertical}.field{margin:10px 0}.field label{display:block;margin:0 0 5px;font-size:13px;color:#52606d}
+.school{border-bottom:1px solid #e7eaee;padding:12px 0}.school:last-child{border:0}.school-title{display:flex;gap:9px;align-items:flex-start}.school-title small{display:block;color:#687583;margin-top:3px}
+.draft{border-top:1px solid #e7eaee;padding:14px 0}.draft-head{display:flex;justify-content:space-between;gap:10px;align-items:center}.draft-head strong{font-weight:650}
+.tag{font-size:12px;color:#315e82;background:#edf5fb;padding:3px 8px;border-radius:99px;white-space:nowrap}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.row button{min-width:120px}
+.error{color:#a52626}.success{color:#25643b}
+#app[hidden],#login[hidden]{display:none}
+@media(max-width:560px){body{padding:12px}.card{padding:14px}.draft-head{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><h1>Follow-up 一括送信テスト</h1><button id="signout" hidden>ログアウト</button></header>
+<section class="card warning"><strong>テスト専用ページ</strong>
+送信先は <b>fujitame@gmail.com</b> に固定します。実際のコーチには送信せず、CRMの予約・ステータス・履歴も変更しません。メールは送信ボタンを押すとすぐに送られます。木曜10時の予約処理はこのテストには含まれません。</section>
+<section id="login" class="card">
+<h2>Dashboardにログイン</h2><p class="muted">テスト校データと学校別Researchを読み込みます。</p>
+<div class="field"><label for="email">メールアドレス</label><input id="email" type="email" autocomplete="username"></div>
+<div class="field"><label for="password">パスワード</label><input id="password" type="password" autocomplete="current-password"></div>
+<button id="login-button" class="primary">ログイン</button><div id="login-status" class="muted" aria-live="polite"></div></section>
+<main id="app" hidden>
+<section class="card"><h2>1. テスト校を選ぶ</h2><p class="muted">ID 900〜999 かつテスト校として登録された学校のうち、Follow-up #1対象で未返信のContactだけを表示します。</p>
+<div id="schools" aria-live="polite">読み込み中...</div><div class="row"><button id="generate" class="primary" disabled>学校別Follow-upを生成</button><span id="generate-status" class="muted"></span></div></section>
+<section id="drafts-card" class="card" hidden><h2>2. 文面を確認する</h2><p class="muted">各校にVerified Researchがあり、異なる個別文面を生成できた学校だけを送信対象にできます。</p><div id="drafts"></div>
+<label class="row" style="align-items:flex-start;margin:12px 0"><input id="reviewed" type="checkbox" style="width:18px;height:18px;margin:2px 0 0"><span>送信先が自分のアドレスであること、全校の文面を確認しました。</span></label>
+<div class="row"><button id="send" class="primary" disabled>確認したテストメールを一括送信</button><span id="send-status" class="muted" aria-live="polite"></span></div></section>
+</main>
+</div>
+<script>
+(() => {
+const SUPABASE_URL='https://cjrabdfdtrufbpjmqddh.supabase.co';
+const SUPABASE_KEY='sb_publishable_u0hVckGZrWePM3j1BHDBsQ_YImzJ4D2';
+const TEST_TO='fujitame@gmail.com';
+const VIDEO_URL='https://www.youtube.com/watch?v=kG2G7fUz1SI';
+const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let eligible=[];
+let generated=[];
+const byId=id=>document.getElementById(id);
+const safe=value=>String(value||'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+function message(el,text,kind){el.textContent=text;el.className=kind||'muted';}
+function authUI(session){byId('login').hidden=!!session;byId('app').hidden=!session;byId('signout').hidden=!session;if(session)loadEligible();}
+async function loadEligible(){
+ byId('schools').textContent='テスト校を読み込み中…';
+ const {data:schools,error}=await client.from('recruiting_universities').select('id,name,is_test').gte('id',900).lte('id',999).eq('is_test',true).order('name');
+ if(error)throw error;
+ const ids=(schools||[]).map(s=>s.id);
+ if(!ids.length){eligible=[];byId('schools').textContent='利用できるテスト校がありません。';return;}
+ const {data:contacts,error:contactError}=await client.from('recruiting_contacts')
+  .select('id,university_id,coach_name,coach_role,contact_status,coach_response,follow_up_count')
+  .in('university_id',ids).eq('follow_up_count',0);
+ if(contactError)throw contactError;
+ const schoolMap=new Map((schools||[]).map(s=>[Number(s.id),s]));
+ const used=new Set();
+ eligible=[];
+ for(const c of contacts||[]){
+  const school=schoolMap.get(Number(c.university_id));
+  if(!school||used.has(Number(c.university_id)))continue;
+  if(!['head_coach','assistant_coach'].includes(c.coach_role))continue;
+  if(c.contact_status==='responded'||String(c.coach_response||'').trim())continue;
+  used.add(Number(c.university_id));
+  eligible.push({contact:c,school});
+ }
+ byId('schools').innerHTML=eligible.length?eligible.map((x,i)=>'<label class="school"><span class="school-title"><input type="checkbox" data-school-index="'+i+'" checked><span><b>'+safe(x.school.name)+'</b><small>'+(x.contact.coach_role==='head_coach'?'Head Coach':'Assistant Coach')+' · '+safe(x.contact.coach_name||'Coach')+' · Researchを確認してから送信できます</small></span></span></label>').join(''):'Follow-up #1に使えるテスト校Contactがありません。';
+ byId('generate').disabled=eligible.length<2;
+}
+function selectedItems(){return Array.from(document.querySelectorAll('[data-school-index]:checked')).map(el=>eligible[Number(el.dataset.schoolIndex)]).filter(Boolean);}
+byId('generate').addEventListener('click',async()=>{
+ const status=byId('generate-status'),button=byId('generate');
+ button.disabled=true;byId('drafts-card').hidden=false;byId('drafts').textContent='学校別ResearchとFollow-up文面を生成中…';generated=[];
+ try{
+  const selected=selectedItems();
+  if(selected.length<2)throw new Error('異なる2校以上を選択してください。');
+  const drafts=[];
+  for(let i=0;i<selected.length;i++){
+   const x=selected[i];
+   const {data,error}=await client.functions.invoke('recruiting-ai-followup-draft',{body:{contact_id:x.contact.id}});
+   if(error||!data?.ok)throw new Error((data?.error||error?.message||'生成に失敗しました')+' · '+x.school.name);
+   const sentence=String(data.draft?.personalization_sentence||'').trim();
+   const researchIds=Array.isArray(data.draft?.research_used)?data.draft.research_used.map(Number).filter(Number.isFinite):[];
+   if(!sentence||!researchIds.length)throw new Error(x.school.name+'に未使用のVerified Researchがありません。送信を止めました。');
+   const coach=String(x.contact.coach_name||'Coach').trim();
+   const body='Dear '+coach+',\n\nI wanted to follow up on my previous email regarding my interest in transferring to '+x.school.name+' for Fall 2027.\n\n'+sentence+'\n\nFor reference, my highlight video is here: '+VIDEO_URL+'\n\nBest,\nAkihiro Fujikawa\n\n[SELF-TEST: This message was sent only to '+TEST_TO+'.]';
+   drafts.push({contact_id:x.contact.id,university_id:Number(x.school.id),school_name:x.school.name,subject:'Following up on my transfer interest',body,personalization_sentence:sentence,research_ids:researchIds});
+   message(status,'生成中… '+(i+1)+' / '+selected.length);
+  }
+  const unique=new Set(drafts.map(x=>x.personalization_sentence.toLowerCase().replace(/\s+/g,' ').trim()));
+  if(unique.size!==drafts.length)throw new Error('異なる学校向けの個別文面が重複しました。重複が解消するまで送信できません。');
+  generated=drafts;
+  byId('drafts').innerHTML=drafts.map(x=>'<article class="draft"><div class="draft-head"><strong>'+safe(x.school_name)+'</strong><span class="tag">To: '+TEST_TO+'</span></div><div class="field"><label>件名</label><input type="text" data-subject="'+safe(x.contact_id)+'" value="'+safe(x.subject)+'"></div><div class="field"><label>本文</label><textarea data-body="'+safe(x.contact_id)+'">'+safe(x.body)+'</textarea></div><small class="success">Verified Researchを使用 · Research ID '+safe(x.research_ids.join(', '))+'</small></article>').join('');
+  byId('reviewed').checked=false;byId('send').disabled=true;message(status,drafts.length+'校分の異なる文面を生成しました。送信先は固定されています。','success');
+ }catch(error){byId('drafts').textContent=error.message||'生成に失敗しました。';generated=[];message(status,'送信対象はありません。','error');}
+ finally{button.disabled=eligible.length<2;}
+});
+byId('reviewed').addEventListener('change',()=>{byId('send').disabled=!byId('reviewed').checked||generated.length<2;});
+byId('drafts').addEventListener('input',event=>{if(event.target.matches('input,textarea')){byId('reviewed').checked=false;byId('send').disabled=true;}});
+byId('send').addEventListener('click',async()=>{
+ if(!byId('reviewed').checked||generated.length<2)return;
+ const items=generated.map(x=>({...x,subject:byId('drafts').querySelector('[data-subject="'+CSS.escape(x.contact_id)+'"]').value.trim(),body:byId('drafts').querySelector('[data-body="'+CSS.escape(x.contact_id)+'"]').value}));
+ if(items.some(x=>!x.subject||!x.body.trim()||!x.body.includes(x.personalization_sentence))){message(byId('send-status'),'件名・本文を確認してください。個別文面の削除はできません。','error');return;}
+ if(!confirm(items.length+'通のメールを fujitame@gmail.com に今すぐ送信します。学校のコーチには送られません。送信しますか？'))return;
+ byId('send').disabled=true;message(byId('send-status'),'送信中…');
+ const {data,error}=await client.functions.invoke('recruiting-gmail-followup-batch-test-send',{body:{confirm_test_send:true,items:items.map(x=>({contact_id:x.contact_id,subject:x.subject,body:x.body,personalization_sentence:x.personalization_sentence}))}});
+ if(error||!data?.ok){message(byId('send-status'),(data?.sent_count?data.sent_count+'通送信後に停止しました。 ':'')+(data?.error||error?.message||'送信結果を確認できません。')+' Gmailの受信トレイを確認してから再試行してください。','error');return;}
+ message(byId('send-status'),data.sent_count+'通を '+TEST_TO+' に送信しました。Gmail受信トレイで確認してください。','success');
+});
+byId('login-button').addEventListener('click',async()=>{
+ message(byId('login-status'),'ログイン中…');
+ const {error}=await client.auth.signInWithPassword({email:byId('email').value.trim(),password:byId('password').value});
+ if(error){message(byId('login-status'),error.message,'error');return;}
+ const {data}=await client.auth.getSession();authUI(data.session);
+});
+byId('signout').addEventListener('click',async()=>{await client.auth.signOut();authUI(null);});
+client.auth.getSession().then(({data})=>authUI(data.session)).catch(e=>message(byId('login-status'),e.message,'error'));
+})();
+</script>
+</body>
+</html>
