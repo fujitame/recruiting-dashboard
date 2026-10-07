@@ -1,6 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { buildReplyRaw, emailAddress, gmailGetThread, gmailSend, getHeader, googleAccessToken, latestOutbound, threadReplyFrom, plainTextMessage, GMAIL_ACCOUNT } from "../_shared/followup-batch-gmail.ts";
-import { localDateAfterSend } from "../_shared/followup-batch-timezone.ts";
+import { localDateAfterSend, localDateAt } from "../_shared/followup-batch-timezone.ts";
 
 const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, { auth: { persistSession: false } });
 const secret = Deno.env.get("FOLLOWUP_BATCH_WORKER_SECRET") || "";
@@ -26,7 +26,7 @@ Deno.serve(async req => {
     try {
       const {data:contact,error:ce}=await supabase.from("recruiting_contacts").select("id,owner_user_id,university_id,coach_email,coach_response,contact_status,follow_up_count,follow_up_date,gmail_thread_id,contact_count").eq("id",item.contact_id).eq("owner_user_id",item.owner_user_id).maybeSingle();
       if(ce) throw ce;
-      if(!contact || !["contacted","follow_up_due"].includes(contact.contact_status) || Number(contact.follow_up_count||0)!==Number(item.expected_follow_up_count) || contact.coach_response || !contact.gmail_thread_id || contact.gmail_thread_id===null) {
+      if(!contact || !["contacted","follow_up_due"].includes(contact.contact_status) || Number(contact.follow_up_count||0)!==Number(item.expected_follow_up_count) || contact.coach_response || !contact.gmail_thread_id || contact.gmail_thread_id===null || emailAddress(contact.coach_email)!==emailAddress(item.recipient_email) || (contact.follow_up_date && String(contact.follow_up_date)>localDateAt(new Date().toISOString(),item.school_timezone))) {
         await finishItem(item,"skipped_changed","CRM状態が予約時から変更されています。"); skipped++; continue;
       }
       const token=await googleAccessToken();
@@ -36,6 +36,7 @@ Deno.serve(async req => {
       const outbound=latestOutbound(thread);
       if(!outbound) { await finishItem(item,"skipped_changed","Gmailスレッドの送信履歴を確認できません。"); skipped++; continue; }
       const headers=outbound.payload?.headers||[];
+      if(getHeader(headers,"Message-ID")!==item.expected_last_message_id) { await finishItem(item,"skipped_changed","予約後にGmailスレッドの送信内容が変わりました。"); skipped++; continue; }
       const raw=buildReplyRaw({to:contact.coach_email,subject:item.subject,body:item.body,messageId:getHeader(headers,"Message-ID"),references:getHeader(headers,"References")});
       let gmailResult:any;
       try { gmailResult=await gmailSend(raw,contact.gmail_thread_id,token); }
