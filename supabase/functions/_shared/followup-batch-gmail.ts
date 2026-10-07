@@ -57,19 +57,20 @@ export async function gmailSend(raw: string, threadId: string, token: string): P
   return data;
 }
 
-export function threadReplyFrom(thread: any, coachEmail: string): any | null {
+export function threadReplyFrom(thread: any, _coachEmail: string): any | null {
   const messages = Array.isArray(thread?.messages) ? thread.messages : [];
   const lastOutbound = [...messages].reverse().find((message) =>
     emailAddress(getHeader(message.payload?.headers || [], "From")) === GMAIL_ACCOUNT
   );
   if (!lastOutbound) return null;
   const lastSentAt = Number(lastOutbound.internalDate || 0);
+  // Any post-send external reply suppresses a scheduled follow-up, including replies from
+  // another staff member or a shared recruiting inbox.
   return messages.find((message) => {
     const from = emailAddress(getHeader(message.payload?.headers || [], "From"));
-    return from === coachEmail.trim().toLowerCase() && Number(message.internalDate || 0) > lastSentAt;
+    return from && from !== GMAIL_ACCOUNT && Number(message.internalDate || 0) > lastSentAt;
   }) || null;
 }
-
 export function latestOutbound(thread: any): any | null {
   const messages = Array.isArray(thread?.messages) ? thread.messages : [];
   return [...messages].reverse().find((message) =>
