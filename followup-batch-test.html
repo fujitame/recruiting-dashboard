@@ -87,24 +87,29 @@ byId('generate').addEventListener('click',async()=>{
  try{
   const selected=selectedItems();
   if(selected.length<2)throw new Error('異なる2校以上を選択してください。');
-  const drafts=[];
+  const drafts=[],skipped=[];
   for(let i=0;i<selected.length;i++){
    const x=selected[i];
-   const {data,error}=await client.functions.invoke('recruiting-ai-followup-draft',{body:{contact_id:x.contact.id}});
-   if(error||!data?.ok)throw new Error((data?.error||error?.message||'生成に失敗しました')+' · '+x.school.name);
-   const sentence=String(data.draft?.personalization_sentence||'').trim();
-   const researchIds=Array.isArray(data.draft?.research_used)?data.draft.research_used.map(Number).filter(Number.isFinite):[];
-   if(!sentence||!researchIds.length)throw new Error(x.school.name+'に未使用のVerified Researchがありません。送信を止めました。');
-   const coach=String(x.contact.coach_name||'Coach').trim();
-   const body='Dear '+coach+',\n\nI wanted to follow up on my previous email regarding my interest in transferring to '+x.school.name+' for Fall 2027.\n\n'+sentence+'\n\nFor reference, my highlight video is here: '+VIDEO_URL+'\n\nBest,\nAkihiro Fujikawa\n\n[SELF-TEST: This message was sent only to '+TEST_TO+'.]';
-   drafts.push({contact_id:x.contact.id,university_id:Number(x.school.id),school_name:x.school.name,subject:'Following up on my transfer interest',body,personalization_sentence:sentence,research_ids:researchIds});
-   message(status,'生成中… '+(i+1)+' / '+selected.length);
+   message(status,'生成中… '+(i+1)+' / '+selected.length+' · '+x.school.name);
+   try{
+    const {data,error}=await client.functions.invoke('recruiting-ai-followup-draft',{body:{contact_id:x.contact.id}});
+    if(error||!data?.ok){skipped.push({schoolName:x.school.name,reason:data?.error||error?.message||'生成に失敗しました'});continue;}
+    const sentence=String(data.draft?.personalization_sentence||'').trim();
+    const researchIds=Array.isArray(data.draft?.research_used)?data.draft.research_used.map(Number).filter(Number.isFinite):[];
+    if(!sentence||!researchIds.length){skipped.push({schoolName:x.school.name,reason:'未使用のVerified Researchがありません'});continue;}
+    const coach=String(x.contact.coach_name||'Coach').trim();
+    const body=['Dear '+coach+',','','I wanted to follow up on my previous email regarding my interest in transferring to '+x.school.name+' for Fall 2027.','',sentence,'','For reference, my highlight video is here: '+VIDEO_URL,'','Best,','Akihiro Fujikawa','','[SELF-TEST: This message was sent only to '+TEST_TO+'.]'].join('\n');
+    drafts.push({contact_id:x.contact.id,university_id:Number(x.school.id),school_name:x.school.name,subject:'Following up on my transfer interest',body,personalization_sentence:sentence,research_ids:researchIds});
+   }catch(schoolError){skipped.push({schoolName:x.school.name,reason:schoolError instanceof Error?schoolError.message:String(schoolError)});}
   }
   const unique=new Set(drafts.map(x=>x.personalization_sentence.toLowerCase().replace(/\s+/g,' ').trim()));
   if(unique.size!==drafts.length)throw new Error('異なる学校向けの個別文面が重複しました。重複が解消するまで送信できません。');
   generated=drafts;
-  byId('drafts').innerHTML=drafts.map(x=>'<article class="draft"><div class="draft-head"><strong>'+safe(x.school_name)+'</strong><span class="tag">To: '+TEST_TO+'</span></div><div class="field"><label>件名</label><input type="text" data-subject="'+safe(x.contact_id)+'" value="'+safe(x.subject)+'"></div><div class="field"><label>本文</label><textarea data-body="'+safe(x.contact_id)+'">'+safe(x.body)+'</textarea></div><small class="success">Verified Researchを使用 · Research ID '+safe(x.research_ids.join(', '))+'</small></article>').join('');
-  byId('reviewed').checked=false;byId('send').disabled=true;message(status,drafts.length+'校分の異なる文面を生成しました。送信先は固定されています。','success');
+  const skippedMarkup=skipped.length?'<div class="error" style="margin:8px 0"><b>生成できなかった学校</b>'+skipped.map(x=>'<p>'+safe(x.schoolName)+': '+safe(x.reason)+'</p>').join('')+'</div>':'';
+  byId('drafts').innerHTML=skippedMarkup+drafts.map(x=>'<article class="draft"><div class="draft-head"><strong>'+safe(x.school_name)+'</strong><span class="tag">To: '+TEST_TO+'</span></div><div class="field"><label>件名</label><input type="text" data-subject="'+safe(x.contact_id)+'" value="'+safe(x.subject)+'"></div><div class="field"><label>本文</label><textarea data-body="'+safe(x.contact_id)+'">'+safe(x.body)+'</textarea></div><small class="success">Verified Researchを使用 · Research ID '+safe(x.research_ids.join(', '))+'</small></article>').join('');
+  byId('reviewed').checked=false;byId('send').disabled=true;
+  if(drafts.length<2){message(status,drafts.length+'校しか生成できませんでした。異なる2校以上の文面が必要です。','error');return;}
+  message(status,drafts.length+'校分の異なる文面を生成しました。'+(skipped.length?skipped.length+'校は対象外です。':'')+'送信先は固定されています。','success');
  }catch(error){byId('drafts').textContent=error.message||'生成に失敗しました。';generated=[];message(status,'送信対象はありません。','error');}
  finally{button.disabled=eligible.length<2;}
 });
