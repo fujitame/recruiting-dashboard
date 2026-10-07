@@ -104,6 +104,10 @@ begin
     if v_timezone is null or not exists (select 1 from pg_timezone_names where name = v_timezone) then
       raise exception 'Invalid school time zone';
     end if;
+    if (v_scheduled_at at time zone v_timezone)::date <> p_local_date
+      or to_char(v_scheduled_at at time zone v_timezone, 'HH24:MI') <> to_char(p_local_time, 'HH24:MI') then
+      raise exception 'Scheduled instant does not match the selected school-local date and time';
+    end if;
     if v_sentence is null or v_sentence = '' or coalesce(cardinality(v_ids),0) = 0 then
       raise exception 'Every scheduled item needs a school-specific verified Research fact';
     end if;
