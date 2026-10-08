@@ -26,6 +26,11 @@ export default {fetch:withSupabase({auth:"user"},async(req,ctx)=>{
    .eq("owner_user_id",owner).in("id",ids);
   if(ce)throw ce;
   if(!contacts||contacts.length!==items.length)throw new Error("A test CRM contact changed or is unavailable.");
+  const {data:pending,error:pendingError}=await ctx.supabase.from("recruiting_followup_batch_items")
+    .select("contact_id").eq("owner_user_id",owner).in("contact_id",ids)
+    .in("status",["scheduled","processing","send_unknown"]);
+  if(pendingError)throw pendingError;
+  if(pending?.length)throw new Error("選択したCoachに予約済み・送信処理中・要確認のメールがあります。予約状況を更新してください。");
   const schoolIds=Array.from(new Set(contacts.map((c:any)=>Number(c.university_id))));
   const {data:schools,error:se}=await ctx.supabase.from("recruiting_universities").select("id,name,latitude,longitude,is_test").in("id",schoolIds);
   if(se)throw se;
