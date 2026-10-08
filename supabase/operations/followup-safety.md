@@ -18,6 +18,8 @@ A shared HC/AC Gmail thread has one label. All associated contacts and conversat
 ## Send protection
 
 - Selection, preview, reservation RPC and worker enforce waiting statuses and counts 0 or 1.
+- New reservation candidates exclude contacts with `scheduled`, `processing` or `send_unknown` items. The CRM loads all active items, independently of the latest ten history batches, and shows their status and local schedule separately.
+- Opening or refreshing reservations reloads contacts and reservation status. If reservation status cannot be read, new selection and confirmation remain disabled. Cancellation restores eligibility; a completed #1 can become a #2 candidate.
 - A reply to any Coach at the school blocks every regular Follow-up at that school.
 - The worker reads all known school Gmail threads, then rechecks CRM immediately before sending.
 - Manual regular Follow-ups use the same school reply gate and refuse contacts already owned by a reservation.
