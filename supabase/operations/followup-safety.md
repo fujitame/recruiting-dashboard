@@ -27,10 +27,14 @@ A shared HC/AC Gmail thread has one label. All associated contacts and conversat
 - #2 does not add Research personalization. #1 Research IDs are checked against unused verified facts.
 - A second initial send cannot reset an existing contact's stage to zero.
 - Uncertain send results remain `send_unknown`; no automatic resend occurs.
+- MIME headers are filtered separately from the required blank line before the body. Plain text is encoded as UTF-8 base64 with 76-character lines; empty bodies are rejected before sending.
+- After Gmail accepts a reservation, the worker reads the sent message and compares its actual plain-text body to the confirmed body. Only a match advances CRM counts and writes `follow_up_sent`. Missing, different or unreadable bodies stay `send_unknown` with `EMAIL_BODY_UNVERIFIED:` and the Gmail message ID; they never automatically resend.
 - `LABEL_SYNC_PENDING:` on a sent reservation is retried by the worker without sending another message.
 
 ## Verification
 
 Run `node tests/followup-safety.cjs` with Node 24+. Gmail transport is mocked: no email is sent by this suite. It covers #1/#2 transitions, history, fixed Test routing, production threading, CRM/Gmail school replies, changed recipient/thread, existing reservations, shared-thread label priority and label-only retries.
+
+Run `node tests/followup-mime.cjs` to exercise the actual MIME builder, including the required header/body separator, UTF-8, optional reply headers, base64 line lengths and refusal to confirm an empty Gmail body. The worker suite also checks that failed body verification leaves CRM counts, history and labels unchanged.
 
 Production DB scheduling/cancellation and exclusions were additionally verified inside transactions that were rolled back. Actual replied-school Gmail threads and CRM conversation history were compared; missing labels were corrected. Production delivery itself was not triggered as part of verification.
