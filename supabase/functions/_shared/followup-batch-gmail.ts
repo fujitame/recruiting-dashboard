@@ -115,6 +115,21 @@ export function plainTextMessage(message: any): string {
   return extractPlainText(message?.payload).trim();
 }
 
+export async function verifyGmailSentBody(messageId: string, expectedBody: string, token: string): Promise<any> {
+  if (!messageId || !expectedBody.trim()) throw new Error("Sent message ID and nonempty body are required.");
+  const response = await fetch(
+    "https://gmail.googleapis.com/gmail/v1/users/me/messages/" + encodeURIComponent(messageId) + "?format=full",
+    { headers: { Authorization: "Bearer " + token } },
+  );
+  if (!response.ok) throw new Error("Could not verify sent Gmail message: " + response.status);
+  const message = await response.json();
+  const normalize = (value: string) => value.replace(/\r\n?/g, "\n").trim();
+  if (message.id !== messageId || normalize(plainTextMessage(message)) !== normalize(expectedBody)) {
+    throw new Error("Sent Gmail body is missing or differs from the confirmed body.");
+  }
+  return message;
+}
+
 export function buildReplyRaw(args: {
   to: string;
   subject: string;
@@ -122,6 +137,7 @@ export function buildReplyRaw(args: {
   messageId: string;
   references: string;
 }): string {
+  if (!args.body.trim()) throw new Error("Email body must not be empty.");
   const bytes = new TextEncoder().encode(args.body);
   let binary = "";
   for (let i = 0; i < bytes.length; i += 0x8000) {
@@ -131,7 +147,7 @@ export function buildReplyRaw(args: {
   const encodedSubject = "=?UTF-8?B?" + btoa(unescape(encodeURIComponent(args.subject))) + "?=";
   const clean = (value: string) => value.replace(/[\r\n]/g, " ").trim();
   const references = [args.references, args.messageId].filter(Boolean).join(" ").trim();
-  const mime = [
+  const headers = [
     "To: " + clean(args.to),
     "From: " + GMAIL_ACCOUNT,
     "Subject: " + encodedSubject,
@@ -140,9 +156,9 @@ export function buildReplyRaw(args: {
     "MIME-Version: 1.0",
     "Content-Type: text/plain; charset=UTF-8",
     "Content-Transfer-Encoding: base64",
-    "",
-    encodedBody,
   ].filter(Boolean).join("\r\n");
+  // RFC 5322 requires this blank line. Filter only optional headers, never the separator.
+  const mime = headers + "\r\n\r\n" + (encodedBody.match(/.{1,76}/g) || []).join("\r\n") + "\r\n";
   return btoa(unescape(encodeURIComponent(mime)))
     .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
 }

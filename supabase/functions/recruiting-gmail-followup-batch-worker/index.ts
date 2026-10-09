@@ -1,7 +1,7 @@
 import { schoolInMode, validCoachEmail, followUpEligible, hasReply, TEST_RECIPIENT, TEST_BANNER } from "../_shared/followup-batch-policy.ts";
 import { syncContactThreadLabels } from "../_shared/recruiting-gmail-labels.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
-import { buildReplyRaw, gmailSend, googleAccessToken, gmailGetThread, latestOutbound, getHeader, anyThreadReply, outboundIncludesRecipient, plainTextMessage } from "../_shared/followup-batch-gmail.ts";
+import { buildReplyRaw, gmailSend, googleAccessToken, gmailGetThread, latestOutbound, getHeader, anyThreadReply, outboundIncludesRecipient, plainTextMessage, verifyGmailSentBody } from "../_shared/followup-batch-gmail.ts";
 import { localDateAfterSend } from "../_shared/followup-batch-timezone.ts";
 
 const supabase=createClient(Deno.env.get("SUPABASE_URL")!,Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,{auth:{persistSession:false}});
@@ -98,7 +98,11 @@ Deno.serve(async req=>{
       let result:any;
       try{result=await gmailSend(raw,threadId,token)}
       catch(e){await finish(item,"send_unknown","Test inbox send outcome is uncertain; verify Gmail manually before retrying.");unknown++;continue}
-      const sentAt=new Date().toISOString(),nextCount=Number(contact.follow_up_count||0)+1;
+      const sentAt=new Date().toISOString();
+      // A successful send API response alone does not prove that Gmail retained the body.
+      try{await verifyGmailSentBody(result.id,item.body,token)}
+      catch(e){await finish(item,'send_unknown','EMAIL_BODY_UNVERIFIED: '+(e instanceof Error?e.message:String(e)),{sent_at:sentAt,gmail_message_id:result.id});unknown++;continue}
+      const nextCount=Number(contact.follow_up_count||0)+1;
       const nextDate=nextCount===1?localDateAfterSend(sentAt,item.school_timezone,7):null;
       const {data:updated,error:updateError}=await supabase.from("recruiting_contacts").update({
         contact_status:nextCount>=2?"no_response":"contacted",
