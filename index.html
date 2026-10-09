@@ -3220,6 +3220,10 @@ async function personalizeFollowUpGmailDraft(){
  }
 }
 
+function getRecruitingProfileInvitation(){
+ return 'For more information about me, please visit my recruiting profile:\nhttps://fujitame.github.io/profile/';
+}
+
 function getFollowUpDraft(u,contact){
  const coach=contact.coach_name||'Coach';
  const followNo=Math.min(2,Number(contact.follow_up_count||0)+1);
@@ -3234,7 +3238,7 @@ function getFollowUpDraft(u,contact){
  const body='Dear Coach '+getCoachLastName(coach)+',\n\n'+
   intro+'\n\n'+
   ask+'\n\n'+
-  'Profile: https://fujitame.github.io/profile/\n'+
+  getRecruitingProfileInvitation()+'\n\n'+
   (highlightUrl?'Highlight Video: '+highlightUrl+'\n':'')+
   '\nThank you again for your time and consideration.\n\n'+
   'Best regards,\n\n'+
@@ -3255,6 +3259,7 @@ function getConversationFollowUpDraft(u,contact){
   'I wanted to follow up on my previous message and see if there have been any updates.\n\n'+
   'I remain very interested in '+u.name+
   ' and would appreciate any feedback when you have a chance.\n\n'+
+  getRecruitingProfileInvitation()+'\n\n'+
   'Thank you again for your time.\n\n'+
   'Best regards,\n\n'+
   CURRENT_PLAYER.name+'\n'+
@@ -4847,7 +4852,7 @@ async function prepareCrmFollowUpBatch(){
    const facts=(draftData.research_context||[]).filter(f=>researchIds.includes(Number(f.research_id)));
    if(!noResearch&&facts.length!==1)throw new Error(item.school_name+'のResearch出典を確認できません。');
    const videoId=String(CURRENT_PLAYER.highlightVideo1||'').trim();
-   const body=(requestTestMode?'TEST MODE — This message is sent only to '+CRM_BATCH_TEST_TO+'.\n\n':'')+'Dear '+(contact?.coach_name||'Coach')+',\n\n'+(isSecond?'I wanted to follow up once more on my previous emails and my interest in your program.':'I wanted to follow up on my previous email and share my updated highlight video.')+(sentence?' '+sentence:'')+'\n\nHere is my video: '+(videoId?'https://www.youtube.com/watch?v='+encodeURIComponent(videoId):'[動画URL未設定]')+'\n\nI remain very interested in learning more about your program. Thank you for your time, and I look forward to hearing from you.\n\nBest,\n'+CURRENT_PLAYER.name;
+   const body=(requestTestMode?'TEST MODE — This message is sent only to '+CRM_BATCH_TEST_TO+'.\n\n':'')+'Dear '+(contact?.coach_name||'Coach')+',\n\n'+(isSecond?'I wanted to follow up once more on my previous emails and my interest in your program.':'I wanted to follow up on my previous email and share my updated highlight video.')+(sentence?' '+sentence:'')+'\n\n'+getRecruitingProfileInvitation()+'\n\nHere is my video: '+(videoId?'https://www.youtube.com/watch?v='+encodeURIComponent(videoId):'[動画URL未設定]')+'\n\nI remain very interested in learning more about your program. Thank you for your time, and I look forward to hearing from you.\n\nBest,\n'+CURRENT_PLAYER.name;
    const row={...item,test_mode:requestTestMode,body,personalization_sentence:sentence,research_ids:researchIds};
    crmFollowUpBatchPrepared.push(row);crmFollowUpBatchDrafts.set(String(item.contact_id),row);
    const article=document.createElement('article');article.className='crm-batch-draft';
