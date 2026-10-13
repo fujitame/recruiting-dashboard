@@ -1,12 +1,10 @@
 import { sendTrackedFollowUp } from "../_shared/recruiting-email-tracking.ts";
 import { withSupabase } from "npm:@supabase/server@1";
+import { ConversationBlocked, conversationSnapshot } from "../_shared/conversation-followup-context.ts";
 
 import {
   syncRecruitingThreadLabels,
 } from "../_shared/recruiting-gmail-labels.ts";
-
-const GMAIL_ACCOUNT =
-  (Deno.env.get("GMAIL_ACCOUNT") || "fujiakihiro8@gmail.com").toLowerCase();
 
 const GOOGLE_CLIENT_ID = Deno.env.get("GOOGLE_OAUTH_CLIENT_ID");
 const GOOGLE_CLIENT_SECRET = Deno.env.get("GOOGLE_OAUTH_CLIENT_SECRET");
@@ -39,11 +37,6 @@ function header(headers: any[], name: string) {
         String(h.name || "").toLowerCase() === name.toLowerCase(),
     )?.value || ""
   );
-}
-
-function emailAddress(value: string) {
-  const m = String(value || "").match(/<([^>]+)>/);
-  return (m?.[1] || value || "").trim().toLowerCase();
 }
 
 async function googleAccessToken() {
@@ -116,6 +109,11 @@ export default {
     try {
       const supabase = ctx.supabase;
       const payload = await req.json();
+      const owner = String(ctx.jwtClaims?.sub ?? ctx.userClaims?.sub ?? "");
+      if (!owner) return json({ ok: false, error: "Authenticated user id missing" }, 401);
+      if (!String(payload.conversation_snapshot || "").trim()) {
+        return json({ ok: false, error: "AI Follow-upを作成し直してから送信してください。" }, 409);
+      }
 
       const contactId =
         String(payload.contact_id || "").trim();
@@ -145,6 +143,7 @@ export default {
           .from("recruiting_contacts")
           .select("*")
           .eq("id", contactId)
+          .eq("owner_user_id", owner)
           .single();
 
       if (contactError || !contact) {
@@ -332,51 +331,16 @@ export default {
         );
       }
 
-      // Send直前に、最後のこちらの返信より後のCoach返信を確認。
-      const newerInbound = messages.filter((m: any) => {
-        const from = emailAddress(
-          header(
-            m.payload?.headers || [],
-            "From",
-          ),
-        );
-
-        const internalDate =
-          Number(m.internalDate || 0);
-
-        return (
-          from &&
-          from !== GMAIL_ACCOUNT &&
-          from ===
-            String(contact.coach_email)
-              .trim()
-              .toLowerCase() &&
-          internalDate >
-            latestOutboundAt.getTime()
-        );
-      });
-
-      if (newerInbound.length) {
-        await supabase
-          .from("recruiting_contacts")
-          .update({
-            contact_status: "responded",
-            next_action: "返信内容を確認",
-          })
-          .eq("id", contact.id);
-
-        return json(
-          {
-            ok: false,
-            error:
-              "A newer Coach reply was detected. Conversation Follow-up was not sent.",
-          },
-          409,
-        );
+      // Use actual Gmail chronology, including direct Gmail sends and replies
+      // from other staff, and reject a draft made against an older conversation.
+      const context = await conversationSnapshot(thread, contact.coach_email, testForceDue);
+      if (context.snapshot !== payload.conversation_snapshot) {
+        return json({ ok: false, error: "会話が更新されています。AI Follow-upを作成し直してください。" }, 409);
       }
-
-      const latestMessage =
-        messages[messages.length - 1];
+      if (subject !== context.subject) {
+        return json({ ok: false, error: "同じGmailスレッドの件名を維持してください。" }, 409);
+      }
+      const latestMessage = context.latest;
 
       const latestHeaders =
         latestMessage?.payload?.headers || [];
@@ -509,7 +473,7 @@ export default {
               ? error.message
               : String(error),
         },
-        500,
+        error instanceof ConversationBlocked ? 409 : 500,
       );
     }
   }),
