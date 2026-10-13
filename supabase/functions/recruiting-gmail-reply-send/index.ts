@@ -1,4 +1,5 @@
 import { withSupabase } from "npm:@supabase/server@1";
+import { buildReplyRaw, verifyGmailSentBody } from "../_shared/followup-batch-gmail.ts";
 
 import {
   syncRecruitingThreadLabels,
@@ -43,36 +44,6 @@ function header(headers: any[] | undefined, name: string): string {
 function emailAddress(value: string): string {
   const match = String(value || "").match(/<([^>]+)>/);
   return (match?.[1] || value || "").trim().toLowerCase();
-}
-
-function cleanHeader(value: string): string {
-  return String(value || "")
-    .replace(/[\r\n]/g, " ")
-    .trim();
-}
-
-function base64FromUtf8(value: string): string {
-  const bytes = new TextEncoder().encode(value);
-  let binary = "";
-
-  for (let i = 0; i < bytes.length; i += 0x8000) {
-    binary += String.fromCharCode(
-      ...bytes.subarray(i, i + 0x8000),
-    );
-  }
-
-  return btoa(binary);
-}
-
-function base64UrlFromUtf8(value: string): string {
-  return base64FromUtf8(value)
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_")
-    .replace(/=+$/g, "");
-}
-
-function encodeSubject(value: string): string {
-  return "=?UTF-8?B?" + base64FromUtf8(value) + "?=";
 }
 
 async function googleAccessToken(): Promise<string> {
@@ -149,7 +120,7 @@ async function gmailSend(
 
   const data = await response.json();
 
-  if (!response.ok) {
+  if (!response.ok || !data.id) {
     throw new Error(
       data.error?.message ||
         `Gmail send error: ${response.status}`,
@@ -205,10 +176,6 @@ export default {
           404,
         );
       }
-
-      // Phase 9-C safety guard:
-      // only Test universities can send until manual validation is complete.
-      const universityId = Number(contact.university_id);
 
       if (!contact.coach_email) {
         return json(
@@ -312,33 +279,21 @@ export default {
         );
       }
 
-      const refs = [references, messageId]
-        .filter(Boolean)
-        .join(" ")
-        .trim();
-
-      const mime = [
-        "To: " + cleanHeader(contact.coach_email),
-        "From: " + GMAIL_ACCOUNT,
-        "Subject: " + encodeSubject(subject),
-        "In-Reply-To: " + cleanHeader(messageId),
-        refs
-          ? "References: " + cleanHeader(refs)
-          : "",
-        "MIME-Version: 1.0",
-        "Content-Type: text/plain; charset=UTF-8",
-        "Content-Transfer-Encoding: 8bit",
-        "",
-        body,
-      ]
-        .filter(Boolean)
-        .join("\r\n");
-
+      const raw = buildReplyRaw({ to: contact.coach_email, subject, body, messageId, references });
       const result = await gmailSend(
-        base64UrlFromUtf8(mime),
+        raw,
         contact.gmail_thread_id,
         token,
       );
+
+      // Gmail has accepted this message. A failed readback must never invite a resend.
+      let bodyVerified = false;
+      try {
+        await verifyGmailSentBody(result.id, body, token);
+        bodyVerified = true;
+      } catch {
+        console.warn("Reply accepted by Gmail; sent body requires manual verification.");
+      }
 
       // Gmail label sync.
       // Label failure must not turn a successful reply send
@@ -358,6 +313,7 @@ export default {
 
       return json({
         ok: true,
+        body_verified: bodyVerified,
         contact_id: contact.id,
         university_id: contact.university_id,
         coach_role: contact.coach_role,

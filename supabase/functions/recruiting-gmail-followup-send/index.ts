@@ -1,3 +1,4 @@
+import { sendTrackedFollowUp } from "../_shared/recruiting-email-tracking.ts";
 import { guardSchoolFollowUp } from "../_shared/followup-school-guard.ts";
 import { withSupabase } from "npm:@supabase/server@1";
 
@@ -44,42 +45,6 @@ function header(headers: any[], name: string) {
 function emailAddress(value: string) {
   const m = String(value || "").match(/<([^>]+)>/);
   return (m?.[1] || value || "").trim().toLowerCase();
-}
-
-function cleanHeader(value: string) {
-  return String(value || "")
-    .replace(/[\r\n]/g, " ")
-    .trim();
-}
-
-function base64FromUtf8(value: string) {
-  const bytes = new TextEncoder().encode(value);
-  let binary = "";
-
-  for (let i = 0; i < bytes.length; i += 0x8000) {
-    binary += String.fromCharCode(
-      ...bytes.subarray(i, i + 0x8000),
-    );
-  }
-
-  return btoa(binary);
-}
-
-function base64UrlFromUtf8(value: string) {
-  return base64FromUtf8(value)
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_")
-    .replace(/=+$/g, "");
-}
-
-function encodeSubject(value: string) {
-  return "=?UTF-8?B?" + base64FromUtf8(value) + "?=";
-}
-
-function addDays(date: Date, days: number) {
-  const d = new Date(date);
-  d.setUTCDate(d.getUTCDate() + days);
-  return d.toISOString().slice(0, 10);
 }
 
 async function googleAccessToken() {
@@ -134,37 +99,7 @@ async function gmailGet(path: string, token: string) {
   return data;
 }
 
-async function gmailSend(
-  raw: string,
-  threadId: string,
-  token: string,
-) {
-  const response = await fetch(
-    "https://gmail.googleapis.com/gmail/v1/users/me/messages/send",
-    {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + token,
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        raw,
-        threadId,
-      }),
-    },
-  );
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(
-      data.error?.message ||
-        `Gmail send error: ${response.status}`,
-    );
-  }
-
-  return data;
-}
 
 export default {
   fetch: withSupabase({ auth: "user" }, async (req, ctx) => {
@@ -384,46 +319,11 @@ export default {
           "References",
         );
 
-      const refs =
-        [references, messageId]
-          .filter(Boolean)
-          .join(" ")
-          .trim();
-
-      const mime = [
-        "To: " +
-          cleanHeader(contact.coach_email),
-
-        "From: " + GMAIL_ACCOUNT,
-
-        "Subject: " +
-          encodeSubject(subject),
-
-        messageId
-          ? "In-Reply-To: " +
-            cleanHeader(messageId)
-          : "",
-
-        refs
-          ? "References: " +
-            cleanHeader(refs)
-          : "",
-
-        "MIME-Version: 1.0",
-        "Content-Type: text/plain; charset=UTF-8",
-        "Content-Transfer-Encoding: 8bit",
-        "",
-        body,
-      ]
-        .filter(Boolean)
-        .join("\r\n");
-
-      const result =
-        await gmailSend(
-          base64UrlFromUtf8(mime),
-          contact.gmail_thread_id,
-          token,
-        );
+      const result = await sendTrackedFollowUp({
+        contactId:contact.id,ownerId:contact.owner_user_id,stage:followUpNumber===1?"follow_up_1":"follow_up_2",
+        body,to:contact.coach_email,subject,messageId,references,
+        threadId:contact.gmail_thread_id,token,
+      });
 
       const sentAt =
         new Date().toISOString();

@@ -50,3 +50,8 @@ entrypoint = "./functions/recruiting-gmail-followup-batch-schedule/index.ts"
 enabled = true
 verify_jwt = false
 entrypoint = "./functions/recruiting-gmail-followup-batch-worker/index.ts"
+
+[functions.recruiting-email-events]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/recruiting-email-events/index.ts"

@@ -118,6 +118,7 @@ select:focus,input:focus{outline:none;border-color:var(--accent)}
 }
 .crm-reservation-toolbar{padding:8px 16px}.crm-reservation-toolbar button{font-size:12px;padding:8px 16px}.crm-reservation-search{display:block;font-size:11px;color:#243b53}.crm-reservation-search input{width:100%;background:#fff;color:#243b53;border:1px solid #cbd5e0;border-radius:5px;padding:7px;margin-top:4px}.crm-batch-contact-list{max-height:260px;overflow:auto}
 .crm-reservation-candidate-controls{display:flex;flex-wrap:wrap;gap:12px;margin:9px 0}.crm-reservation-candidate-controls label{font-size:11px;color:#243b53}.crm-reservation-candidate-controls select{display:block;background:#fff;color:#243b53;border:1px solid #cbd5e0;border-radius:5px;padding:7px;margin-top:4px}
+.crm-email-engagement{margin:8px 10px;padding:12px;border:1px solid #cbd5e0;border-radius:8px;background:#fff;color:#243b53;font-size:12px}.crm-email-engagement summary{cursor:pointer;font-weight:700}.crm-email-engagement p{font-size:11px;color:#64748b}.crm-email-engagement #crm-email-engagement-list{max-height:350px;overflow:auto}.crm-engagement-row{padding:9px 0;border-top:1px solid #e2e8f0;font-size:11px;line-height:1.6}.crm-engagement-row strong{color:#22543d}
 .crm-batch-followup{
  display:none;
  margin:8px 10px;
@@ -2691,6 +2692,7 @@ table td:nth-child(13) .crm-btn{
  </div>
 </section>
 
+<details data-recruiting-area="crm" class="crm-email-engagement" hidden ontoggle="if(this.open)loadCrmEmailTracking()"><summary>メール反応 <span id="crm-email-engagement-counts"></span></summary><button class="crm-action-btn" type="button" onclick="loadCrmEmailTracking()">更新</button><details><summary>計測の見方</summary><p>画像取得は開封の目安です。検知なし＝未読ではありません。自分の送信済み確認・転送・プライバシー保護・自動スキャンも含まれ得ます。共有アドレスでは誰が見たかは識別できません。計測は導入後のメールのみです。</p></details><div id="crm-email-engagement-list"></div></details>
 <div id="crm-summary" class="crm-summary" data-recruiting-area="crm" hidden aria-label="連絡状況サマリー">
 
 <div class="crm-summary-group crm-summary-overview">
@@ -2880,6 +2882,7 @@ table td:nth-child(13) .crm-btn{
 </div>
 </div>
 
+<div class="crm-history"><h3>メール反応（目安）</h3><button class="crm-btn" type="button" onclick="loadCrmEmailTracking()">更新</button><div id="crm-contact-engagement"></div><small>導入後のFollow-upのみ計測します。検知なしは未読の証明ではありません。</small></div>
 <div class="crm-history"><h3>連絡履歴</h3><div id="crm-history-list" class="crm-empty">No history yet.</div></div></div></aside>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
@@ -3548,7 +3551,7 @@ async function sendAiGmailReply(){
 
 
  if(!confirm(
-  'Test ID '+contact.university_id+' の '+contact.coach_email+
+  '学校 ID '+contact.university_id+' の '+contact.coach_email+
   ' に、この返信を実際に送信します。よろしいですか？'
  )){
   return;
@@ -3557,6 +3560,7 @@ async function sendAiGmailReply(){
  btn.disabled=true;
  btn.textContent='返信送信中...';
 
+ let gmailAccepted=false;
  try{
   const {data,error}=await supabaseClient.functions.invoke(
    'recruiting-gmail-reply-send',
@@ -3577,9 +3581,13 @@ async function sendAiGmailReply(){
    throw new Error(detail||error.message||'Gmail返信送信に失敗しました。');
   }
 
+  if(data?.sent)gmailAccepted=true;
+
   if(!data?.ok){
    throw new Error(data?.error||'Gmail返信送信に失敗しました。');
   }
+
+  gmailAccepted=true;
 
   const now=new Date().toISOString();
 
@@ -3591,7 +3599,7 @@ async function sendAiGmailReply(){
     contact_count:Number(contact.contact_count||0)+1,
     follow_up_date:null,
     auto_follow_up_enabled:false,
-    next_action:'返信送信済み — Coachからの次の返信を確認',
+    next_action:data.body_verified===false?'送信本文の確認が必要 — 再送せずGmailを確認':'返信送信済み — Coachからの次の返信を確認',
     gmail_thread_id:data.gmail_thread_id||contact.gmail_thread_id
    })
    .eq('id',contact.id)
@@ -3619,7 +3627,7 @@ async function sendAiGmailReply(){
     contact_id:saved.data.id,
     event_type:'reply_sent',
     event_at:now,
-    note:'AI返信案を確認・編集後にGmail返信送信: '+subject,
+    note:'AI返信案を確認・編集後にGmail返信送信: '+subject+(data.body_verified===false?' — 本文未検証。再送せずGmailを確認':''),
     to_status:'responded',
     gmail_message_id:data.gmail_message_id||null,
     gmail_message_at:now
@@ -3634,7 +3642,7 @@ async function sendAiGmailReply(){
   await loadCrmHistory(saved.data.id);
 
   alert(
-   'Gmail返信を送信しました。\n\n'+
+   (data.body_verified===false?'Gmailは返信を受け付けましたが、本文を検証できませんでした。再送せずGmailの送信済みメールを確認してください。\n\n':'Gmail返信を送信しました。\n\n')+
    'Thread ID: '+(data.gmail_thread_id||'確認できませんでした')
   );
 
@@ -3642,11 +3650,11 @@ async function sendAiGmailReply(){
 
  }catch(err){
   console.error('AI Gmail reply send failed:',err);
-  showGmailError(err.message||'Gmail返信送信に失敗しました。');
+  showGmailError((gmailAccepted?'Gmailは送信を受け付けています。再送せずGmailとCRMを確認してください。 ':'')+(err.message||'Gmail返信送信に失敗しました。'));
  }finally{
   if(document.getElementById('gmail-modal')?.classList.contains('open')){
-   btn.disabled=false;
-   btn.textContent='Gmailで返信';
+   btn.disabled=gmailAccepted;
+   btn.textContent=gmailAccepted?'送信済み — Gmailを確認':'Gmailで返信';
   }
  }
 }
@@ -3674,6 +3682,7 @@ async function sendInitialGmailViaServer(){
  btn.disabled=true;
  btn.textContent='送信中...';
 
+ let gmailAccepted=false;
  try{
   const {data,error}=await supabaseClient.functions.invoke(
    'recruiting-gmail-initial-send',
@@ -3693,9 +3702,13 @@ async function sendInitialGmailViaServer(){
    throw new Error(detail||error.message||'Gmail送信に失敗しました。');
   }
 
+  if(data?.sent)gmailAccepted=true;
+
   if(!data?.ok||!data?.contact){
    throw new Error(data?.error||'Gmail送信に失敗しました。');
   }
+
+  gmailAccepted=true;
 
   const saved=data.contact;
 
@@ -3716,17 +3729,17 @@ async function sendInitialGmailViaServer(){
   applyFilters();
   await loadCrmHistory(saved.id);
 
-  alert('Gmailを送信しました。CRMも「送信済・返信待」に更新しました。');
+  alert(data.body_verified===false?'Gmailは送信を受け付けましたが、本文を検証できませんでした。再送せずGmailの送信済みメールを確認してください。Follow-upの自動予定は停止しています。':'Gmailを送信しました。CRMも「送信済・返信待」に更新しました。');
 
   closeGmailComposer();
 
  }catch(err){
   console.error('Server initial Gmail send failed:',err);
-  showGmailError(err.message||'Gmail送信に失敗しました。');
+  showGmailError((gmailAccepted?'Gmailは送信を受け付けています。再送せずGmailとCRMを確認してください。 ':'')+(err.message||'Gmail送信に失敗しました。'));
  }finally{
   if(document.getElementById('gmail-modal')?.classList.contains('open')){
-   btn.disabled=false;
-   btn.textContent='Gmailから送信';
+   btn.disabled=gmailAccepted;
+   btn.textContent=gmailAccepted?'送信済み — Gmailを確認':'Gmailから送信';
   }
  }
 }
@@ -4017,6 +4030,7 @@ function visibleCrmContacts(){
 function toggleTestMode(){
  if(crmBatchPreparing)return;
  testMode=!testMode;
+ document.getElementById("crm-email-engagement-counts").textContent="";document.getElementById("crm-email-engagement-list").replaceChildren();if(document.querySelector(".crm-email-engagement")?.open)loadCrmEmailTracking();
  crmReservationsOpen=false;
  const reservationSearch=document.querySelector('.crm-reservation-search input');if(reservationSearch)reservationSearch.value='';
  crmFollowUpBatchPrepared=[];
@@ -4935,6 +4949,7 @@ async function loadCrmContacts(){
   renderCrmSummary();
   renderCrmActionList();
   renderCrmFollowUpBatch();
+  if(document.querySelector('.crm-email-engagement')?.open)loadCrmEmailTracking();
   return true;
  }catch(err){crmBatchReservationReady=false;crmBatchReservationError=true;renderCrmFollowUpBatch();console.warn('CRM load unavailable:',err);return false}
 }
@@ -6223,6 +6238,7 @@ function openCrmContactDrawer(contactId){
  document.getElementById('crm-drawer').setAttribute('aria-hidden','false');
  renderCrmAiStageSuggestion(c);
  loadCrmHistory(c.id);
+ renderCrmContactEngagement();loadCrmEmailTracking();
 }
 function openCrmFromContact(contactId){openCrmContactDrawer(contactId)}
 
@@ -6659,6 +6675,35 @@ function openCrmDrawer(id,role){
  const rows=crmCoachRows(u),coach=rows.find(x=>x.role===role)||rows[0],key=crmCoachKey(coach.role,coach.name,coach.email),c=crmContacts.get(u.id+':'+key);
  if(!c){alert('CRM contact record is not available yet. Please reload the Dashboard.');return}
  openCrmContactDrawer(c.id);
+}
+let crmEmailTracking=[],crmEmailTrackingRequest=0,crmEmailTrackingError=false;
+function crmEmailStageName(stage){return {follow_up_1:'Follow-up 1',follow_up_2:'Follow-up 2',conversation_follow_up:'会話Follow-up'}[stage]||stage}
+function crmEngagementRows(rows,includeCoach=false){
+ if(!rows.length)return '<div class="crm-empty">計測対象メールはまだありません。計測開始前の送信分は対象外です。</div>';
+ return rows.map(row=>{
+  const contact=Array.from(crmContacts.values()).find(c=>String(c.id)===row.contact_id),school=universities.find(u=>Number(u.id)===Number(contact?.university_id));
+  const signal=row.first_profile_at?'Profileアクセス検知':row.first_open_at?'開封の可能性あり':'検知なし';
+  return '<div class="crm-engagement-row">'+(includeCoach?'<b>'+crmEsc(school?.name||'学校')+' · '+crmEsc(contact?.coach_name||'Coach')+'</b><br>':'')+'<b>'+crmEsc(crmEmailStageName(row.stage))+'</b> · '+crmEsc(crmDateDisplay(row.sent_at||row.created_at))+'<br><strong>'+crmEsc(row.status==='sent'?signal:'送信結果の確認が必要')+'</strong>'+(row.first_open_at?'<br>画像取得（開封の目安）：'+crmEsc(crmDateDisplay(row.first_open_at)):'')+(row.first_profile_at?'<br>Profileアクセス：'+crmEsc(crmDateDisplay(row.first_profile_at)):'')+(row.first_automated_profile_at?'<br>自動アクセスの可能性：'+crmEsc(crmDateDisplay(row.first_automated_profile_at)):'')+'</div>';
+ }).join('');
+}
+function renderCrmContactEngagement(){
+ const el=document.getElementById('crm-contact-engagement');if(!el)return;
+ el.innerHTML=crmEmailTrackingError?'<div class="crm-empty">計測情報を取得できません。更新してください。</div>':crmEngagementRows(crmEmailTracking.filter(r=>r.contact_id===String(crmCurrentContact?.id)));
+}
+async function loadCrmEmailTracking(){
+ if(!supabaseClient||!DASHBOARD_OWNER_ID)return;
+ const request=++crmEmailTrackingRequest,rows=[];
+ try{
+  for(let offset=0;;offset+=500){
+   const {data,error}=await supabaseClient.from('recruiting_email_tracking').select('id,contact_id,stage,is_test,status,sent_at,created_at,first_open_at,first_profile_at,first_automated_profile_at,gmail_message_id').eq('owner_user_id',DASHBOARD_OWNER_ID).gte('created_at',new Date(Date.now()-120*86400000).toISOString()).order('created_at',{ascending:false}).order('id').range(offset,offset+499);
+   if(error)throw error;if(request!==crmEmailTrackingRequest)return;rows.push(...(data||[]));if((data||[]).length<500)break;
+  }
+  if(request!==crmEmailTrackingRequest)return;crmEmailTracking=rows;crmEmailTrackingError=false;
+  const current=rows.filter(r=>r.is_test===testMode);
+  document.getElementById('crm-email-engagement-counts').textContent='· 開封の目安 '+current.filter(r=>r.status==='sent'&&r.first_open_at).length+'通 / Profileアクセス '+current.filter(r=>r.status==='sent'&&r.first_profile_at).length+'通';
+  document.getElementById('crm-email-engagement-list').innerHTML=crmEngagementRows(current,true);
+ }catch(error){if(request!==crmEmailTrackingRequest)return;crmEmailTrackingError=true;document.getElementById('crm-email-engagement-counts').textContent='· 取得できません';document.getElementById('crm-email-engagement-list').innerHTML='<div class="crm-empty">計測情報を取得できません。更新してください。</div>';console.warn('Email engagement unavailable');}
+ renderCrmContactEngagement();
 }
 function closeCrmDrawer(){
  if(crmCurrentContact?.id){

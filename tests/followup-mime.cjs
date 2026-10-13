@@ -5,7 +5,7 @@ const { stripTypeScriptTypes } = require('node:module');
 
 const source = stripTypeScriptTypes(fs.readFileSync('supabase/functions/_shared/followup-batch-gmail.ts', 'utf8').replace(/^export /gm, ''));
 let storedMessage;
-const context = { Deno: { env: { get: () => 'fujiakihiro8@gmail.com' } }, TextEncoder, TextDecoder, Uint8Array, btoa, atob, encodeURIComponent, unescape, fetch: async () => ({ ok: true, json: async () => storedMessage }) };
+const context = { Deno: { env: { get: () => 'fujiakihiro8@gmail.com' } }, crypto, TextEncoder, TextDecoder, Uint8Array, btoa, atob, encodeURIComponent, unescape, fetch: async () => ({ ok: true, json: async () => storedMessage }) };
 vm.createContext(context);
 vm.runInContext(source, context);
 
