@@ -2528,6 +2528,7 @@ table td:nth-child(13) .crm-btn{
 
 /* === FINAL TABLE VIEW BALANCE END === */
 
+.app-policy-links{display:flex;flex-wrap:wrap;justify-content:center;gap:7px 14px;padding:12px;font-size:11px;line-height:1.6}.app-policy-links a{color:#2b6cb0;text-decoration:underline;text-underline-offset:2px}.auth-card .app-policy-links{padding:8px 0 0}
 </style>
 </head>
 <body>
@@ -2548,6 +2549,7 @@ table td:nth-child(13) .crm-btn{
             <div id="auth-message" class="auth-message"></div>
         </form>
         <p class="auth-note">認証はSupabase Auth、RecruitingデータはRow Level Security (RLS)で保護されています。</p>
+        <nav class="app-policy-links" aria-label="アプリ情報"><a href="about.html">アプリについて</a><a href="privacy.html">プライバシーポリシー</a><a href="terms.html">利用規約</a></nav>
     </div>
 </div>
 <header><div><h1 id="dashboard-title">Akihiro Fujikawa - Transfer Dashboard v4.3</h1><div id="player-info" class="player-info">Sophomore | 170cm/68kg | Harcum College (NJCAA D1) | GPA: 3.29 | NCAA ID: 250663641</div></div><div class="header-account">
@@ -7181,5 +7183,6 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 window.addEventListener('resize',()=>{if(currentView==='map'&&map)map.invalidateSize()});
 </script>
+<footer><nav class="app-policy-links" aria-label="アプリ情報"><a href="about.html">アプリについて</a><a href="privacy.html">プライバシーポリシー</a><a href="terms.html">利用規約</a></nav></footer>
 </body>
 </html>
