@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Akihiro Recruiting Dashboardのデータの取得、利用、保存、外部サービス連携について。">
+  <meta name="description" content="個人のTransfer活動管理における情報の取扱い。">
   <meta name="referrer" content="no-referrer">
   <title>プライバシーポリシー — Akihiro Recruiting Dashboard</title>
   <link rel="stylesheet" href="public-pages.css">
@@ -11,27 +11,18 @@
 <body>
   <header class="site-header"><a href="about.html">Akihiro Recruiting Dashboard</a></header>
   <main>
-    <h1>プライバシーポリシー</h1>
-    <p class="updated">更新日：2026年10月13日</p>
-    <p>Akihiro Recruiting Dashboard（以下「本アプリ」）では、リクルーティング活動の管理に必要な情報を、以下のとおり取り扱います。</p>
-    <h2>1. 取り扱う情報と利用目的</h2>
-    <p>ログイン用のメールアドレス、選手のプロフィール、学校・コーチの連絡先、連絡履歴、返信内容、送信予約、利用者が記入したメモを、連絡状況と次のアクションの管理に利用します。</p>
-    <p>Gmailとの連携では、許可されたアカウントのメール本文、件名、宛先・差出人、送受信日時、メッセージ・スレッドID、ラベルを扱います。これらはメールの送信、返信の確認、履歴の記録、ラベルの整理、重複送信や返信後のFollow-upを防ぐために利用します。</p>
-    <h2>2. 外部サービスへの送信</h2>
-    <p>認証、CRMデータの保存、サーバー処理にはSupabase、メール連携にはGoogleのGmail API、画面の配信にはGitHub Pagesを使用します。</p>
-    <p>文章の下書き補助を利用する場合、選手・学校の情報、返信内容、連絡履歴の抜粋をGoogleのGemini APIへ送信します。Google側の処理・保存・サービス改善への利用の有無は、適用される利用プランと<a href="https://ai.google.dev/gemini-api/terms" rel="noreferrer">Gemini APIの利用規約</a>に従います。</p>
-    <p>本アプリの管理者は、Gmailのデータを販売したり、広告配信の目的で利用したりしません。利用者が指定した宛先へのメール送信と、機能の提供に必要な外部サービスでの処理を行います。</p>
-    <h2>3. 保存とアクセス</h2>
-    <p>連絡記録や予約内容はSupabaseに保存します。CRMへのアクセスは認証と所有者単位のアクセス制御で制限します。Googleの認証情報はサーバー側の秘密設定で管理します。</p>
-    <p>ブラウザにはログイン状態や表示設定、一部の設定のバックアップを保存します。外部サービスは、提供や保護のためにアクセスログ等を保持する場合があります。</p>
-    <h2>4. メール反応の計測</h2>
-    <p>Follow-upの反応計測を利用する場合、メールに画像とProfileへの計測リンクを含め、画像取得・リンクアクセスの日時等を記録します。自動スキャンや画像の非表示などの影響があるため、実際に読まれたことの証明にはなりません。計測用のCRMデータにはIPアドレスやUser-Agentを保存しません。</p>
-    <h2>5. 利用停止と削除</h2>
-    <p>Googleアカウントの<a href="https://myaccount.google.com/connections" rel="noreferrer">接続設定</a>からGmailへのアクセス許可を取り消せます。取消後も、既に保存したCRMの記録は残ります。</p>
-    <p>情報の訂正・削除やアプリの利用停止は、管理者へご連絡ください。保存情報はリクルーティング管理に必要な期間保持し、不要になった情報を管理者が削除します。外部サービスのログやバックアップには、それぞれの保存・削除条件が適用されます。</p>
-    <h2>6. お問い合わせと変更</h2>
-    <p>データの取扱いを変更する場合は本ページを更新し、重要な変更を利用者へ案内します。お問い合わせ先：<a href="mailto:fujiakihiro8@gmail.com">fujiakihiro8@gmail.com</a>（Akihiro Recruiting Dashboard 管理者）。</p>
+    <h1>プライバシーポリシー / <span lang="en">Privacy Policy</span></h1>
+    <p class="updated">更新日：2026年10月13日 / <span lang="en">Updated: October 13, 2026</span></p>
+    <p>許可されたGmailのメール本文・宛先・送受信履歴等を、Akihiro個人のTransfer活動管理に利用し、必要な記録をSupabaseに保存します。</p>
+    <p class="translation" lang="en">Authorized Gmail email content, addresses and correspondence records are used for Akihiro’s personal transfer management. Necessary records are stored in Supabase.</p>
+    <p>下書き補助を利用する場合、返信内容などの関連情報をGoogleのGemini APIへ送信します。外部サービスの取扱いには各利用規約が適用されます。管理者はデータを販売・広告目的に利用しません。</p>
+    <p class="translation" lang="en">When draft assistance is used, relevant information, including reply content, is sent to Google’s Gemini API. External providers handle data under their applicable terms. The administrator does not sell data or use it for advertising.</p>
+    <p>反応計測を利用する場合、メール内の画像取得・Profileアクセスの日時等を記録します。これは実際に読まれたことの証明ではありません。</p>
+    <p class="translation" lang="en">When engagement measurement is used, image requests and Profile link access times are recorded. These signals do not prove that an email was read.</p>
+    <p>記録は活動管理に必要な期間保持します。Gmail連携は<a href="https://myaccount.google.com/connections" rel="noreferrer">Googleアカウント</a>で取り消せます。保存済み記録の訂正・削除は管理者へご連絡ください。</p>
+    <p class="translation" lang="en">Records are retained as needed for transfer management. Gmail access can be revoked in your <a href="https://myaccount.google.com/connections" rel="noreferrer">Google Account</a>. Contact the administrator to correct or delete stored records.</p>
+    <p class="contact">お問い合わせ / <span lang="en">Contact:</span> <a href="mailto:fujiakihiro8@gmail.com">fujiakihiro8@gmail.com</a></p>
   </main>
-  <footer><nav aria-label="アプリ情報"><a href="about.html">アプリについて</a><a href="privacy.html" aria-current="page">プライバシーポリシー</a><a href="terms.html">利用規約</a></nav></footer>
+  <footer><nav aria-label="アプリ情報"><a href="about.html">アプリについて / <span lang="en">About</span></a><a href="privacy.html" aria-current="page">プライバシー / <span lang="en">Privacy</span></a><a href="terms.html">利用規約 / <span lang="en">Terms</span></a></nav></footer>
 </body>
 </html>
