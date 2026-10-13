@@ -1,4 +1,4 @@
-import { batchMode, schoolInMode, validCoachEmail, TEST_RECIPIENT } from "../_shared/followup-batch-policy.ts";
+import { distinctFollowUpRecipients, batchMode, schoolInMode, validCoachEmail, TEST_RECIPIENT } from "../_shared/followup-batch-policy.ts";
 import { googleAccessToken, gmailGetThread, latestOutbound, getHeader, anyThreadReply, outboundIncludesRecipient } from "../_shared/followup-batch-gmail.ts";
 import { withSupabase } from "npm:@supabase/server@1";
 import { localScheduleToUtc, timezoneForCoordinates } from "../_shared/followup-batch-timezone.ts";
@@ -24,7 +24,7 @@ export default { fetch: withSupabase({auth:"user"},async(req,ctx)=>{
     if(error)throw error;
     if(!contacts||contacts.length!==ids.length)return json({ok:false,error:"TEST contact unavailable"},400);
     const {data:pending,error:pendingError}=await ctx.supabase.from("recruiting_followup_batch_items")
-      .select("contact_id,status").eq("owner_user_id",owner).in("contact_id",ids)
+      .select("contact_id,status,university_id,recipient_email").eq("owner_user_id",owner).in("university_id",Array.from(new Set(contacts.map((c:any)=>Number(c.university_id)))))
       .in("status",["scheduled","processing","send_unknown"]);
     if(pendingError)throw pendingError;
     const reservedContacts=new Map((pending||[]).map((item:any)=>[String(item.contact_id),String(item.status)]));
@@ -40,10 +40,12 @@ export default { fetch: withSupabase({auth:"user"},async(req,ctx)=>{
     const items:any[]=[],skipped:any[]=[];
     let token:string|undefined;
     const threads=new Map<string,any>();
-    for(const c of contacts){
+    const uniqueContacts=distinctFollowUpRecipients(contacts,isTest);
+    for(const duplicate of contacts.filter((c:any)=>!uniqueContacts.some((u:any)=>u.id===c.id)))skipped.push({contact_id:duplicate.id,school_name:(sm.get(Number(duplicate.university_id)) as any)?.name,reason:"Shared school email: one reservation only."});
+    for(const c of uniqueContacts){
       const school:any=sm.get(Number(c.university_id));
       const skip=(reason:string)=>skipped.push({contact_id:c.id,school_name:school?.name||String(c.university_id),reason});
-      const reservationStatus=reservedContacts.get(String(c.id));
+      const reservationStatus=reservedContacts.get(String(c.id))||(!isTest?(pending||[]).find((i:any)=>Number(i.university_id)===Number(c.university_id)&&String(i.recipient_email).trim().toLowerCase()===String(c.coach_email).trim().toLowerCase())?.status:null);
       if(reservationStatus){skip(reservationStatus==="send_unknown"?"送信結果の確認が必要なため、再予約できません。":reservationStatus==="processing"?"送信処理中のため、再予約できません。":"このCoachは送信予約済みです。予約一覧で確認してください。");continue}
       if(!schoolInMode(school,mode)){skip("現在のモードの対象校ではありません。");continue}
       if(repliedSchools.has(Number(c.university_id))){skip("同校のコーチから返信があるため、学校全体のFollow-upを停止しています。");continue}

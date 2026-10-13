@@ -1,4 +1,4 @@
-import { sendTrackedFollowUp } from "../_shared/recruiting-email-tracking.ts";
+import { sendTrackedFollowUp, finalizeTrackedRegularFollowUp } from "../_shared/recruiting-email-tracking.ts";
 import { guardSchoolFollowUp } from "../_shared/followup-school-guard.ts";
 import { withSupabase } from "npm:@supabase/server@1";
 
@@ -341,90 +341,19 @@ export default {
           ? "no_response"
           : "contacted";
 
-      const { data: updated, error: updateError } =
-        await supabase
-          .from("recruiting_contacts")
-          .update({
-            contact_status: newStatus,
-            last_contact_at: sentAt,
-            contact_count:
-              Number(contact.contact_count || 0) + 1,
-            follow_up_count:
-              followUpNumber,
-            last_follow_up_at:
-              sentAt,
-            follow_up_date:
-              nextFollowUpDate,
-            auto_follow_up_enabled:
-              !exhausted,
-            next_action:
-              exhausted
-                ? "2回フォローアップ済み・返信なし"
-                : "次回フォローアップメール送信",
-            gmail_thread_id:
-              result.threadId ||
-              contact.gmail_thread_id,
-          })
-          .eq("id", contact.id)
-          .select("*")
-          .single();
-
-      if (updateError || !updated) {
-        throw new Error(
-          "Gmail sent, but CRM update failed: " +
-            (
-              updateError?.message ||
-              "unknown error"
-            ),
-        );
-      }
-
-      const history =
-        await supabase
-          .from(
-            "recruiting_contact_history",
-          )
-          .insert({
-            owner_user_id:
-              updated.owner_user_id,
-
-            contact_id:
-              updated.id,
-
-            event_type:
-              "follow_up_sent",
-
-            event_at:
-              sentAt,
-
-            note:
-              `Follow-up #${followUpNumber} Gmail送信: ${subject}`,
-
-            to_status:
-              newStatus,
-
-            gmail_message_id:
-              result.id || null,
-
-            gmail_message_at:
-              sentAt,
-
-            research_ids:
-              researchIds,
-          });
-
-      if (history.error) {
-        console.warn(
-          "Manual Follow-up history insert failed:",
-          history.error,
-        );
-      }
+      const updatedGroup=await finalizeTrackedRegularFollowUp(result.tracking_id,{
+        follow_up_date:nextFollowUpDate,auto_follow_up_enabled:!exhausted,
+        next_action:exhausted?"2回フォローアップ済み・返信なし":"次回フォローアップメール送信",
+        gmail_thread_id:result.threadId||contact.gmail_thread_id
+      },{note:`Follow-up #${followUpNumber} Gmail送信: ${subject}`,research_ids:researchIds});
+      const updated=updatedGroup.find(c=>c.id===contact.id);
+      if(!updated)throw new Error("Verified send recorded without the requested contact; inspect Gmail without resending.");
 
       // Gmail label sync.
       // #1 => Waiting Coach
       // #2 => No Response
       try {
-        await syncContactThreadLabels(supabase,updated);
+        for(const shared of updatedGroup)await syncContactThreadLabels(supabase,shared);
       } catch (labelError) {
         console.warn(
           "Follow-up Gmail label sync failed:",

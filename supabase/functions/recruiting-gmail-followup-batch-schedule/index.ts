@@ -1,4 +1,4 @@
-import { batchMode, schoolInMode, validCoachEmail, TEST_RECIPIENT } from "../_shared/followup-batch-policy.ts";
+import { distinctFollowUpRecipients, batchMode, schoolInMode, validCoachEmail, TEST_RECIPIENT } from "../_shared/followup-batch-policy.ts";
 import { withSupabase } from "npm:@supabase/server@1";
 import { localScheduleToUtc, timezoneForCoordinates } from "../_shared/followup-batch-timezone.ts";
 function json(body:unknown,status=200){return new Response(JSON.stringify(body),{status,headers:{
@@ -26,11 +26,12 @@ export default {fetch:withSupabase({auth:"user"},async(req,ctx)=>{
    .eq("owner_user_id",owner).in("id",ids);
   if(ce)throw ce;
   if(!contacts||contacts.length!==items.length)throw new Error("A test CRM contact changed or is unavailable.");
+  if(distinctFollowUpRecipients(contacts,isTest).length!==contacts.length)throw new Error("Same school email must have only one reservation.");
   const {data:pending,error:pendingError}=await ctx.supabase.from("recruiting_followup_batch_items")
-    .select("contact_id").eq("owner_user_id",owner).in("contact_id",ids)
+    .select("contact_id,status,university_id,recipient_email").eq("owner_user_id",owner).in("university_id",Array.from(new Set(contacts.map((c:any)=>Number(c.university_id)))))
     .in("status",["scheduled","processing","send_unknown"]);
   if(pendingError)throw pendingError;
-  if(pending?.length)throw new Error("選択したCoachに予約済み・送信処理中・要確認のメールがあります。予約状況を更新してください。");
+  if((pending||[]).some((i:any)=>ids.includes(i.contact_id)||(!isTest&&contacts.some((c:any)=>Number(c.university_id)===Number(i.university_id)&&String(c.coach_email).trim().toLowerCase()===String(i.recipient_email).trim().toLowerCase()))))throw new Error("選択したCoachに予約済み・送信処理中・要確認のメールがあります。予約状況を更新してください。");
   const schoolIds=Array.from(new Set(contacts.map((c:any)=>Number(c.university_id))));
   const {data:schools,error:se}=await ctx.supabase.from("recruiting_universities").select("id,name,latitude,longitude,is_test").in("id",schoolIds);
   if(se)throw se;

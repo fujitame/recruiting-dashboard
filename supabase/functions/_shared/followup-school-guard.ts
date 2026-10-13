@@ -29,7 +29,8 @@ export async function guardSchoolFollowUp(db:any, contact:any, token:string) {
   if(currentError)throw currentError;
   const live=(current||[]).find((c:any)=>c.id===contact.id);
   if(!live||!followUpEligible(live)||(current||[]).some(hasReply)||Number(live.follow_up_count)!==Number(contact.follow_up_count)||live.gmail_thread_id!==contact.gmail_thread_id||String(live.coach_email).toLowerCase()!==String(contact.coach_email).toLowerCase())return {blocked:true,reason:'CRM changed while checking Gmail.',thread:null};
-  const {data:pending,error:pendingError}=await db.from('recruiting_followup_batch_items').select('id').eq('contact_id',contact.id).in('status',['scheduled','processing','send_unknown']);
+  const sharedIds=(siblings||[]).filter((c:any)=>String(c.coach_email||'').trim().toLowerCase()===String(contact.coach_email||'').trim().toLowerCase()).map((c:any)=>c.id);
+  const {data:pending,error:pendingError}=await db.from('recruiting_followup_batch_items').select('id').in('contact_id',sharedIds).in('status',['scheduled','processing','send_unknown']);
   if(pendingError)throw pendingError;
   if(pending?.length)return {blocked:true,reason:'A reservation already owns this Follow-up.',thread:null};
   return {blocked:false,reason:'',thread};

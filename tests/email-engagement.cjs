@@ -2,7 +2,7 @@ const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/st
 const gmail=stripTypeScriptTypes(fs.readFileSync('supabase/functions/_shared/followup-batch-gmail.ts','utf8').replace(/^export /gm,''));
 const tracking=stripTypeScriptTypes(fs.readFileSync('supabase/functions/_shared/recruiting-email-tracking.ts','utf8').replace(/^import .*;\n/gm,'').replace(/^export /gm,''));
 let writes=[],savedMessage,raw;
-const db={from:()=>{let payload;const q={insert:p=>{payload=p;writes.push({kind:'insert',payload:p});return q;},update:p=>{writes.push({kind:'update',payload:p});return q;},select:()=>q,eq:()=>q,single:async()=>({data:{id:'tracking'},error:null}),then:fn=>Promise.resolve({error:null}).then(fn)};return q;}};
+const db={from:table=>{let payload;const q={insert:p=>{payload=p;writes.push({kind:'insert',payload:p});return q;},update:p=>{writes.push({kind:'update',payload:p});return q;},select:()=>q,eq:()=>q,single:async()=>({data:table==='recruiting_contacts'?{university_id:1,coach_email:'coach@example.com'}:{id:'tracking'},error:null}),then:fn=>Promise.resolve({error:null}).then(fn)};return q;}};
 const c={crypto,TextEncoder,TextDecoder,Uint8Array,btoa,atob,encodeURIComponent,unescape,Date,createClient:()=>db,Deno:{env:{get:k=>({SUPABASE_URL:'https://fixture.supabase.co',SUPABASE_SERVICE_ROLE_KEY:'stub',FOLLOWUP_BATCH_WORKER_SECRET:'fixture-signing-secret'})[k]}},fetch:async(url,options)=>{if(url.endsWith('/messages/send')){raw=JSON.parse(options.body).raw;return{ok:true,json:async()=>({id:'sent',threadId:'thread'})};}return{ok:true,json:async()=>savedMessage};}};
 vm.createContext(c);vm.runInContext(gmail+'\n'+tracking,c);
 (async()=>{
