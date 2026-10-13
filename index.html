@@ -2993,7 +2993,7 @@ async function personalizeInitialGmailDraft(){
    const note=document.getElementById('gmail-note');
    if(note){
     note.textContent=
-     'verified Researchがないため、標準の初回メール文案を使用します。送信前に内容を確認してください。';
+     String(data.draft.rationale_ja||'学校に関する確認済み情報がないため、標準文案で進めます。まずはProfileと実績が伝わる内容を確認しましょう。');
    }
    gmailInitialPersonalized=true;
    return;
@@ -3049,7 +3049,7 @@ async function personalizeInitialGmailDraft(){
   const note=document.getElementById('gmail-note');
   if(note){
    note.textContent=
-    'Personalizationを1文追加しました。内容を必ず確認・編集してから送信してください。'+
+    (String(data.draft.rationale_ja||'').trim()||'学校に合わせた1文を追加しました。')+' 内容を確認・編集してから送信してください。'+
     (researchUsed?' Research ID: '+researchUsed:'');
   }
 
@@ -3158,7 +3158,7 @@ async function personalizeFollowUpGmailDraft(){
    const note=document.getElementById('gmail-note');
    if(note){
     note.textContent=
-     '未使用のverified Researchがないため、標準のFollow-up #1文案を使用します。';
+     '新たに使える確認済み情報がないため、今回は標準文案で進めます。相手の状況はまだ分からないので、短く丁寧に確認しましょう。';
    }
 
    return;
@@ -3213,7 +3213,7 @@ async function personalizeFollowUpGmailDraft(){
 
   if(note){
    note.textContent=
-    'Follow-up #1に未使用ResearchからPersonalizationを1文追加しました。内容を必ず確認・編集してから送信してください。'+
+    (String(data.draft.rationale_ja||'').trim()||'学校に合わせたFollow-up #1の文案です。')+' 内容を確認・編集してから送信してください。'+
     (gmailFollowUpResearchIds.length
       ? ' Research ID: '+gmailFollowUpResearchIds.join(', ')
       : '');

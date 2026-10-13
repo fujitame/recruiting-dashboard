@@ -1,3 +1,4 @@
+import { RECRUITING_ADVICE_STYLE } from "../_shared/recruiting-advice-style.ts";
 import { withSupabase } from "npm:@supabase/server@1";
 
 const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
@@ -254,13 +255,14 @@ export default {
           draft: {
             personalization_sentence: "",
             rationale_ja:
-              "未使用のverified Researchがないため、Follow-up Personalization文は生成していません。",
+              "新たに使える確認済み情報がないため、今回は標準文案で進めます。相手の状況はまだ分からないので、短く丁寧に確認しましょう。",
             research_used: [],
           },
         });
       }
 
-      const prompt = `
+      const prompt = `${RECRUITING_ADVICE_STYLE}
+
 You are helping a college soccer student-athlete personalize Follow-up #1 of a recruiting email.
 
 Create ONE short, natural English personalization sentence from Akihiro Fujikawa to the coach.

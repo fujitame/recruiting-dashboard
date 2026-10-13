@@ -1,3 +1,4 @@
+import { RECRUITING_ADVICE_STYLE } from "../_shared/recruiting-advice-style.ts";
 import { withSupabase } from "npm:@supabase/server@1";
 
 const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
@@ -169,13 +170,14 @@ export default {
           draft: {
             personalization_sentence: "",
             rationale_ja:
-              "利用可能なverified Researchがないため、Personalization文は生成していません。",
+              "学校に関する確認済み情報がないため、標準文案で進めます。まずはProfileと実績が伝わる内容を確認しましょう。",
             research_used: [],
           },
         });
       }
 
-      const prompt = `
+      const prompt = `${RECRUITING_ADVICE_STYLE}
+
 You are helping a college soccer student-athlete personalize an initial recruiting email.
 
 Create ONE short, natural English personalization sentence for an initial recruiting email from Akihiro Fujikawa to the coach.
