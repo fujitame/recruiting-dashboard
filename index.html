@@ -4682,7 +4682,18 @@ function crmCanBatchFollowUp(c){
    (other.contact_status==='responded'||String(other.coach_response||'').trim()));
 }
 function crmCanReserveFollowUp(c){
- return crmBatchReservationReady&&crmCanBatchFollowUp(c)&&!crmBatchPendingReservations.has(String(c.id));
+ return crmBatchReservationReady&&crmCanBatchFollowUp(c)&&crmReservationRepresentative(c)?.id===c.id&&!crmPendingReservationFor(c);
+}
+function crmSharedRecipientContacts(c){
+ return Array.from(crmContacts.values()).filter(other=>Number(other.university_id)===Number(c.university_id)&&String(other.coach_email||'').trim().toLowerCase()===String(c.coach_email||'').trim().toLowerCase());
+}
+function crmReservationRepresentative(c){
+ if(isTestUniversityId(c?.university_id))return c;
+ return crmSharedRecipientContacts(c).filter(other=>crmCanBatchFollowUp(other)&&other.coach_email&&other.gmail_thread_id).sort((a,b)=>(a.coach_role==='head_coach'?0:1)-(b.coach_role==='head_coach'?0:1)||String(a.id).localeCompare(String(b.id)))[0];
+}
+function crmPendingReservationFor(c){
+ if(!c)return null;
+ return crmBatchPendingReservations.get(String(c.id))||(!isTestUniversityId(c.university_id)?Array.from(crmBatchPendingReservations.values()).find(i=>i.mode==='production'&&Number(i.university_id)===Number(c.university_id)&&String(i.recipient_email||'').trim().toLowerCase()===String(c.coach_email||'').trim().toLowerCase()):null);
 }
 function crmReservationStatusLabel(status){
  return {scheduled:'予約済み',processing:'送信処理中',send_unknown:'送信結果の確認が必要'}[status]||status;
@@ -4739,7 +4750,7 @@ function renderCrmFollowUpBatch(){
  document.getElementById('crm-reservation-title').textContent=testMode?'送信予約 · TEST（900–902）':'送信予約 · Follow-up #1 / #2';
  document.getElementById('crm-reservation-description').textContent=testMode?
   'Test Mode：送信先はfujitame@gmail.comに固定します。初回送信済みは#1、#1送信済みは#2の対象です。同校の誰かに返信があれば全員対象外です。各校の現地日時と本文を確認して予約してください。':
-  '各Coachのメールアドレスへ、初回メールと同じスレッドで送信します。初回送信済みは#1、#1送信済みは#2の対象です。同校HC・ACをそれぞれ選択できます。同校の誰かに返信があれば全員対象外です。各校の現地日時と本文を確認して予約してください。';
+  '各Coachのメールアドレスへ、初回メールと同じスレッドで送信します。初回送信済みは#1、#1送信済みは#2の対象です。HC・ACの宛先が別ならそれぞれ選択できます。共有宛先には1通だけ送り、両CoachのFollow-up状態を更新します。同校の誰かに返信があれば全員対象外です。各校の現地日時と本文を確認して予約してください。';
  const selected=new Set(crmBatchSelectedIds());
  const allContacts=Array.from(crmContacts.values()).filter(c=>crmBatchInCurrentMode(c)&&crmCanReserveFollowUp(c)&&(testMode||(c.coach_email&&c.gmail_thread_id)));
  const stage=document.getElementById('crm-batch-stage-filter')?.value||'all';
@@ -4782,7 +4793,7 @@ async function loadCrmFollowUpBatchReservations(){
   // Fetch every active reservation, including batches older than the ten history rows.
   for(let offset=0;;offset+=500){
    const {data,error}=await supabaseClient.from('recruiting_followup_batch_items')
-    .select('id,batch_id,contact_id,mode,expected_follow_up_count,scheduled_at,school_timezone,status')
+    .select('id,batch_id,contact_id,university_id,recipient_email,mode,expected_follow_up_count,scheduled_at,school_timezone,status')
     .eq('owner_user_id',DASHBOARD_OWNER_ID).in('status',['scheduled','processing','send_unknown'])
     .order('id').range(offset,offset+499);
    if(error)throw error;
@@ -6164,9 +6175,10 @@ function updateCrmNextActions(c){
 
  if(crmBatchInCurrentMode(c)&&['contacted','follow_up_due'].includes(status)){
   if(!crmBatchReservationReady){note.textContent='予約状況を確認できません。送信予約の「予約状況を更新」を押してください。';return;}
-  const reserved=crmBatchPendingReservations.get(String(c.id));
+  const reserved=crmPendingReservationFor(c);
   if(reserved){note.textContent='Follow-up #'+(Number(reserved.expected_follow_up_count)+1)+' · '+crmReservationStatusLabel(reserved.status)+' — '+crmBatchFormatLocal(reserved.scheduled_at,reserved.school_timezone)+'。詳細CRMの「送信予約」で確認できます。';return;}
   if(!testMode&&(!hasEmail||!hasThread)){note.textContent='CoachのEmailまたは初回メールのGmail Thread IDがないため、送信予約できません。';return;}
+  if(crmCanBatchFollowUp(c)&&!isTestUniversityId(c.university_id)&&crmSharedRecipientContacts(c).length>1&&crmReservationRepresentative(c)?.id!==c.id){note.textContent='共有メールアドレスのため、代表Coachから1通だけ予約します。送信後は両CoachのFollow-up状態を更新します。';return;}
   note.textContent=crmCanBatchFollowUp(c)?'次はFollow-up #'+(followCount+1)+(c?.follow_up_date?'（予定日 '+c.follow_up_date+'）':'（予定日未設定）')+'です。詳細CRMの「送信予約」から選択・確認して予約できます。':'同校のCoachから返信があるため、送信予約の対象外です。個別CRMで対応してください。';
   return;
  }
@@ -6690,14 +6702,14 @@ function crmEngagementRows(rows,includeCoach=false){
 }
 function renderCrmContactEngagement(){
  const el=document.getElementById('crm-contact-engagement');if(!el)return;
- el.innerHTML=crmEmailTrackingError?'<div class="crm-empty">計測情報を取得できません。更新してください。</div>':crmEngagementRows(crmEmailTracking.filter(r=>r.contact_id===String(crmCurrentContact?.id)));
+ el.innerHTML=crmEmailTrackingError?'<div class="crm-empty">計測情報を取得できません。更新してください。</div>':crmEngagementRows(crmEmailTracking.filter(r=>r.contact_id===String(crmCurrentContact?.id)||(!r.is_test&&Number(r.university_id)===Number(crmCurrentContact?.university_id)&&String(r.recipient_email||'').trim().toLowerCase()===String(crmCurrentContact?.coach_email||'').trim().toLowerCase())));
 }
 async function loadCrmEmailTracking(){
  if(!supabaseClient||!DASHBOARD_OWNER_ID)return;
  const request=++crmEmailTrackingRequest,rows=[];
  try{
   for(let offset=0;;offset+=500){
-   const {data,error}=await supabaseClient.from('recruiting_email_tracking').select('id,contact_id,stage,is_test,status,sent_at,created_at,first_open_at,first_profile_at,first_automated_profile_at,gmail_message_id').eq('owner_user_id',DASHBOARD_OWNER_ID).gte('created_at',new Date(Date.now()-120*86400000).toISOString()).order('created_at',{ascending:false}).order('id').range(offset,offset+499);
+   const {data,error}=await supabaseClient.from('recruiting_email_tracking').select('id,contact_id,university_id,recipient_email,stage,is_test,status,sent_at,created_at,first_open_at,first_profile_at,first_automated_profile_at,gmail_message_id').eq('owner_user_id',DASHBOARD_OWNER_ID).gte('created_at',new Date(Date.now()-120*86400000).toISOString()).order('created_at',{ascending:false}).order('id').range(offset,offset+499);
    if(error)throw error;if(request!==crmEmailTrackingRequest)return;rows.push(...(data||[]));if((data||[]).length<500)break;
   }
   if(request!==crmEmailTrackingRequest)return;crmEmailTracking=rows;crmEmailTrackingError=false;

@@ -21,3 +21,13 @@ export function followUpEligible(contact: any): boolean {
 export function hasReply(contact: any): boolean {
   return contact?.contact_status === "responded" || !!String(contact?.coach_response || "").trim();
 }
+export function followUpRecipientKey(contact:any):string {
+ return Number(contact.university_id)+":"+String(contact.coach_email||contact.recipient_email||"").trim().toLowerCase();
+}
+export function distinctFollowUpRecipients(contacts:any[],isTest:boolean):any[] {
+ if(isTest)return contacts;
+ const found=new Set<string>();
+ return [...contacts].sort((a,b)=>(a.coach_role==='head_coach'?0:1)-(b.coach_role==='head_coach'?0:1)||String(a.id).localeCompare(String(b.id))).filter(c=>{
+  const key=followUpRecipientKey(c);if(found.has(key))return false;found.add(key);return true;
+ });
+}

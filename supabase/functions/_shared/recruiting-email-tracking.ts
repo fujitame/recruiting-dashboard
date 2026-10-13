@@ -26,10 +26,18 @@ export async function prepareEmailTracking(args: {contactId:string;ownerId:strin
  // Keep the preview text as approved. Substitute only the known fixed Profile URL at transport time.
  const plain=args.body.replace(/https:\/\/fujitame\.github\.io\/profile\/?(?=$|[\s)])/g,()=>clickUrl);
  const html=trackingHtml(plain,base+"?event=open&t="+token);
- const row={owner_user_id:args.ownerId,contact_id:args.contactId,reservation_item_id:args.reservationItemId||null,token_hash:tokenHash,stage:args.stage,is_test:args.isTest===true};
+ const {data:contact,error:contactError}=await admin.from("recruiting_contacts").select("university_id,coach_email").eq("id",args.contactId).eq("owner_user_id",args.ownerId).single();
+ if(contactError||!contact)throw new Error("Tracking contact unavailable.");
+ const row={owner_user_id:args.ownerId,contact_id:args.contactId,university_id:contact.university_id,recipient_email:String(contact.coach_email||'').trim().toLowerCase(),reservation_item_id:args.reservationItemId||null,token_hash:tokenHash,stage:args.stage,is_test:args.isTest===true};
  const {data,error}=await admin.from("recruiting_email_tracking").insert(row).select("id").single();
  if(error)throw new Error("Tracking preparation failed; an uncertain earlier send must be checked before retrying: "+error.message);
  return {id:data.id,plain,html};
+}
+
+export async function finalizeTrackedRegularFollowUp(trackingId:string,contactPayload:any,historyPayload:any):Promise<any[]> {
+ const {data,error}=await admin.rpc("finalize_tracked_recruiting_followup",{p_tracking_id:trackingId,p_contact:contactPayload,p_history:historyPayload});
+ if(error||!data?.length)throw new Error("Gmail送信済みですがCRM記録を確定できません。再送せず確認してください。 "+(error?.message||"No contacts updated"));
+ return data;
 }
 export async function sendTrackedFollowUp(args: {contactId:string;ownerId:string;stage:string;body:string;to:string;subject:string;messageId:string;references:string;threadId:string|null;token:string;reservationItemId?:string;isTest?:boolean}): Promise<any> {
  const tracking=await prepareEmailTracking(args);
