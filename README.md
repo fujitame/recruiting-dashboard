@@ -18,6 +18,7 @@ Akihiroのリクルーティング活動を管理する、運用中のWeb CRMで
 
 - [現行構成と整理記録](supabase/operations/system-inventory.md)
 - [送信予約のステージと安全性](supabase/operations/followup-safety.md)
+- [やり取りを踏まえたAI Follow-up](supabase/operations/contextual-ai-followup.md)
 - [予約WorkerのCron設定](supabase/operations/followup-batch-worker-cron.sql)
 
 ## 保守方針

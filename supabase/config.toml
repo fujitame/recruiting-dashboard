@@ -1,3 +1,9 @@
+[functions.recruiting-ai-conversation-followup-draft]
+enabled = true
+# withSupabase authenticates the user; contact lookup also checks owner_user_id.
+verify_jwt = false
+entrypoint = "./functions/recruiting-ai-conversation-followup-draft/index.ts"
+
 [functions.recruiting-ai-reply-draft]
 enabled = true
 verify_jwt = false

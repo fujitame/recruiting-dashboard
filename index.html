@@ -2853,10 +2853,10 @@ table td:nth-child(13) .crm-btn{
   </div>
  </section>
  <section class="crm-action-section">
-  <h3>返信後のConversation Follow-up</h3>
+  <h3>AI Follow-up（返信後）</h3>
   <p>こちらから返信した後、7日間Coachから新しい返信がない場合に、同じGmailスレッドで作成します。</p>
   <div class="crm-next-actions-buttons">
-   <button id="crm-conversation-followup-btn" class="gmail-btn" type="button" onclick="crmCurrentContact&&openConversationFollowUpComposer(crmCurrentContact.id)">Conversation Follow-upを作成</button>
+   <button id="crm-conversation-followup-btn" class="gmail-btn" type="button" onclick="crmCurrentContact&&openConversationFollowUpComposer(crmCurrentContact.id)">✨ AI Follow-upを作成</button>
   </div>
  </section>
 </div>
@@ -2894,6 +2894,16 @@ let gmailInitialPersonalized=false;
 let gmailInitialResearchIds=[];
 let gmailFollowUpPersonalized=false;
 let gmailFollowUpResearchIds=[];
+let gmailConversationRequest=0;
+let gmailConversationSnapshot=null;
+function resetConversationDraft(){
+ gmailConversationRequest++;
+ gmailConversationSnapshot=null;
+ const subject=document.getElementById('gmail-subject');
+ if(subject)subject.readOnly=false;
+ const btn=document.getElementById('gmail-send-btn');
+ if(btn){btn.disabled=false;btn.textContent='Gmailから送信'}
+}
 
 function showGmailError(message){const e=document.getElementById('gmail-error');if(!e)return;e.textContent=message||'';e.classList.toggle('show',Boolean(message))}
 
@@ -3090,6 +3100,8 @@ async function personalizeFollowUpGmailDraft(){
   return;
  }
 
+ const request=gmailConversationRequest;
+ const active=()=>request===gmailConversationRequest&&gmailSendMode==='followup'&&gmailCurrentContactId===contact.id;
  const btn=document.getElementById('gmail-personalize-btn');
 
  if(btn){
@@ -3109,6 +3121,7 @@ async function personalizeFollowUpGmailDraft(){
    }
   );
 
+  if(!active())return;
   if(error){
    let detail='';
    try{
@@ -3139,7 +3152,7 @@ async function personalizeFollowUpGmailDraft(){
 
    if(btn){
     btn.disabled=true;
-    btn.textContent='No unused Research';
+    btn.textContent='標準文案を使用';
    }
 
    const note=document.getElementById('gmail-note');
@@ -3193,7 +3206,7 @@ async function personalizeFollowUpGmailDraft(){
 
   if(btn){
    btn.disabled=true;
-   btn.textContent='✓ Personalized';
+   btn.textContent='✓ AI Follow-up 作成済み';
   }
 
   const note=document.getElementById('gmail-note');
@@ -3207,6 +3220,7 @@ async function personalizeFollowUpGmailDraft(){
   }
 
  }catch(err){
+  if(!active())return;
   console.error(
    'Follow-up personalization failed:',
    err
@@ -3218,9 +3232,9 @@ async function personalizeFollowUpGmailDraft(){
   );
 
  }finally{
-  if(btn&&!gmailFollowUpPersonalized){
+  if(active()&&btn&&!gmailFollowUpPersonalized){
    btn.disabled=false;
-   btn.textContent='✨ Personalize';
+   btn.textContent='✨ AI Follow-up';
   }
  }
 }
@@ -3255,117 +3269,63 @@ function getFollowUpDraft(u,contact){
  return {to:contact.coach_email||'',subject,body,followNo};
 }
 
-function getConversationFollowUpDraft(u,contact){
- const coach=contact.coach_name||'Coach';
- const subject=getGmailDraft(u,contact.coach_role).subject;
-
- const body=
-  'Dear Coach '+getCoachLastName(coach)+',\n\n'+
-  'I wanted to follow up on my previous message and see if there have been any updates.\n\n'+
-  'I remain very interested in '+u.name+
-  ' and would appreciate any feedback when you have a chance.\n\n'+
-  getRecruitingProfileInvitation()+'\n\n'+
-  'Thank you again for your time.\n\n'+
-  'Best regards,\n\n'+
-  CURRENT_PLAYER.name+'\n'+
-  CURRENT_PLAYER.school+" Men's Soccer "+CURRENT_PLAYER.jersey+'\n'+
-  'Email: '+CURRENT_PLAYER.email+'\n'+
-  'Phone: '+CURRENT_PLAYER.phone+'\n'+
-  'Instagram: @'+CURRENT_PLAYER.instagram;
-
- return {
-  to:contact.coach_email||'',
-  subject,
-  body
- };
-}
-
-function openConversationFollowUpComposer(contactId){
- gmailTestMode=false;
- gmailSendMode='conversation_followup';
-
- gmailInitialPersonalized=false;
- gmailInitialResearchIds=[];
- gmailFollowUpPersonalized=false;
- gmailFollowUpResearchIds=[];
-
+async function openConversationFollowUpComposer(contactId){
+ const contact=Array.from(crmContacts.values()).find(x=>x.id===contactId);
+ if(!contact?.coach_email||!contact.gmail_thread_id||contact.contact_status!=='responded'){
+  alert('返信ありのContactのメールアドレスとGmailスレッドを確認してください。');return;
+ }
+ if(crmConversationState(contact.id).state!=='conversation_follow_up_due'){
+  alert('こちらの返信後7日経過し、新しいCoach返信がない場合に作成できます。');return;
+ }
+ const u=universities.find(x=>Number(x.id)===Number(contact.university_id));
+ if(!u){alert('大学データが見つかりません。');return}
+ resetConversationDraft();
+ const request=gmailConversationRequest;
+ gmailTestMode=false;gmailSendMode='conversation_followup';gmailCurrentContactId=contact.id;
+ gmailInitialPersonalized=false;gmailInitialResearchIds=[];
+ gmailFollowUpPersonalized=false;gmailFollowUpResearchIds=[];
  const personalizeBtn=document.getElementById('gmail-personalize-btn');
  if(personalizeBtn)personalizeBtn.hidden=true;
-
- const contact=Array.from(crmContacts.values())
-  .find(x=>x.id===contactId);
-
- if(!contact){
-  alert('CRM Contactが見つかりません。Dashboardを再読み込みしてください。');
-  return;
- }
-
- if(!contact.coach_email){
-  alert('このコーチのメールアドレスは登録されていません。');
-  return;
- }
-
- if(!contact.gmail_thread_id){
-  alert('Gmail Thread IDがないためConversation Follow-upを作成できません。');
-  return;
- }
-
- if(contact.contact_status!=='responded'){
-  alert('Conversation Follow-upは返信ありのContactのみ対象です。');
-  return;
- }
-
- const conversation=crmConversationState(contact.id);
-
- if(conversation.state!=='conversation_follow_up_due'){
-  alert('このContactはまだConversation Follow-up期限ではありません。');
-  return;
- }
-
- const u=universities.find(
-  x=>Number(x.id)===Number(contact.university_id)
- );
-
- if(!u){
-  alert('大学データが見つかりません。');
-  return;
- }
-
- const d=getConversationFollowUpDraft(u,contact);
-
- gmailCurrentContactId=contact.id;
-
- const roleLabel=
-  contact.coach_role==='head_coach'
-   ?'HC'
-   :contact.coach_role==='assistant_coach'
-    ?'AC'
-    :'Other';
-
- document.getElementById('gmail-title').textContent=
-  u.name+' — Conversation Follow-up';
-
- document.getElementById('gmail-subtitle').textContent=
-  roleLabel+': '+contact.coach_name+' → '+d.to;
-
+ const modal=document.getElementById('gmail-modal');
  const note=document.getElementById('gmail-note');
-
- if(note){
-  note.textContent=
-   'Conversation Follow-upの文案です。送信前に必ず内容を確認・編集してください。自動送信は行いません。';
+ const sendBtn=document.getElementById('gmail-send-btn');
+ document.getElementById('gmail-title').textContent=u.name+' — AI Follow-up（返信後）';
+ document.getElementById('gmail-subtitle').textContent=(contact.coach_role==='head_coach'?'HC':'AC')+': '+contact.coach_name+' → '+contact.coach_email;
+ document.getElementById('gmail-to').value=contact.coach_email;
+ document.getElementById('gmail-subject').value='';
+ document.getElementById('gmail-subject').readOnly=true;
+ document.getElementById('gmail-body').value='';
+ note.textContent='Gmailのやり取りを確認して、AI Follow-upを作成しています...';
+ sendBtn.disabled=true;sendBtn.textContent='文案作成中...';showGmailError('');
+ modal.classList.add('open');modal.setAttribute('aria-hidden','false');
+ const active=()=>request===gmailConversationRequest&&gmailCurrentContactId===contact.id&&gmailSendMode==='conversation_followup'&&modal.classList.contains('open');
+ try{
+  const {data,error}=await supabaseClient.functions.invoke('recruiting-ai-conversation-followup-draft',{body:{contact_id:contact.id}});
+  if(!active())return;
+  if(error){
+   let detail='';try{const result=await error.context?.clone?.().json?.();detail=result?.error||''}catch{}
+   throw new Error(detail||error.message||'AI Follow-upを作成できませんでした。');
+  }
+  if(!data?.ok||!data.draft?.body?.trim()||!data.draft?.subject?.trim()||!data.conversation_snapshot){
+   throw new Error(data?.error||'AI文案を確認できません。');
+  }
+  gmailConversationSnapshot=data.conversation_snapshot;
+  document.getElementById('gmail-subject').value=data.draft.subject;
+  document.getElementById('gmail-body').value=data.draft.body;
+  const checks=Array.isArray(data.draft.checks_ja)?data.draft.checks_ja.filter(x=>typeof x==='string'):[];
+  note.textContent=(data.draft.rationale_ja||'Gmailのやり取りに基づく文案です。')+
+   (checks.length?' 送信前の確認：'+checks.join(' / '):'')+' 内容を確認・編集してから送信してください。';
+  sendBtn.disabled=false;sendBtn.textContent='GmailでFollow-upを送信';
+ }catch(error){
+  if(!active())return;
+  showGmailError(error.message||'AI Follow-upを作成できませんでした。');
+  note.textContent='CRMとGmailの最新状況を確認し、閉じてから再度作成してください。';
+  sendBtn.disabled=true;sendBtn.textContent='文案未作成';
  }
-
- document.getElementById('gmail-to').value=d.to;
- document.getElementById('gmail-subject').value=d.subject;
- document.getElementById('gmail-body').value=d.body;
-
- document.getElementById('gmail-error').textContent='';
-
- document.getElementById('gmail-modal').classList.add('open');
- document.getElementById('gmail-modal').setAttribute('aria-hidden','false');
 }
 
 function openFollowUpComposer(contactId){
+ resetConversationDraft();
  gmailTestMode=false;
  gmailSendMode='followup';
  gmailInitialPersonalized=false;
@@ -3392,7 +3352,7 @@ function openFollowUpComposer(contactId){
  if(personalizeBtn){
   personalizeBtn.hidden=d.followNo!==1;
   personalizeBtn.disabled=false;
-  personalizeBtn.textContent='✨ Personalize';
+  personalizeBtn.textContent='✨ AI Follow-up';
  }
 
  gmailCurrentContactId=contact.id;
@@ -3409,6 +3369,7 @@ function openFollowUpComposer(contactId){
 }
 
 function openGmailComposer(id,role){
+ resetConversationDraft();
  gmailTestMode=false;
  gmailSendMode='initial';
  gmailInitialPersonalized=false;
@@ -3430,6 +3391,7 @@ function openGmailComposer(id,role){
 function openGmailComposerFromCrm(){if(!crmCurrentContact)return;openGmailComposer(crmCurrentContact.university_id,crmCurrentContact.coach_role)}
 
 function openAiReplyInGmailComposer(){
+ resetConversationDraft();
  const c=crmCurrentContact;
 
  if(c?.id){
@@ -3510,6 +3472,7 @@ function openAiReplyInGmailComposer(){
 }
 
 function closeGmailComposer(){
+ resetConversationDraft();
  document.getElementById('gmail-modal')?.classList.remove('open');
  gmailCurrentContactId=null;
  gmailTestMode=false;
@@ -3855,6 +3818,7 @@ async function sendConversationFollowUpGmailViaServer(){
   .find(x=>x.id===gmailCurrentContactId);
 
  showGmailError('');
+ if(!gmailConversationSnapshot){showGmailError('先にAI Follow-upを作成してください。');return}
 
  if(!contact){
   showGmailError('CRM Contactを確認できません。');
@@ -3870,13 +3834,13 @@ async function sendConversationFollowUpGmailViaServer(){
 
  if(conversation.state!=='conversation_follow_up_due'){
   showGmailError(
-   'Conversation Follow-up期限ではありません。Coachから新しい返信がないか確認してください。'
+   'AI Follow-up（返信後）期限ではありません。Coachから新しい返信がないか確認してください。'
   );
   return;
  }
 
  if(!confirm(
-  'Conversation Follow-upを送信します。\n\n'+
+  'AI Follow-up（返信後）を送信します。\n\n'+
   '送信先: '+contact.coach_email+'\n\n'+
   '通常のFollow-up回数には加算されません。\n\n'+
   'よろしいですか？'
@@ -3893,6 +3857,7 @@ async function sendConversationFollowUpGmailViaServer(){
    {
     body:{
      contact_id:contact.id,
+     conversation_snapshot:gmailConversationSnapshot,
      subject,
      body,
      test_force_due:
@@ -3912,14 +3877,14 @@ async function sendConversationFollowUpGmailViaServer(){
    throw new Error(
     detail||
     error.message||
-    'Conversation Follow-up送信に失敗しました。'
+    'AI Follow-up（返信後）送信に失敗しました。'
    );
   }
 
   if(!data?.ok||!data?.contact){
    throw new Error(
     data?.error||
-    'Conversation Follow-up送信に失敗しました。'
+    'AI Follow-up（返信後）送信に失敗しました。'
    );
   }
 
@@ -3947,7 +3912,7 @@ async function sendConversationFollowUpGmailViaServer(){
   }
 
   alert(
-   'Conversation Follow-upを送信しました。\n'+
+   'AI Follow-up（返信後）を送信しました。\n'+
    'CRM Statusは「返信有・対応中」のままです。\n'+
    '通常のFollow-up回数には加算していません。'
   );
@@ -3956,13 +3921,13 @@ async function sendConversationFollowUpGmailViaServer(){
 
  }catch(err){
   console.error(
-   'Conversation Follow-up Gmail send failed:',
+   'AI Follow-up（返信後） Gmail send failed:',
    err
   );
 
   showGmailError(
    err.message||
-   'Conversation Follow-up送信に失敗しました。'
+   'AI Follow-up（返信後）送信に失敗しました。'
   );
 
  }finally{
@@ -6120,7 +6085,7 @@ function updateCrmNextActions(c){
 
    note.textContent=
     '返信送信済み — Coachからの次の返信を待っています。'+
-    ' Conversation Follow-up判定：'+dueLabel;
+    ' AI Follow-up（返信後）判定：'+dueLabel;
    return;
   }
 
@@ -6128,22 +6093,22 @@ function updateCrmNextActions(c){
   if(conversation.state==='conversation_follow_up_due'){
    if(!hasEmail){
     note.textContent=
-     'Conversation Follow-up期限ですが、CoachのEmailが未登録です。';
+     'AI Follow-up（返信後）期限ですが、CoachのEmailが未登録です。';
     return;
    }
 
    if(!hasThread){
     note.textContent=
-     'Conversation Follow-up期限ですが、Gmail Thread IDがありません。';
+     'AI Follow-up（返信後）期限ですが、Gmail Thread IDがありません。';
     return;
    }
 
    conversationFollowBtn.style.display='inline-block';
    conversationFollowBtn.disabled=false;
-   conversationFollowBtn.textContent='Conversation Follow-up作成';
+   conversationFollowBtn.textContent='✨ AI Follow-upを作成';
 
    note.textContent=
-    'Conversation Follow-upが必要です。'+
+    'AI Follow-up（返信後）が必要です。'+
     'こちらの返信後7日間、Coachから新しい返信がありません。';
    return;
   }
@@ -6558,7 +6523,7 @@ function renderCrmActionList(){
   );
 
  // -------------------------------------------------------
- // Conversation Follow-up
+ // AI Follow-up（返信後）
  // Coach返信 → こちらから返信済み → 7日間Coach返信なし
  // -------------------------------------------------------
  const conversationDue=active
@@ -6592,7 +6557,7 @@ function renderCrmActionList(){
    :(c.follow_up_date||'予定日未設定');
 
   const note=isConversation
-   ?'Conversation Follow-up必要'
+   ?'AI Follow-up（返信後）必要'
    :(c.coach_response||c.next_action||'次のアクション未設定');
 
   const conversationFollowUpButton=
@@ -6601,7 +6566,7 @@ function renderCrmActionList(){
    c.gmail_thread_id
     ?'<button class="crm-action-btn" type="button" onclick="openConversationFollowUpComposer(\''+
       crmEsc(c.id)+
-      '\')">Conversation Follow-up作成</button>'
+      '\')">✨ AI Follow-upを作成</button>'
     :'';
 
   const testBatchButton=!isConversation&&crmBatchInCurrentMode(c)&&crmCanReserveFollowUp(c)&&(testMode||(c.coach_email&&c.gmail_thread_id));
@@ -6646,7 +6611,7 @@ function renderCrmActionList(){
   '</div>';
  };
 
- // 通常Follow-up + Conversation Follow-upを
+ // 通常Follow-up + AI Follow-up（返信後）を
  // 「今日・期限超過」にまとめて表示
  const dueHtml=[
   ...due.map(r=>item(r,'regular')),
@@ -6691,7 +6656,7 @@ function openCrmDrawer(id,role){
  openCrmContactDrawer(c.id);
 }
 let crmEmailTracking=[],crmEmailTrackingRequest=0,crmEmailTrackingError=false;
-function crmEmailStageName(stage){return {follow_up_1:'Follow-up 1',follow_up_2:'Follow-up 2',conversation_follow_up:'会話Follow-up'}[stage]||stage}
+function crmEmailStageName(stage){return {follow_up_1:'Follow-up 1',follow_up_2:'Follow-up 2',conversation_follow_up:'AI Follow-up（返信後）'}[stage]||stage}
 function crmEngagementRows(rows,includeCoach=false){
  if(!rows.length)return '<div class="crm-empty">計測対象メールはまだありません。計測開始前の送信分は対象外です。</div>';
  return rows.map(row=>{
