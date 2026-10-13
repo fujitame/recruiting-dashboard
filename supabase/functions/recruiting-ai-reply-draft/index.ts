@@ -1,3 +1,4 @@
+import { RECRUITING_ADVICE_STYLE } from "../_shared/recruiting-advice-style.ts";
 import { withSupabase } from "npm:@supabase/server@1";
 
 const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
@@ -174,7 +175,8 @@ export default {
       note: safeText(h.note, 1200),
     }));
 
-    const prompt = `
+    const prompt = `${RECRUITING_ADVICE_STYLE}
+
 You are assisting a college soccer student-athlete with recruiting email replies.
 
 Write a concise, natural English reply from Akihiro Fujikawa to the coach.
