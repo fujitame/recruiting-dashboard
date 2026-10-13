@@ -134,6 +134,7 @@ export function buildReplyRaw(args: {
   to: string;
   subject: string;
   body: string;
+  htmlBody?: string;
   messageId: string;
   references: string;
 }): string {
@@ -147,6 +148,7 @@ export function buildReplyRaw(args: {
   const encodedSubject = "=?UTF-8?B?" + btoa(unescape(encodeURIComponent(args.subject))) + "?=";
   const clean = (value: string) => value.replace(/[\r\n]/g, " ").trim();
   const references = [args.references, args.messageId].filter(Boolean).join(" ").trim();
+  const boundary="recruiting_"+crypto.randomUUID().replace(/-/g,"");
   const headers = [
     "To: " + clean(args.to),
     "From: " + GMAIL_ACCOUNT,
@@ -154,11 +156,14 @@ export function buildReplyRaw(args: {
     args.messageId ? "In-Reply-To: " + clean(args.messageId) : "",
     references ? "References: " + clean(references) : "",
     "MIME-Version: 1.0",
-    "Content-Type: text/plain; charset=UTF-8",
-    "Content-Transfer-Encoding: base64",
+    args.htmlBody?'Content-Type: multipart/alternative; boundary="'+boundary+'"':"Content-Type: text/plain; charset=UTF-8",
+    args.htmlBody?"":"Content-Transfer-Encoding: base64",
   ].filter(Boolean).join("\r\n");
   // RFC 5322 requires this blank line. Filter only optional headers, never the separator.
-  const mime = headers + "\r\n\r\n" + (encodedBody.match(/.{1,76}/g) || []).join("\r\n") + "\r\n";
+  const wrap=(s:string)=>(s.match(/.{1,76}/g)||[]).join("\r\n");
+  const part=(type:string,data:string)=>"--"+boundary+"\r\nContent-Type: "+type+"; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n"+wrap(data)+"\r\n";
+  const content=args.htmlBody?part("text/plain",encodedBody)+part("text/html",btoa(unescape(encodeURIComponent(args.htmlBody))))+"--"+boundary+"--\r\n":wrap(encodedBody)+"\r\n";
+  const mime = headers + "\r\n\r\n" + content;
   return btoa(unescape(encodeURIComponent(mime)))
     .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
 }

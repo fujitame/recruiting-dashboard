@@ -1,7 +1,8 @@
 import { schoolInMode, validCoachEmail, followUpEligible, hasReply, TEST_RECIPIENT, TEST_BANNER } from "../_shared/followup-batch-policy.ts";
 import { syncContactThreadLabels } from "../_shared/recruiting-gmail-labels.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
-import { buildReplyRaw, gmailSend, googleAccessToken, gmailGetThread, latestOutbound, getHeader, anyThreadReply, outboundIncludesRecipient, plainTextMessage, verifyGmailSentBody } from "../_shared/followup-batch-gmail.ts";
+import { googleAccessToken, gmailGetThread, latestOutbound, getHeader, anyThreadReply, outboundIncludesRecipient, plainTextMessage } from "../_shared/followup-batch-gmail.ts";
+import { sendTrackedFollowUp } from "../_shared/recruiting-email-tracking.ts";
 import { localDateAfterSend } from "../_shared/followup-batch-timezone.ts";
 
 const supabase=createClient(Deno.env.get("SUPABASE_URL")!,Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,{auth:{persistSession:false}});
@@ -22,6 +23,11 @@ async function syncReservationLabels(item:any) {
 Deno.serve(async req=>{
   if(req.method==="OPTIONS")return new Response("ok");
   if(req.method!=="POST"||!secret||req.headers.get("x-recruiting-batch-worker-secret")!==secret)return json({ok:false,error:"Unauthorized"},401);
+  // Expired OAuth must leave unsent reservations scheduled, ready to resume after reauthorization.
+  const {data:due,error:dueError}=await supabase.from('recruiting_followup_batch_items').select('id').eq('status','scheduled').lte('scheduled_at',new Date().toISOString()).limit(1);
+  if(dueError)return json({ok:false,error:dueError.message},500);
+  let sendToken:string|null=null;
+  if(due?.length){try{sendToken=await googleAccessToken()}catch{return json({ok:false,error:'Gmail再認証が必要です。未送信の予約は保持しています。'},503)}}
   const {data:items,error}=await supabase.rpc("claim_due_recruiting_followup_batch_items",{p_limit:10});
   if(error)return json({ok:false,error:error.message},500);
   let sent=0,skipped=0,unknown=0,labelPending=0;
@@ -57,7 +63,7 @@ Deno.serve(async req=>{
       if((schoolContacts||[]).some((c:any)=>c.contact_status==="responded"||String(c.coach_response||"").trim())){
         await finish(item,"skipped_changed","A coach at this test school has replied; school-wide Follow-up is blocked.");skipped++;continue;
       }
-      const token=await googleAccessToken();
+      const token=sendToken||await googleAccessToken();
       let threadId:string|null=null,messageId='',references='';
       if(!isTest){
         const threads=new Map<string,any>();let foundReply=false;
@@ -94,14 +100,10 @@ Deno.serve(async req=>{
       if(!current||!followUpEligible(current)||(currentSchool||[]).some(hasReply)||Number(current.follow_up_count)!==Number(item.expected_follow_up_count)||(!isTest&&(String(current.coach_email||'').trim().toLowerCase()!==item.recipient_email||current.gmail_thread_id!==threadId))){
         await finish(item,'skipped_changed','CRM changed before sending.');skipped++;continue;
       }
-      const raw=buildReplyRaw({to:item.recipient_email,subject:item.subject,body:item.body,messageId,references});
       let result:any;
-      try{result=await gmailSend(raw,threadId,token)}
-      catch(e){await finish(item,"send_unknown","Test inbox send outcome is uncertain; verify Gmail manually before retrying.");unknown++;continue}
+      try{result=await sendTrackedFollowUp({contactId:contact.id,ownerId:item.owner_user_id,stage:Number(item.expected_follow_up_count)===0?'follow_up_1':'follow_up_2',body:item.body,to:item.recipient_email,subject:item.subject,messageId,references,threadId,token,reservationItemId:item.id,isTest});}
+      catch(e){await finish(item,'send_unknown','EMAIL_BODY_UNVERIFIED: '+(e instanceof Error?e.message:String(e)),{...((e as any)?.gmailMessageId?{gmail_message_id:(e as any).gmailMessageId,sent_at:new Date().toISOString()}:{})});unknown++;continue}
       const sentAt=new Date().toISOString();
-      // A successful send API response alone does not prove that Gmail retained the body.
-      try{await verifyGmailSentBody(result.id,item.body,token)}
-      catch(e){await finish(item,'send_unknown','EMAIL_BODY_UNVERIFIED: '+(e instanceof Error?e.message:String(e)),{sent_at:sentAt,gmail_message_id:result.id});unknown++;continue}
       const nextCount=Number(contact.follow_up_count||0)+1;
       const nextDate=nextCount===1?localDateAfterSend(sentAt,item.school_timezone,7):null;
       const {data:updated,error:updateError}=await supabase.from("recruiting_contacts").update({

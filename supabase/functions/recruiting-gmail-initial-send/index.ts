@@ -1,4 +1,5 @@
 import { withSupabase } from "npm:@supabase/server@1";
+import { buildReplyRaw, verifyGmailSentBody } from "../_shared/followup-batch-gmail.ts";
 
 import {
   syncContactThreadLabels,
@@ -29,36 +30,6 @@ function json(body: unknown, status = 200) {
         "authorization, x-client-info, apikey, content-type",
     },
   });
-}
-
-function cleanHeader(value: string): string {
-  return String(value || "")
-    .replace(/[\r\n]/g, " ")
-    .trim();
-}
-
-function base64FromUtf8(value: string): string {
-  const bytes = new TextEncoder().encode(value);
-  let binary = "";
-
-  for (let i = 0; i < bytes.length; i += 0x8000) {
-    binary += String.fromCharCode(
-      ...bytes.subarray(i, i + 0x8000),
-    );
-  }
-
-  return btoa(binary);
-}
-
-function base64UrlFromUtf8(value: string): string {
-  return base64FromUtf8(value)
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_")
-    .replace(/=+$/g, "");
-}
-
-function encodeSubject(value: string): string {
-  return "=?UTF-8?B?" + base64FromUtf8(value) + "?=";
 }
 
 async function googleAccessToken(): Promise<string> {
@@ -106,7 +77,7 @@ async function gmailSend(raw: string, token: string) {
 
   const data = await response.json();
 
-  if (!response.ok) {
+  if (!response.ok || !data.id) {
     throw new Error(
       data.error?.message ||
         `Gmail send error: ${response.status}`,
@@ -126,6 +97,7 @@ export default {
       return json({ ok: false, error: "POST required" }, 405);
     }
 
+    let acceptedMessage: any = null;
     try {
       const supabase = ctx.supabase;
       const requestBody = await req.json();
@@ -179,23 +151,25 @@ export default {
         );
       }
 
-      const mime = [
-        "To: " + cleanHeader(contact.coach_email),
-        "From: " + GMAIL_ACCOUNT,
-        "Subject: " + encodeSubject(subject),
-        "MIME-Version: 1.0",
-        "Content-Type: text/plain; charset=UTF-8",
-        "Content-Transfer-Encoding: 8bit",
-        "",
-        body,
-      ].join("\r\n");
+      const raw = buildReplyRaw({ to: contact.coach_email, subject, body, messageId: "", references: "" });
 
       const token = await googleAccessToken();
 
       const result = await gmailSend(
-        base64UrlFromUtf8(mime),
+        raw,
         token,
       );
+
+      acceptedMessage = result;
+
+      // Record an accepted send even if readback fails; never suggest a blind retry.
+      let bodyVerified = false;
+      try {
+        await verifyGmailSentBody(result.id, body, token);
+        bodyVerified = true;
+      } catch {
+        console.warn("Initial email accepted by Gmail; sent body requires manual verification.");
+      }
 
       const now = new Date();
       const sentAt = now.toISOString();
@@ -213,9 +187,9 @@ export default {
             contact_count: Number(contact.contact_count || 0) + 1,
             follow_up_count: 0,
             last_follow_up_at: null,
-            follow_up_date: follow,
-            auto_follow_up_enabled: true,
-            next_action: "次回フォローアップメール送信",
+            follow_up_date: bodyVerified ? follow : null,
+            auto_follow_up_enabled: bodyVerified,
+            next_action: bodyVerified ? "次回フォローアップメール送信" : "送信本文の確認が必要 — 再送せずGmailを確認",
             gmail_thread_id:
               result.threadId ||
               contact.gmail_thread_id ||
@@ -239,7 +213,7 @@ export default {
           contact_id: updated.id,
           event_type: "contact_logged",
           event_at: sentAt,
-          note: "Gmail送信: " + subject,
+          note: "Gmail送信: " + subject + (bodyVerified ? "" : " — 本文未検証。再送せずGmailを確認"),
           to_status: "contacted",
           gmail_message_id: result.id || null,
           gmail_message_at: sentAt,
@@ -272,6 +246,7 @@ export default {
 
       return json({
         ok: true,
+        body_verified: bodyVerified,
         contact: updated,
         gmail_message_id: result.id || null,
         gmail_thread_id:
@@ -288,12 +263,15 @@ export default {
       return json(
         {
           ok: false,
+          sent: !!acceptedMessage?.id,
+          gmail_message_id: acceptedMessage?.id || null,
+          gmail_thread_id: acceptedMessage?.threadId || null,
           error:
             error instanceof Error
               ? error.message
               : String(error),
         },
-        500,
+        acceptedMessage?.id ? 200 : 500,
       );
     }
   }),
