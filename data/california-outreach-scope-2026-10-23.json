@@ -1,0 +1,306 @@
+{
+  "checked_at": "2026-10-23",
+  "counts": {
+    "california_d1": 22,
+    "california_d2": 20,
+    "previously_contacted_schools": 19,
+    "reserved_schools": 23,
+    "reserved_emails": 40
+  },
+  "schools": [
+    {
+      "id": 1,
+      "name": "UC Irvine",
+      "division": "NCAA D1",
+      "result": "previously_contacted",
+      "reason": "Existing CRM send history; do not repeat initial outreach"
+    },
+    {
+      "id": 2,
+      "name": "UC Riverside",
+      "division": "NCAA D1",
+      "result": "previously_contacted",
+      "reason": "Existing CRM send history; do not repeat initial outreach"
+    },
+    {
+      "id": 3,
+      "name": "UC San Diego",
+      "division": "NCAA D1",
+      "result": "previously_contacted",
+      "reason": "Existing CRM send history; do not repeat initial outreach"
+    },
+    {
+      "id": 4,
+      "name": "UC Santa Barbara",
+      "division": "NCAA D1",
+      "result": "previously_contacted",
+      "reason": "Existing CRM send history; do not repeat initial outreach"
+    },
+    {
+      "id": 5,
+      "name": "Cal State Fullerton",
+      "division": "NCAA D1",
+      "result": "previously_contacted",
+      "reason": "Existing CRM send history; do not repeat initial outreach"
+    },
+    {
+      "id": 6,
+      "name": "Cal State Northridge (CSUN)",
+      "division": "NCAA D1",
+      "result": "previously_contacted",
+      "reason": "Existing CRM send history; do not repeat initial outreach"
+    },
+    {
+      "id": 7,
+      "name": "Sacramento State",
+      "division": "NCAA D1",
+      "result": "reserved",
+      "reason": "Supplemental first contact; five additional distinct emails"
+    },
+    {
+      "id": 8,
+      "name": "Loyola Marymount (LMU)",
+      "division": "NCAA D1",
+      "result": "reserved",
+      "reason": "Supplemental first contact; five additional distinct emails"
+    },
+    {
+      "id": 9,
+      "name": "University of San Francisco",
+      "division": "NCAA D1",
+      "result": "previously_contacted",
+      "reason": "Existing CRM send history; do not repeat initial outreach"
+    },
+    {
+      "id": 10,
+      "name": "Saint Mary's College",
+      "division": "NCAA D1",
+      "result": "previously_contacted",
+      "reason": "Existing CRM send history; do not repeat initial outreach"
+    },
+    {
+      "id": 11,
+      "name": "University of the Pacific",
+      "division": "NCAA D1",
+      "result": "previously_contacted",
+      "reason": "Existing CRM send history; do not repeat initial outreach"
+    },
+    {
+      "id": 12,
+      "name": "California Baptist (CBU)",
+      "division": "NCAA D1",
+      "result": "previously_contacted",
+      "reason": "Existing CRM send history; do not repeat initial outreach"
+    },
+    {
+      "id": 13,
+      "name": "San Jose State",
+      "division": "NCAA D1",
+      "result": "previously_contacted",
+      "reason": "Existing CRM send history; do not repeat initial outreach"
+    },
+    {
+      "id": 14,
+      "name": "Cal State Los Angeles (CSULA)",
+      "division": "NCAA D2",
+      "result": "previously_contacted",
+      "reason": "Existing CRM send history; do not repeat initial outreach"
+    },
+    {
+      "id": 15,
+      "name": "Concordia Univ. Irvine (CUI)",
+      "division": "NCAA D2",
+      "result": "previously_contacted",
+      "reason": "Existing CRM send history; do not repeat initial outreach"
+    },
+    {
+      "id": 16,
+      "name": "Cal Poly Pomona",
+      "division": "NCAA D2",
+      "result": "previously_contacted",
+      "reason": "Existing CRM send history; do not repeat initial outreach"
+    },
+    {
+      "id": 17,
+      "name": "Cal State Dominguez Hills",
+      "division": "NCAA D2",
+      "result": "previously_contacted",
+      "reason": "Existing CRM send history; do not repeat initial outreach"
+    },
+    {
+      "id": 18,
+      "name": "Cal State San Marcos",
+      "division": "NCAA D2",
+      "result": "previously_contacted",
+      "reason": "Existing CRM send history; do not repeat initial outreach"
+    },
+    {
+      "id": 20,
+      "name": "Biola University",
+      "division": "NCAA D2",
+      "result": "previously_contacted",
+      "reason": "Existing CRM send history; do not repeat initial outreach"
+    },
+    {
+      "id": 21,
+      "name": "Westmont College",
+      "division": "NCAA D2",
+      "result": "previously_contacted",
+      "reason": "Existing CRM send history; do not repeat initial outreach"
+    },
+    {
+      "id": 32,
+      "name": "Vanguard University",
+      "division": "NCAA D2",
+      "result": "previously_contacted",
+      "reason": "Existing CRM send history; do not repeat initial outreach"
+    },
+    {
+      "id": 52,
+      "name": "UCLA",
+      "division": "NCAA D1",
+      "result": "reserved",
+      "reason": "Supplemental first contact; five additional distinct emails"
+    },
+    {
+      "id": 107,
+      "name": "CSU San Bernardino",
+      "division": "NCAA D2",
+      "result": "reserved",
+      "reason": "Original 35 reservations"
+    },
+    {
+      "id": 108,
+      "name": "CSU Monterey Bay",
+      "division": "NCAA D2",
+      "result": "reserved",
+      "reason": "Original 35 reservations"
+    },
+    {
+      "id": 109,
+      "name": "CSU East Bay",
+      "division": "NCAA D2",
+      "result": "reserved",
+      "reason": "Original 35 reservations"
+    },
+    {
+      "id": 110,
+      "name": "Chico State",
+      "division": "NCAA D2",
+      "result": "reserved",
+      "reason": "Original 35 reservations"
+    },
+    {
+      "id": 111,
+      "name": "Cal Poly Humboldt",
+      "division": "NCAA D2",
+      "result": "reserved",
+      "reason": "Original 35 reservations"
+    },
+    {
+      "id": 112,
+      "name": "Stanislaus State",
+      "division": "NCAA D2",
+      "result": "reserved",
+      "reason": "Original 35 reservations"
+    },
+    {
+      "id": 113,
+      "name": "Menlo College",
+      "division": "NCAA D2",
+      "result": "reserved",
+      "reason": "Original 35 reservations"
+    },
+    {
+      "id": 114,
+      "name": "Fresno Pacific",
+      "division": "NCAA D2",
+      "result": "reserved",
+      "reason": "Original 35 reservations"
+    },
+    {
+      "id": 115,
+      "name": "UC Merced",
+      "division": "NCAA D2",
+      "result": "reserved",
+      "reason": "Original 35 reservations"
+    },
+    {
+      "id": 116,
+      "name": "Point Loma Nazarene",
+      "division": "NCAA D2",
+      "result": "reserved",
+      "reason": "Original 35 reservations"
+    },
+    {
+      "id": 117,
+      "name": "Dominican University of California",
+      "division": "NCAA D2",
+      "result": "reserved",
+      "reason": "Original 35 reservations"
+    },
+    {
+      "id": 118,
+      "name": "Jessup University",
+      "division": "NCAA D2",
+      "result": "reserved",
+      "reason": "Original 35 reservations"
+    },
+    {
+      "id": 119,
+      "name": "UC Berkeley",
+      "division": "NCAA D1",
+      "result": "reserved",
+      "reason": "Original 35 reservations"
+    },
+    {
+      "id": 120,
+      "name": "Stanford",
+      "division": "NCAA D1",
+      "result": "reserved",
+      "reason": "Original 35 reservations"
+    },
+    {
+      "id": 121,
+      "name": "UC Davis",
+      "division": "NCAA D1",
+      "result": "reserved",
+      "reason": "Original 35 reservations"
+    },
+    {
+      "id": 122,
+      "name": "Cal Poly San Luis Obispo",
+      "division": "NCAA D1",
+      "result": "reserved",
+      "reason": "Original 35 reservations"
+    },
+    {
+      "id": 123,
+      "name": "CSU Bakersfield",
+      "division": "NCAA D1",
+      "result": "reserved",
+      "reason": "Original 35 reservations"
+    },
+    {
+      "id": 124,
+      "name": "Santa Clara",
+      "division": "NCAA D1",
+      "result": "reserved",
+      "reason": "Original 35 reservations"
+    },
+    {
+      "id": 125,
+      "name": "University of San Diego",
+      "division": "NCAA D1",
+      "result": "reserved",
+      "reason": "Original 35 reservations"
+    },
+    {
+      "id": 126,
+      "name": "San Diego State",
+      "division": "NCAA D1",
+      "result": "reserved",
+      "reason": "Original 35 reservations"
+    }
+  ]
+}
