@@ -1,0 +1,411 @@
+{
+  "handoff_id": "uc-csu-roster-2026-november-reapproach",
+  "received_date": "2026-10-23",
+  "target_entry_term": "Fall 2027",
+  "intended_contact_window": "Mid-November 2026 onward; refresh all evidence before use",
+  "scope": "25 UC/CSU existing programs; Sonoma State tracked separately as a future relaunch",
+  "authority": "Research handoff only, no send or schedule authorization",
+  "definitions": {
+    "senior_or_above": "Roster class-label aggregation supplied by the user. Not graduation, departure, exhausted eligibility, vacancy or scholarship count.",
+    "defenders": "Includes centre backs and mixed positions; not an Akihiro-specific wide-role vacancy estimate."
+  },
+  "roster_counts": [
+    {
+      "university_id": 1,
+      "name": "UC Irvine",
+      "season": 2026,
+      "reported_senior_or_above": 10,
+      "reported_senior_or_above_df": 4,
+      "source_url": "https://ucirvinesports.com/sports/mens-soccer/roster",
+      "provenance": "User-supplied official-roster aggregation, received 2026-10-23; not independently recounted in this handoff.",
+      "independent_count_verification": "pending",
+      "recruiting_openings": "unconfirmed",
+      "df_specific_wide_roles": "unconfirmed"
+    },
+    {
+      "university_id": 2,
+      "name": "UC Riverside",
+      "season": 2026,
+      "reported_senior_or_above": 6,
+      "reported_senior_or_above_df": 2,
+      "source_url": "https://gohighlanders.com/sports/mens-soccer/roster",
+      "provenance": "User-supplied official-roster aggregation, received 2026-10-23; not independently recounted in this handoff.",
+      "independent_count_verification": "pending",
+      "recruiting_openings": "unconfirmed",
+      "df_specific_wide_roles": "unconfirmed"
+    },
+    {
+      "university_id": 4,
+      "name": "UC Santa Barbara",
+      "season": 2026,
+      "reported_senior_or_above": 6,
+      "reported_senior_or_above_df": 3,
+      "source_url": "https://ucsbgauchos.com/sports/mens-soccer/roster",
+      "provenance": "User-supplied official-roster aggregation, received 2026-10-23; not independently recounted in this handoff.",
+      "independent_count_verification": "pending",
+      "recruiting_openings": "unconfirmed",
+      "df_specific_wide_roles": "unconfirmed"
+    },
+    {
+      "university_id": 3,
+      "name": "UC San Diego",
+      "season": 2026,
+      "reported_senior_or_above": 5,
+      "reported_senior_or_above_df": 2,
+      "source_url": "https://ucsdtritons.com/sports/mens-soccer/roster",
+      "provenance": "User-supplied official-roster aggregation, received 2026-10-23; not independently recounted in this handoff.",
+      "independent_count_verification": "pending",
+      "recruiting_openings": "unconfirmed",
+      "df_specific_wide_roles": "unconfirmed"
+    },
+    {
+      "university_id": 121,
+      "name": "UC Davis",
+      "season": 2026,
+      "reported_senior_or_above": 1,
+      "reported_senior_or_above_df": 0,
+      "source_url": "https://ucdavisaggies.com/sports/mens-soccer/roster",
+      "provenance": "User-supplied official-roster aggregation, received 2026-10-23; not independently recounted in this handoff.",
+      "independent_count_verification": "pending",
+      "recruiting_openings": "unconfirmed",
+      "df_specific_wide_roles": "unconfirmed"
+    },
+    {
+      "university_id": 52,
+      "name": "UCLA",
+      "season": 2026,
+      "reported_senior_or_above": 12,
+      "reported_senior_or_above_df": 3,
+      "source_url": "https://uclabruins.com/sports/mens-soccer/roster",
+      "provenance": "User-supplied official-roster aggregation, received 2026-10-23; not independently recounted in this handoff.",
+      "independent_count_verification": "pending",
+      "recruiting_openings": "unconfirmed",
+      "df_specific_wide_roles": "unconfirmed"
+    },
+    {
+      "university_id": 119,
+      "name": "UC Berkeley",
+      "season": 2026,
+      "reported_senior_or_above": 14,
+      "reported_senior_or_above_df": 1,
+      "source_url": "https://calbears.com/sports/mens-soccer/roster",
+      "provenance": "User-supplied official-roster aggregation, received 2026-10-23; not independently recounted in this handoff.",
+      "independent_count_verification": "pending",
+      "recruiting_openings": "unconfirmed",
+      "df_specific_wide_roles": "unconfirmed"
+    },
+    {
+      "university_id": 115,
+      "name": "UC Merced",
+      "season": 2026,
+      "reported_senior_or_above": 12,
+      "reported_senior_or_above_df": 3,
+      "source_url": "https://ucmercedbobcats.com/sports/mens-soccer/roster",
+      "provenance": "User-supplied official-roster aggregation, received 2026-10-23; not independently recounted in this handoff.",
+      "independent_count_verification": "pending",
+      "recruiting_openings": "unconfirmed",
+      "df_specific_wide_roles": "unconfirmed"
+    },
+    {
+      "university_id": 123,
+      "name": "CSU Bakersfield",
+      "season": 2026,
+      "reported_senior_or_above": 12,
+      "reported_senior_or_above_df": 3,
+      "source_url": "https://gorunners.com/sports/mens-soccer/roster",
+      "provenance": "User-supplied official-roster aggregation, received 2026-10-23; not independently recounted in this handoff.",
+      "independent_count_verification": "pending",
+      "recruiting_openings": "unconfirmed",
+      "df_specific_wide_roles": "unconfirmed"
+    },
+    {
+      "university_id": 6,
+      "name": "Cal State Northridge (CSUN)",
+      "season": 2026,
+      "reported_senior_or_above": 10,
+      "reported_senior_or_above_df": 1,
+      "source_url": "https://gomatadors.com/sports/mens-soccer/roster",
+      "provenance": "User-supplied official-roster aggregation, received 2026-10-23; not independently recounted in this handoff.",
+      "independent_count_verification": "pending",
+      "recruiting_openings": "unconfirmed",
+      "df_specific_wide_roles": "unconfirmed"
+    },
+    {
+      "university_id": 126,
+      "name": "San Diego State",
+      "season": 2026,
+      "reported_senior_or_above": 8,
+      "reported_senior_or_above_df": 3,
+      "source_url": "https://goaztecs.com/sports/mens-soccer/roster",
+      "provenance": "User-supplied official-roster aggregation, received 2026-10-23; not independently recounted in this handoff.",
+      "independent_count_verification": "pending",
+      "recruiting_openings": "unconfirmed",
+      "df_specific_wide_roles": "unconfirmed"
+    },
+    {
+      "university_id": 122,
+      "name": "Cal Poly San Luis Obispo",
+      "season": 2026,
+      "reported_senior_or_above": 7,
+      "reported_senior_or_above_df": 2,
+      "source_url": "https://gopoly.com/sports/mens-soccer/roster",
+      "provenance": "User-supplied official-roster aggregation, received 2026-10-23; not independently recounted in this handoff.",
+      "independent_count_verification": "pending",
+      "recruiting_openings": "unconfirmed",
+      "df_specific_wide_roles": "unconfirmed"
+    },
+    {
+      "university_id": 7,
+      "name": "Sacramento State",
+      "season": 2026,
+      "reported_senior_or_above": 7,
+      "reported_senior_or_above_df": 1,
+      "source_url": "https://hornetsports.com/sports/mens-soccer/roster",
+      "provenance": "User-supplied official-roster aggregation, received 2026-10-23; not independently recounted in this handoff.",
+      "independent_count_verification": "pending",
+      "recruiting_openings": "unconfirmed",
+      "df_specific_wide_roles": "unconfirmed"
+    },
+    {
+      "university_id": 13,
+      "name": "San Jose State",
+      "season": 2026,
+      "reported_senior_or_above": 5,
+      "reported_senior_or_above_df": 1,
+      "source_url": "https://sjsuspartans.com/sports/mens-soccer/roster",
+      "provenance": "User-supplied official-roster aggregation, received 2026-10-23; not independently recounted in this handoff.",
+      "independent_count_verification": "pending",
+      "recruiting_openings": "unconfirmed",
+      "df_specific_wide_roles": "unconfirmed"
+    },
+    {
+      "university_id": 5,
+      "name": "Cal State Fullerton",
+      "season": 2026,
+      "reported_senior_or_above": 3,
+      "reported_senior_or_above_df": 0,
+      "source_url": "https://fullertontitans.com/sports/mens-soccer/roster",
+      "provenance": "User-supplied official-roster aggregation, received 2026-10-23; not independently recounted in this handoff.",
+      "independent_count_verification": "pending",
+      "recruiting_openings": "unconfirmed",
+      "df_specific_wide_roles": "unconfirmed"
+    },
+    {
+      "university_id": 107,
+      "name": "CSU San Bernardino",
+      "season": 2026,
+      "reported_senior_or_above": 16,
+      "reported_senior_or_above_df": 4,
+      "source_url": "https://csusbathletics.com/sports/mens-soccer/roster",
+      "provenance": "User-supplied official-roster aggregation, received 2026-10-23; not independently recounted in this handoff.",
+      "independent_count_verification": "pending",
+      "recruiting_openings": "unconfirmed",
+      "df_specific_wide_roles": "unconfirmed"
+    },
+    {
+      "university_id": 14,
+      "name": "Cal State Los Angeles (CSULA)",
+      "season": 2026,
+      "reported_senior_or_above": 15,
+      "reported_senior_or_above_df": 6,
+      "source_url": "https://lagoldeneagles.com/sports/mens-soccer/roster",
+      "provenance": "User-supplied official-roster aggregation, received 2026-10-23; not independently recounted in this handoff.",
+      "independent_count_verification": "pending",
+      "recruiting_openings": "unconfirmed",
+      "df_specific_wide_roles": "unconfirmed"
+    },
+    {
+      "university_id": 18,
+      "name": "Cal State San Marcos",
+      "season": 2026,
+      "reported_senior_or_above": 11,
+      "reported_senior_or_above_df": 2,
+      "source_url": "https://csusmcougars.com/sports/mens-soccer/roster",
+      "provenance": "User-supplied official-roster aggregation, received 2026-10-23; not independently recounted in this handoff.",
+      "independent_count_verification": "pending",
+      "recruiting_openings": "unconfirmed",
+      "df_specific_wide_roles": "unconfirmed"
+    },
+    {
+      "university_id": 109,
+      "name": "CSU East Bay",
+      "season": 2026,
+      "reported_senior_or_above": 10,
+      "reported_senior_or_above_df": 2,
+      "source_url": "https://eastbaypioneers.com/sports/mens-soccer/roster",
+      "provenance": "User-supplied official-roster aggregation, received 2026-10-23; not independently recounted in this handoff.",
+      "independent_count_verification": "pending",
+      "recruiting_openings": "unconfirmed",
+      "df_specific_wide_roles": "unconfirmed"
+    },
+    {
+      "university_id": 108,
+      "name": "CSU Monterey Bay",
+      "season": 2026,
+      "reported_senior_or_above": 9,
+      "reported_senior_or_above_df": 5,
+      "source_url": "https://otterathletics.com/sports/mens-soccer/roster",
+      "provenance": "User-supplied official-roster aggregation, received 2026-10-23; not independently recounted in this handoff.",
+      "independent_count_verification": "pending",
+      "recruiting_openings": "unconfirmed",
+      "df_specific_wide_roles": "unconfirmed"
+    },
+    {
+      "university_id": 112,
+      "name": "Stanislaus State",
+      "season": 2026,
+      "reported_senior_or_above": 8,
+      "reported_senior_or_above_df": 5,
+      "source_url": "https://warriorathletics.com/sports/mens-soccer/roster",
+      "provenance": "User-supplied official-roster aggregation, received 2026-10-23; not independently recounted in this handoff.",
+      "independent_count_verification": "pending",
+      "recruiting_openings": "unconfirmed",
+      "df_specific_wide_roles": "unconfirmed"
+    },
+    {
+      "university_id": 17,
+      "name": "Cal State Dominguez Hills",
+      "season": 2026,
+      "reported_senior_or_above": 7,
+      "reported_senior_or_above_df": 3,
+      "source_url": "https://gotoros.com/sports/mens-soccer/roster",
+      "provenance": "User-supplied official-roster aggregation, received 2026-10-23; not independently recounted in this handoff.",
+      "independent_count_verification": "pending",
+      "recruiting_openings": "unconfirmed",
+      "df_specific_wide_roles": "unconfirmed"
+    },
+    {
+      "university_id": 111,
+      "name": "Cal Poly Humboldt",
+      "season": 2026,
+      "reported_senior_or_above": 6,
+      "reported_senior_or_above_df": 3,
+      "source_url": "https://humboldtathletics.com/sports/mens-soccer/roster",
+      "provenance": "User-supplied official-roster aggregation, received 2026-10-23; not independently recounted in this handoff.",
+      "independent_count_verification": "pending",
+      "recruiting_openings": "unconfirmed",
+      "df_specific_wide_roles": "unconfirmed"
+    },
+    {
+      "university_id": 110,
+      "name": "Chico State",
+      "season": 2026,
+      "reported_senior_or_above": 6,
+      "reported_senior_or_above_df": 1,
+      "source_url": "https://chicowildcats.com/sports/mens-soccer/roster",
+      "provenance": "User-supplied official-roster aggregation, received 2026-10-23; not independently recounted in this handoff.",
+      "independent_count_verification": "pending",
+      "recruiting_openings": "unconfirmed",
+      "df_specific_wide_roles": "unconfirmed"
+    },
+    {
+      "university_id": 16,
+      "name": "Cal Poly Pomona",
+      "season": 2026,
+      "reported_senior_or_above": 6,
+      "reported_senior_or_above_df": 0,
+      "source_url": "https://broncoathletics.com/sports/mens-soccer/roster",
+      "provenance": "User-supplied official-roster aggregation, received 2026-10-23; not independently recounted in this handoff.",
+      "independent_count_verification": "pending",
+      "recruiting_openings": "unconfirmed",
+      "df_specific_wide_roles": "unconfirmed"
+    }
+  ],
+  "verified_public_material": [
+    {
+      "university_id": 1,
+      "fact": "[REAPPROACH_2026_11_side_play] 【事実／提供情報】2026-09-08の公式試合記事に、DF Brady Treinenが左サイドから攻撃参加して得点し、別の場面でクロスを供給した記載がある。\n【確認日】2026-10-23。該当する公式記事・プロフィール本文を今回確認。\n【出典】https://ucirvinesports.com/news/2026/9/8/mens-soccer-uc-irvine-overtaken-in-second-half-by-no-9-san-diego",
+      "source_url": "https://ucirvinesports.com/news/2026/9/8/mens-soccer-uc-irvine-overtaken-in-second-half-by-no-9-san-diego",
+      "checked_date": "2026-10-23",
+      "inference": "May support a role-specific question; no vacancy conclusion",
+      "unconfirmed": [
+        "Remaining eligibility",
+        "Departures",
+        "Returning and incoming players",
+        "2027 role requirements",
+        "Scholarship availability"
+      ]
+    },
+    {
+      "university_id": 107,
+      "fact": "[REAPPROACH_2026_11_side_play] 【事実／提供情報】2026-10-15の公式試合記事に、Senior DF Ty Kernsが右サイドからクロスを供給した記載がある。\n【確認日】2026-10-23。該当する公式記事・プロフィール本文を今回確認。\n【出典】https://csusbathletics.com/news/2026/10/15/-9-mens-soccer-downs-cal-state-dominguez-hills-in-90th-minute.aspx",
+      "source_url": "https://csusbathletics.com/news/2026/10/15/-9-mens-soccer-downs-cal-state-dominguez-hills-in-90th-minute.aspx",
+      "checked_date": "2026-10-23",
+      "inference": "May support a role-specific question; no vacancy conclusion",
+      "unconfirmed": [
+        "Remaining eligibility",
+        "Departures",
+        "Returning and incoming players",
+        "2027 role requirements",
+        "Scholarship availability"
+      ]
+    },
+    {
+      "university_id": 18,
+      "fact": "[REAPPROACH_2026_11_senior_day] 【事実／提供情報】2026-09-14の公式Senior Day記事は表彰対象を12人列挙している。提供されたRoster学年集計11人とは異なる集計である。\n【確認日】2026-10-23。該当する公式記事・プロフィール本文を今回確認。\n【出典】https://csusmcougars.com/news/2026/9/14/mens-soccer-csusm-takes-2-2-draw-on-senior-day-against-westmont.aspx",
+      "source_url": "https://csusmcougars.com/news/2026/9/14/mens-soccer-csusm-takes-2-2-draw-on-senior-day-against-westmont.aspx",
+      "checked_date": "2026-10-23",
+      "inference": "May support a role-specific question; no vacancy conclusion",
+      "unconfirmed": [
+        "Remaining eligibility",
+        "Departures",
+        "Returning and incoming players",
+        "2027 role requirements",
+        "Scholarship availability"
+      ]
+    },
+    {
+      "university_id": 111,
+      "fact": "[REAPPROACH_2026_11_outside_back_kinoshita] 【事実／提供情報】Kaz Kinoshitaの公式プロフィールは2026年Senior表記で、2025年にmidfieldとoutside backの両役割で出場した記載がある。\n【確認日】2026-10-23。該当する公式記事・プロフィール本文を今回確認。\n【出典】https://humboldtathletics.com/sports/mens-soccer/roster/kaz-kinoshita/10882",
+      "source_url": "https://humboldtathletics.com/sports/mens-soccer/roster/kaz-kinoshita/10882",
+      "checked_date": "2026-10-23",
+      "inference": "May support a role-specific question; no vacancy conclusion",
+      "unconfirmed": [
+        "Remaining eligibility",
+        "Departures",
+        "Returning and incoming players",
+        "2027 role requirements",
+        "Scholarship availability"
+      ]
+    }
+  ],
+  "reconciliation_tasks": [
+    {
+      "university_id": 107,
+      "roster_seniors_reported": 16,
+      "senior_day_honorees_reported": 11,
+      "senior_day_source_verification": "pending"
+    },
+    {
+      "university_id": 18,
+      "roster_seniors_reported": 11,
+      "senior_day_honorees_verified": 12,
+      "source_url": "https://csusmcougars.com/news/2026/9/14/mens-soccer-csusm-takes-2-2-draw-on-senior-day-against-westmont.aspx"
+    }
+  ],
+  "sonoma_state": {
+    "status": "Official announcement confirms planned Fall 2027 restart, including men's soccer",
+    "source_url": "https://news.sonoma.edu/articles/2026/athletics-launch-fall-2027",
+    "checked_date": "2026-10-23",
+    "inference": "Separate new-program recruiting inquiry may be appropriate",
+    "unconfirmed": [
+      "Coach and recruiting contact",
+      "Conference",
+      "Admissions and roster entry process",
+      "Roles, positions, scholarship budget"
+    ],
+    "action": "Planning entry only; no new active master row or scheduled email created"
+  },
+  "san_francisco_state": {
+    "status": "Excluded per user handoff: men's soccer discontinued",
+    "independent_recheck_in_this_handoff": false
+  },
+  "handling": {
+    "db_rows": 33,
+    "counts_independently_recounted": false,
+    "db_is_active": false,
+    "reason": "Keep November reapproach research out of existing automatic/regular Follow-up candidate selection.",
+    "private_correspondence": "Budget/coach correspondence context remains in CRM research only; verify original thread before use.",
+    "promotion": "Activate only selected verified facts in an explicitly separate reapproach preparation workflow after checking source freshness and the coach's answers."
+  }
+}
