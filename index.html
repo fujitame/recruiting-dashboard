@@ -6645,13 +6645,13 @@ function openCrmDrawer(id,role){
  openCrmContactDrawer(c.id);
 }
 let crmEmailTracking=[],crmEmailTrackingRequest=0,crmEmailTrackingError=false;
-function crmEmailStageName(stage){return {follow_up_1:'Follow-up 1',follow_up_2:'Follow-up 2',conversation_follow_up:'AI Follow-up（返信後）'}[stage]||stage}
+function crmEmailStageName(stage){return {initial:'初回メール',follow_up_1:'Follow-up 1',follow_up_2:'Follow-up 2',conversation_follow_up:'AI Follow-up（返信後）'}[stage]||stage}
 function crmEngagementRows(rows,includeCoach=false){
  if(!rows.length)return '<div class="crm-empty">計測対象メールはまだありません。計測開始前の送信分は対象外です。</div>';
  return rows.map(row=>{
   const contact=Array.from(crmContacts.values()).find(c=>String(c.id)===row.contact_id),school=universities.find(u=>Number(u.id)===Number(contact?.university_id));
-  const signal=row.first_profile_at?'Profileアクセス検知':row.first_open_at?'開封の可能性あり':'検知なし';
-  return '<div class="crm-engagement-row">'+(includeCoach?'<b>'+crmEsc(school?.name||'学校')+' · '+crmEsc(contact?.coach_name||'Coach')+'</b><br>':'')+'<b>'+crmEsc(crmEmailStageName(row.stage))+'</b> · '+crmEsc(crmDateDisplay(row.sent_at||row.created_at))+'<br><strong>'+crmEsc(row.status==='sent'?signal:'送信結果の確認が必要')+'</strong>'+(row.first_open_at?'<br>画像取得（開封の目安）：'+crmEsc(crmDateDisplay(row.first_open_at)):'')+(row.first_profile_at?'<br>Profileアクセス：'+crmEsc(crmDateDisplay(row.first_profile_at)):'')+(row.first_automated_profile_at?'<br>自動アクセスの可能性：'+crmEsc(crmDateDisplay(row.first_automated_profile_at)):'')+'</div>';
+  const signal=row.first_youtube_at?'YouTubeリンクのクリック検知':row.first_profile_at?'Profileアクセス検知':row.first_open_at?'開封の可能性あり':'検知なし';
+  return '<div class="crm-engagement-row">'+(includeCoach?'<b>'+crmEsc(school?.name||'学校')+' · '+crmEsc(contact?.coach_name||'Coach')+'</b><br>':'')+'<b>'+crmEsc(crmEmailStageName(row.stage))+'</b> · '+crmEsc(crmDateDisplay(row.sent_at||row.created_at))+'<br><strong>'+crmEsc(row.status==='sent'?signal:'送信結果の確認が必要')+'</strong>'+(row.first_open_at?'<br>画像取得（開封の目安）：'+crmEsc(crmDateDisplay(row.first_open_at)):'')+(row.first_profile_at?'<br>Profileアクセス：'+crmEsc(crmDateDisplay(row.first_profile_at)):'')+(row.first_youtube_at?'<br>YouTubeリンク：'+crmEsc(crmDateDisplay(row.first_youtube_at))+'（再生・視聴完了の証明ではありません）':'')+(row.first_automated_youtube_at?'<br>YouTube自動アクセスの可能性：'+crmEsc(crmDateDisplay(row.first_automated_youtube_at)):'')+(row.first_automated_profile_at?'<br>自動アクセスの可能性：'+crmEsc(crmDateDisplay(row.first_automated_profile_at)):'')+'</div>';
  }).join('');
 }
 function renderCrmContactEngagement(){
@@ -6663,7 +6663,7 @@ async function loadCrmEmailTracking(){
  const request=++crmEmailTrackingRequest,rows=[];
  try{
   for(let offset=0;;offset+=500){
-   const {data,error}=await supabaseClient.from('recruiting_email_tracking').select('id,contact_id,university_id,recipient_email,stage,is_test,status,sent_at,created_at,first_open_at,first_profile_at,first_automated_profile_at,gmail_message_id').eq('owner_user_id',DASHBOARD_OWNER_ID).gte('created_at',new Date(Date.now()-120*86400000).toISOString()).order('created_at',{ascending:false}).order('id').range(offset,offset+499);
+   const {data,error}=await supabaseClient.from('recruiting_email_tracking').select('id,contact_id,university_id,recipient_email,stage,is_test,status,sent_at,created_at,first_open_at,first_profile_at,first_automated_profile_at,first_youtube_at,first_automated_youtube_at,gmail_message_id').eq('owner_user_id',DASHBOARD_OWNER_ID).gte('created_at',new Date(Date.now()-120*86400000).toISOString()).order('created_at',{ascending:false}).order('id').range(offset,offset+499);
    if(error)throw error;if(request!==crmEmailTrackingRequest)return;rows.push(...(data||[]));if((data||[]).length<500)break;
   }
   if(request!==crmEmailTrackingRequest)return;crmEmailTracking=rows;crmEmailTrackingError=false;

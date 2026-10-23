@@ -141,6 +141,9 @@ export default {
         );
       }
 
+      const {data:pendingInitial,error:pendingInitialError}=await supabase.from("recruiting_initial_email_jobs").select("id").contains("contact_ids",[contact.id]).in("status",["scheduled","processing","send_unknown"]).limit(1);
+      if(pendingInitialError)throw pendingInitialError;
+      if(pendingInitial?.length)return json({ok:false,error:"This initial email is already reserved or requires reconciliation."},409);
       if(contact.contact_status!=='not_contacted'||Number(contact.follow_up_count||0)!==0||contact.gmail_thread_id||String(contact.coach_response||'').trim())return json({ok:false,error:'Initial email has already been sent or this contact is no longer eligible.'},409);
       const universityId = Number(contact.university_id);
 
