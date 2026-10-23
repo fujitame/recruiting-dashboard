@@ -6,10 +6,10 @@ const db=createClient(Deno.env.get("SUPABASE_URL"),Deno.env.get("SUPABASE_SERVIC
 const secret=Deno.env.get("FOLLOWUP_BATCH_WORKER_SECRET");
 const json=(x,status=200)=>new Response(JSON.stringify(x),{status,headers:{"content-type":"application/json"}});
 export function eligibleJob(j,contacts,school,now=Date.now()){
- return j.campaign_key==="ca-new-d1-d2-20261023-0800" && j.university_id>=107 && j.university_id<=126 &&
+ return j.campaign_key==="ca-new-d1-d2-20261023-0800" && ([7,8,52].includes(j.university_id)||(j.university_id>=107 && j.university_id<=126)) &&
  j.owner_user_id==="47e7c1a9-a806-4f65-b5ed-2b9b124ef337" && j.school_timezone==="America/Los_Angeles" &&
  j.scheduled_at && now>=Date.parse(j.scheduled_at) && now<Date.parse(j.scheduled_at)+2*3600000 &&
- school?.is_active && !school.is_test && ["NCAA D1","NCAA D2"].includes(school.division) &&
+ school?.region_code==='ca' && school?.is_active && !school.is_test && ["NCAA D1","NCAA D2"].includes(school.division) &&
  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(j.recipient_email) &&
  j.contact_ids.length===contacts.length && contacts.some(c=>c.id===j.contact_id) &&
  contacts.every(c=>c.owner_user_id===j.owner_user_id && c.university_id===j.university_id &&
@@ -25,7 +25,7 @@ async function processJob(j,token){
  try{
   const [{data:contacts,error:ce},{data:school,error:se}]=await Promise.all([
    db.from("recruiting_contacts").select("*").in("id",j.contact_ids),
-   db.from("recruiting_universities").select("id,is_active,is_test,division").eq("id",j.university_id).single()
+   db.from("recruiting_universities").select("id,region_code,is_active,is_test,division").eq("id",j.university_id).single()
   ]);
   if(ce||se)throw ce||se;
   if(!eligibleJob(j,contacts||[],school)){await updateJob(j,{status:"skipped",error_message:"Eligibility or send window changed"});return "skipped";}

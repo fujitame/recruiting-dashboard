@@ -4,8 +4,12 @@ const f=source.slice(source.indexOf("export function eligibleJob"),source.indexO
 const sandbox={};vm.runInNewContext(f+";this.check=eligibleJob",sandbox);
 const at=Date.parse("2026-10-23T15:00:00Z"),owner="47e7c1a9-a806-4f65-b5ed-2b9b124ef337";
 const j={campaign_key:"ca-new-d1-d2-20261023-0800",university_id:107,owner_user_id:owner,school_timezone:"America/Los_Angeles",scheduled_at:new Date(at).toISOString(),recipient_email:"coach@school.edu",contact_id:"a",contact_ids:["a","b"]};
-const c={id:"a",owner_user_id:owner,university_id:107,coach_email:"coach@school.edu",contact_status:"not_contacted",contact_count:0,gmail_thread_id:null,coach_response:""},cs=[c,{...c,id:"b"}],s={is_active:true,is_test:false,division:"NCAA D2"};
+const c={id:"a",owner_user_id:owner,university_id:107,coach_email:"coach@school.edu",contact_status:"not_contacted",contact_count:0,gmail_thread_id:null,coach_response:""},cs=[c,{...c,id:"b"}],s={region_code:"ca",is_active:true,is_test:false,division:"NCAA D2"};
 assert(sandbox.check(j,cs,s,at));
+for(const schoolId of [7,8,52]){
+ assert(sandbox.check({...j,university_id:schoolId},cs.map(c=>({...c,university_id:schoolId})),s,at));
+}
+assert(!sandbox.check(j,cs,{...s,region_code:"west"},at));
 assert(!sandbox.check(j,cs,s,at-1));assert(!sandbox.check(j,cs,s,at+2*3600000));
 assert(!sandbox.check(j,[c],s,at));assert(!sandbox.check(j,[c,{...cs[1],contact_count:1}],s,at));
 assert(!sandbox.check(j,[c,{...cs[1],coach_response:"replied"}],s,at));
