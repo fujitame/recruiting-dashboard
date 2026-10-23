@@ -4534,7 +4534,7 @@ function getCost(u){const v=COSTS[u.id]||[null,null,'School-specific ref pending
 
 function money(v){return v==null?'—':`$${Number(v).toLocaleString('en-US')}`}
 
-function costHtml(u){const c=getCost(u);const meta=COST_SOURCES[u.id];const source=meta?`<div class="cost-sub"><a href="${meta.source}" target="_blank" rel="noopener noreferrer" title="${meta.basis}">2026–27 official reference ↗</a></div>`:'';const shortMoney=v=>v==null?'—':`${(Number(v)/1000).toFixed(1)}K`;if(c.tuition==null&&c.living==null)return `<div class="cost-cell"><div class="cost-sub">Cost pending</div></div>`;return `<div class="cost-cell"><div class="cost-row"><span>Tuition</span><b>${shortMoney(c.tuition)}</b></div><div class="cost-row"><span>Living</span><b>${shortMoney(c.living)}</b></div><div class="cost-row cost-total"><span>TOTAL</span><b>${shortMoney(c.total)}</b></div>${source}</div>`}
+function costHtml(u){const c=getCost(u);const meta=COST_SOURCES[u.id];const source=meta?`<div class="cost-sub"><a href="${meta.source}" target="_blank" rel="noopener noreferrer" title="${meta.basis}">2026–27 official reference ↗</a></div>`:'';const shortMoney=v=>v==null?'—':`$${(Number(v)/1000).toFixed(1)}K`;if(c.tuition==null&&c.living==null)return `<div class="cost-cell"><div class="cost-sub">Cost pending</div></div>`;return `<div class="cost-cell"><div class="cost-row"><span>Tuition</span><b>${shortMoney(c.tuition)}</b></div><div class="cost-row"><span>Living</span><b>${shortMoney(c.living)}</b></div><div class="cost-row cost-total"><span>TOTAL</span><b>${shortMoney(c.total)}</b></div>${source}</div>`}
 
 function badgeClass(div){return div==='NCAA D1'?'badge-d1':(div==='NCAA D2'?'badge-d2':(div==='NCAA D3'?'badge-d3':'badge-naia'))}
 
