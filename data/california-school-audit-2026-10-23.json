@@ -1,0 +1,781 @@
+{
+  "checked_at": "2026-10-23",
+  "scope": "California four-year varsity men's soccer: NCAA D1, D2 (including reclassifying members), NAIA. No new D3 additions. Existing APU retained as D3.",
+  "counts": {
+    "added": 24,
+    "production_after": 130,
+    "california_in_scope": 51,
+    "california_including_existing_APU": 52
+  },
+  "schools": [
+    {
+      "id": 107,
+      "name": "CSU San Bernardino",
+      "cat": "ca",
+      "div": "NCAA D2",
+      "conf": "CCAA",
+      "lat": 34.1831,
+      "lng": -117.324,
+      "hc_name": "Josh Hill",
+      "hc_email": "joshua.hill@csusb.edu",
+      "ac_name": "Edwin Diaz",
+      "ac_email": "ediaz3@csusb.edu",
+      "facility": "https://csusbathletics.com/facilities/premier-field/2",
+      "roster": "https://csusbathletics.com/sports/mens-soccer/roster",
+      "ig": "https://www.instagram.com/csusbmsoccer/",
+      "desc": "カリフォルニア州の男子サッカー部。2026シーズンはNCAA D2・CCAA所属。2026-10-23に大学・競技連盟の公式公開情報を確認。",
+      "ig_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "✓ Official/current contact verified",
+      "sources": {
+        "staff": "https://csusbathletics.com/sports/mens-soccer/coaches",
+        "cost": "https://www.calstate.edu/apply/paying-for-college/Documents/cost-of-attendance.pdf"
+      },
+      "cost": [
+        23176,
+        16380,
+        "2026-27 official reference"
+      ],
+      "cost_basis": "Nonresident tuition/mandatory campus fees; 30 semester units at $471. Housing and food."
+    },
+    {
+      "id": 108,
+      "name": "CSU Monterey Bay",
+      "cat": "ca",
+      "div": "NCAA D2",
+      "conf": "CCAA",
+      "lat": 36.6534,
+      "lng": -121.7964,
+      "hc_name": "Graeme Jaap",
+      "hc_email": "gjaap@csumb.edu",
+      "ac_name": "TJ Velasquez",
+      "ac_email": "anvelasquez@csumb.edu",
+      "facility": "https://otterathletics.com/facilities",
+      "roster": "https://otterathletics.com/sports/mens-soccer/roster",
+      "ig": "https://www.instagram.com/csumbmsoccer/",
+      "desc": "カリフォルニア州の男子サッカー部。2026シーズンはNCAA D2・CCAA所属。2026-10-23に大学・競技連盟の公式公開情報を確認。",
+      "ig_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "✓ Official/current contact verified",
+      "sources": {
+        "staff": "https://otterathletics.com/sports/mens-soccer/coaches",
+        "cost": "https://www.calstate.edu/apply/paying-for-college/Documents/cost-of-attendance.pdf"
+      },
+      "cost": [
+        22663,
+        17448,
+        "2026-27 official reference"
+      ],
+      "cost_basis": "Nonresident tuition/mandatory campus fees; 30 semester units at $471. Housing and food."
+    },
+    {
+      "id": 109,
+      "name": "CSU East Bay",
+      "cat": "ca",
+      "div": "NCAA D2",
+      "conf": "CCAA",
+      "lat": 37.6575,
+      "lng": -122.0568,
+      "hc_name": "Michael Haswell",
+      "hc_email": "michael.haswell@csueastbay.edu",
+      "ac_name": "Dannylo Ayllon",
+      "ac_email": "dannylo.ayllon@csueastbay.edu",
+      "facility": "https://eastbaypioneers.com/facilities",
+      "roster": "https://eastbaypioneers.com/sports/mens-soccer/roster",
+      "ig": "https://www.instagram.com/eastbaymsoc/",
+      "desc": "カリフォルニア州の男子サッカー部。2026シーズンはNCAA D2・CCAA所属。2026-10-23に大学・競技連盟の公式公開情報を確認。",
+      "ig_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "✓ Official/current contact verified",
+      "sources": {
+        "staff": "https://eastbaypioneers.com/sports/mens-soccer/coaches",
+        "cost": "https://www.calstate.edu/apply/paying-for-college/Documents/cost-of-attendance.pdf"
+      },
+      "cost": [
+        22499,
+        17714,
+        "2026-27 official reference"
+      ],
+      "cost_basis": "Nonresident tuition/mandatory campus fees; 30 semester units at $471. Housing and food."
+    },
+    {
+      "id": 110,
+      "name": "Chico State",
+      "cat": "ca",
+      "div": "NCAA D2",
+      "conf": "CCAA",
+      "lat": 39.73,
+      "lng": -121.8475,
+      "hc_name": "Felipe Restrepo",
+      "hc_email": "lrestrepo@csuchico.edu",
+      "ac_name": "Austin Swartz",
+      "ac_email": "aswartz1@csuchico.edu",
+      "facility": "https://chicowildcats.com/facilities",
+      "roster": "https://chicowildcats.com/sports/mens-soccer/roster",
+      "ig": "https://www.instagram.com/chicomsoccer/",
+      "desc": "カリフォルニア州の男子サッカー部。2026シーズンはNCAA D2・CCAA所属。2026-10-23に大学・競技連盟の公式公開情報を確認。",
+      "ig_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "✓ Official/current contact verified",
+      "sources": {
+        "staff": "https://chicowildcats.com/sports/mens-soccer/coaches",
+        "cost": "https://www.calstate.edu/apply/paying-for-college/Documents/cost-of-attendance.pdf"
+      },
+      "cost": [
+        23474,
+        15620,
+        "2026-27 official reference"
+      ],
+      "cost_basis": "Nonresident tuition/mandatory campus fees; 30 semester units at $471. Housing and food."
+    },
+    {
+      "id": 111,
+      "name": "Cal Poly Humboldt",
+      "cat": "ca",
+      "div": "NCAA D2",
+      "conf": "CCAA",
+      "lat": 40.876,
+      "lng": -124.079,
+      "hc_name": "Fred Jungemann",
+      "hc_email": "menssoccer@humboldt.edu",
+      "ac_name": "Juliano \"Nano\" Pereira",
+      "ac_email": "menssoccer@humboldt.edu",
+      "facility": "https://humboldtathletics.com/facilities",
+      "roster": "https://humboldtathletics.com/sports/mens-soccer/roster",
+      "ig": "https://www.instagram.com/humboldt.msoc/",
+      "desc": "カリフォルニア州の男子サッカー部。2026シーズンはNCAA D2・CCAA所属。2026-10-23に大学・競技連盟の公式公開情報を確認。",
+      "ig_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "✓ Official/current contact verified",
+      "sources": {
+        "staff": "https://humboldtathletics.com/sports/mens-soccer/coaches",
+        "cost": "https://www.calstate.edu/apply/paying-for-college/Documents/cost-of-attendance.pdf"
+      },
+      "cost": [
+        23420,
+        14756,
+        "2026-27 official reference"
+      ],
+      "cost_basis": "Nonresident tuition/mandatory campus fees; 30 semester units at $471. Housing and food."
+    },
+    {
+      "id": 112,
+      "name": "Stanislaus State",
+      "cat": "ca",
+      "div": "NCAA D2",
+      "conf": "CCAA",
+      "lat": 37.525,
+      "lng": -120.85583,
+      "hc_name": "John Powell",
+      "hc_email": "jpowell1@csustan.edu",
+      "ac_name": "Eduardo López",
+      "ac_email": "elopez18@csustan.edu",
+      "facility": "https://warriorathletics.com/facilities",
+      "roster": "https://warriorathletics.com/sports/mens-soccer/roster",
+      "ig": "https://www.instagram.com/stanstatemenssoccer/",
+      "desc": "カリフォルニア州の男子サッカー部。2026シーズンはNCAA D2・CCAA所属。2026-10-23に大学・競技連盟の公式公開情報を確認。",
+      "ig_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "✓ Official/current contact verified",
+      "sources": {
+        "staff": "https://warriorathletics.com/sports/mens-soccer/coaches",
+        "cost": "https://www.calstate.edu/apply/paying-for-college/Documents/cost-of-attendance.pdf"
+      },
+      "cost": [
+        23276,
+        14414,
+        "2026-27 official reference"
+      ],
+      "cost_basis": "Nonresident tuition/mandatory campus fees; 30 semester units at $471. Housing and food."
+    },
+    {
+      "id": 113,
+      "name": "Menlo College",
+      "cat": "ca",
+      "div": "NCAA D2",
+      "conf": "CCAA",
+      "lat": 37.455,
+      "lng": -122.193,
+      "hc_name": "Keith Lambert",
+      "hc_email": "keith.lambert@menlo.edu",
+      "ac_name": "Matt Tudor",
+      "ac_email": "matthew.tudor@menlo.edu",
+      "facility": "https://menloathletics.com/sports/2023/1/4/5233_133173257191790416.aspx",
+      "roster": "https://menloathletics.com/sports/mens-soccer/roster",
+      "ig": "https://www.instagram.com/menlomsoc/",
+      "desc": "カリフォルニア州の男子サッカー部。2026シーズンはNCAA D2・CCAA所属。2026-10-23に大学・競技連盟の公式公開情報を確認。",
+      "ig_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "✓ Official/current contact verified",
+      "sources": {
+        "staff": "https://menloathletics.com/sports/mens-soccer/coaches",
+        "cost": "https://www.menlo.edu/affordability/tuition-fees/"
+      },
+      "cost": [
+        59140,
+        20874,
+        "2026-27 official reference"
+      ],
+      "cost_basis": "Published annual tuition/mandatory fees and housing/food; before aid; insurance, books, transport and personal costs excluded."
+    },
+    {
+      "id": 114,
+      "name": "Fresno Pacific",
+      "cat": "ca",
+      "div": "NCAA D2",
+      "conf": "CCAA",
+      "lat": 36.726,
+      "lng": -119.7348,
+      "hc_name": "Cameron Shahrokhi",
+      "hc_email": "cameron.shahrokhi@fresno.edu",
+      "ac_name": "Villyan Bijev",
+      "ac_email": "",
+      "facility": "https://www.fpusunbirds.com/facilities/ramirez-field/6",
+      "roster": "https://www.fpusunbirds.com/sports/mens-soccer/roster",
+      "ig": "https://www.instagram.com/fpusoccer/",
+      "desc": "カリフォルニア州の男子サッカー部。2026シーズンはNCAA D2・CCAA所属。2026-10-23に大学・競技連盟の公式公開情報を確認。 公開されていないメールは空欄。",
+      "ig_verified": true,
+      "staff_status": "partial",
+      "staff_status_label": "△ Published contacts only; missing email unverified",
+      "sources": {
+        "staff": "https://www.fpusunbirds.com/sports/mens-soccer/coaches",
+        "cost": "https://www.fresno.edu/departments/student-financial-services/cost-attendance"
+      },
+      "cost": [
+        38910,
+        11988,
+        "2026-27 official reference"
+      ],
+      "cost_basis": "Published annual tuition/mandatory fees and housing/food; before aid; insurance, books, transport and personal costs excluded."
+    },
+    {
+      "id": 115,
+      "name": "UC Merced",
+      "cat": "ca",
+      "div": "NCAA D2",
+      "conf": "CCAA",
+      "lat": 37.366,
+      "lng": -120.4235,
+      "hc_name": "Albert Martins",
+      "hc_email": "amartins@ucmerced.edu",
+      "ac_name": "Manuel Romero",
+      "ac_email": "mromero35@ucmerced.edu",
+      "facility": "https://ucmercedbobcats.com/facilities/bobcat-field/5",
+      "roster": "https://ucmercedbobcats.com/sports/mens-soccer/roster",
+      "ig": "https://www.instagram.com/ucmercedmsoc/",
+      "desc": "カリフォルニア州の男子サッカー部。2026シーズンはNCAA D2・CCAA所属。2026-10-23に大学・競技連盟の公式公開情報を確認。",
+      "ig_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "✓ Official/current contact verified",
+      "sources": {
+        "staff": "https://ucmercedbobcats.com/sports/mens-soccer/coaches",
+        "cost": "https://financialaid.ucmerced.edu/cost-attendance"
+      },
+      "cost": [
+        56294,
+        23180,
+        "2026-27 official reference"
+      ],
+      "cost_basis": "Published annual tuition/mandatory fees and housing/food; before aid; insurance, books, transport and personal costs excluded."
+    },
+    {
+      "id": 116,
+      "name": "Point Loma Nazarene",
+      "cat": "ca",
+      "div": "NCAA D2",
+      "conf": "PacWest",
+      "lat": 32.7169,
+      "lng": -117.2507,
+      "hc_name": "Phil Wolf",
+      "hc_email": "",
+      "ac_name": "Brett Evans",
+      "ac_email": "msoccer@pointloma.edu",
+      "facility": "https://plnusealions.com/facilities",
+      "roster": "https://plnusealions.com/sports/mens-soccer/roster",
+      "ig": "https://www.instagram.com/plnusoccer/",
+      "desc": "カリフォルニア州の男子サッカー部。2026シーズンはNCAA D2・PacWest所属。2026-10-23に大学・競技連盟の公式公開情報を確認。 公開されていないメールは空欄。",
+      "ig_verified": true,
+      "staff_status": "partial",
+      "staff_status_label": "△ Published contacts only; missing email unverified",
+      "sources": {
+        "staff": "https://plnusealions.com/sports/mens-soccer/coaches",
+        "cost": "https://www.pointloma.edu/offices/student-financial-services/undergraduate-student-financial-services/costs"
+      },
+      "cost": [
+        50500,
+        15510,
+        "2026-27 official reference"
+      ],
+      "cost_basis": "Published annual tuition/mandatory fees and housing/food; before aid; insurance, books, transport and personal costs excluded."
+    },
+    {
+      "id": 117,
+      "name": "Dominican University of California",
+      "cat": "ca",
+      "div": "NCAA D2",
+      "conf": "PacWest",
+      "lat": 37.97972,
+      "lng": -122.51333,
+      "hc_name": "David Frank",
+      "hc_email": "david.frank@dominican.edu",
+      "ac_name": "Ricardo Martin",
+      "ac_email": "ricardo.martin@dominican.edu",
+      "facility": "https://dominicanathletics.com/facilities",
+      "roster": "https://dominicanathletics.com/sports/mens-soccer/roster",
+      "ig": "https://www.instagram.com/dominican_ms/",
+      "desc": "カリフォルニア州の男子サッカー部。2026シーズンはNCAA D2・PacWest所属。2026-10-23に大学・競技連盟の公式公開情報を確認。",
+      "ig_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "✓ Official/current contact verified",
+      "sources": {
+        "staff": "https://dominicanathletics.com/sports/mens-soccer/coaches",
+        "cost": "https://www.dominican.edu/admissions/tuition-and-financial-aid/total-cost-attendance/undergraduate-tuition-and-aid"
+      },
+      "cost": [
+        55626,
+        16619,
+        "2026-27 official reference"
+      ],
+      "cost_basis": "Published annual tuition/mandatory fees and housing/food; before aid; insurance, books, transport and personal costs excluded."
+    },
+    {
+      "id": 118,
+      "name": "Jessup University",
+      "cat": "ca",
+      "div": "NCAA D2",
+      "conf": "PacWest",
+      "lat": 38.820444,
+      "lng": -121.292411,
+      "hc_name": "Greg Lazaga",
+      "hc_email": "glazaga@jessup.edu",
+      "ac_name": "Danny Ramos",
+      "ac_email": "dramos@jessup.edu",
+      "facility": "https://jessupathletics.com/facilities",
+      "roster": "https://jessupathletics.com/sports/mens-soccer/roster",
+      "ig": "https://www.instagram.com/jessup_msoc/",
+      "desc": "カリフォルニア州の男子サッカー部。2026シーズンはNCAA D2・PacWest所属。2026-10-23に大学・競技連盟の公式公開情報を確認。",
+      "ig_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "✓ Official/current contact verified",
+      "sources": {
+        "staff": "https://jessupathletics.com/sports/mens-soccer/coaches",
+        "cost": "https://jessup.edu/admissions/financial-aid/cost-of-attendance/"
+      },
+      "cost": [
+        39350,
+        14850,
+        "2026-27 official reference"
+      ],
+      "cost_basis": "Published annual tuition/mandatory fees and housing/food; before aid; insurance, books, transport and personal costs excluded."
+    },
+    {
+      "id": 119,
+      "name": "UC Berkeley",
+      "cat": "ca",
+      "div": "NCAA D1",
+      "conf": "ACC",
+      "lat": 37.8719,
+      "lng": -122.2583,
+      "hc_name": "Leonard Griffin",
+      "hc_email": "calsoccer@berkeley.edu",
+      "ac_name": "Ricardo Gutierrez",
+      "ac_email": "ricardo.gutierrez@berkeley.edu",
+      "facility": "https://calbears.com/facilities",
+      "roster": "https://calbears.com/sports/mens-soccer/roster",
+      "ig": "https://www.instagram.com/calmsoc/",
+      "desc": "カリフォルニア州の男子サッカー部。2026シーズンはNCAA D1・ACC所属。2026-10-23に大学・競技連盟の公式公開情報を確認。",
+      "ig_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "✓ Official/current contact verified",
+      "sources": {
+        "staff": "https://calbears.com/sports/mens-soccer/coaches",
+        "cost": "https://financialaid.berkeley.edu/how-aid-works/student-budgets-cost-of-attendance/"
+      },
+      "cost": [
+        57484,
+        23640,
+        "2026-27 official reference"
+      ],
+      "cost_basis": "Published annual tuition/mandatory fees and housing/food; before aid; insurance, books, transport and personal costs excluded."
+    },
+    {
+      "id": 120,
+      "name": "Stanford",
+      "cat": "ca",
+      "div": "NCAA D1",
+      "conf": "ACC",
+      "lat": 37.4275,
+      "lng": -122.17028,
+      "hc_name": "Jeremy Gunn",
+      "hc_email": "smsoccer@stanford.edu",
+      "ac_name": "Drew Hutchins",
+      "ac_email": "smsoccer@stanford.edu",
+      "facility": "https://gostanford.com/facilities/maloney-field-at-laird-q-cagan-stadium",
+      "roster": "https://gostanford.com/sports/mens-soccer/roster",
+      "ig": "https://www.instagram.com/stanfordmenssoccer/",
+      "desc": "カリフォルニア州の男子サッカー部。2026シーズンはNCAA D1・ACC所属。2026-10-23に大学・競技連盟の公式公開情報を確認。",
+      "ig_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "✓ Official/current contact verified",
+      "sources": {
+        "staff": "https://gostanford.com/staff-directory/department/mens-soccer",
+        "cost": "https://financialaid.stanford.edu/undergrad/budget/"
+      },
+      "cost": [
+        70341,
+        22944,
+        "2026-27 official reference"
+      ],
+      "cost_basis": "Published annual tuition/mandatory fees and housing/food; before aid; insurance, books, transport and personal costs excluded."
+    },
+    {
+      "id": 121,
+      "name": "UC Davis",
+      "cat": "ca",
+      "div": "NCAA D1",
+      "conf": "Mountain West",
+      "lat": 38.54,
+      "lng": -121.75,
+      "hc_name": "Dwayne Shaffer",
+      "hc_email": "ucdavissoccer@ucdavis.edu",
+      "ac_name": "Jason Hotaling",
+      "ac_email": "jmhotaling@ucdavis.edu",
+      "facility": "https://ucdavisaggies.com/facilities",
+      "roster": "https://ucdavisaggies.com/sports/mens-soccer/roster",
+      "ig": "https://www.instagram.com/ucdavismsoc/",
+      "desc": "カリフォルニア州の男子サッカー部。2026シーズンはNCAA D1・Mountain West所属。2026-10-23に大学・競技連盟の公式公開情報を確認。",
+      "ig_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "✓ Official/current contact verified",
+      "sources": {
+        "staff": "https://ucdavisaggies.com/sports/mens-soccer/coaches",
+        "cost": "https://financialaid.ucdavis.edu/undergraduate/cost/2627-entering"
+      },
+      "cost": [
+        57348,
+        22157,
+        "2026-27 official reference"
+      ],
+      "cost_basis": "Published annual tuition/mandatory fees and housing/food; before aid; insurance, books, transport and personal costs excluded."
+    },
+    {
+      "id": 122,
+      "name": "Cal Poly San Luis Obispo",
+      "cat": "ca",
+      "div": "NCAA D1",
+      "conf": "Pac-12",
+      "lat": 35.30417,
+      "lng": -120.66278,
+      "hc_name": "Oige Kennedy",
+      "hc_email": "mensoccer@calpoly.edu",
+      "ac_name": "Zach Watson",
+      "ac_email": "zwatso01@calpoly.edu",
+      "facility": "https://gopoly.com/facilities",
+      "roster": "https://gopoly.com/sports/mens-soccer/roster",
+      "ig": "https://www.instagram.com/calpolymsoccer/",
+      "desc": "カリフォルニア州の男子サッカー部。2026シーズンはNCAA D1・Pac-12所属。2026-10-23に大学・競技連盟の公式公開情報を確認。",
+      "ig_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "✓ Official/current contact verified",
+      "sources": {
+        "staff": "https://gopoly.com/sports/mens-soccer/coaches",
+        "cost": "https://www.calpoly.edu/financial-aid/costs-and-affordability/undergraduate-costs-attendance-2026-2027"
+      },
+      "cost": [
+        38516,
+        23140,
+        "2026-27 official reference"
+      ],
+      "cost_basis": "New Business/Liberal Arts student; nonresident 30-unit equivalent, Opportunity Fee and international fee included; health insurance excluded."
+    },
+    {
+      "id": 123,
+      "name": "CSU Bakersfield",
+      "cat": "ca",
+      "div": "NCAA D1",
+      "conf": "Big West",
+      "lat": 35.35,
+      "lng": -119.104,
+      "hc_name": "Adam Grant",
+      "hc_email": "csubmsoccer@csub.edu",
+      "ac_name": "Ethan Keogh",
+      "ac_email": "ekeogh1@csub.edu",
+      "facility": "https://gorunners.com/facilities",
+      "roster": "https://gorunners.com/sports/mens-soccer/roster",
+      "ig": "https://www.instagram.com/csub_msoccer/",
+      "desc": "カリフォルニア州の男子サッカー部。2026シーズンはNCAA D1・Big West所属。2026-10-23に大学・競技連盟の公式公開情報を確認。",
+      "ig_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "✓ Official/current contact verified",
+      "sources": {
+        "staff": "https://gorunners.com/sports/mens-soccer/coaches",
+        "cost": "https://www.calstate.edu/apply/paying-for-college/Documents/cost-of-attendance.pdf"
+      },
+      "cost": [
+        23073,
+        17432,
+        "2026-27 official reference"
+      ],
+      "cost_basis": "Nonresident tuition/mandatory campus fees; 30 semester units at $471. Housing and food."
+    },
+    {
+      "id": 124,
+      "name": "Santa Clara",
+      "cat": "ca",
+      "div": "NCAA D1",
+      "conf": "WCC",
+      "lat": 37.34917,
+      "lng": -121.93806,
+      "hc_name": "Cameron Rast",
+      "hc_email": "msoccer@scu.edu",
+      "ac_name": "Eric Yamamoto",
+      "ac_email": "msoccer@scu.edu",
+      "facility": "https://santaclarabroncos.com/facilities",
+      "roster": "https://santaclarabroncos.com/sports/mens-soccer/roster",
+      "ig": "https://www.instagram.com/scumenssoccer/",
+      "desc": "カリフォルニア州の男子サッカー部。2026シーズンはNCAA D1・WCC所属。2026-10-23に大学・競技連盟の公式公開情報を確認。",
+      "ig_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "✓ Official/current contact verified",
+      "sources": {
+        "staff": "https://santaclarabroncos.com/sports/mens-soccer/coaches",
+        "cost": "https://www.scu.edu/financialaid/cost-of-attendance/"
+      },
+      "cost": [
+        65736,
+        20094,
+        "2026-27 official reference"
+      ],
+      "cost_basis": "Published annual tuition/mandatory fees and housing/food; before aid; insurance, books, transport and personal costs excluded."
+    },
+    {
+      "id": 125,
+      "name": "University of San Diego",
+      "cat": "ca",
+      "div": "NCAA D1",
+      "conf": "WCC",
+      "lat": 32.77111,
+      "lng": -117.1875,
+      "hc_name": "Brian Quinn",
+      "hc_email": "brianq@sandiego.edu",
+      "ac_name": "Mike \"Nico\" Nicholson",
+      "ac_email": "michaelnicholson@sandiego.edu",
+      "facility": "https://usdtoreros.com/facilities",
+      "roster": "https://usdtoreros.com/sports/mens-soccer/roster",
+      "ig": "https://www.instagram.com/usdmsoccer/",
+      "desc": "カリフォルニア州の男子サッカー部。2026シーズンはNCAA D1・WCC所属。2026-10-23に大学・競技連盟の公式公開情報を確認。",
+      "ig_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "✓ Official/current contact verified",
+      "sources": {
+        "staff": "https://usdtoreros.com/sports/mens-soccer/coaches",
+        "cost": "https://www.sandiego.edu/torero-hub/tuition-and-fees/undergraduate.php"
+      },
+      "cost": [
+        65199,
+        19200,
+        "2026-27 official reference"
+      ],
+      "cost_basis": "Published annual tuition/mandatory fees and housing/food; before aid; insurance, books, transport and personal costs excluded."
+    },
+    {
+      "id": 126,
+      "name": "San Diego State",
+      "cat": "ca",
+      "div": "NCAA D1",
+      "conf": "Pac-12",
+      "lat": 32.77528,
+      "lng": -117.07222,
+      "hc_name": "Ryan Hopkins",
+      "hc_email": "rhopkins2@sdsu.edu",
+      "ac_name": "Carlos Aguilar",
+      "ac_email": "caguilar3@sdsu.edu",
+      "facility": "https://goaztecs.com/sdsu-sports-deck",
+      "roster": "https://goaztecs.com/sports/mens-soccer/roster",
+      "ig": "https://www.instagram.com/aztecmenssoccer/",
+      "desc": "カリフォルニア州の男子サッカー部。2026シーズンはNCAA D1・Pac-12所属。2026-10-23に大学・競技連盟の公式公開情報を確認。",
+      "ig_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "✓ Official/current contact verified",
+      "sources": {
+        "staff": "https://goaztecs.com/staff-directory/department/soccer-mens",
+        "cost": "https://sacd.sdsu.edu/financial-aid/financial-aid/eligibility/cost-of-attendance/cost-of-attendance-tables/undergraduate-non-resident"
+      },
+      "cost": [
+        26910,
+        21856,
+        "2026-27 official reference"
+      ],
+      "cost_basis": "Nonresident 30 units plus $3,000 out-of-state/international fee. Housing and food; insurance excluded."
+    },
+    {
+      "id": 127,
+      "name": "La Sierra",
+      "cat": "ca",
+      "div": "NAIA",
+      "conf": "GSAC",
+      "lat": 33.91139,
+      "lng": -117.50167,
+      "hc_name": "David Trevino",
+      "hc_email": "dtrevino@lasierra.edu",
+      "ac_name": "Francisco Pons",
+      "ac_email": "",
+      "facility": "https://lsugoldeneagles.com/sports/2025/4/8/Facilites.aspx",
+      "roster": "https://lsugoldeneagles.com/sports/mens-soccer/roster",
+      "ig": "https://www.instagram.com/lasierrau_msoc/",
+      "desc": "カリフォルニア州の男子サッカー部。2026シーズンはNAIA・GSAC所属。2026-10-23に大学・競技連盟の公式公開情報を確認。 公開されていないメールは空欄。",
+      "ig_verified": true,
+      "staff_status": "partial",
+      "staff_status_label": "△ Published contacts only; missing email unverified",
+      "sources": {
+        "staff": "https://lsugoldeneagles.com/sports/mens-soccer/coaches",
+        "cost": "https://lasierra.edu/tuition-and-costs/"
+      },
+      "cost": [
+        39990,
+        10380,
+        "2026-27 official reference"
+      ],
+      "cost_basis": "Published annual tuition/mandatory fees and housing/food; before aid; insurance, books, transport and personal costs excluded."
+    },
+    {
+      "id": 128,
+      "name": "Life Pacific",
+      "cat": "ca",
+      "div": "NAIA",
+      "conf": "GSAC",
+      "lat": 34.0993,
+      "lng": -117.829,
+      "hc_name": "Dalon Parker",
+      "hc_email": "dparker@lifepacific.edu",
+      "ac_name": "Noah Hernandez",
+      "ac_email": "",
+      "facility": "",
+      "roster": "https://www.lpuwarriors.com/sports/msoc/2026-27/roster",
+      "ig": "",
+      "desc": "カリフォルニア州の男子サッカー部。2026シーズンはNAIA・GSAC所属。2026-10-23に大学・競技連盟の公式公開情報を確認。 公開されていないメールは空欄。 施設URL・公式Instagram・ACメールは未確認。",
+      "ig_verified": false,
+      "staff_status": "partial",
+      "staff_status_label": "△ Published contacts only; missing email unverified",
+      "sources": {
+        "staff": "https://www.lpuwarriors.com/sports/msoc/coaches/index",
+        "cost": "https://lifepacific.edu/tuition-and-financial-aid/tuition-costs/"
+      },
+      "cost": [
+        24328,
+        12150,
+        "2026-27 official reference"
+      ],
+      "cost_basis": "Published annual tuition/mandatory fees and housing/food; before aid; insurance, books, transport and personal costs excluded."
+    },
+    {
+      "id": 129,
+      "name": "Simpson University",
+      "cat": "ca",
+      "div": "NAIA",
+      "conf": "Cal Pac",
+      "lat": 40.613,
+      "lng": -122.333,
+      "hc_name": "Gary Weaver",
+      "hc_email": "Gweaver@simpsonu.edu",
+      "ac_name": "Daniel Morales",
+      "ac_email": "dmorales@simpsonu.edu",
+      "facility": "https://simpsonredhawks.com/sports/2017/7/6/facilities.aspx",
+      "roster": "https://simpsonredhawks.com/sports/mens-soccer/roster",
+      "ig": "https://www.instagram.com/simpsonumsoccer/",
+      "desc": "カリフォルニア州の男子サッカー部。2026シーズンはNAIA・Cal Pac所属。2026-10-23に大学・競技連盟の公式公開情報を確認。 2027年秋からCascade Conferenceへの移籍予定。",
+      "ig_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "✓ Official/current contact verified",
+      "sources": {
+        "staff": "https://simpsonredhawks.com/sports/mens-soccer/coaches",
+        "cost": "https://simpsonu.edu/tuition-fees/"
+      },
+      "cost": [
+        42066,
+        13300,
+        "2026-27 official reference"
+      ],
+      "cost_basis": "Tuition and registration fees; room/food. Athletic fee ($1,132) and orientation ($310) excluded."
+    },
+    {
+      "id": 130,
+      "name": "Pacific Union College",
+      "cat": "ca",
+      "div": "NAIA",
+      "conf": "Cal Pac",
+      "lat": 38.56917,
+      "lng": -122.44083,
+      "hc_name": "Hernan Granados",
+      "hc_email": "hgranados@puc.edu",
+      "ac_name": "Kenneth Perez",
+      "ac_email": "krperz@puc.edu",
+      "facility": "https://www.pioneersathletics.com/About_PUC",
+      "roster": "https://www.pioneersathletics.com/sports/msoc/2026-27/roster",
+      "ig": "https://www.instagram.com/pucpioneers/",
+      "desc": "カリフォルニア州の男子サッカー部。2026シーズンはNAIA・Cal Pac所属。2026-10-23に大学・競技連盟の公式公開情報を確認。 Instagramは大学公式Athleticsアカウント。",
+      "ig_verified": false,
+      "staff_status": "verified",
+      "staff_status_label": "✓ Official/current contact verified",
+      "sources": {
+        "staff": "https://www.pioneersathletics.com/information/directory/index",
+        "cost": "https://www.puc.edu/admissions-aid/tuition-aid"
+      },
+      "cost": [
+        39465,
+        9990,
+        "2026-27 official reference"
+      ],
+      "cost_basis": "Published annual tuition/mandatory fees and housing/food; before aid; insurance, books, transport and personal costs excluded."
+    }
+  ],
+  "existing_corrections": {
+    "2": {
+      "conf": "Pac-12"
+    },
+    "3": {
+      "conf": "Pac-12"
+    },
+    "12": {
+      "conf": "Pac-12"
+    },
+    "13": {
+      "conf": "Mountain West"
+    },
+    "19": {
+      "div": "NCAA D3",
+      "conf": "SCIAC",
+      "desc": "2026年からNCAA Division IIIへ再分類中。SCIAC所属。既存のCRM連絡履歴を保持。"
+    },
+    "31": {
+      "conf": "GSAC"
+    },
+    "32": {
+      "div": "NCAA D2",
+      "conf": "PacWest"
+    },
+    "34": {
+      "conf": "Cal Pac"
+    }
+  },
+  "census_sources": [
+    "https://goccaa.org/standings.aspx?path=msoc",
+    "https://thepacwest.com/standings.aspx?path=msoc",
+    "https://gsacsports.org/standings.aspx?path=msoc",
+    "https://www.calpacathletics.com/sports/msoc/2026-27/schedule",
+    "https://bigwest.org/standings.aspx?path=msoc",
+    "https://wccsports.com/standings.aspx?path=msoc",
+    "https://pac-12.com/standings.aspx?standings=246",
+    "https://themw.com/standings.aspx?path=msoc",
+    "https://theacc.com/standings.aspx?path=msoc"
+  ],
+  "notes": [
+    "Costs are annual reference estimates before aid, not full cost of attendance; fees and units differ. 2027-28 rates not yet confirmed.",
+    "Life Pacific facility and official men's Instagram not verified; blanks are intentional.",
+    "Fresno Pacific AC, Point Loma HC, La Sierra AC and Life Pacific AC emails are not published/verified.",
+    "Pacific Union Instagram is the athletics account, not a verified team account.",
+    "Campus marker coordinates are approximate campus locations, not exact soccer fields.",
+    "SFSU and Sonoma State discontinued programs are excluded; existing APU history retained.",
+    "Shared official team inboxes may appear for both roles. Do not infer individual addresses."
+  ]
+}
