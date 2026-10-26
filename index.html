@@ -2611,6 +2611,34 @@ table.interest-table{width:100%;border-collapse:collapse;min-width:650px;font-si
 .gmail-reply-options[hidden]{display:none}.gmail-reply-options .gmail-field{margin:10px 0}
 #crm-ai-gmail-btn:disabled{opacity:.45;cursor:not-allowed}
 
+
+/* Clearly visible native checkboxes and full-row reply selection cards. */
+input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4ed8}
+.reply-stage-review label.reply-choice,.gmail-reply-options label.reply-choice{
+ display:flex;align-items:center;gap:12px;width:100%;min-height:64px;margin:12px 0 0;
+ padding:14px 16px;border:2px solid #94a3b8;border-radius:10px;background:#fff;
+ color:#334155;cursor:pointer;user-select:none;transition:background .15s,border-color .15s
+}
+.reply-choice input[type="checkbox"]{
+ -webkit-appearance:auto;appearance:auto;width:23px;height:23px;min-width:23px;
+ flex:0 0 23px;margin:0;padding:0;cursor:pointer;accent-color:#1d4ed8
+}
+.reply-choice-copy{flex:1;min-width:0;font-size:13px;font-weight:700;line-height:1.6}
+.reply-choice-address{display:block;overflow-wrap:anywhere;color:#475569;font-size:12px;font-weight:500}
+.reply-choice-state{flex:none;padding:5px 9px;border-radius:6px;background:#e2e8f0;color:#475569;font-size:11px;font-weight:800;white-space:nowrap}
+.reply-choice .choice-on{display:none}
+.reply-choice:has(input:checked){border-color:#2563eb!important;background:#eaf3ff!important;color:#173b73!important}
+.reply-choice:has(input:checked) .reply-choice-state{background:#1d4ed8;color:#fff}
+.reply-choice:has(input:checked) .choice-off{display:none}
+.reply-choice:has(input:checked) .choice-on{display:inline}
+.reply-choice:focus-within{outline:3px solid #93c5fd;outline-offset:3px}
+.reply-choice:hover{border-color:#2563eb!important}
+@media(max-width:480px){
+ .reply-stage-review label.reply-choice,.gmail-reply-options label.reply-choice{padding:12px;gap:10px;flex-wrap:wrap}
+ .reply-choice-copy{font-size:12px;flex-basis:calc(100% - 38px)}
+ .reply-choice-state{margin-left:33px}
+}
+
 </style>
 </head>
 <body>
@@ -2906,7 +2934,7 @@ table.interest-table{width:100%;border-collapse:collapse;min-width:650px;font-si
   </div>
  </div>
 </div>
-<div id="gmail-modal" class="gmail-modal" onclick="if(event.target===this)closeGmailComposer()"><div class="gmail-card" role="dialog" aria-modal="true"><div class="gmail-head"><div><h2 id="gmail-title">Gmail送信</h2><small id="gmail-subtitle"></small></div><button class="gmail-close" type="button" onclick="closeGmailComposer()">×</button></div><div class="gmail-body"><div id="gmail-error" class="gmail-error"></div><div id="gmail-note" class="gmail-note">送信前に宛先・件名・本文を確認してください。通常送信ではCRMを「送信済・返信待」に更新し、GmailのThread IDを保存します。</div><div class="gmail-field"><label for="gmail-to">宛先</label><input id="gmail-to" type="email" readonly></div><section id="gmail-reply-options" class="gmail-reply-options" hidden><p><b>現在のStage：</b><span id="gmail-reply-stage"></span></p><div class="gmail-field"><label for="gmail-cc">⑥ CC（自由入力）</label><input id="gmail-cc" type="text" maxlength="2000" placeholder="coach@example.edu, other@example.com" oninput="gmailReplyOptionsChanged()"><small>複数の宛先はカンマで区切って入力してください。</small></div><label class="reply-check"><input id="gmail-cc-agency" type="checkbox" onchange="gmailReplyOptionsChanged()">CCに recruit@withtyou-usa.com を追加</label><p id="gmail-cc-preview" aria-live="polite">CCなし</p><small>CCの相手にも本文が届きます。CCや転送先のリンクアクセスは、元のメールの関心度に含まれます。</small><label class="reply-check"><input id="gmail-reply-reviewed" type="checkbox" onchange="updateGmailReplyReview()">Stage・宛先・CC・件名・本文を確認しました</label></section><div class="gmail-field"><label for="gmail-subject">件名</label><input id="gmail-subject" type="text" oninput="gmailReplyOptionsChanged()"></div><div class="gmail-field"><label for="gmail-body">本文</label><textarea id="gmail-body" oninput="gmailReplyOptionsChanged()"></textarea></div><div class="gmail-actions"><button id="gmail-personalize-btn" class="gmail-secondary" type="button" onclick="personalizeGmailDraft()" hidden>✨ Personalize</button><button class="gmail-secondary" type="button" onclick="closeGmailComposer()">キャンセル</button><button id="gmail-send-btn" class="gmail-send" type="button" onclick="sendGmailMessage()">Gmailから送信</button></div></div></div></div>
+<div id="gmail-modal" class="gmail-modal" onclick="if(event.target===this)closeGmailComposer()"><div class="gmail-card" role="dialog" aria-modal="true"><div class="gmail-head"><div><h2 id="gmail-title">Gmail送信</h2><small id="gmail-subtitle"></small></div><button class="gmail-close" type="button" onclick="closeGmailComposer()">×</button></div><div class="gmail-body"><div id="gmail-error" class="gmail-error"></div><div id="gmail-note" class="gmail-note">送信前に宛先・件名・本文を確認してください。通常送信ではCRMを「送信済・返信待」に更新し、GmailのThread IDを保存します。</div><div class="gmail-field"><label for="gmail-to">宛先</label><input id="gmail-to" type="email" readonly></div><section id="gmail-reply-options" class="gmail-reply-options" hidden><p><b>現在のStage：</b><span id="gmail-reply-stage"></span></p><div class="gmail-field"><label for="gmail-cc">⑥ CC（自由入力）</label><input id="gmail-cc" type="text" maxlength="2000" placeholder="coach@example.edu, other@example.com" oninput="gmailReplyOptionsChanged()"><small>複数の宛先はカンマで区切って入力してください。</small></div><label class="reply-check reply-choice"><input id="gmail-cc-agency" type="checkbox" onchange="gmailReplyOptionsChanged()"><span class="reply-choice-copy">CCに追加する<span class="reply-choice-address">recruit@withtyou-usa.com</span></span><span class="reply-choice-state" aria-hidden="true"><span class="choice-off">追加しない</span><span class="choice-on">✓ 追加する</span></span></label><p id="gmail-cc-preview" aria-live="polite">CCなし</p><small>CCの相手にも本文が届きます。CCや転送先のリンクアクセスは、元のメールの関心度に含まれます。</small><label class="reply-check reply-choice"><input id="gmail-reply-reviewed" type="checkbox" onchange="updateGmailReplyReview()"><span class="reply-choice-copy">Stage・宛先・CC・件名・本文を確認しました</span><span class="reply-choice-state" aria-hidden="true"><span class="choice-off">未確認</span><span class="choice-on">✓ 確認済み</span></span></label></section><div class="gmail-field"><label for="gmail-subject">件名</label><input id="gmail-subject" type="text" oninput="gmailReplyOptionsChanged()"></div><div class="gmail-field"><label for="gmail-body">本文</label><textarea id="gmail-body" oninput="gmailReplyOptionsChanged()"></textarea></div><div class="gmail-actions"><button id="gmail-personalize-btn" class="gmail-secondary" type="button" onclick="personalizeGmailDraft()" hidden>✨ Personalize</button><button class="gmail-secondary" type="button" onclick="closeGmailComposer()">キャンセル</button><button id="gmail-send-btn" class="gmail-send" type="button" onclick="sendGmailMessage()">Gmailから送信</button></div></div></div></div>
 <aside id="crm-drawer" class="crm-drawer" aria-hidden="true">
 <div class="crm-head"><div><h2 id="crm-title">Recruiting CRM</h2><small id="crm-subtitle"></small></div><button class="crm-close" type="button" onclick="closeCrmDrawer()" aria-label="Close">×</button></div>
 <div class="crm-body"><div class="crm-grid">
@@ -2987,7 +3015,7 @@ table.interest-table{width:100%;border-collapse:collapse;min-width:650px;font-si
 <div class="crm-field full"><label for="crm-ai-rationale">生成理由</label><textarea id="crm-ai-rationale" style="min-height:80px" readonly></textarea></div>
 <div class="crm-field full"><label for="crm-ai-items">Coachから求められているもの</label><input id="crm-ai-items" type="text" readonly></div>
 <details class="reply-translation-section" open><summary>④ 日本語訳（確認用）</summary><p id="crm-reply-translation-note"></p><pre id="crm-reply-translation"></pre><button id="crm-reply-translate-btn" class="crm-secondary" type="button" onclick="translateCrmReplyDraft()">現在の原稿を日本語訳</button></details>
-<div class="reply-stage-review"><b>⑤ 現在のStage：<span id="crm-reply-stage-current"></span></b><label><input id="crm-reply-stage-reviewed" type="checkbox" onchange="updateAiGmailStageGate(crmCurrentContact)">現在のStageを確認しました</label><small>AIがStageの変更を提案した場合は、先に「Stageを変更／変更しない」を選択してください。</small></div>
+<div class="reply-stage-review"><b>⑤ 現在のStage：<span id="crm-reply-stage-current"></span></b><label class="reply-choice"><input id="crm-reply-stage-reviewed" type="checkbox" onchange="updateAiGmailStageGate(crmCurrentContact)"><span class="reply-choice-copy">現在のStageを確認しました</span><span class="reply-choice-state" aria-hidden="true"><span class="choice-off">未確認</span><span class="choice-on">✓ 確認済み</span></span></label><small>AIがStageの変更を提案した場合は、先に「Stageを変更／変更しない」を選択してください。</small></div>
 <div class="crm-actions">
 <button id="crm-ai-gmail-btn" class="gmail-btn" type="button" onclick="openAiReplyInGmailComposer()">Gmail作成画面へ進む</button>
 </div>
