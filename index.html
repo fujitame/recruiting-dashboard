@@ -2643,6 +2643,10 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
 .reply-status-row{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:10px 0;padding:10px 12px;border:1px solid #d6e2ef;border-radius:7px;background:#fff;color:#334155;font-size:12px}
 .reply-status-row>b{font-size:11px;color:#64748b;white-space:nowrap}
 .reply-status-row>span{font-weight:700;text-align:right;overflow-wrap:anywhere}
+
+.crm-reply-method-heading{margin:16px 0 9px;font-size:13px;color:#334155}
+.crm-reply-methods{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.crm-reply-methods>button{width:100%;min-height:46px;white-space:normal;line-height:1.5;padding:10px 12px;font-size:12px}
 </style>
 </head>
 <body>
@@ -2986,7 +2990,8 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
   <button id="crm-reply-analyze-btn" class="crm-secondary" type="button" onclick="analyzeCrmCoachReply()">コーチの返信を分析</button>
   <details id="crm-reply-analysis-section" class="reply-analysis-section"><summary>① コーチ返信の考察・分析</summary><div id="crm-reply-analysis" aria-live="polite"></div></details>
   <div class="crm-field full"><label for="crm-reply-direction">② 自身の考え・返信の方向性</label><textarea id="crm-reply-direction" rows="4" maxlength="4000" oninput="crmReplyDirectionChanged()" placeholder="例：予算の質問に回答し、映像をどう評価したか、2027年のサイドの募集状況を確認したい。"></textarea><small>希望する論点・質問・トーンを入力してください。未確定の条件は確認事項として扱います。</small></div>
-  <div class="crm-next-actions-buttons">
+  <h4 class="crm-reply-method-heading">③ 返信案の作成方法を選択</h4>
+  <div class="crm-next-actions-buttons crm-reply-methods">
    <button id="crm-ai-reply-btn" class="crm-secondary" type="button" onclick="generateAiReplyDraft()">✨ AI返信案を作成</button>
    <button id="crm-manual-reply-btn" class="crm-secondary" type="button" onclick="createManualCrmReply()">自身で返信を作成</button>
   </div>
@@ -3012,7 +3017,7 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
 </div>
 
 <div id="crm-ai-reply-panel" class="crm-history" hidden>
-<h3>③ 返信原稿</h3>
+<h3>返信原稿</h3>
 <div id="crm-ai-reply-status" class="crm-empty"></div>
 <div class="crm-field full"><label for="crm-ai-subject">件名</label><input id="crm-ai-subject" type="text" oninput="crmReplyEnglishChanged()"></div>
 <div class="crm-field full"><label for="crm-ai-body">本文</label><textarea id="crm-ai-body" style="min-height:220px" oninput="crmReplyEnglishChanged()"></textarea></div>
@@ -6584,7 +6589,7 @@ function updateCrmReplyActions(c){
  if(analyze){analyze.style.display=hasResponse&&active?'inline-block':'none';analyze.disabled=Boolean(s?.busy);analyze.textContent=s?.busy?'処理中…':'コーチの返信を分析';}
  if(direction)direction.disabled=!hasResponse;
  const ai=document.getElementById('crm-ai-reply-btn');
- if(ai&&ai.style.display!=='none'){ai.disabled=Boolean(s?.busy);ai.textContent=s?.busy?'処理中…':s?.origin==='ai'&&s.body?'AI返信案を再作成':'✨ AI返信案を作成';}
+ if(ai){ai.style.display=hasResponse&&active?'inline-block':'none';ai.disabled=Boolean(s?.busy)||!hasResponse||!active;ai.textContent=s?.busy?'AI返信案を作成（処理中…）':s?.origin==='ai'&&s.body?'AI返信案を再作成':'✨ AI返信案を作成';}
  const translation=document.getElementById('crm-reply-translate-btn');if(translation)translation.disabled=Boolean(s?.busy)||!s?.body;
 }
 async function requestCrmReplyAI(mode){
