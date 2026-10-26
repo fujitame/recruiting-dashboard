@@ -2,16 +2,19 @@ const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/st
 const gmail=stripTypeScriptTypes(fs.readFileSync('supabase/functions/_shared/followup-batch-gmail.ts','utf8').replace(/^export /gm,''));
 const tracking=stripTypeScriptTypes(fs.readFileSync('supabase/functions/_shared/recruiting-email-tracking.ts','utf8').replace(/^import .*;\n/gm,'').replace(/^export /gm,''));
 let writes=[],savedMessage,raw;
-const db={from:table=>{let payload;const q={insert:p=>{payload=p;writes.push({kind:'insert',payload:p});return q;},update:p=>{writes.push({kind:'update',payload:p});return q;},select:()=>q,eq:()=>q,single:async()=>({data:table==='recruiting_contacts'?{university_id:1,coach_email:'coach@example.com'}:{id:'tracking'},error:null}),then:fn=>Promise.resolve({error:null}).then(fn)};return q;}};
+const db={from:table=>{let payload;const q={insert:p=>{payload=p;writes.push({kind:'insert',payload:p});return q;},update:p=>{writes.push({kind:'update',payload:p});return q;},select:()=>q,eq:()=>q,single:async()=>({data:table==='recruiting_contacts'?{university_id:1,coach_email:'coach@example.com'}:table==='public_player_profile'?{highlight_video_1_id:'kG2G7fUz1SI',highlight_video_2_id:'mDg81hUIL8k'}:{id:'tracking'},error:null}),then:fn=>Promise.resolve({error:null}).then(fn)};return q;}};
 const c={crypto,TextEncoder,TextDecoder,Uint8Array,btoa,atob,encodeURIComponent,unescape,Date,createClient:()=>db,Deno:{env:{get:k=>({SUPABASE_URL:'https://fixture.supabase.co',SUPABASE_SERVICE_ROLE_KEY:'stub',FOLLOWUP_BATCH_WORKER_SECRET:'fixture-signing-secret'})[k]}},fetch:async(url,options)=>{if(url.endsWith('/messages/send')){raw=JSON.parse(options.body).raw;return{ok:true,json:async()=>({id:'sent',threadId:'thread'})};}return{ok:true,json:async()=>savedMessage};}};
 vm.createContext(c);vm.runInContext(gmail+'\n'+tracking,c);
 (async()=>{
- const args={contactId:'contact',ownerId:'owner',stage:'follow_up_2',body:'Dear Coach,\n\nMy Profile: https://fujitame.github.io/profile/\n\nVideo: https://youtu.be/example\n日本語 ⚽',reservationItemId:'reservation'};
+ const args={contactId:'contact',ownerId:'owner',stage:'follow_up_2',body:'Dear Coach,\n\nMy Profile: https://fujitame.github.io/profile/\n\nVideo: https://youtu.be/kG2G7fUz1SI\nSecond: https://www.youtube.com/watch?v=mDg81hUIL8k\nOther: https://youtu.be/abcdefghijk\n日本語 ⚽',reservationItemId:'reservation'};
  const prepared=await c.prepareEmailTracking(args);
  assert(!prepared.plain.includes('https://fujitame.github.io/profile/'));
  assert.match(prepared.plain,/event=profile&t=[0-9a-f]{64}/);
  assert.match(prepared.html,/event=open&amp;t=[0-9a-f]{64}/);
  assert.match(prepared.html,/View Recruiting Profile/);
+ assert.match(prepared.plain,/event=youtube&t=[0-9a-f]{64}&v=primary/);assert.match(prepared.plain,/&v=secondary/);
+ assert(prepared.plain.includes('https://youtu.be/abcdefghijk'));assert.match(prepared.html,/Watch Highlights on YouTube/);
+ assert.equal(writes[0].payload.video_targets.primary,'kG2G7fUz1SI');
  assert(!prepared.html.includes('<script>'));
  const again=await c.prepareEmailTracking(args);assert.equal(again.plain,prepared.plain);
  assert(!JSON.stringify(writes[0].payload).includes('event=profile'));assert.match(writes[0].payload.token_hash,/^[0-9a-f]{64}$/);

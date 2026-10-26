@@ -1,3 +1,4 @@
+import { prepareEmailTracking, recordEmailTrackingResult } from "../_shared/recruiting-email-tracking.ts";
 import { withSupabase } from "npm:@supabase/server@1";
 import { buildReplyRaw, verifyGmailSentBody } from "../_shared/followup-batch-gmail.ts";
 
@@ -98,6 +99,7 @@ export default {
     }
 
     let acceptedMessage: any = null;
+    let emailTracking:any=null;
     try {
       const supabase = ctx.supabase;
       const requestBody = await req.json();
@@ -154,9 +156,11 @@ export default {
         );
       }
 
-      const raw = buildReplyRaw({ to: contact.coach_email, subject, body, messageId: "", references: "" });
-
       const token = await googleAccessToken();
+      emailTracking=await prepareEmailTracking({contactId:contact.id,ownerId:contact.owner_user_id,stage:"initial",body,isTest:[900,901,902].includes(universityId)});
+      const raw = buildReplyRaw({ to: contact.coach_email, subject, body:emailTracking.plain,htmlBody:emailTracking.html,messageId: "", references: "" });
+
+      
 
       const result = await gmailSend(
         raw,
@@ -164,16 +168,18 @@ export default {
       );
 
       acceptedMessage = result;
+      await recordEmailTrackingResult(emailTracking.id,result.id,false);
 
       // Record an accepted send even if readback fails; never suggest a blind retry.
       let bodyVerified = false;
       try {
-        await verifyGmailSentBody(result.id, body, token);
+        await verifyGmailSentBody(result.id, emailTracking.plain, token);
         bodyVerified = true;
       } catch {
         console.warn("Initial email accepted by Gmail; sent body requires manual verification.");
       }
 
+      if(bodyVerified)bodyVerified=await recordEmailTrackingResult(emailTracking.id,result.id,true);
       const now = new Date();
       const sentAt = now.toISOString();
 
@@ -258,6 +264,7 @@ export default {
           null,
       });
     } catch (error) {
+      if(emailTracking)await recordEmailTrackingResult(emailTracking.id,acceptedMessage?.id||null,false);
       console.error(
         "Server initial Gmail send failed:",
         error,
