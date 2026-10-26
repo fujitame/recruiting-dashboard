@@ -17,6 +17,7 @@ vm.createContext(c);
 vm.runInContext('let crmCurrentContact=null,gmailCurrentContactId=null,gmailSendMode="initial",gmailTestMode=false,gmailInitialPersonalized=false,gmailInitialResearchIds=[],gmailFollowUpPersonalized=false,gmailFollowUpResearchIds=[],gmailConversationRequest=0;const crmAiReplyGeneratedFor=new Map(),crmAiStageSuggestionFor=new Map(),crmAiStageDecisionFor=new Map();'+policy+workspace+gate+open+'function resetConversationDraft(){resetReplyComposerOptions();gmailConversationRequest++;}',c);c.contactA=a;c.contactB=b;
 (async()=>{
  vm.runInContext('crmCurrentContact=contactA;restoreReplyWorkspace(contactA);',c);
+ get('crm-ai-reply-btn').style.display='none';c.updateCrmReplyActions(a);assert.equal(get('crm-ai-reply-btn').style.display,'inline-block');assert.equal(get('crm-manual-reply-btn').style.display,'inline-block');assert.equal(get('crm-ai-reply-btn').disabled,false);
  await c.createManualCrmReply();assert.equal(get('crm-ai-subject').value,'Re: Original subject');
  assert.equal(get('crm-ai-body').value,'Dear Coach Smith,\n\n\n\nBest regards,\nAkihiro Fujikawa\nHarcum College | Men\'s Soccer\nfujiakihiro8@gmail.com');
  assert.equal(calls.filter(r=>r.name==='recruiting-gmail-reply-send').length,1);
