@@ -1,3 +1,4 @@
+import { prepareEmailTracking, recordEmailTrackingResult } from "../_shared/recruiting-email-tracking.ts";
 import { withSupabase } from "npm:@supabase/server@1";
 import { buildReplyRaw, verifyGmailSentBody } from "../_shared/followup-batch-gmail.ts";
 
@@ -140,6 +141,7 @@ export default {
       return json({ ok: false, error: "POST required" }, 405);
     }
 
+    let emailTracking:any=null,acceptedMessage:any=null;
     try {
       const supabase = ctx.supabase;
       const requestBody = await req.json();
@@ -162,7 +164,7 @@ export default {
         await supabase
           .from("recruiting_contacts")
           .select(
-            "id,university_id,coach_name,coach_email,coach_role,contact_status,gmail_thread_id",
+            "id,owner_user_id,university_id,coach_name,coach_email,coach_role,contact_status,gmail_thread_id",
           )
           .eq("id", contactId)
           .single();
@@ -279,22 +281,26 @@ export default {
         );
       }
 
-      const raw = buildReplyRaw({ to: contact.coach_email, subject, body, messageId, references });
+      emailTracking=await prepareEmailTracking({contactId:contact.id,ownerId:contact.owner_user_id,stage:"reply",body,isTest:[900,901,902].includes(Number(contact.university_id))});
+      const raw = buildReplyRaw({ to: contact.coach_email, subject, body:emailTracking.plain,htmlBody:emailTracking.html,messageId, references });
       const result = await gmailSend(
         raw,
         contact.gmail_thread_id,
         token,
       );
 
+      acceptedMessage=result;
+      await recordEmailTrackingResult(emailTracking.id,result.id,false);
       // Gmail has accepted this message. A failed readback must never invite a resend.
       let bodyVerified = false;
       try {
-        await verifyGmailSentBody(result.id, body, token);
+        await verifyGmailSentBody(result.id, emailTracking.plain, token);
         bodyVerified = true;
       } catch {
         console.warn("Reply accepted by Gmail; sent body requires manual verification.");
       }
 
+      if(bodyVerified)bodyVerified=await recordEmailTrackingResult(emailTracking.id,result.id,true);
       // Gmail label sync.
       // Label failure must not turn a successful reply send
       // into a send failure.
@@ -323,6 +329,7 @@ export default {
           contact.gmail_thread_id,
       });
     } catch (error) {
+      if(emailTracking)await recordEmailTrackingResult(emailTracking.id,acceptedMessage?.id||null,false);
       console.error(
         "Phase 9-C Gmail reply send failed:",
         error,

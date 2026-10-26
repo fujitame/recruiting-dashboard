@@ -1,0 +1,22 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),{stripTypeScriptTypes}=require('node:module');
+let handler,calls=[];const db={rpc:async(name,args)=>{calls.push({name,args});return {error:null};},from:()=>{const q={select:()=>q,eq:()=>q,maybeSingle:async()=>({data:{video_targets:{primary:'abcdefghijk',secondary:'mDg81hUIL8k'}}})};return q;}};
+const c={Request,Response,URL,Uint8Array,atob,createClient:()=>db,RECRUITING_PROFILE_URL:'https://fujitame.github.io/profile/',trackingTokenHash:async()=> 'b'.repeat(64),Deno:{env:{get:()=> 'fixture'},serve:fn=>handler=fn}};
+vm.createContext(c);vm.runInContext(stripTypeScriptTypes(fs.readFileSync('supabase/functions/recruiting-email-events/index.ts','utf8').replace(/^import .*;\n/gm,'')),c);
+const base='https://fixture/?',token='a'.repeat(64),origin='https://fujitame.github.io';
+(async()=>{
+ let r=await handler(new Request(base+'event=profile&t='+token));assert.equal(r.headers.get('location'),origin+'/profile/#rt='+token);
+ assert.equal(calls.at(-1).name,'record_recruiting_email_signal');
+ const n=calls.length;await handler(new Request(base+'event=open&t='+token,{method:'HEAD'}));assert.equal(calls.length,n);
+ r=await handler(new Request(base+'event=youtube&t='+token+'&v=secondary&url=https://evil.example'));assert.equal(r.headers.get('location'),'https://www.youtube.com/watch?v=mDg81hUIL8k');
+ r=await handler(new Request(base+'event=youtube&t='+token+'&v=unknown'));assert.equal(r.headers.get('location'),'https://www.youtube.com/watch?v=kG2G7fUz1SI');
+ r=await handler(new Request(base+'event=profile&t=invalid'));assert.equal(r.headers.get('location'),origin+'/profile/');
+ const post=(body,headers={})=>handler(new Request(base,{method:'POST',headers:{origin,'content-type':'text/plain',...headers},body:JSON.stringify(body)}));
+ r=await post({token,event:'video_30s',video_slot:'primary'});assert.equal(r.status,204);assert.equal(calls.at(-1).name,'record_recruiting_engagement_signal');
+ await post({token,event:'video_start',video_slot:'primary'},{'user-agent':'SafeLinks scanner'});assert(calls.at(-1).args.p_automated);
+ assert.equal((await post({token,event:'video_30s',video_slot:'primary'},{origin:'https://evil.example'})).status,403);
+ assert.equal((await post({token:'invalid',event:'resume_click'})).status,400);
+ assert.equal((await post({token,event:'unknown'})).status,400);
+ assert.equal((await post({token,event:'resume_click',padding:'x'.repeat(2100)})).status,413);
+ assert.equal((await handler(new Request(base+'event=video_30s&t='+token))).status,404);
+ console.log('PASS: legacy links, fixed redirect targets, snapshot video slots, no HEAD writes, strong events only POST, origin/token/event/size validation and scanner classification.');
+})().catch(e=>{console.error(e);process.exitCode=1;});
