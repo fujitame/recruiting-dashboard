@@ -2532,6 +2532,69 @@ table td:nth-child(13) .crm-btn{
 .app-policy-links{display:flex;flex-wrap:wrap;justify-content:center;gap:7px 14px;padding:12px;font-size:11px;line-height:1.6}.app-policy-links a{color:#2b6cb0;text-decoration:underline;text-underline-offset:2px}.auth-card .app-policy-links{padding:8px 0 0}
 .badge-d3{background:#eef2f7;color:#475569}
 .mail-interest{display:inline-block;font-size:11px;line-height:1.4;padding:3px 7px;margin-top:4px;border:1px solid #cbd5e0;border-radius:12px;background:#f7fafc;color:#4a5568;cursor:pointer}.interest-4{background:#dcfce7;color:#166534}.interest-3{background:#dbeafe;color:#1e40af}.interest-2{background:#fef3c7;color:#92400e}.crm-engagement-row summary{cursor:pointer}.crm-engagement-row details{margin-top:6px}
+
+/* CRM workspace: one purpose per tab; disclosure only for detailed evidence. */
+[data-crm-panel][hidden],.interest-detail-row[hidden]{display:none!important}
+.crm-area-intro{padding-bottom:10px}
+.crm-workspace-tabs{display:flex;gap:6px;align-items:center;margin:0 16px 14px;padding:5px;background:#e8eef5;border:1px solid #d9e2ee;border-radius:12px;width:fit-content;max-width:calc(100% - 32px)}
+.crm-workspace-tabs button{border:0;border-radius:8px;background:transparent;color:#52647b;font-size:13px;font-weight:700;padding:11px 20px;cursor:pointer;white-space:nowrap}
+.crm-workspace-tabs button[aria-selected="true"]{background:#fff;color:#153c63;box-shadow:0 1px 5px #1e3a5f18}
+.crm-workspace-tabs button:focus-visible,.interest-bar-row:focus-visible,.interest-stat:focus-visible{outline:3px solid #3b82f6;outline-offset:2px}
+.crm-email-engagement{margin:0 16px 20px;padding:22px;border:1px solid #dce5ef;border-radius:14px;background:#fff;font-size:13px;color:#253b53}
+.crm-panel-heading,.interest-list-heading{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.crm-panel-heading h3{margin:0;font-size:20px;color:#17365a}
+.crm-panel-heading p{margin:7px 0 0;font-size:12px;color:#63758b}
+.crm-panel-heading .crm-action-btn{padding:9px 16px;font-size:12px}
+.interest-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:22px 0}
+.interest-stat{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:17px;background:#f7f9fc;color:#40556b;border:1px solid #e2e8f0;border-radius:10px;text-align:left;cursor:pointer;font:inherit}
+.interest-stat>span{font-size:12px;font-weight:700}.interest-stat>b{color:#183c60;font-size:30px;line-height:1.1}.interest-stat small{font-size:10px;font-weight:400;color:#738297}.interest-stat>b small{font-size:12px;margin-left:5px}
+.interest-stats>.interest-empty{grid-column:1/-1}
+.interest-stat:hover{border-color:#91b7df;background:#eff6ff}
+.interest-distribution{display:grid;grid-template-columns:minmax(150px,.7fr) minmax(300px,2fr);gap:12px 24px;border:1px solid #e4eaf1;border-radius:10px;padding:20px}
+.interest-distribution h4,.interest-list-heading h4{font-size:14px;margin:0 0 8px;color:#243f60}
+.interest-distribution p,.interest-chart-note{font-size:11px;color:#718096;line-height:1.6;margin:0}
+.interest-bars{display:flex;flex-direction:column;gap:10px}
+.interest-bar-row{display:grid;grid-template-columns:95px minmax(60px,1fr) 48px;gap:12px;align-items:center;border:0;background:transparent;color:#40556b;text-align:left;padding:2px;cursor:pointer;font:inherit}
+.interest-bar-row>span:first-child{font-size:12px}.interest-bar-row>b{font-size:13px;text-align:right}.interest-bar-row small{font-size:10px;font-weight:400;margin-left:3px}
+.interest-bar-track{height:12px;background:#edf1f6;border-radius:4px;overflow:hidden}
+.interest-bar-fill{display:block;height:100%;border-radius:4px;background:#94a3b8}.interest-bar-fill.rank-4{background:#19735b}.interest-bar-fill.rank-3{background:#2c85a1}.interest-bar-fill.rank-2{background:#527ac2}.interest-bar-fill.rank-1{background:#a8b3c5}.interest-bar-fill.rank-0{background:#d3dbe5}
+.interest-chart-note{grid-column:1/-1!important}
+.interest-guide{padding:13px 0;border-bottom:1px solid #e5ebf2;margin-bottom:22px}.interest-guide>summary{font-size:11px;color:#718096;font-weight:500;cursor:pointer}.interest-guide p{line-height:1.8;max-width:900px}
+.interest-list-heading h4{margin:0}.interest-list-heading span{color:#718096;font-size:11px}
+.interest-filters{display:flex;gap:12px;flex-wrap:wrap;align-items:end;margin:15px 0}
+.interest-filters label{display:flex;flex-direction:column;gap:6px;font-size:11px;color:#52677f}
+.interest-filters input,.interest-filters select,.crm-list-sort select{border:1px solid #d6e0eb;border-radius:7px;padding:9px 11px;font-size:12px;background:#fff;color:#243b53;min-height:38px}
+.interest-search{flex:1;min-width:200px}
+.crm-email-engagement #crm-email-engagement-list{max-height:none;overflow:visible}
+.interest-table-wrap{overflow:auto;border:1px solid #e2e8f0;border-radius:9px}
+table.interest-table{width:100%;border-collapse:collapse;min-width:650px;font-size:12px;table-layout:auto}
+.interest-table thead th{position:static;background:#f6f8fb;color:#64778e;font-size:11px;font-weight:600;white-space:nowrap}
+.interest-table th,.interest-table td{position:static;box-shadow:none;padding:14px 16px;border:0;border-bottom:1px solid #edf1f5;vertical-align:middle;text-align:left}
+.interest-table tbody th{width:35%;font-weight:600;background:#fff;color:#25415f}
+.interest-table tbody th b{font-size:13px}.interest-table th small{display:block;margin-top:5px;font-size:10px;font-weight:400;color:#8391a4}
+.interest-table .mail-interest{margin:0;padding:5px 9px;font-size:11px;white-space:nowrap}
+.interest-table tbody tr:not(.interest-detail-row):hover>th,.interest-table tbody tr:not(.interest-detail-row):hover>td{background:#f8fbff}
+.interest-detail-button,.interest-pagination button{border:1px solid #d7e1ec;border-radius:6px;background:#fff;color:#355779;padding:7px 11px;cursor:pointer;font-size:11px;white-space:nowrap}
+.interest-detail-button[aria-expanded="true"]{background:#eaf2fb;color:#174c80}
+.interest-detail-row>td{background:#f8fafd;padding:17px 22px}.interest-evidence{line-height:1.8;margin:0 0 12px!important}
+.interest-coach{padding:10px 13px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;margin-top:8px}.interest-coach summary{cursor:pointer;font-size:12px}.interest-coach summary small{display:block;color:#8190a2;font-size:11px;margin-top:5px;font-weight:400}
+.interest-pagination{display:flex;justify-content:flex-end;gap:14px;align-items:center;margin-top:15px;font-size:12px;color:#738297}.interest-pagination button:disabled{opacity:.4;cursor:default}
+.interest-empty{padding:28px;text-align:center;color:#8491a2;font-size:12px!important}
+.crm-list-sort{display:flex;align-items:center;gap:8px;font-size:11px;color:#657990}
+#crm-panel-overview{margin:0 6px}.crm-overview-actions{margin:10px;padding:12px 16px;background:#fff;border:1px solid #dfe7ef;border-radius:10px}.crm-overview-actions>summary{font-size:12px;font-weight:700;color:#3a526e;cursor:pointer}
+#crm-panel-overview .crm-kpi b{font-size:24px}#crm-panel-overview .crm-kpi span{font-size:11px}#crm-panel-overview .crm-contact-school b,#crm-panel-overview .crm-contact-coach b{font-size:12px}#crm-panel-overview .crm-contact-school span,#crm-panel-overview .crm-contact-coach span{font-size:10px}
+#crm-panel-overview .crm-contact-status span,#crm-panel-overview .crm-contact-detail{font-size:11px}
+#crm-panel-overview .crm-contact-row{padding:12px}.crm-contact-list-head h3{font-size:14px}.crm-contact-list-head span{font-size:11px}
+#crm-batch-followup{margin:0 16px 20px;padding:20px;border-radius:14px}#crm-batch-followup h3{font-size:17px}
+@media(max-width:760px){
+ .crm-workspace-tabs{margin:0 10px 12px;max-width:calc(100% - 20px);width:auto}.crm-workspace-tabs button{flex:1;padding:11px 8px;font-size:12px}
+ .crm-email-engagement{margin:0 10px 16px;padding:15px}.crm-panel-heading h3{font-size:17px}.interest-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:17px 0}.interest-stat{padding:13px}.interest-stat>b{font-size:26px}
+ .interest-distribution{grid-template-columns:1fr;padding:14px;gap:14px}.interest-filters{gap:8px}.interest-filters label{flex:1;min-width:140px}.interest-search{flex-basis:100%!important}
+ .interest-list-heading{align-items:start}.interest-bar-row{grid-template-columns:90px minmax(60px,1fr) 40px;gap:8px}
+ table.interest-table{min-width:0}.interest-table thead{display:none}.interest-table tbody{display:block}.interest-table tbody tr:not(.interest-detail-row){display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:15px;border-bottom:1px solid #e2e8f0}.interest-table tbody th{width:auto;grid-column:1/-1}.interest-table th,.interest-table td{padding:0;border:0}.interest-table td[data-label]:before{content:attr(data-label);display:block;color:#8291a3;font-size:10px;margin-bottom:4px}.interest-table tbody tr td:last-child{align-self:end;justify-self:end}.interest-detail-row{display:block;border-bottom:1px solid #e2e8f0}.interest-detail-row>td{display:block;padding:14px}
+ .crm-contact-list-head{flex-wrap:wrap}.crm-list-sort{width:100%;justify-content:flex-end}#crm-batch-followup{margin:0 10px 16px;padding:15px}
+}
+
 </style>
 </head>
 <body>
@@ -2665,14 +2728,18 @@ table td:nth-child(13) .crm-btn{
   <div class="workflow-area-head">
     <div>
       <h2>詳細CRM</h2>
-      <p>コーチ単位の連絡状況・履歴・Follow-up・Responseを確認します。</p>
+      <p>連絡状況、送信予約、メールへの反応をタブで切り替えて確認できます。</p>
     </div>
   </div>
 </section>
 
-<div data-recruiting-area="crm" class="crm-reservation-toolbar" hidden><button id="crm-reservation-toggle" class="crm-action-btn" type="button" aria-expanded="false" aria-controls="crm-batch-followup" onclick="toggleCrmReservations()">送信予約</button></div>
-<section id="crm-batch-followup" class="crm-batch-followup" data-recruiting-area="crm" aria-label="送信予約" hidden>
- <div style="display:flex;justify-content:space-between;align-items:center"><h3 id="crm-reservation-title">送信予約</h3><button class="crm-action-btn" type="button" onclick="toggleCrmReservations(false)">閉じる</button></div>
+<div class="crm-workspace-tabs" data-recruiting-area="crm" role="tablist" aria-label="詳細CRMの表示" onkeydown="crmWorkspaceTabKey(event)" hidden>
+ <button id="crm-tab-overview" role="tab" type="button" data-crm-tab="overview" aria-selected="true" aria-controls="crm-panel-overview" tabindex="0" onclick="switchCrmWorkspaceTab('overview')">連絡状況</button>
+ <button id="crm-tab-reservations" role="tab" type="button" data-crm-tab="reservations" aria-selected="false" aria-controls="crm-batch-followup" tabindex="-1" onclick="switchCrmWorkspaceTab('reservations')">送信予約</button>
+ <button id="crm-tab-interest" role="tab" type="button" data-crm-tab="interest" aria-selected="false" aria-controls="crm-panel-interest" tabindex="-1" onclick="switchCrmWorkspaceTab('interest')">メール関心度</button>
+</div>
+<section id="crm-batch-followup" class="crm-batch-followup" data-recruiting-area="crm" data-crm-panel="reservations" role="tabpanel" aria-labelledby="crm-tab-reservations" tabindex="0" hidden>
+ <div style="display:flex;justify-content:space-between;align-items:center"><h3 id="crm-reservation-title">送信予約</h3><button class="crm-action-btn" type="button" onclick="switchCrmWorkspaceTab('overview')">連絡状況へ</button></div>
  <p id="crm-reservation-description"></p>
  <label class="crm-reservation-search">対象Coachを検索<input type="search" placeholder="学校名・Coach名で検索" oninput="filterCrmReservationContacts(this.value)"></label>
  <div style="display:flex;justify-content:space-between;align-items:center"><b id="crm-batch-candidate-summary" aria-live="polite"></b><button class="crm-action-btn" type="button" onclick="refreshCrmReservations()">予約状況を更新</button></div>
@@ -2696,8 +2763,23 @@ table td:nth-child(13) .crm-btn{
  </div>
 </section>
 
-<details data-recruiting-area="crm" class="crm-email-engagement" hidden ontoggle="if(this.open)loadCrmEmailTracking()"><summary>送信メールへの関心度（学校別） <span id="crm-email-engagement-counts"></span></summary><button class="crm-action-btn" type="button" onclick="loadCrmEmailTracking()">更新</button><details><summary>計測の見方</summary><p>直近30日の反応を「強い反応／操作あり／リンク反応／参考情報のみ／未検知」で表示します。採用意向ではありません。画像・リンク取得には自動スキャンが混ざり得ます。操作・再生も本人確認の証明ではなく、転送先や共通アドレスのHC/ACは識別できません。未検知は未読の証明ではありません。新しい操作・再生計測は対応後のProfileアクセスが対象です。</p></details><div id="crm-email-engagement-list"></div></details>
-<div id="crm-summary" class="crm-summary" data-recruiting-area="crm" hidden aria-label="連絡状況サマリー">
+<section id="crm-panel-interest" data-recruiting-area="crm" data-crm-panel="interest" role="tabpanel" aria-labelledby="crm-tab-interest" tabindex="0" class="crm-email-engagement" hidden>
+ <div class="crm-panel-heading"><div><h3>送信メールへの関心度</h3><p id="crm-email-engagement-counts">直近30日 · 学校単位</p></div><button class="crm-action-btn" type="button" onclick="loadCrmEmailTracking()">更新</button></div>
+ <div id="crm-interest-summary" class="interest-stats"></div>
+ <div class="interest-distribution"><div><h4>反応の分布</h4><p>棒グラフを押すと、学校一覧を絞り込めます。</p></div><div id="crm-interest-chart" class="interest-bars"></div><p id="crm-interest-chart-note" class="interest-chart-note"></p></div>
+ <details class="interest-guide"><summary>この指標の見方・計測の限界</summary><p>「強い反応」はResumeのダウンロード操作、またはProfile内の表示中の累計30秒再生。「操作あり」はProfile操作・再生開始等。「リンク反応」はURL取得、「参考情報のみ」は画像取得です。採用意向ではありません。画像・リンク取得には自動スキャンが混ざり得ます。操作・再生も本人確認の証明ではなく、転送先や共通アドレスのHC/ACは識別できません。未検知は未読の証明ではありません。計測対応前の操作は遡れません。</p></details>
+ <div class="interest-list-heading"><h4>学校別一覧</h4><span id="crm-interest-results" aria-live="polite"></span></div>
+ <div class="interest-filters">
+  <label class="interest-search">学校・コーチ検索<input id="crm-interest-search" type="search" placeholder="学校名・Coach名・メール" oninput="changeCrmInterestFilters()"></label>
+  <label>対象<select id="crm-interest-scope" onchange="changeCrmInterestFilters()"><option value="tracked">計測メールのある学校</option><option value="all">すべての学校</option><option value="favorites">お気に入り校</option></select></label>
+  <label>関心度<select id="crm-interest-level" onchange="changeCrmInterestFilters()"><option value="all">すべて</option><option value="active">操作・再生を検知</option><option value="links">リンク反応以上</option><option value="4">強い反応</option><option value="3">操作あり</option><option value="2">リンク反応</option><option value="1">参考情報のみ</option><option value="0">未検知</option><option value="-1">計測対象なし・確認待ち</option></select></label>
+  <label>並び順<select id="crm-interest-sort" onchange="changeCrmInterestFilters()"><option value="interest">関心度が高い順</option><option value="interest-low">関心度が低い順</option><option value="latest">最終反応が新しい順</option><option value="name">学校名 A–Z</option><option value="sent">計測メールが多い順</option></select></label>
+ </div>
+ <div id="crm-email-engagement-list"></div>
+ <div class="interest-pagination"><button id="crm-interest-prev" type="button" onclick="changeCrmInterestPage(-1)">前へ</button><span id="crm-interest-page">1 / 1</span><button id="crm-interest-next" type="button" onclick="changeCrmInterestPage(1)">次へ</button></div>
+</section>
+<section id="crm-panel-overview" data-recruiting-area="crm" data-crm-panel="overview" role="tabpanel" aria-labelledby="crm-tab-overview" tabindex="0" hidden>
+<div id="crm-summary" class="crm-summary" aria-label="連絡状況サマリー">
 
 <div class="crm-summary-group crm-summary-overview">
  <div class="crm-kpi total"><button type="button" onclick="setCrmFilter('all')"><b id="crm-kpi-all-contacts">0</b><span>全コーチ</span></button></div>
@@ -2752,12 +2834,13 @@ table td:nth-child(13) .crm-btn{
  <span id="crm-summary-note" style="font-size:9px;color:#718096">連絡情報を読み込み中...</span>
 </div>
 </div>
-<section id="crm-contact-list-section" class="crm-contact-list-section" data-recruiting-area="crm" hidden>
+<section id="crm-contact-list-section" class="crm-contact-list-section">
   <div class="crm-contact-list-head">
     <div>
       <h3>CRM Contacts</h3>
       <span>一覧表示準備中</span>
     </div>
+    <label class="crm-list-sort">並び順<select id="crm-contact-sort" onchange="renderCrmContactList()"><option value="school">学校名 A–Z</option><option value="latest">最終連絡が新しい順</option><option value="due">Follow-up予定日が近い順</option><option value="interest">メール関心度が高い順</option></select></label>
   </div>
 
   <div id="crm-contact-list" class="crm-contact-list">
@@ -2765,7 +2848,9 @@ table td:nth-child(13) .crm-btn{
   </div>
 </section>
 
-<div id="crm-actions-panel" class="crm-actions-panel" data-recruiting-area="crm" hidden aria-label="CRM 次のアクション"><div class="crm-action-box"><h3>今日・期限超過</h3><div id="crm-due-list" class="crm-action-empty">読み込み中...</div></div><div class="crm-action-box"><h3>次のアクション</h3><div id="crm-next-list" class="crm-action-empty">読み込み中...</div></div></div>
+<details class="crm-overview-actions"><summary>今日・これからのアクション</summary><div id="crm-actions-panel" class="crm-actions-panel" aria-label="CRM 次のアクション"><div class="crm-action-box"><h3>今日・期限超過</h3><div id="crm-due-list" class="crm-action-empty">読み込み中...</div></div><div class="crm-action-box"><h3>次のアクション</h3><div id="crm-next-list" class="crm-action-empty">読み込み中...</div></div></div>
+</details>
+</section>
 <div class="cost-note" data-recruiting-area="schools"><b>費用(参考)</b>：学費は原則として2025年の比較データに基づく参考値（公立はOut-of-State、私立/NAIAは通常のTuition）。寮・食費相当は「On-campus living」の参考値です。TuitionとOn-campus livingの両方が確認できる学校は、<b>年間合計 = Tuition + On-campus living</b>として表示します。学校別に取得できなかったものは「School-specific ref pending」と表示。奨学金・編入後の実費・2026-27公式COAとは異なる場合があります。</div>
 
 <div class="main-content" data-recruiting-area="schools"><div id="map-view"></div><div id="list-view">
@@ -4017,7 +4102,7 @@ function toggleTestMode(){
  if(crmBatchPreparing)return;
  testMode=!testMode;
  document.getElementById("crm-email-engagement-counts").textContent="";document.getElementById("crm-email-engagement-list").replaceChildren();renderSchoolMailInterest();
- crmReservationsOpen=false;
+ crmReservationsOpen=crmWorkspaceTab==='reservations';crmInterestPage=1;
  const reservationSearch=document.querySelector('.crm-reservation-search input');if(reservationSearch)reservationSearch.value='';
  crmFollowUpBatchPrepared=[];
  crmFollowUpBatchDrafts.clear();
@@ -4679,11 +4764,8 @@ function crmBatchInCurrentMode(c){
  return testMode?CRM_BATCH_TEST_IDS.includes(id):(id>=1&&id<=900&&!isTestUniversityId(id));
 }
 function toggleCrmReservations(open){
- crmReservationsOpen=typeof open==='boolean'?open:!crmReservationsOpen;
- const panel=document.getElementById('crm-batch-followup');
- panel.hidden=!crmReservationsOpen||currentRecruitingArea!=='crm';panel.classList.toggle('is-active',crmReservationsOpen);
- document.getElementById('crm-reservation-toggle')?.setAttribute('aria-expanded',String(crmReservationsOpen));
- if(crmReservationsOpen)refreshCrmReservations();
+ const target=typeof open==='boolean'?open:crmWorkspaceTab!=='reservations';
+ switchCrmWorkspaceTab(target?'reservations':'overview');
 }
 function filterCrmReservationContacts(value){
  const q=String(value||'').trim().toLowerCase();
@@ -5353,6 +5435,31 @@ function crmFavoriteContacts(){
  const values=visibleCrmContacts();
  return testMode ? values : values.filter(crmIsFavoriteContact);
 }
+let crmWorkspaceTab='overview';
+function applyCrmWorkspaceVisibility(){
+ document.querySelectorAll('[data-crm-panel]').forEach(panel=>{panel.hidden=currentRecruitingArea!=='crm'||panel.dataset.crmPanel!==crmWorkspaceTab;});
+ document.querySelectorAll('[data-crm-tab]').forEach(tab=>{
+  const selected=tab.dataset.crmTab===crmWorkspaceTab;
+  tab.setAttribute('aria-selected',String(selected));tab.tabIndex=selected?0:-1;
+ });
+ const reservation=document.getElementById('crm-batch-followup');if(reservation)reservation.classList.toggle('is-active',crmWorkspaceTab==='reservations');
+}
+function switchCrmWorkspaceTab(tab){
+ if(!['overview','reservations','interest'].includes(tab))return;
+ crmWorkspaceTab=tab;crmReservationsOpen=tab==='reservations';
+ if(currentRecruitingArea!=='crm')switchRecruitingArea('crm');
+ applyCrmWorkspaceVisibility();
+ if(tab==='interest'){renderSchoolMailInterest();if(!crmTrackingLoaded&&!crmEmailTrackingError)loadCrmEmailTracking();}
+ if(tab==='reservations'&&!crmBatchReservationReady&&!crmBatchPreparing)loadCrmFollowUpBatchReservations();
+}
+function crmWorkspaceTabKey(event){
+ const tabs=Array.from(document.querySelectorAll('[data-crm-tab]')),current=tabs.indexOf(event.target);
+ if(current<0||!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
+ event.preventDefault();
+ const index=event.key==='Home'?0:event.key==='End'?tabs.length-1:(current+(event.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;
+ switchCrmWorkspaceTab(tabs[index].dataset.crmTab);tabs[index].focus();
+}
+
 let currentRecruitingArea='schools';
 
 function switchRecruitingArea(area){
@@ -5364,6 +5471,7 @@ function switchRecruitingArea(area){
   el.hidden=el.getAttribute('data-recruiting-area')!==area||(el.id==='crm-batch-followup'&&!crmReservationsOpen);
  });
 
+ applyCrmWorkspaceVisibility();
  document.querySelectorAll('.recruiting-nav-btn').forEach(btn=>{
   btn.classList.toggle('active',btn.dataset.area===area);
  });
@@ -5958,6 +6066,11 @@ function renderCrmContactList(){
    return regionOk && divOk && searchOk;
   })
   .sort((a,b)=>{
+   const sort=document.getElementById('crm-contact-sort')?.value||'school';
+   const date=value=>Date.parse(value)||0;
+   if(sort==='latest'){const difference=date(b.contact.last_contact_at)-date(a.contact.last_contact_at);if(difference)return difference;}
+   if(sort==='due'){const difference=(date(a.contact.follow_up_date)||Infinity)-(date(b.contact.follow_up_date)||Infinity);if(Number.isFinite(difference)&&difference)return difference;if(!a.contact.follow_up_date!==!b.contact.follow_up_date)return a.contact.follow_up_date?-1:1;}
+   if(sort==='interest'){const difference=emailInterest(crmSchoolMailRows(b.university.id),crmEngagementSignals).rank-emailInterest(crmSchoolMailRows(a.university.id),crmEngagementSignals).rank;if(difference)return difference;}
    const school=a.university.name.localeCompare(b.university.name);
    if(school!==0)return school;
    const order={head_coach:0,assistant_coach:1,other:2};
@@ -6809,37 +6922,111 @@ function emailInterest(rows,signals,now=Date.now()){
  return {rank,label:rank<0?ENGAGEMENT_LABELS.none:ENGAGEMENT_LABELS[rank],evidence:[...new Set(evidence)],latest,tracked:valid.length};
 }
 
-let crmEngagementSignals=[],crmTrackingLoaded=false;
+let crmEngagementSignals=[],crmTrackingLoaded=false,crmInterestPage=1;
+const crmInterestExpanded=new Set(),CRM_INTEREST_PAGE_SIZE=15;
 function crmSchoolMailRows(id){return crmEmailTracking.filter(r=>r.is_test===testMode&&Number(r.university_id||Array.from(crmContacts.values()).find(c=>c.id===r.contact_id)?.university_id)===Number(id))}
 function crmSchoolInterestHtml(id){
- if(crmEmailTrackingError)return '<small class="mail-interest">送信メールへの関心度：取得できません</small>';
- if(!crmTrackingLoaded)return '<small class="mail-interest">送信メールへの関心度：確認中</small>';
+ if(crmEmailTrackingError)return '<small class="mail-interest">メール関心度：取得できません</small>';
+ if(!crmTrackingLoaded)return '<small class="mail-interest">メール関心度：確認中</small>';
  const score=emailInterest(crmSchoolMailRows(id),crmEngagementSignals);
- return '<button type="button" class="mail-interest interest-'+Math.max(score.rank,0)+'" onclick="openSchoolMailInterest('+Number(id)+')" title="直近30日の反応。採用意向ではありません。">'+crmEsc(score.label)+'</button>';
+ return '<button type="button" class="mail-interest interest-'+Math.max(score.rank,0)+'" onclick="openSchoolMailInterest('+Number(id)+')" title="送信メールへの関心度。直近30日の反応・採用意向ではありません。">'+crmEsc(score.label)+'</button>';
 }
 function openSchoolMailInterest(id){
- switchRecruitingArea('crm');const area=document.querySelector('.crm-email-engagement');if(area){area.open=true;renderSchoolMailInterest();const school=document.getElementById('school-mail-interest-'+Number(id));if(school){school.open=true;school.scrollIntoView({block:'nearest'});}}
+ const scope=document.getElementById('crm-interest-scope');if(scope)scope.value='all';
+ const filter=document.getElementById('crm-interest-level');if(filter)filter.value='all';
+ const search=document.getElementById('crm-interest-search');if(search)search.value='';
+ crmInterestExpanded.add(testMode+':'+Number(id));
+ const schools=crmInterestFilteredSchools(crmInterestSchoolData());
+ const index=schools.findIndex(x=>Number(x.school.id)===Number(id));crmInterestPage=index<0?1:Math.floor(index/CRM_INTEREST_PAGE_SIZE)+1;
+ switchCrmWorkspaceTab('interest');
+ document.getElementById('school-mail-interest-'+Number(id))?.scrollIntoView({block:'nearest',behavior:'smooth'});
 }
 function updateSchoolMailInterestBadges(){
  document.querySelectorAll('[data-mail-interest-school]').forEach(el=>{el.innerHTML=crmSchoolInterestHtml(Number(el.dataset.mailInterestSchool));});
 }
+function crmInterestSchoolData(){
+ return visibleUniversities().map(school=>{
+  const rows=crmSchoolMailRows(school.id),score=emailInterest(rows,crmEngagementSignals);
+  return {school,rows,score};
+ });
+}
+function crmInterestFilteredSchools(schools){
+ const scope=document.getElementById('crm-interest-scope')?.value||'tracked',level=document.getElementById('crm-interest-level')?.value||'all',query=(document.getElementById('crm-interest-search')?.value||'').trim().toLowerCase(),sort=document.getElementById('crm-interest-sort')?.value||'interest';
+ return schools.filter(s=>{
+  if(scope==='tracked'&&!s.rows.length)return false;if(scope==='favorites'&&!s.school.fav)return false;
+  if(level==='active'&&s.score.rank<3)return false;if(level==='links'&&s.score.rank<2)return false;
+  if(level!=='all'&&level!=='active'&&level!=='links'&&s.score.rank!==Number(level))return false;
+  const names=Array.from(crmContacts.values()).filter(c=>Number(c.university_id)===Number(s.school.id)).map(c=>[c.coach_name,c.coach_email].join(' ')).join(' ');
+  return !query||[s.school.name,s.school.conf,s.school.div,names].join(' ').toLowerCase().includes(query);
+ }).sort((a,b)=>{
+  const name=a.school.name.localeCompare(b.school.name);
+  if(sort==='name')return name;
+  if(sort==='latest')return b.score.latest-a.score.latest||name;
+  if(sort==='sent')return b.score.tracked-a.score.tracked||name;
+  if(sort==='interest-low')return a.score.rank-b.score.rank||name;
+  return b.score.rank-a.score.rank||b.score.latest-a.score.latest||name;
+ });
+}
+function changeCrmInterestFilters(){crmInterestPage=1;renderSchoolMailInterest();}
+function filterCrmInterestLevel(level){
+ const select=document.getElementById('crm-interest-level');if(select)select.value=String(level);
+ const scope=document.getElementById('crm-interest-scope');if(scope)scope.value=level===-1?'all':'tracked';
+ changeCrmInterestFilters();
+}
+function changeCrmInterestPage(direction){crmInterestPage+=direction;renderSchoolMailInterest();}
+function toggleSchoolInterestDetail(id){
+ const key=testMode+':'+Number(id);
+ if(crmInterestExpanded.has(key))crmInterestExpanded.delete(key);else crmInterestExpanded.add(key);
+ renderSchoolMailInterest();
+}
+function crmInterestDate(timestamp){
+ return timestamp?new Date(timestamp).toLocaleString('ja-JP',{timeZone:'Asia/Tokyo',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
+}
+function crmSchoolInterestBreakdown(school,rows){
+ const groups=new Map();
+ for(const r of rows){
+  const contact=Array.from(crmContacts.values()).find(c=>c.id===r.contact_id);
+  const key=String(r.recipient_email||contact?.coach_email||r.contact_id).trim().toLowerCase();
+  if(!groups.has(key))groups.set(key,[]);groups.get(key).push(r);
+ }
+ if(!groups.size)return '<p class="interest-empty">計測対応メールがまだありません。</p>';
+ return Array.from(groups).map(([address,group])=>{
+  const contacts=Array.from(crmContacts.values()).filter(c=>Number(c.university_id)===Number(school.id)&&(String(c.coach_email||'').trim().toLowerCase()===address||group.some(r=>r.contact_id===c.id)));
+  const roles=Array.from(new Set(contacts.map(c=>c.coach_role==='head_coach'?'HC':c.coach_role==='assistant_coach'?'AC':'Coach'))).join('／')||'Coach',shared=contacts.length>1?' 共通アドレス（閲覧者は識別不可）':'';
+  const result=emailInterest(group,crmEngagementSignals);
+  return '<details class="interest-coach"><summary><b>'+crmEsc(roles+shared)+'</b> <span class="mail-interest interest-'+Math.max(result.rank,0)+'">'+crmEsc(result.label)+'</span><small>'+crmEsc(contacts.map(c=>c.coach_name).join(' / '))+'</small></summary><p>'+crmEsc(address)+'</p>'+crmEngagementRows(group)+'</details>';
+ }).join('');
+}
 function renderSchoolMailInterest(){
  const el=document.getElementById('crm-email-engagement-list');if(!el)return;
- const expanded=new Set(Array.from(el.querySelectorAll('details[id][open]')).map(x=>x.id));
- const schools=visibleUniversities().map(s=>({school:s,rows:crmSchoolMailRows(s.id)})).filter(s=>s.rows.length).map(s=>({...s,score:emailInterest(s.rows,crmEngagementSignals)})).sort((a,b)=>b.score.rank-a.score.rank||b.score.latest-a.score.latest||a.school.name.localeCompare(b.school.name));
- document.getElementById('crm-email-engagement-counts').textContent='· 計測対象 '+schools.length+'校／操作以上 '+schools.filter(s=>s.score.rank>=3).length+'校';
- el.innerHTML=schools.length?schools.map(({school,rows,score})=>{
-  const groups=new Map();
-  for(const r of rows){const key=String(r.recipient_email||Array.from(crmContacts.values()).find(c=>c.id===r.contact_id)?.coach_email||r.contact_id).trim().toLowerCase();if(!groups.has(key))groups.set(key,[]);groups.get(key).push(r);}
-  const parts=Array.from(groups).map(([address,group])=>{
-   const contacts=Array.from(crmContacts.values()).filter(c=>Number(c.university_id)===Number(school.id)&&(String(c.coach_email||'').trim().toLowerCase()===address||group.some(r=>r.contact_id===c.id)));
-   const roles=Array.from(new Set(contacts.map(c=>c.coach_role==='head_coach'?'HC':c.coach_role==='assistant_coach'?'AC':'Coach'))).join('／')||'Coach';
-   const shared=contacts.length>1?' 共通アドレス（閲覧者は識別不可）':'';
-   const result=emailInterest(group,crmEngagementSignals);
-   return '<details class="crm-engagement-row"><summary>'+crmEsc(roles+shared)+' · '+crmEsc(result.label)+'</summary><small>'+crmEsc(contacts.map(c=>c.coach_name).join(' / '))+'</small>'+crmEngagementRows(group)+'</details>';
-  }).join('');
-  return '<details id="school-mail-interest-'+school.id+'" '+(expanded.has('school-mail-interest-'+school.id)?'open ':'')+'class="crm-engagement-row"><summary><b>'+crmEsc(school.name)+'</b> <span class="mail-interest interest-'+Math.max(score.rank,0)+'">'+crmEsc(score.label)+'</span></summary><p>'+crmEsc(score.evidence.join(' ／ ')||'直近30日の反応は検知されていません。')+'</p>'+parts+'</details>';
- }).join(''):'<div class="crm-empty">このモードの計測対象メールはありません。</div>';
+ const all=crmInterestSchoolData(),measured=all.filter(s=>s.score.tracked>0),counts=[0,0,0,0,0];
+ measured.forEach(s=>counts[s.score.rank]++);
+ const countLabel=document.getElementById('crm-email-engagement-counts');if(countLabel)countLabel.textContent='直近30日 · '+(testMode?'Test Mode':'本番')+' · 学校単位';
+ const summary=document.getElementById('crm-interest-summary');
+ if(summary){
+  if(crmEmailTrackingError||!crmTrackingLoaded)summary.innerHTML='<p class="interest-empty">'+(crmEmailTrackingError?'計測情報を取得できません。「更新」をお試しください。':'ログイン後に計測情報を読み込みます。')+'</p>';
+  else summary.innerHTML=[
+   {label:'計測メールのある学校',count:measured.length,note:'送信確認済み',level:'all'},
+   {label:'操作・再生を検知',count:counts[3]+counts[4],note:'操作あり／強い反応',level:'active'},
+   {label:'リンク反応以上',count:counts[2]+counts[3]+counts[4],note:'自動スキャンが混ざる場合あり',level:'links'},
+   {label:'画像取得のみ',count:counts[1],note:'人の開封は未確認',level:1}
+  ].map(k=>'<button type="button" class="interest-stat" onclick="filterCrmInterestLevel(\''+k.level+'\')"><span>'+k.label+'</span><b>'+k.count+'<small>校</small></b><small>'+k.note+'</small></button>').join('');
+ }
+ const chart=document.getElementById('crm-interest-chart');
+ if(chart)chart.innerHTML=crmTrackingLoaded&&!crmEmailTrackingError?[4,3,2,1,0].map(rank=>'<button type="button" class="interest-bar-row" onclick="filterCrmInterestLevel('+rank+')" aria-label="'+crmEsc(ENGAGEMENT_LABELS[rank])+' '+counts[rank]+'校で絞り込む"><span>'+crmEsc(ENGAGEMENT_LABELS[rank])+'</span><span class="interest-bar-track"><i class="interest-bar-fill rank-'+rank+'" style="width:'+(measured.length?Math.round(counts[rank]/measured.length*100):0)+'%"></i></span><b>'+counts[rank]+'<small>校</small></b></button>').join(''):'<p class="interest-empty">データ取得後に分布を表示します。</p>';
+ const meta=document.getElementById('crm-interest-chart-note');if(meta)meta.textContent='送信確認済みの計測メールがある'+measured.length+'校の内訳。各校の最も強い反応で1区分に集計。';
+ const schools=crmInterestFilteredSchools(all),pages=Math.max(1,Math.ceil(schools.length/CRM_INTEREST_PAGE_SIZE));
+ crmInterestPage=Math.max(1,Math.min(crmInterestPage,pages));
+ const start=(crmInterestPage-1)*CRM_INTEREST_PAGE_SIZE,shown=schools.slice(start,start+CRM_INTEREST_PAGE_SIZE);
+ const status=document.getElementById('crm-interest-results');if(status)status.textContent=schools.length?schools.length+'校中 '+(start+1)+'–'+(start+shown.length)+'校':'該当する学校はありません';
+ const pageLabel=document.getElementById('crm-interest-page');if(pageLabel)pageLabel.textContent=crmInterestPage+' / '+pages;
+ const previous=document.getElementById('crm-interest-prev');if(previous)previous.disabled=crmInterestPage===1;
+ const next=document.getElementById('crm-interest-next');if(next)next.disabled=crmInterestPage===pages;
+ if(crmEmailTrackingError||!crmTrackingLoaded){el.innerHTML='<div class="interest-empty">'+(crmEmailTrackingError?'計測情報を取得できません。':'計測情報を読み込み中。ログイン状態を確認してください。')+'</div>';updateSchoolMailInterestBadges();return;}
+ el.innerHTML=shown.length?'<div class="interest-table-wrap"><table class="interest-table"><thead><tr><th scope="col">学校</th><th scope="col">送信メールへの関心度</th><th scope="col">最終反応 <small>日本時間</small></th><th scope="col">計測メール</th><th scope="col">内訳</th></tr></thead><tbody>'+shown.map(({school,rows,score})=>{
+  const open=crmInterestExpanded.has(testMode+':'+school.id),key=Number(school.id),label=rows.length&&score.rank<0?'送信確認待ち':score.label;
+  return '<tr id="school-mail-interest-'+key+'"><th scope="row"><b>'+crmEsc(school.name)+'</b><small>'+crmEsc(school.div||'')+' · '+crmEsc(school.conf||'')+'</small></th><td data-label="関心度"><span class="mail-interest interest-'+Math.max(score.rank,0)+'">'+crmEsc(label)+'</span></td><td data-label="最終反応">'+crmEsc(crmInterestDate(score.latest))+'</td><td data-label="計測メール">'+score.tracked+'通</td><td><button type="button" class="interest-detail-button" aria-expanded="'+open+'" aria-controls="school-interest-detail-'+key+'" onclick="toggleSchoolInterestDetail('+key+')">'+(open?'閉じる':'HC・AC内訳')+'</button></td></tr><tr id="school-interest-detail-'+key+'" class="interest-detail-row"'+(open?'':' hidden')+'><td colspan="5"><p class="interest-evidence">'+crmEsc(score.evidence.join(' ／ ')||'直近30日の反応は検知されていません。')+'</p>'+crmSchoolInterestBreakdown(school,rows)+'</td></tr>';
+ }).join('')+'</tbody></table></div>':'<div class="interest-empty">条件に合う学校はありません。検索や絞り込みを変更してください。</div>';
  updateSchoolMailInterestBadges();
 }
 
@@ -6875,9 +7062,7 @@ async function loadCrmEmailTracking(){
   renderSchoolMailInterest();
  }catch(error){
   if(request!==crmEmailTrackingRequest)return;crmEmailTrackingError=true;
-  document.getElementById('crm-email-engagement-counts').textContent='· 取得できません';
-  document.getElementById('crm-email-engagement-list').innerHTML='<div class="crm-empty">計測情報を取得できません。更新してください。</div>';
-  updateSchoolMailInterestBadges();
+  renderSchoolMailInterest();
  }
  renderCrmContactEngagement();
 }
