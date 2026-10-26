@@ -6991,7 +6991,7 @@ function crmSchoolInterestBreakdown(school,rows){
  }
  if(!groups.size)return '<p class="interest-empty">計測対応メールがまだありません。</p>';
  return Array.from(groups).map(([address,group])=>{
-  const contacts=Array.from(crmContacts.values()).filter(c=>Number(c.university_id)===Number(school.id)&&(String(c.coach_email||'').trim().toLowerCase()===address||group.some(r=>r.contact_id===c.id)));
+  const contacts=Array.from(crmContacts.values()).filter(c=>Number(c.university_id)===Number(school.id)&&(String(c.coach_email||'').trim().toLowerCase()===address||group.some(r=>r.contact_id===c.id))).sort((a,b)=>(a.coach_role==='head_coach'?0:1)-(b.coach_role==='head_coach'?0:1));
   const roles=Array.from(new Set(contacts.map(c=>c.coach_role==='head_coach'?'HC':c.coach_role==='assistant_coach'?'AC':'Coach'))).join('／')||'Coach',shared=contacts.length>1?' 共通アドレス（閲覧者は識別不可）':'';
   const result=emailInterest(group,crmEngagementSignals);
   return '<details class="interest-coach"><summary><b>'+crmEsc(roles+shared)+'</b> <span class="mail-interest interest-'+Math.max(result.rank,0)+'">'+crmEsc(result.label)+'</span><small>'+crmEsc(contacts.map(c=>c.coach_name).join(' / '))+'</small></summary><p>'+crmEsc(address)+'</p>'+crmEngagementRows(group)+'</details>';
@@ -7598,16 +7598,7 @@ async function saveDataToCloud(){
   SYNC_STATE.recruiting.status='ok';SYNC_STATE.recruiting.updatedAt=new Date().toISOString();updateBanner('');
  }catch(err){console.error('Cloud save error:',err);SYNC_STATE.recruiting.status='error';updateBanner('⚠️ クラウド保存失敗（ローカルに一時保存）')}
 }
-document.addEventListener('DOMContentLoaded',()=>{
-    const actions=document.getElementById('crm-actions-panel');
-    const contacts=document.getElementById('crm-contact-list-section');
-
-    if(actions&&contacts&&contacts.parentNode){
-        contacts.parentNode.insertBefore(actions,contacts);
-    }
-
-    initializeAuth();
-});
+document.addEventListener('DOMContentLoaded',()=>{initializeAuth();});
 window.addEventListener('resize',()=>{if(currentView==='map'&&map)map.invalidateSize()});
 </script>
 <footer><nav class="app-policy-links" aria-label="アプリ情報"><a href="about.html">アプリについて</a><a href="privacy.html">プライバシーポリシー</a><a href="terms.html">利用規約</a></nav></footer>

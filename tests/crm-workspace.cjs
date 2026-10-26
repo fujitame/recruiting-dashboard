@@ -36,5 +36,6 @@ vm.runInContext('switchCrmWorkspaceTab("reservations");switchCrmWorkspaceTab("ov
 vm.runInContext('currentRecruitingArea="schools";applyCrmWorkspaceVisibility();',c);assert(panels.every(p=>p.hidden));
 vm.runInContext('testMode=true;crmInterestPage=1;',c);elements['crm-interest-search'].value='';vm.runInContext('switchCrmWorkspaceTab("interest");',c);assert(list().includes('Test School'));assert(!list().includes('School 01'));
 let prevented=false;c.event={target:tabs[2],key:'ArrowLeft',preventDefault:()=>prevented=true};vm.runInContext('crmWorkspaceTabKey(event);',c);assert(prevented);assert(tabs[1].focused);assert.deepEqual(panels.map(p=>p.hidden),[true,false,true]);
+assert(!html.includes('contacts.parentNode.insertBefore(actions,contacts)'),'startup must keep actions inside its disclosure');
 assert.equal((html.match(/role="tabpanel"/g)||[]).length,3);assert.equal((html.match(/data-crm-tab=/g)||[]).length,3);
 console.log('PASS: isolated CRM tabs, keyboard navigation, 5-category school chart, sent-only summary, sorting/search/filter/pagination, expandable shared HC/AC, and Test Mode separation. No network writes.');
