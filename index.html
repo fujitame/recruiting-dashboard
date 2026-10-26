@@ -2595,6 +2595,22 @@ table.interest-table{width:100%;border-collapse:collapse;min-width:650px;font-si
  .crm-contact-list-head{flex-wrap:wrap}.crm-list-sort{width:100%;justify-content:flex-end}#crm-batch-followup{margin:0 10px 16px;padding:15px}
 }
 
+
+/* Coach reply workspace */
+.crm-reply-workspace>button{margin-bottom:10px}
+.crm-reply-workspace textarea{min-height:110px}
+.crm-reply-workspace small,.reply-stage-review small,.gmail-reply-options small{display:block;font-size:11px;color:#718096;line-height:1.6;margin:6px 0}
+.reply-analysis-section,.reply-translation-section{margin:12px 0;padding:12px;background:#f8fafc;border:1px solid #dfe7ef;border-radius:8px;color:#334155}
+.reply-analysis-section summary,.reply-translation-section summary{font-size:12px;font-weight:700;cursor:pointer}
+#crm-reply-analysis{font-size:12px;line-height:1.8;margin-top:10px}#crm-reply-analysis p{white-space:pre-wrap;font-size:12px;margin:5px 0 12px}
+#crm-reply-translation{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;font-size:12px;line-height:1.8}
+#crm-reply-translation-note{font-size:11px;color:#64748b;line-height:1.6}
+.reply-stage-review,.gmail-reply-options{padding:12px;background:#eff6ff;border:1px solid #cddff1;border-radius:8px;margin:12px 0;font-size:12px;color:#334155}
+.reply-stage-review label,.reply-check{display:flex;align-items:flex-start;gap:8px;color:#334155;font-size:12px;line-height:1.6;margin-top:10px}
+.reply-stage-review input[type=checkbox],.reply-check input[type=checkbox]{width:auto;flex:none;margin:3px 0}
+.gmail-reply-options[hidden]{display:none}.gmail-reply-options .gmail-field{margin:10px 0}
+#crm-ai-gmail-btn:disabled{opacity:.45;cursor:not-allowed}
+
 </style>
 </head>
 <body>
@@ -2767,7 +2783,7 @@ table.interest-table{width:100%;border-collapse:collapse;min-width:650px;font-si
  <div class="crm-panel-heading"><div><h3>送信メールへの関心度</h3><p id="crm-email-engagement-counts">直近30日 · 学校単位</p></div><button class="crm-action-btn" type="button" onclick="loadCrmEmailTracking()">更新</button></div>
  <div id="crm-interest-summary" class="interest-stats"></div>
  <div class="interest-distribution"><div><h4>反応の分布</h4><p>棒グラフを押すと、学校一覧を絞り込めます。</p></div><div id="crm-interest-chart" class="interest-bars"></div><p id="crm-interest-chart-note" class="interest-chart-note"></p></div>
- <details class="interest-guide"><summary>この指標の見方・計測の限界</summary><p>「強い反応」はResumeのダウンロード操作、またはProfile内の表示中の累計30秒再生。「操作あり」はProfile操作・再生開始等。「リンク反応」はURL取得、「参考情報のみ」は画像取得です。採用意向ではありません。画像・リンク取得には自動スキャンが混ざり得ます。操作・再生も本人確認の証明ではなく、転送先や共通アドレスのHC/ACは識別できません。未検知は未読の証明ではありません。計測対応前の操作は遡れません。</p></details>
+ <details class="interest-guide"><summary>この指標の見方・計測の限界</summary><p>「強い反応」はResumeのダウンロード操作、またはProfile内の表示中の累計30秒再生。「操作あり」はProfile操作・再生開始等。「リンク反応」はURL取得、「参考情報のみ」は画像取得です。採用意向ではありません。画像・リンク取得には自動スキャンが混ざり得ます。操作・再生も本人確認の証明ではなく、CC・転送先や共通アドレスのHC/ACは識別できません。未検知は未読の証明ではありません。計測対応前の操作は遡れません。</p></details>
  <div class="interest-list-heading"><h4>学校別一覧</h4><span id="crm-interest-results" aria-live="polite"></span></div>
  <div class="interest-filters">
   <label class="interest-search">学校・コーチ検索<input id="crm-interest-search" type="search" placeholder="学校名・Coach名・メール" oninput="changeCrmInterestFilters()"></label>
@@ -2890,7 +2906,7 @@ table.interest-table{width:100%;border-collapse:collapse;min-width:650px;font-si
   </div>
  </div>
 </div>
-<div id="gmail-modal" class="gmail-modal" onclick="if(event.target===this)closeGmailComposer()"><div class="gmail-card" role="dialog" aria-modal="true"><div class="gmail-head"><div><h2 id="gmail-title">Gmail送信</h2><small id="gmail-subtitle"></small></div><button class="gmail-close" type="button" onclick="closeGmailComposer()">×</button></div><div class="gmail-body"><div id="gmail-error" class="gmail-error"></div><div id="gmail-note" class="gmail-note">送信前に宛先・件名・本文を確認してください。通常送信ではCRMを「送信済・返信待」に更新し、GmailのThread IDを保存します。</div><div class="gmail-field"><label for="gmail-to">宛先</label><input id="gmail-to" type="email" readonly></div><div class="gmail-field"><label for="gmail-subject">件名</label><input id="gmail-subject" type="text"></div><div class="gmail-field"><label for="gmail-body">本文</label><textarea id="gmail-body"></textarea></div><div class="gmail-actions"><button id="gmail-personalize-btn" class="gmail-secondary" type="button" onclick="personalizeGmailDraft()" hidden>✨ Personalize</button><button class="gmail-secondary" type="button" onclick="closeGmailComposer()">キャンセル</button><button id="gmail-send-btn" class="gmail-send" type="button" onclick="sendGmailMessage()">Gmailから送信</button></div></div></div></div>
+<div id="gmail-modal" class="gmail-modal" onclick="if(event.target===this)closeGmailComposer()"><div class="gmail-card" role="dialog" aria-modal="true"><div class="gmail-head"><div><h2 id="gmail-title">Gmail送信</h2><small id="gmail-subtitle"></small></div><button class="gmail-close" type="button" onclick="closeGmailComposer()">×</button></div><div class="gmail-body"><div id="gmail-error" class="gmail-error"></div><div id="gmail-note" class="gmail-note">送信前に宛先・件名・本文を確認してください。通常送信ではCRMを「送信済・返信待」に更新し、GmailのThread IDを保存します。</div><div class="gmail-field"><label for="gmail-to">宛先</label><input id="gmail-to" type="email" readonly></div><section id="gmail-reply-options" class="gmail-reply-options" hidden><p><b>現在のStage：</b><span id="gmail-reply-stage"></span></p><div class="gmail-field"><label for="gmail-cc">⑥ CC（自由入力）</label><input id="gmail-cc" type="text" maxlength="2000" placeholder="coach@example.edu, other@example.com" oninput="gmailReplyOptionsChanged()"><small>複数の宛先はカンマで区切って入力してください。</small></div><label class="reply-check"><input id="gmail-cc-agency" type="checkbox" onchange="gmailReplyOptionsChanged()">CCに recruit@withtyou-usa.com を追加</label><p id="gmail-cc-preview" aria-live="polite">CCなし</p><small>CCの相手にも本文が届きます。CCや転送先のリンクアクセスは、元のメールの関心度に含まれます。</small><label class="reply-check"><input id="gmail-reply-reviewed" type="checkbox" onchange="updateGmailReplyReview()">Stage・宛先・CC・件名・本文を確認しました</label></section><div class="gmail-field"><label for="gmail-subject">件名</label><input id="gmail-subject" type="text" oninput="gmailReplyOptionsChanged()"></div><div class="gmail-field"><label for="gmail-body">本文</label><textarea id="gmail-body" oninput="gmailReplyOptionsChanged()"></textarea></div><div class="gmail-actions"><button id="gmail-personalize-btn" class="gmail-secondary" type="button" onclick="personalizeGmailDraft()" hidden>✨ Personalize</button><button class="gmail-secondary" type="button" onclick="closeGmailComposer()">キャンセル</button><button id="gmail-send-btn" class="gmail-send" type="button" onclick="sendGmailMessage()">Gmailから送信</button></div></div></div></div>
 <aside id="crm-drawer" class="crm-drawer" aria-hidden="true">
 <div class="crm-head"><div><h2 id="crm-title">Recruiting CRM</h2><small id="crm-subtitle"></small></div><button class="crm-close" type="button" onclick="closeCrmDrawer()" aria-label="Close">×</button></div>
 <div class="crm-body"><div class="crm-grid">
@@ -2932,11 +2948,15 @@ table.interest-table{width:100%;border-collapse:collapse;min-width:650px;font-si
    <button id="crm-followup-btn" class="gmail-btn" type="button" onclick="crmCurrentContact&&openFollowUpComposer(crmCurrentContact.id)">Follow-upメールを作成</button>
   </div>
  </section>
- <section class="crm-action-section">
-  <h3>Coachへの返信案</h3>
-  <p>記録されたCoachの返信をもとに、AIが返信案を作成します。送信前に内容を確認できます。</p>
+ <section class="crm-action-section crm-reply-workspace">
+  <h3>Coachへの返信を準備</h3>
+  <p>保存済みの返信を分析し、ご自身の考えを整理してから原稿を作成できます。</p>
+  <button id="crm-reply-analyze-btn" class="crm-secondary" type="button" onclick="analyzeCrmCoachReply()">コーチの返信を分析</button>
+  <details id="crm-reply-analysis-section" class="reply-analysis-section"><summary>① コーチ返信の考察・分析</summary><div id="crm-reply-analysis" aria-live="polite"></div></details>
+  <div class="crm-field full"><label for="crm-reply-direction">② 自身の考え・返信の方向性</label><textarea id="crm-reply-direction" rows="4" maxlength="4000" oninput="crmReplyDirectionChanged()" placeholder="例：予算の質問に回答し、映像をどう評価したか、2027年のサイドの募集状況を確認したい。"></textarea><small>希望する論点・質問・トーンを入力してください。未確定の条件は確認事項として扱います。</small></div>
   <div class="crm-next-actions-buttons">
    <button id="crm-ai-reply-btn" class="crm-secondary" type="button" onclick="generateAiReplyDraft()">✨ AI返信案を作成</button>
+   <button id="crm-manual-reply-btn" class="crm-secondary" type="button" onclick="createManualCrmReply()">自身で返信を作成</button>
   </div>
  </section>
  <section class="crm-action-section">
@@ -2960,14 +2980,16 @@ table.interest-table{width:100%;border-collapse:collapse;min-width:650px;font-si
 </div>
 
 <div id="crm-ai-reply-panel" class="crm-history" hidden>
-<h3>✨ AI返信案</h3>
+<h3>③ 返信原稿</h3>
 <div id="crm-ai-reply-status" class="crm-empty"></div>
-<div class="crm-field full"><label for="crm-ai-subject">件名</label><input id="crm-ai-subject" type="text"></div>
-<div class="crm-field full"><label for="crm-ai-body">本文</label><textarea id="crm-ai-body" style="min-height:220px"></textarea></div>
+<div class="crm-field full"><label for="crm-ai-subject">件名</label><input id="crm-ai-subject" type="text" oninput="crmReplyEnglishChanged()"></div>
+<div class="crm-field full"><label for="crm-ai-body">本文</label><textarea id="crm-ai-body" style="min-height:220px" oninput="crmReplyEnglishChanged()"></textarea></div>
 <div class="crm-field full"><label for="crm-ai-rationale">生成理由</label><textarea id="crm-ai-rationale" style="min-height:80px" readonly></textarea></div>
 <div class="crm-field full"><label for="crm-ai-items">Coachから求められているもの</label><input id="crm-ai-items" type="text" readonly></div>
+<details class="reply-translation-section" open><summary>④ 日本語訳（確認用）</summary><p id="crm-reply-translation-note"></p><pre id="crm-reply-translation"></pre><button id="crm-reply-translate-btn" class="crm-secondary" type="button" onclick="translateCrmReplyDraft()">現在の原稿を日本語訳</button></details>
+<div class="reply-stage-review"><b>⑤ 現在のStage：<span id="crm-reply-stage-current"></span></b><label><input id="crm-reply-stage-reviewed" type="checkbox" onchange="updateAiGmailStageGate(crmCurrentContact)">現在のStageを確認しました</label><small>AIがStageの変更を提案した場合は、先に「Stageを変更／変更しない」を選択してください。</small></div>
 <div class="crm-actions">
-<button id="crm-ai-gmail-btn" class="gmail-btn" type="button" onclick="openAiReplyInGmailComposer()">Gmail編集画面へ移す</button>
+<button id="crm-ai-gmail-btn" class="gmail-btn" type="button" onclick="openAiReplyInGmailComposer()">Gmail作成画面へ進む</button>
 </div>
 </div>
 
@@ -3001,6 +3023,7 @@ let gmailFollowUpResearchIds=[];
 let gmailConversationRequest=0;
 let gmailConversationSnapshot=null;
 function resetConversationDraft(){
+ resetReplyComposerOptions();
  gmailConversationRequest++;
  gmailConversationSnapshot=null;
  const subject=document.getElementById('gmail-subject');
@@ -3494,85 +3517,40 @@ function openGmailComposer(id,role){
 }
 function openGmailComposerFromCrm(){if(!crmCurrentContact)return;openGmailComposer(crmCurrentContact.university_id,crmCurrentContact.coach_role)}
 
-function openAiReplyInGmailComposer(){
- resetConversationDraft();
- const c=crmCurrentContact;
-
- if(c?.id){
-  const suggestion=crmAiStageSuggestionFor.get(c.id);
-  const decision=crmAiStageDecisionFor.get(c.id);
-
-  if(
-   suggestion &&
-   suggestion.stage &&
-   suggestion.stage!=='none' &&
-   decision==='pending'
-  ){
-   alert(
-    '先にAI Recruiting Stage提案について、\n'+
-    '「Stageを変更」または「変更しない」を選択してください。'
-   );
-   return;
-  }
- }
- if(!c){
-  alert('CRM Contactが選択されていません。');
-  return;
- }
-
- const subject=document.getElementById('crm-ai-subject')?.value.trim()||'';
- const body=document.getElementById('crm-ai-body')?.value||'';
-
- if(!subject||!body){
-  alert('先にAI返信案を作成してください。');
-  return;
- }
-
- if(!c.coach_email){
-  alert('このCoachのメールアドレスが登録されていません。');
-  return;
- }
-
- gmailTestMode=false;
- gmailSendMode='reply';
- gmailInitialPersonalized=false;
- gmailInitialResearchIds=[];
- gmailFollowUpPersonalized=false;
- gmailFollowUpResearchIds=[];
- const personalizeBtn=document.getElementById('gmail-personalize-btn');
- if(personalizeBtn)personalizeBtn.hidden=true;
- gmailCurrentContactId=c.id;
-
- const u=universities.find(x=>Number(x.id)===Number(c.university_id));
- const roleLabel=
-  c.coach_role==='head_coach'?'HC':
-  c.coach_role==='assistant_coach'?'AC':
-  'Other';
-
- document.getElementById('gmail-title').textContent=
-  (u?.name||'Recruiting')+' — AI返信案';
-
- document.getElementById('gmail-subtitle').textContent=
-  roleLabel+': '+(c.coach_name||'Coach')+' → '+c.coach_email;
-
- const note=document.getElementById('gmail-note');
- if(note){
-  note.textContent=
-   'AI返信案をGmail編集画面へ移しました。内容を確認・編集してから「Gmailで返信」を押してください。自動送信は行いません。';
- }
-
- document.getElementById('gmail-to').value=c.coach_email;
- document.getElementById('gmail-subject').value=subject;
- document.getElementById('gmail-body').value=body;
-
- const sendBtn=document.getElementById('gmail-send-btn');
- if(sendBtn){
-  sendBtn.disabled=false;
-  sendBtn.textContent='Gmailで返信';
- }
-
- showGmailError('');
- document.getElementById('gmail-modal').classList.add('open');
+async function openAiReplyInGmailComposer(){
+ const c=crmCurrentContact;if(!c?.id){alert('CRM Contactを選択してください。');return;}
+ captureCrmReplyWorkspace();const s=replyWorkspace(c);
+ const suggestion=crmAiStageSuggestionFor.get(c.id),decision=crmAiStageDecisionFor.get(c.id);
+ if(suggestion?.stage&&suggestion.stage!=='none'&&decision==='pending'){alert('Stage提案の「Stageを変更／変更しない」を先に選択してください。');return;}
+ if(!document.getElementById('crm-reply-stage-reviewed')?.checked){alert('現在のStageを確認してください。');return;}
+ if(!s.subject.trim()||!s.body.trim()||s.sent){alert('返信原稿を作成してください。');return;}
+ if(c.contact_status!=='responded'||!c.coach_email||!c.gmail_thread_id){alert('Coachの宛先と返信可能なGmailスレッドを確認してください。');return;}
+ const request=++crmReplyWorkspaceRequest;s.busy=true;s.notice='Gmailスレッドの件名と返信先を確認中…';renderReplyWorkspace();
+ try{
+  const {data,error}=await supabaseClient.functions.invoke('recruiting-gmail-reply-send',{body:{action:'prepare',contact_id:c.id}});
+  if(request!==crmReplyWorkspaceRequest||crmCurrentContact?.id!==c.id)return;
+  if(error||!data?.ok)throw new Error(data?.error||error?.message||'Gmailスレッドを確認できませんでした。');
+  if(s.replyMessageId&&s.replyMessageId!==data.reply_message_id)throw new Error('Coachから新しい返信があります。CRMで最新の返信を確認し、原稿を作り直してください。');
+  resetConversationDraft();gmailTestMode=false;gmailSendMode='reply';gmailCurrentContactId=c.id;
+  gmailInitialPersonalized=false;gmailInitialResearchIds=[];gmailFollowUpPersonalized=false;gmailFollowUpResearchIds=[];
+  const personalize=document.getElementById('gmail-personalize-btn');if(personalize)personalize.hidden=true;
+  const u=universities.find(x=>Number(x.id)===Number(c.university_id));
+  document.getElementById('gmail-title').textContent=(u?.name||'Recruiting')+' — '+(s.origin==='manual'?'手動返信':'AI返信案');
+  document.getElementById('gmail-subtitle').textContent=(c.coach_role==='head_coach'?'HC':'AC')+': '+c.coach_name+' → '+c.coach_email;
+  document.getElementById('gmail-to').value=c.coach_email;
+  document.getElementById('gmail-subject').value=data.subject;
+  document.getElementById('gmail-body').value=s.body;
+  document.getElementById('gmail-note').textContent='元メールの件名で同じGmailスレッドへ返信します。Stage・宛先・CC・本文を確認してください。送信ボタンを押すまで送信しません。';
+  document.getElementById('gmail-reply-options').hidden=false;
+  document.getElementById('gmail-cc').value=s.cc;document.getElementById('gmail-cc-agency').checked=s.agency;
+  document.getElementById('gmail-reply-reviewed').checked=false;
+  document.getElementById('gmail-reply-stage').textContent=recruitingStageLabel(getRecruitingSchoolStage(c.university_id));
+  gmailReplyContext={contactId:c.id,source:s.source,stage:getRecruitingSchoolStage(c.university_id),replyMessageId:data.reply_message_id,origin:s.origin};
+  const send=document.getElementById('gmail-send-btn');send.textContent='Gmailで返信';send.disabled=true;
+  showGmailError('');updateGmailReplyReview();document.getElementById('gmail-modal').classList.add('open');
+  s.notice='Gmail作成画面で最終確認できます。';
+ }catch(error){if(request===crmReplyWorkspaceRequest)s.notice=error?.message||'Gmail作成画面を開けませんでした。';}
+ finally{if(request===crmReplyWorkspaceRequest&&crmCurrentContact?.id===c.id){s.busy=false;renderReplyWorkspace();}}
 }
 
 function closeGmailComposer(){
@@ -3619,8 +3597,15 @@ async function sendAiGmailReply(){
  }
 
 
+ let cc;
+ try{cc=gmailReplyCc();}catch(error){showGmailError(error.message);return;}
+ if(!gmailReplyContext||gmailReplyContext.contactId!==contact.id||!document.getElementById('gmail-reply-reviewed')?.checked){showGmailError('Stage・宛先・CC・件名・本文を確認し、チェックしてください。');return;}
+ if(gmailReplyContext.stage!==getRecruitingSchoolStage(contact.university_id)){document.getElementById('gmail-reply-stage').textContent=recruitingStageLabel(getRecruitingSchoolStage(contact.university_id));gmailReplyContext.stage=getRecruitingSchoolStage(contact.university_id);gmailReplyOptionsChanged();showGmailError('Stageが更新されています。確認し直してください。');return;}
+ if(gmailReplyContext.origin==='manual'&&body.trim()===manualRecruitingReply(contact.coach_name,CURRENT_PLAYER).trim()){showGmailError('宛名と署名の間に返信本文を入力してください。');return;}
+ const replyContext={...gmailReplyContext},sendEpoch=gmailConversationRequest;
+ const active=()=>gmailConversationRequest===sendEpoch&&gmailSendMode==='reply'&&gmailCurrentContactId===contact.id;
  if(!confirm(
-  '学校 ID '+contact.university_id+' の '+contact.coach_email+
+  'Stage: '+recruitingStageLabel(gmailReplyContext.stage)+'\nCC: '+(cc.join(', ')||'なし')+'\n\n学校 ID '+contact.university_id+' の '+contact.coach_email+
   ' に、この返信を実際に送信します。よろしいですか？'
  )){
   return;
@@ -3637,7 +3622,9 @@ async function sendAiGmailReply(){
     body:{
      contact_id:contact.id,
      subject,
-     body
+     body,
+     cc,
+     reply_message_id:replyContext.replyMessageId
     }
    }
   );
@@ -3650,13 +3637,14 @@ async function sendAiGmailReply(){
    throw new Error(detail||error.message||'Gmail返信送信に失敗しました。');
   }
 
-  if(data?.sent)gmailAccepted=true;
+  if(data?.sent){gmailAccepted=true;if(active())gmailReplyAccepted=true;const state=crmReplyWorkspaceStates.get(contact.id);if(state)state.sent=true;}
 
   if(!data?.ok){
    throw new Error(data?.error||'Gmail返信送信に失敗しました。');
   }
 
-  gmailAccepted=true;
+  gmailAccepted=true;if(active())gmailReplyAccepted=true;
+  const state=crmReplyWorkspaceStates.get(contact.id);if(state)state.sent=true;
 
   const now=new Date().toISOString();
 
@@ -3687,7 +3675,7 @@ async function sendAiGmailReply(){
    saved.data.university_id+':'+saved.data.coach_key,
    saved.data
   );
-  crmCurrentContact=saved.data;
+  if(crmCurrentContact?.id===contact.id)crmCurrentContact=saved.data;
 
   const history=await supabaseClient
    .from('recruiting_contact_history')
@@ -3696,7 +3684,7 @@ async function sendAiGmailReply(){
     contact_id:saved.data.id,
     event_type:'reply_sent',
     event_at:now,
-    note:'AI返信案を確認・編集後にGmail返信送信: '+subject+(data.body_verified===false?' — 本文未検証。再送せずGmailを確認':''),
+    note:(replyContext.origin==='manual'?'手動返信':'AI返信案')+'を確認・編集後にGmail返信送信: '+subject+' / CC: '+(cc.join(', ')||'なし')+(data.body_verified===false?' — 本文未検証。再送せずGmailを確認':''),
     to_status:'responded',
     gmail_message_id:data.gmail_message_id||null,
     gmail_message_at:now
@@ -3715,13 +3703,13 @@ async function sendAiGmailReply(){
    'Thread ID: '+(data.gmail_thread_id||'確認できませんでした')
   );
 
-  closeGmailComposer();
+  if(active())closeGmailComposer();
 
  }catch(err){
   console.error('AI Gmail reply send failed:',err);
-  showGmailError((gmailAccepted?'Gmailは送信を受け付けています。再送せずGmailとCRMを確認してください。 ':'')+(err.message||'Gmail返信送信に失敗しました。'));
+  if(active())showGmailError((gmailAccepted?'Gmailは送信を受け付けています。再送せずGmailとCRMを確認してください。 ':'')+(err.message||'Gmail返信送信に失敗しました。'));
  }finally{
-  if(document.getElementById('gmail-modal')?.classList.contains('open')){
+  if(active()&&document.getElementById('gmail-modal')?.classList.contains('open')){
    btn.disabled=gmailAccepted;
    btn.textContent=gmailAccepted?'送信済み — Gmailを確認':'Gmailで返信';
   }
@@ -6147,6 +6135,7 @@ function crmStatusLabel(status){return CRM_STATUS_LABELS[status]||status||'未�
 function crmDateOnlyLocal(v){if(!v)return null;const d=new Date(v+'T00:00:00');return Number.isNaN(d.getTime())?null:d}
 function crmActionRecord(c){const u=universities.find(x=>x.id===Number(c.university_id));if(!u)return null;const role=c.coach_role==='head_coach'?'head_coach':'assistant_coach';return {contact:c,university:u,role}}
 function updateCrmNextActions(c){
+ try{
  const initialBtn=document.getElementById('crm-initial-btn');
  const followBtn=document.getElementById('crm-followup-btn');
  const conversationFollowBtn=document.getElementById('crm-conversation-followup-btn');
@@ -6300,6 +6289,7 @@ function updateCrmNextActions(c){
  }
 
  note.textContent='現在のCRM状態を確認してください。';
+ }finally{updateCrmReplyActions(c);}
 }
 
 function normalizeResearch(rows) {
@@ -6457,12 +6447,191 @@ function openCrmContactDrawer(contactId){
  document.getElementById('crm-backdrop').classList.add('open');
  document.getElementById('crm-drawer').classList.add('open');
  document.getElementById('crm-drawer').setAttribute('aria-hidden','false');
+ restoreReplyWorkspace(c);
  renderCrmAiStageSuggestion(c);
  loadCrmSchoolReapproach(c);
  loadCrmHistory(c.id);
  renderCrmContactEngagement();loadCrmEmailTracking();
 }
 function openCrmFromContact(contactId){openCrmContactDrawer(contactId)}
+
+const REPLY_AGENCY_CC="recruit@withtyou-usa.com";
+function normalizeReplyCc(value,primary=""){
+ if(value==null||value==="")return [];
+ if(typeof value!=="string"&&!Array.isArray(value))throw new Error("CCはメールアドレスをカンマ区切りで入力してください。");
+ const raw=Array.isArray(value)?value:[value];
+ if(raw.some(v=>typeof v!=="string"||/[\r\n]/.test(v)))throw new Error("CCに改行や不正な値を含めることはできません。");
+ if(raw.join(",").length>2000)throw new Error("CCが長すぎます。");
+ const entries=raw.flatMap(v=>v.split(/[,;]/)).map(v=>v.trim()).filter(Boolean);
+ if(entries.length>10)throw new Error("CCは10件以内で入力してください。");
+ const valid=/^[a-zA-Z0-9.!#$%&'*+/=?^_{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9.-]*[a-zA-Z0-9])?\.[a-zA-Z]{2,63}$/;
+ if(entries.some(v=>!valid.test(v)||v.includes("..")))throw new Error("CCは表示名を付けず、メールアドレスのみ入力してください。");
+ return [...new Set(entries.map(v=>v.toLowerCase()))].filter(v=>v!==String(primary).trim().toLowerCase());
+}
+function recruitingReplySubject(subject){
+ const clean=String(subject||"").replace(/[\r\n]/g," ").trim();
+ return /^re\s*:/i.test(clean)?clean:"Re: "+(clean||"Recruiting — Akihiro Fujikawa");
+}
+function manualRecruitingReply(coach,player){
+ const name=String(coach||"").replace(/[\r\n]/g," ").trim().split(/\s+/).pop()||"Coach";
+ const greeting=name==="Coach"?"Dear Coach,":"Dear Coach "+name+",";
+ return greeting+"\n\n\n\nBest regards,\n"+String(player.name||"Akihiro Fujikawa")+"\n"+String(player.school||"Harcum College")+" | Men's Soccer\n"+String(player.email||"fujiakihiro8@gmail.com");
+}
+
+
+const crmReplyWorkspaceStates=new Map();
+let crmReplyWorkspaceRequest=0,gmailReplyContext=null,gmailReplyAccepted=false;
+function replyWorkspace(c=crmCurrentContact){
+ if(!c?.id)return null;
+ const source=String(c.coach_response||'');
+ let state=crmReplyWorkspaceStates.get(c.id);
+ if(!state||state.source!==source){
+  state={source,direction:'',analysis:null,subject:'',body:'',translation:'',translationSubject:'',translatedBody:'',origin:'manual',cc:'',agency:false,busy:false,notice:''};
+  crmReplyWorkspaceStates.set(c.id,state);
+  crmAiStageSuggestionFor.delete(c.id);crmAiStageDecisionFor.delete(c.id);
+ }
+ return state;
+}
+function captureCrmReplyWorkspace(){
+ const s=replyWorkspace();if(!s)return;
+ s.direction=document.getElementById('crm-reply-direction')?.value||'';
+ s.subject=document.getElementById('crm-ai-subject')?.value||'';
+ s.body=document.getElementById('crm-ai-body')?.value||'';
+}
+function crmReplyDirectionChanged(){
+ captureCrmReplyWorkspace();crmReplyWorkspaceRequest++;
+ const s=replyWorkspace();if(s){s.busy=false;s.notice='方針を更新しました。AI返信案は再作成して反映してください。';}
+ renderReplyWorkspace();
+}
+function crmReplyEnglishChanged(){
+ captureCrmReplyWorkspace();crmReplyWorkspaceRequest++;const state=replyWorkspace();if(state)state.busy=false;const check=document.getElementById('crm-reply-stage-reviewed');if(check)check.checked=false;
+ renderReplyTranslation();updateAiGmailStageGate(crmCurrentContact);
+}
+function renderReplyTranslation(){
+ const s=replyWorkspace(),el=document.getElementById('crm-reply-translation'),note=document.getElementById('crm-reply-translation-note');
+ if(el)el.textContent=s?.translation?(s.translationSubject?s.translationSubject+'\n\n':'')+s.translation:'AI返信案の作成後、ここに日本語訳を表示します。';
+ if(note)note.textContent=s?.translation&&(s.body!==s.translatedBody||s.subject!==s.translatedSubject)?'英文が編集されています。表示中の日本語訳は編集前の内容です。必要なら「現在の原稿を日本語訳」で更新してください。':'日本語訳は確認用です。送信するのは英文のみです。';
+}
+function refreshReplyStageDisplays(c=crmCurrentContact){
+ if(!c)return;
+ const stage=getRecruitingSchoolStage(c.university_id),label=recruitingStageLabel(stage);
+ const el=document.getElementById('crm-reply-stage-current');
+ if(el){if(el.dataset.stage!==stage){const check=document.getElementById('crm-reply-stage-reviewed');if(check)check.checked=false;}el.dataset.stage=stage;el.textContent=label;}
+ const composer=document.getElementById('gmail-reply-stage');if(composer&&gmailCurrentContactId===c.id)composer.textContent=label;
+}
+function renderReplyWorkspace(){
+ const c=crmCurrentContact,s=replyWorkspace(c);if(!s)return;
+ const panel=document.getElementById('crm-ai-reply-panel');if(panel)panel.hidden=!Boolean(s.body||s.busy||s.notice);
+ const status=document.getElementById('crm-ai-reply-status');if(status)status.textContent=s.notice||'';
+ const analysis=document.getElementById('crm-reply-analysis');
+ if(analysis){
+  const a=s.analysis;
+  analysis.replaceChildren();
+  if(a){
+   const section=(title,content)=>{const part=document.createElement('div'),label=document.createElement('b'),text=document.createElement('p');label.textContent=title;text.textContent=Array.isArray(content)?content.join('\n'):String(content||'該当情報なし');part.append(label,text);analysis.append(part);};
+   section('要点',a.summary_ja);section('返信に明記された事実',a.confirmed_facts_ja);section('解釈・考察（推測）',a.interpretation_ja);section('未確認事項',a.uncertainties_ja);section('次の対応',a.recommended_actions_ja);
+  }else analysis.textContent='「コーチの返信を分析」で、事実・解釈・未確認事項を分けて確認できます。';
+ }
+ renderReplyTranslation();refreshReplyStageDisplays(c);updateCrmReplyActions(c);updateAiGmailStageGate(c);
+}
+function restoreReplyWorkspace(c){
+ const s=replyWorkspace(c);crmReplyWorkspaceRequest++;s.busy=false;
+ const direction=document.getElementById('crm-reply-direction');if(direction)direction.value=s.direction;
+ const subject=document.getElementById('crm-ai-subject'),body=document.getElementById('crm-ai-body');if(subject)subject.value=s.subject;if(body)body.value=s.body;
+ const check=document.getElementById('crm-reply-stage-reviewed');if(check)check.checked=false;
+ renderReplyWorkspace();
+}
+function updateCrmReplyActions(c){
+ const s=replyWorkspace(c),hasResponse=Boolean(String(c?.coach_response||'').trim()),active=!['closed','not_a_fit'].includes(c?.contact_status);
+ const manual=document.getElementById('crm-manual-reply-btn'),analyze=document.getElementById('crm-reply-analyze-btn'),direction=document.getElementById('crm-reply-direction');
+ if(manual){manual.style.display=hasResponse&&active?'inline-block':'none';manual.disabled=Boolean(s?.busy)||!c?.coach_email||!c?.gmail_thread_id||c?.contact_status!=='responded';}
+ if(analyze){analyze.style.display=hasResponse&&active?'inline-block':'none';analyze.disabled=Boolean(s?.busy);analyze.textContent=s?.busy?'処理中…':'コーチの返信を分析';}
+ if(direction)direction.disabled=!hasResponse;
+ const ai=document.getElementById('crm-ai-reply-btn');
+ if(ai&&ai.style.display!=='none'){ai.disabled=Boolean(s?.busy);ai.textContent=s?.busy?'処理中…':s?.origin==='ai'&&s.body?'AI返信案を再作成':'✨ AI返信案を作成';}
+ const translation=document.getElementById('crm-reply-translate-btn');if(translation)translation.disabled=Boolean(s?.busy)||!s?.body;
+}
+async function requestCrmReplyAI(mode){
+ const c=crmCurrentContact;if(!c?.id||!String(c.coach_response||'').trim()){alert('保存済みのCoach返信がありません。');return;}
+ captureCrmReplyWorkspace();const s=replyWorkspace(c);if(s.busy)return;
+ if(mode==='draft'&&s.body&&!confirm('現在の英文原稿を新しいAI案に置き換えます。よろしいですか？'))return;
+ const request=++crmReplyWorkspaceRequest,source=s.source,direction=s.direction,english=s.body,subject=s.subject;
+ const active=()=>request===crmReplyWorkspaceRequest&&crmCurrentContact?.id===c.id&&replyWorkspace(c)===s&&s.source===source;
+ s.busy=true;s.notice=mode==='analysis'?'Coachの返信を分析中…':mode==='translate'?'現在の英文を日本語に翻訳中…':'分析とご自身の方針を踏まえて返信案を作成中…';renderReplyWorkspace();
+ try{
+  const {data,error}=await supabaseClient.functions.invoke('recruiting-ai-reply-draft',{body:{contact_id:c.id,university_id:Number(c.university_id),coach_role:c.coach_role,mode,user_direction:direction,analysis_ja:JSON.stringify(s.analysis||{}),draft_body:english,draft_subject:subject,expected_coach_response:source}});
+  if(!active())return;
+  if(error||!data?.ok||!data?.draft)throw new Error(data?.error||error?.message||'AI処理に失敗しました。');
+  const draft=data.draft;
+  if(mode==='translate'){
+   if((document.getElementById('crm-ai-body')?.value||'')!==english||(document.getElementById('crm-ai-subject')?.value||'')!==subject)throw new Error('翻訳中に英文が変わりました。現在の英文で翻訳し直してください。');
+   s.translation=String(draft.body_ja||'');s.translationSubject=String(draft.subject_ja||'');s.translatedBody=english;s.translatedSubject=subject;
+  }else{
+   s.analysis=draft.analysis_ja||null;const analysisSection=document.getElementById('crm-reply-analysis-section');if(analysisSection)analysisSection.open=true;
+   if(mode==='draft'){
+    s.subject=String(draft.subject||'');s.body=String(draft.body||'');s.origin='ai';s.sent=false;
+    s.translation=String(draft.body_ja||'');s.translationSubject=String(draft.subject_ja||'');s.translatedBody=s.body;s.translatedSubject=s.subject;s.replyMessageId=data.reply_message_id||'';
+    document.getElementById('crm-ai-subject').value=s.subject;document.getElementById('crm-ai-body').value=s.body;
+    document.getElementById('crm-ai-rationale').value=draft.rationale_ja||'';
+    document.getElementById('crm-ai-items').value=Array.isArray(draft.requested_items)?draft.requested_items.join(' / '):'';
+    const suggestion=draft.stage_suggestion;
+    if(suggestion?.stage&&suggestion.stage!=='none'){crmAiStageSuggestionFor.set(c.id,suggestion);crmAiStageDecisionFor.set(c.id,'pending');}
+    else{crmAiStageSuggestionFor.delete(c.id);crmAiStageDecisionFor.set(c.id,'none');}
+    const check=document.getElementById('crm-reply-stage-reviewed');if(check)check.checked=false;
+    crmAiReplyGeneratedFor.set(c.id,source);renderCrmAiStageSuggestion(c);
+   }
+  }
+  s.notice=(mode==='analysis'?'分析完了':mode==='translate'?'日本語訳を更新しました':'返信案と日本語訳を作成しました')+' · '+(data.model||'AI');
+ }catch(error){if(active())s.notice='処理できませんでした: '+(error?.message||'不明なエラー');}
+ finally{if(active()){s.busy=false;renderReplyWorkspace();}}
+}
+async function generateAiReplyDraft(){await requestCrmReplyAI('draft');}
+async function analyzeCrmCoachReply(){await requestCrmReplyAI('analysis');}
+async function translateCrmReplyDraft(){await requestCrmReplyAI('translate');}
+async function createManualCrmReply(){
+ const c=crmCurrentContact;if(!c||c.contact_status!=='responded'||!c.coach_email||!c.gmail_thread_id){alert('返信可能なCoach・Gmailスレッドを確認してください。');return;}
+ captureCrmReplyWorkspace();const s=replyWorkspace(c);
+ if(s.body&&!confirm('現在の原稿を、宛名と署名だけの手動返信に置き換えます。よろしいですか？'))return;
+ const request=++crmReplyWorkspaceRequest;s.busy=true;s.notice='元メールの件名を取得中…';renderReplyWorkspace();
+ try{
+  const {data,error}=await supabaseClient.functions.invoke('recruiting-gmail-reply-send',{body:{action:'prepare',contact_id:c.id}});
+  if(request!==crmReplyWorkspaceRequest||crmCurrentContact?.id!==c.id)return;
+  if(error||!data?.ok)throw new Error(data?.error||error?.message||'件名を取得できませんでした。');
+  s.replyMessageId=data.reply_message_id;s.subject=data.subject;s.body=manualRecruitingReply(c.coach_name,CURRENT_PLAYER);s.origin='manual';s.sent=false;
+  s.translation='';s.translationSubject='';s.translatedBody='';
+  document.getElementById('crm-ai-subject').value=s.subject;document.getElementById('crm-ai-body').value=s.body;
+  document.getElementById('crm-ai-rationale').value='';document.getElementById('crm-ai-items').value='';
+  s.notice='件名・宛名・署名だけを用意しました。本文を入力してください。';const check=document.getElementById('crm-reply-stage-reviewed');if(check)check.checked=false;
+ }catch(error){if(request===crmReplyWorkspaceRequest)s.notice=error?.message||'手動返信を準備できませんでした。';}
+ finally{if(request===crmReplyWorkspaceRequest&&crmCurrentContact?.id===c.id){s.busy=false;renderReplyWorkspace();}}
+}
+function resetReplyComposerOptions(){
+ if(gmailReplyContext){
+  const s=crmReplyWorkspaceStates.get(gmailReplyContext.contactId);
+  if(s&&!gmailReplyAccepted){
+   s.subject=document.getElementById('gmail-subject')?.value||s.subject;s.body=document.getElementById('gmail-body')?.value||s.body;
+   s.cc=document.getElementById('gmail-cc')?.value||'';s.agency=document.getElementById('gmail-cc-agency')?.checked===true;
+  }
+ }
+ gmailReplyContext=null;gmailReplyAccepted=false;
+ const options=document.getElementById('gmail-reply-options');if(options)options.hidden=true;
+ for(const id of ['gmail-cc','gmail-cc-agency','gmail-reply-reviewed']){const el=document.getElementById(id);if(el){if(el.type==='checkbox')el.checked=false;else el.value='';}}
+}
+function gmailReplyCc(){
+ const value=document.getElementById('gmail-cc')?.value||'',agency=document.getElementById('gmail-cc-agency')?.checked;
+ return normalizeReplyCc([value,...(agency?[REPLY_AGENCY_CC]:[])],document.getElementById('gmail-to')?.value||'');
+}
+function gmailReplyOptionsChanged(){
+ const check=document.getElementById('gmail-reply-reviewed');if(check)check.checked=false;
+ updateGmailReplyReview();
+}
+function updateGmailReplyReview(){
+ if(gmailSendMode!=='reply'||!gmailReplyContext)return;
+ const preview=document.getElementById('gmail-cc-preview'),btn=document.getElementById('gmail-send-btn');let valid=true;
+ try{const cc=gmailReplyCc();if(preview)preview.textContent=cc.length?'送信するCC：'+cc.join(', '):'CCなし';}catch(error){valid=false;if(preview)preview.textContent=error.message;}
+ const reviewed=document.getElementById('gmail-reply-reviewed')?.checked===true;
+ if(btn)btn.disabled=gmailReplyAccepted||!valid||!reviewed;
+}
 
 const crmAiReplyGeneratedFor=new Map();
 const crmAiStageSuggestionFor=new Map();
@@ -6487,15 +6656,18 @@ function updateAiGmailStageGate(c){
   decision==='pending'
  );
 
- gmailBtn.disabled=pending;
+ const reviewed=document.getElementById('crm-reply-stage-reviewed')?.checked===true;
+ const hasDraft=Boolean(document.getElementById('crm-ai-subject')?.value.trim()&&document.getElementById('crm-ai-body')?.value.trim());
+ gmailBtn.disabled=pending||!reviewed||!hasDraft||Boolean(replyWorkspace(c)?.busy)||Boolean(replyWorkspace(c)?.sent);
  gmailBtn.style.opacity=pending?'0.4':'';
  gmailBtn.style.cursor=pending?'not-allowed':'';
  gmailBtn.title=pending
   ?'先にRecruiting Stage提案の「変更する／変更しない」を確定してください。'
-  :'';
+  :(!reviewed?'現在のStageを確認してください。':'');
 }
 
 function renderCrmAiStageSuggestion(c){
+ refreshReplyStageDisplays(c);
  const panel=document.getElementById('crm-ai-stage-panel');
  const label=document.getElementById('crm-ai-stage-label');
  const reason=document.getElementById('crm-ai-stage-reason');
@@ -6623,100 +6795,6 @@ function crmAiReplyIsGenerated(c){
   currentResponse &&
   crmAiReplyGeneratedFor.get(c.id)===currentResponse
  );
-}
-
-async function generateAiReplyDraft(){
- const c=crmCurrentContact;
- if(!c){
-  alert('CRM Contactが選択されていません。');
-  return;
- }
-
- if(c.contact_status!=='responded' && !String(c.coach_response||'').trim()){
-  alert('Coachからの返信内容がまだありません。AI返信案は返信受信後に作成してください。');
-  return;
- }
-
- const panel=document.getElementById('crm-ai-reply-panel');
- const statusEl=document.getElementById('crm-ai-reply-status');
- const btn=document.getElementById('crm-ai-reply-btn');
-
- if(panel)panel.hidden=false;
- if(statusEl)statusEl.textContent='Geminiで返信案を作成中...';
- if(btn){
-  btn.disabled=true;
-  btn.textContent='生成中...';
- }
-
- try{
-  const {data,error}=await supabaseClient.functions.invoke(
-   'recruiting-ai-reply-draft',
-   {
-    body:{
-     university_id:Number(c.university_id),
-     coach_role:c.coach_role
-    }
-   }
-  );
-
-  if(error){
-   let detail='';
-   try{
-    detail=await error.context?.clone?.().text?.();
-   }catch{}
-   throw new Error(detail||error.message||'AI返信案の生成に失敗しました。');
-  }
-
-  if(!data?.ok || !data?.draft){
-   throw new Error(data?.error||'AI返信案を取得できませんでした。');
-  }
-
-  document.getElementById('crm-ai-subject').value=data.draft.subject||'';
-  document.getElementById('crm-ai-body').value=data.draft.body||'';
-  document.getElementById('crm-ai-rationale').value=data.draft.rationale_ja||'';
-  document.getElementById('crm-ai-items').value=Array.isArray(data.draft.requested_items)
-   ? data.draft.requested_items.join(', ')
-   : '';
-
-  console.log(
-   'AI Recruiting Stage Suggestion:',
-   data.draft.stage_suggestion
-  );
-
-  const stageSuggestion=data.draft.stage_suggestion;
-
-  if(
-   stageSuggestion &&
-   typeof stageSuggestion==='object' &&
-   stageSuggestion.stage &&
-   stageSuggestion.stage!=='none'
-  ){
-   crmAiStageSuggestionFor.set(
-    c.id,
-    stageSuggestion
-   );
-   crmAiStageDecisionFor.set(c.id,'pending');
-  }else{
-   crmAiStageSuggestionFor.delete(c.id);
-   crmAiStageDecisionFor.set(c.id,'none');
-  }
-
-  renderCrmAiStageSuggestion(c);
-
-  crmAiReplyGeneratedFor.set(
-   c.id,
-   String(c.coach_response||'').trim()
-  );
-
-  if(statusEl){
-   statusEl.textContent='生成完了 · '+(data.model||'Gemini');
-  }
- }catch(err){
-  console.error('Phase 9-C AI reply draft failed:',err);
-  if(statusEl)statusEl.textContent='生成失敗: '+(err.message||'unknown error');
- }finally{
-  updateCrmNextActions(c);
- }
 }
 
 function renderCrmActionList(){
@@ -7067,6 +7145,7 @@ async function loadCrmEmailTracking(){
  renderCrmContactEngagement();
 }
 function closeCrmDrawer(){
+ captureCrmReplyWorkspace();crmReplyWorkspaceRequest++;const replyState=replyWorkspace();if(replyState)replyState.busy=false;
  crmReapproachRequest++;
  if(crmCurrentContact?.id){
   crmAiReplyGeneratedFor.delete(crmCurrentContact.id);
