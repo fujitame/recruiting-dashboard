@@ -1,5 +1,5 @@
 # Coach reply workspace
-Prepared 2026-10-26.
+Released 2026-10-26.
 
 Flow: analyze the stored coach reply; enter the player's direction; generate an editable English reply and a faithful Japanese translation; confirm the current recruiting Stage (and accept/dismiss any AI stage proposal); open the CRM Gmail composer; review To, CC, Stage and English content; explicitly send.
 
@@ -16,6 +16,6 @@ AI data processing approval:
 - Retranslation input: the English subject/body only. Credentials are never part of the model prompt.
 - AI data is processed only on explicit analyze/generate/translate actions. No mail sending or reservations are performed by these actions.
 
-Deployment state: reply sender v20 is deployed with optional CC and read-only prepare; it remains compatible with existing clients. Auto-review rejected replacing the AI function because external processing of coach/private text requires explicit user approval of destination and data. AI changes and this combined UI are prepared in the feature PR; do not publish the new UI until the updated AI contract is deployed. Existing production UI and AI remain unchanged.
+Deployment state: The user explicitly approved Google Gemini processing of the listed data on 2026-10-26. Reply sender v20 and AI reply workspace v31 are deployed with the existing user authentication. PR #43 is merged; GitHub Pages deployment succeeded. Original subject preparation and optional CC remain compatible with existing clients. Live authenticated UI verification requires a CRM login; provider and Gmail behavior are covered by the mocked tests below.
 
 Validation: mocked Gemini tests cover modes, direction/analysis use, translation, owner/contact scope and stale source guards. Mocked Gmail tests cover read-only prepare, original subject/threading, CC MIME/dedup/header injection/mismatch, stale Message-ID and uncertainty handling. UI fixtures cover per-contact drafts, stale async results, translation staleness, Stage gating, CC reset and final review. Existing MIME and accepted-send UI tests pass. No actual mail was sent.
