@@ -133,6 +133,7 @@ export async function verifyGmailSentBody(messageId: string, expectedBody: strin
 export function buildReplyRaw(args: {
   to: string;
   subject: string;
+  cc?: string[];
   body: string;
   htmlBody?: string;
   messageId: string;
@@ -152,6 +153,7 @@ export function buildReplyRaw(args: {
   const headers = [
     "To: " + clean(args.to),
     "From: " + GMAIL_ACCOUNT,
+    args.cc?.length ? "Cc: " + args.cc.map(clean).join(", ") : "",
     "Subject: " + encodedSubject,
     args.messageId ? "In-Reply-To: " + clean(args.messageId) : "",
     references ? "References: " + clean(references) : "",

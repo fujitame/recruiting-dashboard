@@ -1,3 +1,4 @@
+import { normalizeReplyCc, recruitingReplySubject } from "../_shared/recruiting-reply-policy.js";
 import { prepareEmailTracking, recordEmailTrackingResult } from "../_shared/recruiting-email-tracking.ts";
 import { withSupabase } from "npm:@supabase/server@1";
 import { buildReplyRaw, verifyGmailSentBody } from "../_shared/followup-batch-gmail.ts";
@@ -146,11 +147,13 @@ export default {
       const supabase = ctx.supabase;
       const requestBody = await req.json();
 
+      const action=requestBody.action||"send";
+      if(!["send","prepare"].includes(action))return json({ok:false,error:"Unknown reply action"},400);
       const contactId = String(requestBody.contact_id || "").trim();
       const subject = String(requestBody.subject || "").trim();
       const body = String(requestBody.body || "");
 
-      if (!contactId || !subject || !body.trim()) {
+      if (!contactId || (action==="send"&&(!subject||!body.trim()))) {
         return json(
           {
             ok: false,
@@ -209,6 +212,10 @@ export default {
         );
       }
 
+      let cc:string[]=[];
+      if(action==="send"){
+       try{cc=normalizeReplyCc(requestBody.cc,contact.coach_email);}catch(error){return json({ok:false,error:error instanceof Error?error.message:"Invalid CC"},400);}
+      }
       const token = await googleAccessToken();
 
       const thread = await gmailGet(
@@ -281,8 +288,11 @@ export default {
         );
       }
 
+      if(action==="prepare")return json({ok:true,contact_id:contact.id,gmail_thread_id:contact.gmail_thread_id,reply_message_id:messageId,subject:recruitingReplySubject(header(headers,"Subject"))});
+      const expectedReplyId=String(requestBody.reply_message_id||"");
+      if(expectedReplyId&&expectedReplyId!==messageId)return json({ok:false,error:"Coachから新しい返信があります。最新の内容を確認し、原稿を開き直してください。"},409);
       emailTracking=await prepareEmailTracking({contactId:contact.id,ownerId:contact.owner_user_id,stage:"reply",body,isTest:[900,901,902].includes(Number(contact.university_id))});
-      const raw = buildReplyRaw({ to: contact.coach_email, subject, body:emailTracking.plain,htmlBody:emailTracking.html,messageId, references });
+      const raw = buildReplyRaw({ to: contact.coach_email, cc, subject, body:emailTracking.plain,htmlBody:emailTracking.html,messageId, references });
       const result = await gmailSend(
         raw,
         contact.gmail_thread_id,
@@ -294,7 +304,9 @@ export default {
       // Gmail has accepted this message. A failed readback must never invite a resend.
       let bodyVerified = false;
       try {
-        await verifyGmailSentBody(result.id, emailTracking.plain, token);
+        const delivered=await verifyGmailSentBody(result.id, emailTracking.plain, token);
+        const deliveredCc=normalizeReplyCc(header(delivered.payload?.headers,"Cc"),contact.coach_email);
+        if([...cc].sort().join(",")!==deliveredCc.sort().join(","))throw new Error("Sent CC differs from confirmed CC");
         bodyVerified = true;
       } catch {
         console.warn("Reply accepted by Gmail; sent body requires manual verification.");
@@ -323,13 +335,14 @@ export default {
         contact_id: contact.id,
         university_id: contact.university_id,
         coach_role: contact.coach_role,
+        cc,
         gmail_message_id: result.id || null,
         gmail_thread_id:
           result.threadId ||
           contact.gmail_thread_id,
       });
     } catch (error) {
-      if(emailTracking)await recordEmailTrackingResult(emailTracking.id,acceptedMessage?.id||null,false);
+      if(emailTracking){try{await recordEmailTrackingResult(emailTracking.id,acceptedMessage?.id||null,false);}catch{console.warn("Reply tracking requires reconciliation");}}
       console.error(
         "Phase 9-C Gmail reply send failed:",
         error,
@@ -338,12 +351,12 @@ export default {
       return json(
         {
           ok: false,
-          error:
-            error instanceof Error
-              ? error.message
-              : String(error),
+          sent:!!acceptedMessage?.id,
+          gmail_message_id:acceptedMessage?.id||null,
+          gmail_thread_id:acceptedMessage?.threadId||null,
+          error:acceptedMessage?.id?"Gmailは返信を受け付けています。再送せずGmailとCRMを確認してください。":(error instanceof Error?error.message:String(error)),
         },
-        500,
+        acceptedMessage?.id?200:500,
       );
     }
   }),
