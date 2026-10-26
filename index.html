@@ -2639,6 +2639,10 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
  .reply-choice-state{margin-left:33px}
 }
 
+
+.reply-status-row{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:10px 0;padding:10px 12px;border:1px solid #d6e2ef;border-radius:7px;background:#fff;color:#334155;font-size:12px}
+.reply-status-row>b{font-size:11px;color:#64748b;white-space:nowrap}
+.reply-status-row>span{font-weight:700;text-align:right;overflow-wrap:anywhere}
 </style>
 </head>
 <body>
@@ -2908,7 +2912,7 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
             <th>大学名</th>
             <th>Division</th>
             <th>Conference</th>
-            <th>CRM状況</th><th>Stage</th>
+            <th>連絡状況</th><th>選考段階</th>
             <th>SNS / Links</th>
             <th>Scouting</th>
             <th>Cost (Ref./Yr.)</th>
@@ -2934,7 +2938,7 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
   </div>
  </div>
 </div>
-<div id="gmail-modal" class="gmail-modal" onclick="if(event.target===this)closeGmailComposer()"><div class="gmail-card" role="dialog" aria-modal="true"><div class="gmail-head"><div><h2 id="gmail-title">Gmail送信</h2><small id="gmail-subtitle"></small></div><button class="gmail-close" type="button" onclick="closeGmailComposer()">×</button></div><div class="gmail-body"><div id="gmail-error" class="gmail-error"></div><div id="gmail-note" class="gmail-note">送信前に宛先・件名・本文を確認してください。通常送信ではCRMを「送信済・返信待」に更新し、GmailのThread IDを保存します。</div><div class="gmail-field"><label for="gmail-to">宛先</label><input id="gmail-to" type="email" readonly></div><section id="gmail-reply-options" class="gmail-reply-options" hidden><p><b>現在のStage：</b><span id="gmail-reply-stage"></span></p><div class="gmail-field"><label for="gmail-cc">⑥ CC（自由入力）</label><input id="gmail-cc" type="text" maxlength="2000" placeholder="coach@example.edu, other@example.com" oninput="gmailReplyOptionsChanged()"><small>複数の宛先はカンマで区切って入力してください。</small></div><label class="reply-check reply-choice"><input id="gmail-cc-agency" type="checkbox" onchange="gmailReplyOptionsChanged()"><span class="reply-choice-copy">CCに追加する<span class="reply-choice-address">recruit@withtyou-usa.com</span></span><span class="reply-choice-state" aria-hidden="true"><span class="choice-off">追加しない</span><span class="choice-on">✓ 追加する</span></span></label><p id="gmail-cc-preview" aria-live="polite">CCなし</p><small>CCの相手にも本文が届きます。CCや転送先のリンクアクセスは、元のメールの関心度に含まれます。</small><label class="reply-check reply-choice"><input id="gmail-reply-reviewed" type="checkbox" onchange="updateGmailReplyReview()"><span class="reply-choice-copy">Stage・宛先・CC・件名・本文を確認しました</span><span class="reply-choice-state" aria-hidden="true"><span class="choice-off">未確認</span><span class="choice-on">✓ 確認済み</span></span></label></section><div class="gmail-field"><label for="gmail-subject">件名</label><input id="gmail-subject" type="text" oninput="gmailReplyOptionsChanged()"></div><div class="gmail-field"><label for="gmail-body">本文</label><textarea id="gmail-body" oninput="gmailReplyOptionsChanged()"></textarea></div><div class="gmail-actions"><button id="gmail-personalize-btn" class="gmail-secondary" type="button" onclick="personalizeGmailDraft()" hidden>✨ Personalize</button><button class="gmail-secondary" type="button" onclick="closeGmailComposer()">キャンセル</button><button id="gmail-send-btn" class="gmail-send" type="button" onclick="sendGmailMessage()">Gmailから送信</button></div></div></div></div>
+<div id="gmail-modal" class="gmail-modal" onclick="if(event.target===this)closeGmailComposer()"><div class="gmail-card" role="dialog" aria-modal="true"><div class="gmail-head"><div><h2 id="gmail-title">Gmail送信</h2><small id="gmail-subtitle"></small></div><button class="gmail-close" type="button" onclick="closeGmailComposer()">×</button></div><div class="gmail-body"><div id="gmail-error" class="gmail-error"></div><div id="gmail-note" class="gmail-note">送信前に宛先・件名・本文を確認してください。通常送信ではCRMを「送信済・返信待」に更新し、GmailのThread IDを保存します。</div><div class="gmail-field"><label for="gmail-to">宛先</label><input id="gmail-to" type="email" readonly></div><section id="gmail-reply-options" class="gmail-reply-options" hidden><div class="reply-status-row"><b>連絡状況</b><span id="gmail-reply-contact-status"></span></div><div class="reply-status-row"><b>選考段階</b><span id="gmail-reply-stage"></span></div><small>連絡状況はメールの送受信状態、選考段階はIDキャンプ・オファーなどの進み具合です。</small><div class="gmail-field"><label for="gmail-cc">⑥ CC（自由入力）</label><input id="gmail-cc" type="text" maxlength="2000" placeholder="coach@example.edu, other@example.com" oninput="gmailReplyOptionsChanged()"><small>複数の宛先はカンマで区切って入力してください。</small></div><label class="reply-check reply-choice"><input id="gmail-cc-agency" type="checkbox" onchange="gmailReplyOptionsChanged()"><span class="reply-choice-copy">CCに追加する<span class="reply-choice-address">recruit@withtyou-usa.com</span></span><span class="reply-choice-state" aria-hidden="true"><span class="choice-off">追加しない</span><span class="choice-on">✓ 追加する</span></span></label><p id="gmail-cc-preview" aria-live="polite">CCなし</p><small>CCの相手にも本文が届きます。CCや転送先のリンクアクセスは、元のメールの関心度に含まれます。</small><label class="reply-check reply-choice"><input id="gmail-reply-reviewed" type="checkbox" onchange="updateGmailReplyReview()"><span class="reply-choice-copy">連絡状況・選考段階・宛先・CC・件名・本文を確認しました</span><span class="reply-choice-state" aria-hidden="true"><span class="choice-off">未確認</span><span class="choice-on">✓ 確認済み</span></span></label></section><div class="gmail-field"><label for="gmail-subject">件名</label><input id="gmail-subject" type="text" oninput="gmailReplyOptionsChanged()"></div><div class="gmail-field"><label for="gmail-body">本文</label><textarea id="gmail-body" oninput="gmailReplyOptionsChanged()"></textarea></div><div class="gmail-actions"><button id="gmail-personalize-btn" class="gmail-secondary" type="button" onclick="personalizeGmailDraft()" hidden>✨ Personalize</button><button class="gmail-secondary" type="button" onclick="closeGmailComposer()">キャンセル</button><button id="gmail-send-btn" class="gmail-send" type="button" onclick="sendGmailMessage()">Gmailから送信</button></div></div></div></div>
 <aside id="crm-drawer" class="crm-drawer" aria-hidden="true">
 <div class="crm-head"><div><h2 id="crm-title">Recruiting CRM</h2><small id="crm-subtitle"></small></div><button class="crm-close" type="button" onclick="closeCrmDrawer()" aria-label="Close">×</button></div>
 <div class="crm-body"><div class="crm-grid">
@@ -2997,12 +3001,12 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
 </div>
 
 <div id="crm-ai-stage-panel" class="crm-history" hidden>
- <h3>✨ AI Recruiting Stage提案</h3>
+ <h3>AIが提案する選考段階</h3>
  <div id="crm-ai-stage-label" style="font-weight:700;margin-bottom:8px"></div>
  <div id="crm-ai-stage-reason" class="crm-empty" style="margin-bottom:6px"></div>
  <div id="crm-ai-stage-evidence" class="crm-empty" style="margin-bottom:10px"></div>
  <div class="crm-actions">
-  <button id="crm-ai-stage-apply-btn" class="gmail-btn" type="button" onclick="applyAiStageSuggestion()">Stageを変更</button>
+  <button id="crm-ai-stage-apply-btn" class="gmail-btn" type="button" onclick="applyAiStageSuggestion()">選考段階を変更</button>
   <button id="crm-ai-stage-dismiss-btn" class="crm-secondary" type="button" onclick="dismissAiStageSuggestion()">変更しない</button>
  </div>
 </div>
@@ -3015,7 +3019,7 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
 <div class="crm-field full"><label for="crm-ai-rationale">生成理由</label><textarea id="crm-ai-rationale" style="min-height:80px" readonly></textarea></div>
 <div class="crm-field full"><label for="crm-ai-items">Coachから求められているもの</label><input id="crm-ai-items" type="text" readonly></div>
 <details class="reply-translation-section" open><summary>④ 日本語訳（確認用）</summary><p id="crm-reply-translation-note"></p><pre id="crm-reply-translation"></pre><button id="crm-reply-translate-btn" class="crm-secondary" type="button" onclick="translateCrmReplyDraft()">現在の原稿を日本語訳</button></details>
-<div class="reply-stage-review"><b>⑤ 現在のStage：<span id="crm-reply-stage-current"></span></b><label class="reply-choice"><input id="crm-reply-stage-reviewed" type="checkbox" onchange="updateAiGmailStageGate(crmCurrentContact)"><span class="reply-choice-copy">現在のStageを確認しました</span><span class="reply-choice-state" aria-hidden="true"><span class="choice-off">未確認</span><span class="choice-on">✓ 確認済み</span></span></label><small>AIがStageの変更を提案した場合は、先に「Stageを変更／変更しない」を選択してください。</small></div>
+<div class="reply-stage-review"><b>⑤ 現在の状況を確認</b><div class="reply-status-row"><b>連絡状況</b><span id="crm-reply-contact-status"></span></div><div class="reply-status-row"><b>選考段階</b><span id="crm-reply-stage-current"></span></div><small>連絡状況はメールの送受信状態、選考段階はIDキャンプ・オファーなどの進み具合です。</small><label class="reply-choice"><input id="crm-reply-stage-reviewed" type="checkbox" onchange="updateAiGmailStageGate(crmCurrentContact)"><span class="reply-choice-copy">連絡状況と選考段階を確認しました</span><span class="reply-choice-state" aria-hidden="true"><span class="choice-off">未確認</span><span class="choice-on">✓ 確認済み</span></span></label><small>AIが選考段階の変更を提案した場合は、先に「選考段階を変更／変更しない」を選択してください。</small></div>
 <div class="crm-actions">
 <button id="crm-ai-gmail-btn" class="gmail-btn" type="button" onclick="openAiReplyInGmailComposer()">Gmail作成画面へ進む</button>
 </div>
@@ -3549,8 +3553,8 @@ async function openAiReplyInGmailComposer(){
  const c=crmCurrentContact;if(!c?.id){alert('CRM Contactを選択してください。');return;}
  captureCrmReplyWorkspace();const s=replyWorkspace(c);
  const suggestion=crmAiStageSuggestionFor.get(c.id),decision=crmAiStageDecisionFor.get(c.id);
- if(suggestion?.stage&&suggestion.stage!=='none'&&decision==='pending'){alert('Stage提案の「Stageを変更／変更しない」を先に選択してください。');return;}
- if(!document.getElementById('crm-reply-stage-reviewed')?.checked){alert('現在のStageを確認してください。');return;}
+ if(suggestion?.stage&&suggestion.stage!=='none'&&decision==='pending'){alert('選考段階の提案について「選考段階を変更／変更しない」を先に選択してください。');return;}
+ if(!document.getElementById('crm-reply-stage-reviewed')?.checked){alert('現在の連絡状況と選考段階を確認してください。');return;}
  if(!s.subject.trim()||!s.body.trim()||s.sent){alert('返信原稿を作成してください。');return;}
  if(c.contact_status!=='responded'||!c.coach_email||!c.gmail_thread_id){alert('Coachの宛先と返信可能なGmailスレッドを確認してください。');return;}
  const request=++crmReplyWorkspaceRequest;s.busy=true;s.notice='Gmailスレッドの件名と返信先を確認中…';renderReplyWorkspace();
@@ -3568,11 +3572,12 @@ async function openAiReplyInGmailComposer(){
   document.getElementById('gmail-to').value=c.coach_email;
   document.getElementById('gmail-subject').value=data.subject;
   document.getElementById('gmail-body').value=s.body;
-  document.getElementById('gmail-note').textContent='元メールの件名で同じGmailスレッドへ返信します。Stage・宛先・CC・本文を確認してください。送信ボタンを押すまで送信しません。';
+  document.getElementById('gmail-note').textContent='元メールの件名で同じGmailスレッドへ返信します。連絡状況・選考段階・宛先・CC・本文を確認してください。送信ボタンを押すまで送信しません。';
   document.getElementById('gmail-reply-options').hidden=false;
   document.getElementById('gmail-cc').value=s.cc;document.getElementById('gmail-cc-agency').checked=s.agency;
   document.getElementById('gmail-reply-reviewed').checked=false;
   document.getElementById('gmail-reply-stage').textContent=recruitingStageLabel(getRecruitingSchoolStage(c.university_id));
+  document.getElementById('gmail-reply-contact-status').textContent=crmStatusLabel(c.contact_status);
   gmailReplyContext={contactId:c.id,source:s.source,stage:getRecruitingSchoolStage(c.university_id),replyMessageId:data.reply_message_id,origin:s.origin};
   const send=document.getElementById('gmail-send-btn');send.textContent='Gmailで返信';send.disabled=true;
   showGmailError('');updateGmailReplyReview();document.getElementById('gmail-modal').classList.add('open');
@@ -3627,13 +3632,13 @@ async function sendAiGmailReply(){
 
  let cc;
  try{cc=gmailReplyCc();}catch(error){showGmailError(error.message);return;}
- if(!gmailReplyContext||gmailReplyContext.contactId!==contact.id||!document.getElementById('gmail-reply-reviewed')?.checked){showGmailError('Stage・宛先・CC・件名・本文を確認し、チェックしてください。');return;}
- if(gmailReplyContext.stage!==getRecruitingSchoolStage(contact.university_id)){document.getElementById('gmail-reply-stage').textContent=recruitingStageLabel(getRecruitingSchoolStage(contact.university_id));gmailReplyContext.stage=getRecruitingSchoolStage(contact.university_id);gmailReplyOptionsChanged();showGmailError('Stageが更新されています。確認し直してください。');return;}
+ if(!gmailReplyContext||gmailReplyContext.contactId!==contact.id||!document.getElementById('gmail-reply-reviewed')?.checked){showGmailError('連絡状況・選考段階・宛先・CC・件名・本文を確認し、チェックしてください。');return;}
+ if(gmailReplyContext.stage!==getRecruitingSchoolStage(contact.university_id)){document.getElementById('gmail-reply-stage').textContent=recruitingStageLabel(getRecruitingSchoolStage(contact.university_id));gmailReplyContext.stage=getRecruitingSchoolStage(contact.university_id);gmailReplyOptionsChanged();showGmailError('選考段階が更新されています。確認し直してください。');return;}
  if(gmailReplyContext.origin==='manual'&&body.trim()===manualRecruitingReply(contact.coach_name,CURRENT_PLAYER).trim()){showGmailError('宛名と署名の間に返信本文を入力してください。');return;}
  const replyContext={...gmailReplyContext},sendEpoch=gmailConversationRequest;
  const active=()=>gmailConversationRequest===sendEpoch&&gmailSendMode==='reply'&&gmailCurrentContactId===contact.id;
  if(!confirm(
-  'Stage: '+recruitingStageLabel(gmailReplyContext.stage)+'\nCC: '+(cc.join(', ')||'なし')+'\n\n学校 ID '+contact.university_id+' の '+contact.coach_email+
+  '連絡状況: '+crmStatusLabel(contact.contact_status)+'\n選考段階: '+recruitingStageLabel(gmailReplyContext.stage)+'\nCC: '+(cc.join(', ')||'なし')+'\n\n学校 ID '+contact.university_id+' の '+contact.coach_email+
   ' に、この返信を実際に送信します。よろしいですか？'
  )){
   return;
@@ -4662,16 +4667,16 @@ function getCoachLastName(fullName){if(!fullName||fullName==='Coach')return 'Coa
 const recruitingSchoolPipeline=new Map();
 
 const RECRUITING_STAGE_LABELS={
- none:'No Stage',
- id_camp_candidate:'ID Camp候補',
- id_camp_scheduled:'ID Camp予定',
- id_camp_attended:'ID Camp参加済',
- offer_candidate:'Offer候補',
- offer_received:'Offer獲得'
+ none:'未設定',
+ id_camp_candidate:'IDキャンプ候補',
+ id_camp_scheduled:'IDキャンプ予定',
+ id_camp_attended:'IDキャンプ参加済',
+ offer_candidate:'オファー検討段階',
+ offer_received:'オファー受領'
 };
 
 function recruitingStageLabel(stage){
- return RECRUITING_STAGE_LABELS[stage]||'No Stage';
+ return RECRUITING_STAGE_LABELS[stage]||'未設定';
 }
 
 function getRecruitingSchoolStage(universityId){
@@ -4683,7 +4688,7 @@ async function saveRecruitingSchoolStage(universityId,stage){
  const allowed=Object.keys(RECRUITING_STAGE_LABELS);
 
  if(!allowed.includes(stage)){
-  alert('Recruiting Stageの値が不正です。');
+  alert('選考段階の値が不正です。');
   return false;
  }
 
@@ -4705,7 +4710,7 @@ async function saveRecruitingSchoolStage(universityId,stage){
 
  if(error){
   console.error('Recruiting Stage save failed:',error);
-  alert('Recruiting Stageの保存に失敗しました: '+error.message);
+  alert('選考段階の保存に失敗しました: '+error.message);
   return false;
  }
 
@@ -6543,6 +6548,9 @@ function renderReplyTranslation(){
 function refreshReplyStageDisplays(c=crmCurrentContact){
  if(!c)return;
  const stage=getRecruitingSchoolStage(c.university_id),label=recruitingStageLabel(stage);
+ const status=crmStatusLabel(c.contact_status);
+ const crmStatus=document.getElementById('crm-reply-contact-status');if(crmStatus)crmStatus.textContent=status;
+ const gmailStatus=document.getElementById('gmail-reply-contact-status');if(gmailStatus&&gmailCurrentContactId===c.id)gmailStatus.textContent=status;
  const el=document.getElementById('crm-reply-stage-current');
  if(el){if(el.dataset.stage!==stage){const check=document.getElementById('crm-reply-stage-reviewed');if(check)check.checked=false;}el.dataset.stage=stage;el.textContent=label;}
  const composer=document.getElementById('gmail-reply-stage');if(composer&&gmailCurrentContactId===c.id)composer.textContent=label;
@@ -6690,8 +6698,8 @@ function updateAiGmailStageGate(c){
  gmailBtn.style.opacity=pending?'0.4':'';
  gmailBtn.style.cursor=pending?'not-allowed':'';
  gmailBtn.title=pending
-  ?'先にRecruiting Stage提案の「変更する／変更しない」を確定してください。'
-  :(!reviewed?'現在のStageを確認してください。':'');
+  ?'先に選考段階の提案について「変更する／変更しない」を確定してください。'
+  :(!reviewed?'現在の連絡状況と選考段階を確認してください。':'');
 }
 
 function renderCrmAiStageSuggestion(c){
@@ -6740,7 +6748,7 @@ function renderCrmAiStageSuggestion(c){
 
  if(decision==='applied'){
   applyBtn.disabled=true;
-  applyBtn.textContent='✓ Stage確定済み';
+  applyBtn.textContent='✓ 選考段階を確定済み';
   dismissBtn.style.display='none';
  }else if(decision==='dismissed'){
   applyBtn.style.display='none';
@@ -6755,10 +6763,10 @@ function renderCrmAiStageSuggestion(c){
 
   if(currentStage===suggestion.stage){
    applyBtn.disabled=true;
-   applyBtn.textContent='現在のStageと同じ';
+   applyBtn.textContent='現在の選考段階と同じ';
   }else{
    applyBtn.disabled=false;
-   applyBtn.textContent='Stageを変更';
+   applyBtn.textContent='選考段階を変更';
   }
  }
 
@@ -6782,7 +6790,7 @@ async function applyAiStageSuggestion(){
  }
 
  if(!confirm(
-  'Recruiting Stageを変更します。\n\n'+
+  '選考段階を変更します。\n\n'+
   recruitingStageLabel(currentStage)+
   ' → '+
   recruitingStageLabel(targetStage)+
@@ -7539,12 +7547,12 @@ function recruitingStageSelectHtml(u){
    data-current-stage="${crmEsc(current)}"
    onchange="updateRecruitingSchoolStage(${u.id},this)"
   >
-   <option value="none" ${current==='none'?'selected':''}>No Stage</option>
-   <option value="id_camp_candidate" ${current==='id_camp_candidate'?'selected':''}>ID Camp候補</option>
-   <option value="id_camp_scheduled" ${current==='id_camp_scheduled'?'selected':''}>ID Camp予定</option>
-   <option value="id_camp_attended" ${current==='id_camp_attended'?'selected':''}>ID Camp参加済</option>
-   <option value="offer_candidate" ${current==='offer_candidate'?'selected':''}>Offer候補</option>
-   <option value="offer_received" ${current==='offer_received'?'selected':''}>Offer獲得</option>
+   <option value="none" ${current==='none'?'selected':''}>未設定</option>
+   <option value="id_camp_candidate" ${current==='id_camp_candidate'?'selected':''}>IDキャンプ候補</option>
+   <option value="id_camp_scheduled" ${current==='id_camp_scheduled'?'selected':''}>IDキャンプ予定</option>
+   <option value="id_camp_attended" ${current==='id_camp_attended'?'selected':''}>IDキャンプ参加済</option>
+   <option value="offer_candidate" ${current==='offer_candidate'?'selected':''}>オファー検討段階</option>
+   <option value="offer_received" ${current==='offer_received'?'selected':''}>オファー受領</option>
   </select>
  `;
 }
@@ -7573,7 +7581,7 @@ async function updateRecruitingSchoolStage(universityId,selectEl){
   console.error('Recruiting Stage update failed:',err);
   selectEl.value=previousStage;
   alert(
-   'Recruiting Stageの保存に失敗しました: '+
+   '選考段階の保存に失敗しました: '+
    (err?.message||'unknown error')
   );
  }finally{
