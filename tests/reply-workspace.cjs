@@ -8,10 +8,11 @@ const els={};const get=id=>els[id]??(els[id]={...element(),type:/reviewed|agency
 let calls=[],pending=null;const alerts=[];
 const a={id:'a',university_id:1,coach_role:'head_coach',coach_name:'John Smith',coach_email:'coach@example.com',coach_response:'Please share your budget.',gmail_thread_id:'thread',contact_status:'responded'};
 const b={...a,id:'b',university_id:2,coach_name:'Other Coach',coach_email:'other@example.com',coach_response:'Another reply'};
-const c={console,Date,Map,Set,Array,String,Number,JSON,Error,CURRENT_PLAYER:{name:'Akihiro Fujikawa',school:'Harcum College',email:'fujiakihiro8@gmail.com'},universities:[{id:1,name:'School A'},{id:2,name:'School B'}],confirm:()=>true,alert:v=>alerts.push(v),document:{getElementById:get,createElement:()=>element()},getRecruitingSchoolStage:()=> 'none',recruitingStageLabel:s=>s,crmStatusLabel:s=>s==='responded'?'返信有・対応中':s,renderCrmAiStageSuggestion:()=>{},showGmailError:()=>{},supabaseClient:{functions:{invoke:async(name,args)=>{
+let conversationState="coach_reply_pending_action";
+const c={crmConversationState:()=>({state:conversationState}),console,Date,Map,Set,Array,String,Number,JSON,Error,CURRENT_PLAYER:{name:'Akihiro Fujikawa',school:'Harcum College',email:'fujiakihiro8@gmail.com'},universities:[{id:1,name:'School A'},{id:2,name:'School B'}],confirm:()=>true,alert:v=>alerts.push(v),document:{getElementById:get,createElement:()=>element()},getRecruitingSchoolStage:()=> 'none',recruitingStageLabel:s=>s,crmStatusLabel:s=>s==='responded'?'返信有・対応中':s,renderCrmAiStageSuggestion:()=>{},showGmailError:()=>{},supabaseClient:{functions:{invoke:async(name,args)=>{
  calls.push({name,body:args.body});if(pending){const p=pending;pending=null;return p;}
- if(name==='recruiting-gmail-reply-send'){assert.equal(args.body.action,'prepare');return {data:{ok:true,subject:'Re: Original subject',reply_message_id:'<source@example.com>'}};}
- return {data:{ok:true,model:'fixture',reply_message_id:'<source@example.com>',draft:{subject:'Re: AI subject',body:'Dear Coach Smith,\n\nMy budget is a target, not confirmed aid.\n\nBest,\nAkihiro',subject_ja:'Re: 日本語',body_ja:args.body.mode==='translate'?'編集した英文の訳':'日本語の返信案',rationale_ja:'質問への回答',requested_items:['Budget'],analysis_ja:{summary_ja:'予算の質問',confirmed_facts_ja:['予算を尋ねた'],interpretation_ja:'評価のための確認の可能性',uncertainties_ja:['奨学金は未確認'],recommended_actions_ja:['回答する']},stage_suggestion:{stage:'none'}}}};
+ if(name==='recruiting-gmail-reply-send'){assert.equal(args.body.action,'prepare');return {data:{ok:true,subject:'Re: Original subject',reply_message_id:'<source@example.com>',inbound_gmail_message_id:'gmail-source'}};}
+ return {data:{ok:true,model:'fixture',reply_message_id:'gmail-source',draft:{subject:'Re: AI subject',body:'Dear Coach Smith,\n\nMy budget is a target, not confirmed aid.\n\nBest,\nAkihiro',subject_ja:'Re: 日本語',body_ja:args.body.mode==='translate'?'編集した英文の訳':'日本語の返信案',rationale_ja:'質問への回答',requested_items:['Budget'],analysis_ja:{summary_ja:'予算の質問',confirmed_facts_ja:['予算を尋ねた'],interpretation_ja:'評価のための確認の可能性',uncertainties_ja:['奨学金は未確認'],recommended_actions_ja:['回答する']},stage_suggestion:{stage:'none'}}}};
 }}}};
 vm.createContext(c);
 vm.runInContext('let crmCurrentContact=null,gmailCurrentContactId=null,gmailSendMode="initial",gmailTestMode=false,gmailInitialPersonalized=false,gmailInitialResearchIds=[],gmailFollowUpPersonalized=false,gmailFollowUpResearchIds=[],gmailConversationRequest=0;const crmAiReplyGeneratedFor=new Map(),crmAiStageSuggestionFor=new Map(),crmAiStageDecisionFor=new Map();'+policy+workspace+gate+open+'function resetConversationDraft(){resetReplyComposerOptions();gmailConversationRequest++;}',c);c.contactA=a;c.contactB=b;
@@ -40,6 +41,8 @@ vm.runInContext('let crmCurrentContact=null,gmailCurrentContactId=null,gmailSend
  assert.equal(get('crm-ai-body').value,'');
  assert.deepEqual(Array.from(c.normalizeReplyCc(' A@example.com; a@example.com; coach@example.com ',a.coach_email)),['a@example.com']);
  assert.throws(()=>c.normalizeReplyCc('a@example.com\r\nBcc: bad@example.com'));
+ conversationState='waiting';c.updateCrmReplyActions(b);assert.equal(get('crm-ai-reply-btn').style.display,'none');assert.equal(get('crm-manual-reply-btn').style.display,'none');const count=calls.length;await c.analyzeCrmCoachReply();assert.equal(calls.length,count);
  console.log('PASS: manual skeleton and original subject; analysis plus direction; Japanese translation and stale marker; per-contact state; Stage gate; CC checkbox/validation/review; CC reset across composers; stale async result isolation. Prepare requests only, no mail sent.');
 })().catch(e=>{console.error(e);process.exitCode=1;});
+
 

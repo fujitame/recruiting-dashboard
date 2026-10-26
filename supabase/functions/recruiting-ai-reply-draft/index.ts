@@ -124,12 +124,15 @@ export default {
 
     const { data: history, error: historyError } = await supabase
       .from("recruiting_contact_history")
-      .select("event_type,event_at,note,gmail_message_id")
+      .select("event_type,event_at,gmail_message_at,created_at,gmail_message_id")
       .eq("contact_id", contact.id)
+      .in("event_type",["reply_received","reply_sent","conversation_follow_up_sent"])
       .order("event_at", { ascending: false })
-      .limit(8);
+      .limit(100);
 
     if (historyError) throw historyError;
+    const latestConversation=[...(history??[])].sort((a:any,b:any)=>(Date.parse(b.gmail_message_at||b.event_at||b.created_at)||0)-(Date.parse(a.gmail_message_at||a.event_at||a.created_at)||0))[0];
+    if(latestConversation&&["reply_sent","conversation_follow_up_sent"].includes(latestConversation.event_type))return json({ok:false,error:"このCoach返信は対応済みです。次の返信または7日超過後のFollow-upを確認してください。"},409);
 
     const { data: researchRows, error: researchError } = await supabase.rpc(
       "get_personalization_context",

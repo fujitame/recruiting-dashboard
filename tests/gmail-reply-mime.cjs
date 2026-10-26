@@ -16,7 +16,7 @@ async function run(options={}){
  }};
  vm.createContext(c);vm.runInContext(stripTypeScriptTypes(policy+'\n'+builder+'\n'+endpoint),c);
  const body=options.empty?' ':'Thank you Coach,\n\n日本語 ⚽\n\nBest,\nAkihiro';
- const response=await c.endpoint.fetch(new Request('https://fixture',{method:'POST',body:JSON.stringify({contact_id:'contact',subject:'Reply 日本語',body,action:options.action,cc:options.cc,reply_message_id:options.replyId})}),{supabase:db});
+ const response=await c.endpoint.fetch(new Request('https://fixture',{method:'POST',body:JSON.stringify({contact_id:'contact',subject:'Reply 日本語',body,action:options.action,cc:options.cc,reply_message_id:options.replyId})}),{supabase:db,jwtClaims:{sub:"owner"}});
  return {response:await response.json(),status:response.status,sent,labels,body};
 }
 (async()=>{
@@ -39,3 +39,4 @@ async function run(options={}){
  const missing=await run({missingBody:true});assert.equal(missing.response.ok,true);assert.equal(missing.response.body_verified,false);assert.equal(missing.sent.length,1);
  console.log('PASS: actual individual reply endpoint retains MIME separator, UTF-8 body, inbound threading, eligibility and successful-send handling after label failure. Gmail and auth adapter mocked.');
 })().catch(error=>{console.error(error);process.exitCode=1});
+

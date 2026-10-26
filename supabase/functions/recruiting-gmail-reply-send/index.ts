@@ -145,6 +145,8 @@ export default {
     let emailTracking:any=null,acceptedMessage:any=null;
     try {
       const supabase = ctx.supabase;
+      const ownerId=String(ctx.jwtClaims?.sub??ctx.userClaims?.sub??"");
+      if(!ownerId)return json({ok:false,error:"Authentication required"},401);
       const requestBody = await req.json();
 
       const action=requestBody.action||"send";
@@ -170,6 +172,7 @@ export default {
             "id,owner_user_id,university_id,coach_name,coach_email,coach_role,contact_status,gmail_thread_id",
           )
           .eq("id", contactId)
+          .eq("owner_user_id",ownerId)
           .single();
 
       if (contactError || !contact) {
@@ -272,6 +275,8 @@ export default {
       }
 
       const latest = inbound[inbound.length - 1];
+      const alreadyAnswered=messages.some((message:any)=>emailAddress(header(message.payload?.headers,"From"))===GMAIL_ACCOUNT&&Number(message.internalDate||0)>Number(latest.internalDate||0));
+      if(alreadyAnswered)return json({ok:false,error:"このCoach返信には送信済みです。次の返信を待ち、7日を超えた場合はFollow-upを利用してください。"},409);
       const headers = latest.payload?.headers || [];
 
       const messageId = header(headers, "Message-ID");
@@ -288,7 +293,7 @@ export default {
         );
       }
 
-      if(action==="prepare")return json({ok:true,contact_id:contact.id,gmail_thread_id:contact.gmail_thread_id,reply_message_id:messageId,subject:recruitingReplySubject(header(headers,"Subject"))});
+      if(action==="prepare")return json({ok:true,contact_id:contact.id,gmail_thread_id:contact.gmail_thread_id,reply_message_id:messageId,inbound_gmail_message_id:String(latest.id||""),subject:recruitingReplySubject(header(headers,"Subject"))});
       const expectedReplyId=String(requestBody.reply_message_id||"");
       if(expectedReplyId&&expectedReplyId!==messageId)return json({ok:false,error:"Coachから新しい返信があります。最新の内容を確認し、原稿を開き直してください。"},409);
       emailTracking=await prepareEmailTracking({contactId:contact.id,ownerId:contact.owner_user_id,stage:"reply",body,isTest:[900,901,902].includes(Number(contact.university_id))});
