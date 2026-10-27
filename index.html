@@ -2690,7 +2690,7 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
   <span id="auth-user-badge" class="user-badge">Not signed in</span>
   <button id="logout-btn" class="logout-btn" type="button" hidden>Logout</button>
 </div></header>
-<nav id="recruiting-nav" class="recruiting-nav" aria-label="Recruiting workflow">
+<nav id="recruiting-nav" class="recruiting-nav" style="grid-template-columns:repeat(5,minmax(0,1fr))" aria-label="Recruiting workflow">
   <button class="recruiting-nav-btn active" type="button" data-area="schools" onclick="switchRecruitingArea('schools')">
     <span class="nav-label-long">候補校</span><span class="nav-label-short">候補</span><span id="nav-count-schools" class="recruiting-nav-count">0</span>
   </button>
@@ -2703,7 +2703,7 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
   <button class="recruiting-nav-btn" type="button" data-area="crm" onclick="switchRecruitingArea('crm')">
     <span>CRM</span>
   </button>
-  <a class="recruiting-nav-btn" href="school-reports.html" style="display:flex;align-items:center;justify-content:center;text-decoration:none" aria-label="学校評価シートを開く"><span>学校評価シート</span></a>
+  <a class="recruiting-nav-btn" href="school-reports.html" style="display:flex;align-items:center;justify-content:center;text-decoration:none" aria-label="学校評価シートを開く"><span class="nav-label-long">学校評価シート</span><span class="nav-label-short">評価シート</span></a>
 </nav>
 <div id="sync-banner" class="sync-banner">☁️ クラウド同期準備中...</div>
 <div class="controls" data-recruiting-area="schools">
