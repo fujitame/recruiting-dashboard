@@ -46,9 +46,76 @@ const client=window.supabase?.createClient("https://cjrabdfdtrufbpjmqddh.supabas
 const app=document.getElementById('report-app'),gate=document.getElementById('gate'),statusEl=document.getElementById('report-status');
 let epoch=0;
 function clearReports(){epoch++;app.replaceChildren();app.hidden=true;gate.hidden=false;statusEl.hidden=true;}
-function printSchool(id){document.querySelectorAll('.sheet').forEach(e=>e.classList.toggle('print-hide',e.id!==id));window.print();}
-function printAll(){document.querySelectorAll('.print-hide').forEach(e=>e.classList.remove('print-hide'));window.print();}
-window.addEventListener('afterprint',()=>document.querySelectorAll('.print-hide').forEach(e=>e.classList.remove('print-hide')));
+
+let activePrintFrame=null;
+function printLayoutCss(){
+  function walk(rules){return [...rules].map(rule=>{
+    if(rule.type===CSSRule.MEDIA_RULE)return /(^|[,\\s])print([,\\s]|$)/i.test(rule.conditionText)?walk(rule.cssRules):'';
+    return rule.cssText;
+  }).join('\\n');}
+  return [...document.styleSheets].map(sheet=>{try{return walk(sheet.cssRules);}catch{return '';}}).join('\\n');
+}
+async function prepareReportPrint(id){
+  const articles=[...document.querySelectorAll('#schools > article.sheet')].filter(a=>!id||a.id===id);
+  if(!articles.length)throw new Error('印刷する学校が見つかりません。');
+  if(activePrintFrame)activePrintFrame.remove();
+  const frame=document.createElement('iframe');activePrintFrame=frame;
+  frame.title='学校評価シート 印刷用';
+  frame.setAttribute('aria-hidden','true');
+  frame.style.cssText='position:fixed;left:-10000px;top:0;width:210mm;height:297mm;border:0;pointer-events:none';
+  document.body.appendChild(frame);
+  const doc=frame.contentDocument;
+  const overrides=`
+    @page{size:A4 portrait;margin:0}
+    html,body{margin:0!important;padding:0!important;width:210mm!important;background:#fff!important}
+    *,*::before,*::after{animation:none!important;transition:none!important}
+    .print-paper{position:relative!important;display:block!important;box-sizing:border-box!important;width:210mm!important;height:297mm!important;padding:5mm 8mm!important;margin:0!important;border:0!important;break-before:auto!important;break-after:page!important;break-inside:avoid!important;page-break-after:always!important;overflow:visible!important}
+    .print-paper:last-child{break-after:auto!important;page-break-after:auto!important}
+    .print-content{position:absolute!important;top:5mm!important;left:8mm!important;width:194mm!important}
+    .print-content>.sheet{position:static!important;display:flow-root!important;width:194mm!important;height:auto!important;min-height:0!important;max-height:none!important;padding:0!important;margin:0!important;box-shadow:none!important;break-before:auto!important;break-after:auto!important;break-inside:auto!important;page-break-after:auto!important;transform-origin:top left!important;overflow:visible!important}
+    .two-col,.overview-grid{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:17px!important}
+    .life-academics>.section{min-width:0!important}
+    .school-titles,.overview-copy,.right-stack{min-width:0!important}
+    .staff-pair .staff>div{min-width:0!important}
+    .staff-pair .staff strong,.staff-pair .staff span{white-space:normal!important}
+    .staff-pair .staff a{white-space:normal!important;overflow-wrap:anywhere!important}
+    .sheet-head .school-titles h2{font-size:24px!important}
+    .sheet-head .jp-title{font-size:11.5px!important}
+    #csusm .sheet-head{height:auto!important;min-height:96px!important}
+    .screen-only,.sources,.school-actions{display:none!important}
+    a{color:inherit!important;text-decoration:none!important}
+    .print-paper,.sheet{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  `;
+  doc.open();doc.write('<!doctype html><html lang="ja"><head><meta charset="utf-8"><title>学校評価シート</title><style>'+printLayoutCss()+overrides+'</style></head><body></body></html>');doc.close();
+  for(const article of articles){const paper=doc.createElement('div');paper.className='print-paper';const copy=doc.importNode(article,true);copy.classList.remove('print-hide');const content=doc.createElement('div');content.className='print-content';content.appendChild(copy);paper.appendChild(content);doc.body.appendChild(paper);}
+  await doc.fonts.ready;
+  await Promise.all([...doc.images].map(img=>img.complete?(img.decode?img.decode().catch(()=>{}):Promise.resolve()):new Promise(resolve=>{img.onload=resolve;img.onerror=resolve;})));
+  // Reading dimensions below forces layout after fonts and images are ready.
+  await Promise.resolve();
+  for(const paper of doc.querySelectorAll('.print-paper')){
+    const sheet=paper.querySelector('.sheet'),style=frame.contentWindow.getComputedStyle(paper);
+    const availableHeight=paper.clientHeight-parseFloat(style.paddingTop)-parseFloat(style.paddingBottom)-2;
+    const availableWidth=paper.clientWidth-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight)-2;
+    const rect=sheet.getBoundingClientRect();
+    const children=[...sheet.querySelectorAll('*')].map(e=>e.getBoundingClientRect()).filter(r=>r.width&&r.height);
+    const height=Math.max(rect.height,sheet.scrollHeight,...children.map(r=>r.bottom-rect.top));
+    const width=Math.max(rect.width,sheet.scrollWidth,...children.map(r=>r.right-rect.left));
+    const scale=Math.min(1,availableHeight/height,availableWidth/width);
+    if(!Number.isFinite(scale)||scale<=0)throw new Error('印刷レイアウトを計算できませんでした。');
+    sheet.style.setProperty('height',height+'px','important');
+    sheet.style.setProperty('zoom',String(scale),'important');
+    paper.dataset.printScale=String(scale);
+  }
+  return frame;
+}
+async function runReportPrint(id){
+  const buttons=[...document.querySelectorAll('.school-actions button,.toc-controls button')];buttons.forEach(b=>b.disabled=true);
+  try{const frame=await prepareReportPrint(id);frame.contentWindow.addEventListener('afterprint',()=>{if(activePrintFrame===frame){frame.remove();activePrintFrame=null;}},{once:true});frame.contentWindow.focus();frame.contentWindow.print();}
+  catch(error){console.error('Report printing failed',error);if(activePrintFrame){activePrintFrame.remove();activePrintFrame=null;}alert('印刷の準備に失敗しました。ページを再読み込みして、もう一度お試しください。');}
+  finally{buttons.forEach(b=>b.disabled=false);}
+}
+function printSchool(id){return runReportPrint(id);}
+function printAll(){return runReportPrint();}
 function safeFragment(markup){const doc=new DOMParser().parseFromString(markup||'','text/html');doc.querySelectorAll('script,iframe,object,embed,base,form').forEach(e=>e.remove());doc.querySelectorAll('*').forEach(e=>{for(const a of [...e.attributes]){if(a.name.startsWith('on')||((a.name==='href'||a.name==='src')&&/^\s*javascript:/i.test(a.value)))e.removeAttribute(a.name);}});const f=document.createDocumentFragment();while(doc.body.firstChild)f.appendChild(doc.body.firstChild);return f;}
 async function loadReports(session){
 const token=++epoch;gate.hidden=true;statusEl.hidden=false;statusEl.textContent='学校評価シートを読み込んでいます…';app.hidden=true;
