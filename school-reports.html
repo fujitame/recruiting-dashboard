@@ -50,10 +50,10 @@ function clearReports(){epoch++;app.replaceChildren();app.hidden=true;gate.hidde
 let activePrintFrame=null;
 function printLayoutCss(){
   function walk(rules){return [...rules].map(rule=>{
-    if(rule.type===CSSRule.MEDIA_RULE)return /(^|[,\\s])print([,\\s]|$)/i.test(rule.conditionText)?walk(rule.cssRules):'';
+    if(rule.type===CSSRule.MEDIA_RULE)return /(^|[,\s])print([,\s]|$)/i.test(rule.conditionText)?walk(rule.cssRules):'';
     return rule.cssText;
-  }).join('\\n');}
-  return [...document.styleSheets].map(sheet=>{try{return walk(sheet.cssRules);}catch{return '';}}).join('\\n');
+  }).join('\n');}
+  return [...document.styleSheets].map(sheet=>{try{return walk(sheet.cssRules);}catch{return '';}}).join('\n');
 }
 async function prepareReportPrint(id){
   const articles=[...document.querySelectorAll('#schools > article.sheet')].filter(a=>!id||a.id===id);
