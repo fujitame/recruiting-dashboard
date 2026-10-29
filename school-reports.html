@@ -38,7 +38,10 @@
 
 [hidden]{display:none!important}.auth-card{max-width:440px;margin:12vh auto;padding:28px;background:white;border-radius:12px}.auth-card input{display:block;width:100%;padding:12px;margin:8px 0 18px;border:1px solid #bccbd7;border-radius:5px;font:inherit}.auth-card button{width:100%}.auth-card p{font-size:13px}.report-back{display:block;margin-top:12px}.report-message{padding:18px;text-align:center}.toc-controls{display:flex;gap:10px;margin:15px 0}
 @media print{#gate,#report-status{display:none!important}}
-.report-media-strip{display:flex;align-items:center;gap:12px;margin:4px 0}.report-media-strip figure{margin:0}.report-media-strip figure img{display:block;width:155px;height:62px;object-fit:cover}.report-media-strip figcaption{font-size:9px;color:#555}.official-ig-qr{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:10px}.official-ig-qr img{width:64px;height:64px;image-rendering:pixelated}.official-ig-qr span{overflow-wrap:anywhere}@media print{.official-ig-qr img{width:60px!important;height:60px!important}}</style></head><body>
+.report-media-strip{display:flex;align-items:center;gap:12px;margin:4px 0}.report-media-strip figure{margin:0}.report-media-strip figure img{display:block;width:155px;height:62px;object-fit:cover}.report-media-strip figcaption{font-size:9px;color:#555}.official-ig-qr{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:10px}.official-ig-qr img{width:64px;height:64px;image-rendering:pixelated}.official-ig-qr span{overflow-wrap:anywhere}@media print{.official-ig-qr img{width:60px!important;height:60px!important}}
+.report-filters{display:flex;flex-wrap:wrap;gap:14px;padding-top:20px}.report-filters label{font-weight:700}.report-filters select{font:inherit;padding:7px;border:1px solid #a9bbc9;border-radius:5px;background:white}.toc-card small{font-size:11px}.toc-controls{margin-top:15px}
+.generated .sheet-head{min-height:88px}.generated .mini-location{display:flex;flex-direction:column;padding:6px;gap:0}.generated .mini-location h4{font-size:10px;text-align:center;margin:3px 0}.generated .mini-location p{font-size:8px}.generated .map-mini{width:85px}.generated .map-mini svg{width:85px;height:105px}.generated .overview01{margin-bottom:12px}.generated .facility-card{height:150px;background:#f0f5f8;padding:10px;font-size:10px}.generated .personal06{padding:8px 9px}.generated .roster-stats{font-size:10px}.generated .cost-block{padding:8px}.generated .cost-table .total td{font-size:17px}.generated .sheet-foot{font-size:8px}.generated .section h3{font-size:12px}.generated .stat-line{flex-wrap:wrap}.generated .stat-line span{white-space:normal}.generated .link-strip{margin-top:12px}.generated .note{font-size:9px}.generated .staff-pair{flex-wrap:wrap}.generated .staff span{display:block}.generated .staff strong{font-size:11px}.generated .overview-visuals .campus-photos .photo{height:85px!important}.generated .overview-copy .stat-line b{font-size:20px}
+</style></head><body>
 <section id="gate" class="auth-card screen-only" hidden><h1>学校評価シート</h1><p>ダッシュボードと同じメールアドレス・パスワードでログインしてください。</p><form id="login-form"><label>メールアドレス<input id="email" type="email" autocomplete="username" required></label><label>パスワード<input id="password" type="password" autocomplete="current-password" required></label><button id="login-submit">ログイン</button></form><p id="login-error" role="alert"></p><a class="report-back" href="./">ダッシュボードへ戻る</a></section>
 <p id="report-status" class="report-message screen-only" role="status">ログイン状態を確認しています…</p><div id="report-app" hidden></div>
 <script>
@@ -124,21 +127,41 @@ function appendOfficialInstagramQR(main,slug){const item=officialInstagramQR[slu
 async function loadReports(session){
 const token=++epoch;gate.hidden=true;statusEl.hidden=false;statusEl.textContent='学校評価シートを読み込んでいます…';app.hidden=true;
 try{
-const [rr,cc,uu]=await Promise.all([client.from('recruiting_school_reports').select('university_id,slug,school_name,status_label,report,version,updated_at').eq('owner_user_id',session.user.id),client.from('recruiting_contacts').select('university_id,contact_status,contact_count,last_contact_at').eq('owner_user_id',session.user.id),client.from('recruiting_universities').select('id,region_code,division')]);
+const [rr,cc,uu]=await Promise.all([client.from('recruiting_school_reports').select('university_id,slug,school_name,status_label,report,version,updated_at').eq('owner_user_id',session.user.id),client.from('recruiting_contacts').select('university_id,contact_status,contact_count,last_contact_at,coach_response').eq('owner_user_id',session.user.id),client.from('recruiting_universities').select('id,region_code,division')]);
 if(rr.error)throw rr.error;if(cc.error)throw cc.error;if(uu.error)throw uu.error;if(token!==epoch)return;
 const closed=new Set(cc.data.filter(x=>['closed','not_a_fit'].includes(x.contact_status)).map(x=>x.university_id));
-const replied=new Set(cc.data.filter(x=>x.contact_status==='responded').map(x=>x.university_id));
+const replied=new Set(cc.data.filter(x=>x.contact_status==='responded'||(x.coach_response||'').trim()).map(x=>x.university_id));
+const contacted=new Set(cc.data.filter(x=>x.contact_count>0||['contacted','follow_up_due','no_response'].includes(x.contact_status)).map(x=>x.university_id));
 const schoolsById=new Map(uu.data.map(u=>[u.id,u]));
-const contacted=new Set(cc.data.filter(x=>['contacted','follow_up_due','no_response'].includes(x.contact_status)).map(x=>x.university_id));
-const rows=rr.data.filter(x=>!closed.has(x.university_id)&&(replied.has(x.university_id)||(schoolsById.get(x.university_id)?.region_code==='ca'&&contacted.has(x.university_id)))).map(x=>({...x,report:{...x.report,division:schoolsById.get(x.university_id)?.division||x.report.division},chapter:replied.has(x.university_id)?'replied':'unreplied'})).sort((a,b)=>(a.chapter==='replied'?0:1)-(b.chapter==='replied'?0:1)||({ 'NCAA D1':1, 'NCAA D2':2, 'NCAA D3':3, 'NAIA':4 }[a.report.division]??9)-({ 'NCAA D1':1, 'NCAA D2':2, 'NCAA D3':3, 'NAIA':4 }[b.report.division]??9)||(a.report.order??999)-(b.report.order??999));
-app.replaceChildren();if(!rows.length){statusEl.textContent='このアカウントで閲覧できる評価シートはありません。';return;}
+const allRows=rr.data.filter(x=>!closed.has(x.university_id)&&(replied.has(x.university_id)||contacted.has(x.university_id))).map(x=>({...x,report:{...x.report,division:schoolsById.get(x.university_id)?.division||x.report.division},region:schoolsById.get(x.university_id)?.region_code||'other',chapter:replied.has(x.university_id)?'replied':'unreplied'}));
+app.replaceChildren();if(!allRows.length){statusEl.textContent='このアカウントで閲覧できる評価シートはありません。';return;}
+const regions={ca:'カリフォルニア',west:'西海岸（CA以外）',east:'東海岸',fl:'フロリダ',tx:'テキサス',midwest:'中西部',other:'その他'};
+const regionOrder={ca:0,west:1,east:2,fl:3,tx:4,midwest:5,other:6};
+const divisionOrder={'NCAA D1':0,'NCAA D2':1,'NCAA D3':2,'NAIA':3};
 const header=document.createElement('header');header.className='top screen-only';header.innerHTML='<div class="wrap"><div class="eyebrow">AKIHIRO FUJIKAWA · FALL 2027 TRANSFER</div><h1>学校評価シート</h1><p>サッカー・学業・暮らし・費用を、家族で一緒に考えるために。</p><a href="./" style="color:white">← ダッシュボードへ戻る</a></div>';app.appendChild(header);
-const nav=document.createElement('nav');nav.className='toc wrap screen-only';const heading=document.createElement('h2');heading.textContent='学校別の目次（'+rows.length+'校）';nav.appendChild(heading);
-let chapter=''; rows.forEach((row,i)=>{if(chapter!==row.chapter){chapter=row.chapter;const title=document.createElement('h2');title.textContent=chapter==='replied'?'返信がきた学校':'まだ返信が来ていない学校（カリフォルニア州内）';title.style.cssText='width:100%;grid-column:1 / -1;margin-top:22px';nav.appendChild(title);}const a=document.createElement('a');a.className='toc-card';a.href='#'+row.slug;const name=document.createElement('strong');name.textContent=String(i+1).padStart(2,'0')+'　'+row.school_name;a.appendChild(name);nav.appendChild(a);});
-const controls=document.createElement('div');controls.className='toc-controls';const btn=document.createElement('button');btn.textContent='全校を印刷';btn.onclick=printAll;controls.appendChild(btn);nav.appendChild(controls);app.appendChild(nav);
-const main=document.createElement('main');main.id='schools';app.appendChild(main);
-chapter='';rows.forEach(row=>{if(chapter!==row.chapter){chapter=row.chapter;const title=document.createElement('h2');title.className='wrap screen-only';title.textContent=chapter==='replied'?'返信がきた学校':'まだ返信が来ていない学校（カリフォルニア州内）';main.appendChild(title);}const toolbar=document.createElement('div');toolbar.className='school-actions screen-only';const b=document.createElement('button');b.textContent=row.school_name+'を印刷';b.onclick=()=>printSchool(row.slug);toolbar.appendChild(b);main.appendChild(toolbar);main.appendChild(safeFragment(row.report.article));appendOfficialInstagramQR(main,row.slug);});
-rows.forEach(row=>app.appendChild(safeFragment(row.report.sources)));
+const filters=document.createElement('div');filters.className='report-filters wrap screen-only';app.appendChild(filters);
+function selectFilter(label,values){const wrap=document.createElement('label');wrap.textContent=label+' ';const sel=document.createElement('select');values.forEach(([value,text])=>{const o=document.createElement('option');o.value=value;o.textContent=text;sel.append(o);});wrap.append(sel);filters.append(wrap);return sel;}
+const rf=selectFilter('地区',[['','全地区'],...Object.entries(regions).filter(([k])=>allRows.some(r=>r.region===k))]);
+const df=selectFilter('Division',[['','全Division'],...Object.keys(divisionOrder).map(k=>[k,k])]);
+const cf=selectFilter('返信',[['','全校'],['unreplied','未返信'],['replied','返信あり']]);
+const sf=selectFilter('並び順',[['region','地区 → Division'],['division','Division → 地区'],['name','学校名 A–Z']]);
+const area=document.createElement('div');app.appendChild(area);
+function renderSelection(){
+ const rows=allRows.filter(r=>(!rf.value||r.region===rf.value)&&(!df.value||r.report.division===df.value)&&(!cf.value||r.chapter===cf.value)).sort((a,b)=>{
+  const chapter=(a.chapter==='replied'?0:1)-(b.chapter==='replied'?0:1);if(chapter)return chapter;
+  const region=(regionOrder[a.region]??9)-(regionOrder[b.region]??9),division=(divisionOrder[a.report.division]??9)-(divisionOrder[b.report.division]??9);
+  return (sf.value==='division'?(division||region):sf.value==='name'?0:(region||division))||a.school_name.localeCompare(b.school_name,'en');
+ });
+ area.replaceChildren();
+ const nav=document.createElement('nav');nav.className='toc wrap screen-only';const heading=document.createElement('h2');heading.textContent='表示中 '+rows.length+'校 / '+allRows.length+'校';nav.append(heading);
+ if(!rows.length){const empty=document.createElement('p');empty.textContent='この条件に該当する評価シートはありません。';nav.append(empty);}
+ let chapter='';rows.forEach((row,i)=>{if(chapter!==row.chapter){chapter=row.chapter;const title=document.createElement('h2');title.textContent=chapter==='replied'?'返信がきた学校':'まだ返信が来ていない学校';title.style.cssText='width:100%;grid-column:1 / -1;margin-top:22px';nav.append(title);}const a=document.createElement('a');a.className='toc-card';a.href='#'+row.slug;const name=document.createElement('strong');name.textContent=String(i+1).padStart(2,'0')+'　'+row.school_name;const info=document.createElement('small');info.textContent=(regions[row.region]||row.region)+' · '+row.report.division+' · '+row.status_label;a.append(name,info);nav.append(a);});
+ const controls=document.createElement('div');controls.className='toc-controls';const btn=document.createElement('button');btn.textContent='表示中の学校を印刷';btn.disabled=!rows.length;btn.onclick=printAll;controls.append(btn);nav.append(controls);area.append(nav);
+ const main=document.createElement('main');main.id='schools';area.append(main);
+ chapter='';rows.forEach(row=>{if(chapter!==row.chapter){chapter=row.chapter;const title=document.createElement('h2');title.className='wrap screen-only';title.textContent=chapter==='replied'?'返信がきた学校':'まだ返信が来ていない学校';main.append(title);}const toolbar=document.createElement('div');toolbar.className='school-actions screen-only';const b=document.createElement('button');b.textContent=row.school_name+'を印刷';b.onclick=()=>printSchool(row.slug);toolbar.append(b);main.append(toolbar);main.append(safeFragment(row.report.article));if(!main.querySelector('#'+CSS.escape(row.slug)+' .overview-grid'))appendOfficialInstagramQR(main,row.slug);});
+ rows.forEach(row=>area.append(safeFragment(row.report.sources)));
+}
+[rf,df,cf,sf].forEach(el=>el.addEventListener('change',renderSelection));renderSelection();
 app.hidden=false;statusEl.hidden=true;
 }catch(e){if(token!==epoch)return;app.replaceChildren();statusEl.textContent='評価シートを読み込めませんでした。再読み込みするか、ダッシュボードからログインし直してください。';console.error('Report load failed',e);}
 }
