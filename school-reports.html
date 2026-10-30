@@ -93,14 +93,14 @@ function rebalanceGeneratedPrintSheet(sheet,doc){
       const text=((img?.alt||'')+' '+caption).toLowerCase();
       const unrelated=/\b(baseball|softball|tennis|golf|pitching|mbb)\b/i.test(text);
       const outdoor=/\b(outdoors?|exterior|outside|aerial)\b/i.test(text);
-      const indoor=!unrelated&&!outdoor&&/\b(gym|weight room|strength|performance|fitness|fieldhouse|arena|pavilion|events center|athletic excellence|training)\b|トレーニング|筋力|屋内/i.test(text);
+      const indoor=!unrelated&&!outdoor&&/\b(weight room|weight training|strength|sports performance|fitness center|training facility)\b|ウェイト|ウエイト|筋力トレーニング/i.test(text);
       const soccer=/\b(soccer|football|men.s soccer|match ground|pitch)\b|サッカー|ホームグラウンド|試合会場/i.test(text);
       const ground=!unrelated&&(soccer||figure.classList.contains('stadium')||/\b(field|stadium|pitch|ground)\b|グラウンド/i.test(text));
       const facility=!unrelated&&!ground&&(indoor||figure.classList.contains('facility'));
       const venue=(img?.alt||caption).toLowerCase().replace(/(official|photo|image|view|overview|match|ground|soccer|men.?s|facility|pitch|field|stadium|photo|university|大学公式|男子サッカーのホームグラウンド)/g,'').replace(/[^a-z0-9\u3040-\u30ff\u3400-\u9fff]+/g,' ').trim();
       return{figure,indoor,ground,facility,soccer,venue,unrelated};
     });
-    const facility=figures.filter(x=>x.indoor||x.facility).sort((a,b)=>Number(b.indoor)-Number(a.indoor))[0];
+    const facility=figures.filter(x=>x.indoor)[0];
     const ground=figures.filter(x=>x.ground).sort((a,b)=>Number(b.soccer)-Number(a.soccer))[0];
     const keep=[];if(facility)keep.push(facility.figure);if(ground&&ground.figure!==facility?.figure)keep.push(ground.figure);
     photos.replaceChildren(...keep);
@@ -113,7 +113,8 @@ function rebalanceGeneratedPrintSheet(sheet,doc){
   const footer=sheet.querySelector(':scope > .sheet-foot');
   const wrappers=new Set([overview,life,lower]);
   const retained=[...sheet.children].filter(el=>!wrappers.has(el)&&el!==footer);
-  sheet.replaceChildren(...retained,titleBlock,columns,...(footer?[footer]:[]));
+  const qrItems=retained.filter(el=>el.matches('.qr,.qr-row,.qr-links,.report-qr,.official-ig-qr')||el.querySelector('img[alt*="QR"],svg[aria-label*="QR"]'));
+  sheet.replaceChildren(...retained.filter(el=>!qrItems.includes(el)),titleBlock,columns,...qrItems,...(footer?[footer]:[]));
   return{left,right,extras:[s04,s05,s06].filter(Boolean)};
 }
 async function prepareReportPrint(id){
