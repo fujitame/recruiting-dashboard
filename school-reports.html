@@ -240,7 +240,7 @@ function moveTransitReference(sheet){
   const housing=find('02'),costs=find('04');
   if(!housing||!costs)return;
   const heading=housing.querySelector(':scope > h3'),number=heading.querySelector('.num');
-  heading.replaceChildren(number,document.createTextNode(' 街・住居'));
+  heading.replaceChildren(number,document.createTextNode(' 寮と暮らし｜街・住居'));
   const label=[...housing.querySelectorAll('.topic-label')].find(el=>el.textContent.trim()==='公共交通・都市へのアクセス');
   const transit=label?.closest('.transit-box')||label?.closest('p');
   if(transit){transit.classList.add('transit-box','transit-reference');label.textContent='参考｜公共交通・都市へのアクセス';costs.append(transit);}
