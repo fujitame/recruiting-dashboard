@@ -59,6 +59,13 @@
 .sheet .personal06 .roster-summary>p{font-size:9.5px;line-height:1.35;margin:5px 0 0}
 @media(max-width:530px){.sheet .personal06 .roster-chips{grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}.sheet .personal06 .roster-summary{padding:5px 6px}}
 @media print{.sheet .personal06 .roster-chips{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:3px!important}.sheet .personal06 .roster-chip{padding:2px 5px!important}.sheet .personal06 .roster-chip>b{font-size:9px!important}.sheet .personal06 .roster-chip>strong{font-size:10px!important}}
+/* Official facility photographs, reviewed individually for subject and framing. */
+.overview-visuals .verified-photos{display:grid;grid-template-columns:minmax(0,1fr)!important;gap:6px!important}
+.verified-photos figure{margin:0;min-width:0}.generated .verified-photos .photo-missing{height:85px}
+.verified-photos .photo{display:block;width:100%;object-fit:contain!important;object-position:50% 50%!important;background:#edf1f3}
+.verified-photos figcaption{overflow-wrap:anywhere;font-size:9px;line-height:1.35;margin-top:3px}
+.verified-photos .photo-missing{display:flex;align-items:center;justify-content:center;width:100%;height:64px;background:#edf1f3;border:1px dashed #87959d;color:#52616b;font-size:10px;font-weight:700}
+@media print{.verified-photos figure{break-inside:avoid}.verified-photos .photo{object-fit:contain!important;object-position:50% 50%!important}.verified-photos .photo-missing{height:64px}.generated .verified-photos .photo-missing{height:85px}}
 </style></head><body>
 <section id="gate" class="auth-card screen-only" hidden><h1>学校評価シート</h1><p>ダッシュボードと同じメールアドレス・パスワードでログインしてください。</p><form id="login-form"><label>メールアドレス<input id="email" type="email" autocomplete="username" required></label><label>パスワード<input id="password" type="password" autocomplete="current-password" required></label><button id="login-submit">ログイン</button></form><p id="login-error" role="alert"></p><a class="report-back" href="./">ダッシュボードへ戻る</a></section>
 <p id="report-status" class="report-message screen-only" role="status">ログイン状態を確認しています…</p><div id="report-app" hidden></div>
@@ -87,7 +94,7 @@ function rebalanceGeneratedPrintSheet(sheet,doc){
   const s04=lower?.querySelector('.costs04'),s05=lower?.querySelector('.coaches05'),s06=lower?.querySelector('.personal06');
   if(!overview||!heading||!copy||!visuals||!s02||!s03)return null;
   const photos=visuals.querySelector('.campus-photos');
-  if(photos){
+  if(photos&&!photos.classList.contains('verified-photos')){
     const figures=[...photos.querySelectorAll(':scope > figure')].map(figure=>{
       const img=figure.querySelector('img.photo'),caption=figure.querySelector('figcaption')?.textContent||'';
       const text=((img?.alt||'')+' '+caption).toLowerCase();
