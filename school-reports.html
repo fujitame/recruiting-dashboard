@@ -223,13 +223,13 @@ async function prepareReportPrint(id){
   const printChecks=[];
   for(const paper of doc.querySelectorAll('.print-paper')){
     const sheet=paper.querySelector('.sheet'),style=frame.contentWindow.getComputedStyle(paper);
-    const availableHeight=paper.clientHeight-parseFloat(style.paddingTop)-parseFloat(style.paddingBottom)-2;
-    const availableWidth=paper.clientWidth-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight)-2;
+    const availableHeight=paper.getBoundingClientRect().height-parseFloat(style.paddingTop)-parseFloat(style.paddingBottom);
+    const availableWidth=paper.getBoundingClientRect().width-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight);
     const rect=sheet.getBoundingClientRect();
     const children=[...sheet.querySelectorAll('*')].map(e=>e.getBoundingClientRect()).filter(r=>r.width&&r.height);
     const height=Math.max(rect.height,sheet.scrollHeight,...children.map(r=>r.bottom-rect.top));
     const width=Math.max(rect.width,sheet.scrollWidth,...children.map(r=>r.right-rect.left));
-    printChecks.push({id:sheet.id,height:Math.ceil(height),width:Math.ceil(width),availableHeight:Math.floor(availableHeight),availableWidth:Math.floor(availableWidth),fits:height<=availableHeight&&width<=availableWidth});
+    printChecks.push({id:sheet.id,height:Math.ceil(height),width:Math.ceil(width),availableHeight:Math.floor(availableHeight),availableWidth:Math.floor(availableWidth),parts:[...sheet.children].map(el=>({tag:el.tagName,cls:el.className,height:Math.ceil(el.getBoundingClientRect().height)})),fits:height<=availableHeight+1&&width<=availableWidth+1});
   }
   app.dataset.printChecks=JSON.stringify(printChecks);
   const overflow=printChecks.filter(check=>!check.fits);
