@@ -1,0 +1,1621 @@
+[
+  {
+    "source_index": 1,
+    "is_new": true,
+    "priority": "A",
+    "row": {
+      "id": 131,
+      "name": "Utah Valley University",
+      "region_code": "other_public",
+      "division": "NCAA D1",
+      "conference": "Big West",
+      "latitude": 40.27778,
+      "longitude": -111.71389,
+      "head_coach_name": "Michael Chesler",
+      "head_coach_email": "michael.chesler@uvu.edu",
+      "assistant_coach_name": "Jack Larter",
+      "assistant_coach_email": "jack.larter@uvu.edu",
+      "facility_url": "https://gouvu.com/sports/2014/9/30/facilities",
+      "roster_url": "https://gouvu.com/sports/mens-soccer/roster",
+      "instagram_url": "https://instagram.com/UVUmsoc",
+      "description": "[UT・公立／調査優先A] 2026年ロスター：DF：Toke Amtrup・Trevor WalkがSr.、Edgar Correia・Noah Pogueが5th。Jeremie KueloはPeninsula College、Max PalmerはSnow College出身。 補強の見立て（推定）：DF上級生の更新と短大編入の在籍実績が重なる。2027年の左右SB/WB募集を優先確認。CBとの区別は未確認。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。",
+      "instagram_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "2026-11-02 公式HC/AC連絡先確認",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://gouvu.com/sports/mens-soccer/roster/2026",
+      "staff": "https://gouvu.com/sports/mens-soccer/coaches",
+      "instagram_basis": "男子サッカー公式リンク",
+      "geo": "https://en.wikipedia.org/wiki/Utah_Valley_University"
+    },
+    "facts_ja": "DF：Toke Amtrup・Trevor WalkがSr.、Edgar Correia・Noah Pogueが5th。Jeremie KueloはPeninsula College、Max PalmerはSnow College出身。",
+    "needs_note_ja": "DF上級生の更新と短大編入の在籍実績が重なる。2027年の左右SB/WB募集を優先確認。CBとの区別は未確認。",
+    "cost_reference": {
+      "values": [
+        19577.1,
+        15040,
+        "2026-27 official reference"
+      ],
+      "source": "https://www.uvu.edu/financialaid/cost/",
+      "basis": "2026-27州外・国際学部の授業料/必須費と寮食費の参考小計。保険・教材・交通・個人支出・夏季費用は別。",
+      "label": "2026–27 official reference",
+      "note": "2026-27州外・国際学部の授業料/必須費と寮食費の参考小計。保険・教材・交通・個人支出・夏季費用は別。"
+    }
+  },
+  {
+    "source_index": 2,
+    "is_new": true,
+    "priority": "A",
+    "row": {
+      "id": 132,
+      "name": "Purdue University Fort Wayne",
+      "region_code": "other_public",
+      "division": "NCAA D1",
+      "conference": "Horizon League",
+      "latitude": 41.11722,
+      "longitude": -85.10833,
+      "head_coach_name": "Stephen Gorton",
+      "head_coach_email": "sgorton@pfw.edu",
+      "assistant_coach_name": "Tim Romanello",
+      "assistant_coach_email": "tjromane@pfw.edu",
+      "facility_url": "https://gomastodons.com/facilities",
+      "roster_url": "https://gomastodons.com/sports/mens-soccer/roster",
+      "instagram_url": "https://www.instagram.com/gomastodons/",
+      "description": "[IN・公立／調査優先A] 2026年ロスター：DF：Aidan AntcliffがR-Sr.、Max TitteringtonがSr.。前所属はそれぞれMemphis、Trevecca Nazarene。 補強の見立て（推定）：DFの更新候補。編入選手を受け入れているが、短大からの入学条件は別途確認。SBでの募集を尋ねる。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。 InstagramはAthletics全体公式。",
+      "instagram_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "2026-11-02 公式HC/AC連絡先確認",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://gomastodons.com/sports/mens-soccer/roster/2026",
+      "staff": "https://gomastodons.com/sports/mens-soccer/coaches",
+      "instagram_basis": "Athletics公式",
+      "geo": "https://en.wikipedia.org/wiki/Purdue_University_Fort_Wayne"
+    },
+    "facts_ja": "DF：Aidan AntcliffがR-Sr.、Max TitteringtonがSr.。前所属はそれぞれMemphis、Trevecca Nazarene。",
+    "needs_note_ja": "DFの更新候補。編入選手を受け入れているが、短大からの入学条件は別途確認。SBでの募集を尋ねる。",
+    "cost_reference": {
+      "values": [
+        25161,
+        13108,
+        "2026-27 official reference"
+      ],
+      "source": "https://www.pfw.edu/admissions-financial-aid/international-education/cost-attendance",
+      "basis": "2026-27州外・国際学部の授業料/必須費と寮食費の参考小計。保険・教材・交通・個人支出・夏季費用は別。",
+      "label": "2026–27 official reference",
+      "note": "2026-27州外・国際学部の授業料/必須費と寮食費の参考小計。保険・教材・交通・個人支出・夏季費用は別。"
+    }
+  },
+  {
+    "source_index": 3,
+    "is_new": true,
+    "priority": "A",
+    "row": {
+      "id": 133,
+      "name": "Eastern Illinois University",
+      "region_code": "other_public",
+      "division": "NCAA D1",
+      "conference": "Ohio Valley",
+      "latitude": 39.48444,
+      "longitude": -88.17528,
+      "head_coach_name": "Ruy Vaz",
+      "head_coach_email": "rrvazfilho@eiu.edu",
+      "assistant_coach_name": "Andre Cavichione",
+      "assistant_coach_email": "acavichione@eiu.edu",
+      "facility_url": "http://eiupanthers.com/sports/2010/8/10/athletic_facilities.aspx",
+      "roster_url": "https://eiupanthers.com/sports/mens-soccer/roster",
+      "instagram_url": "https://instagram.com/eiumsoccer",
+      "description": "[IL・公立／調査優先A] 2026年ロスター：DF：Patrick Osilaja・Andre EckerがSr.。EckerはCowley College出身。Kai Odagiri（GK）は日本出身、Otero Collegeから編入。 補強の見立て（推定）：DFの更新と短大編入の経路を確認できる。暁廣のサイド起用と支援額を質問。日本人GKの在籍はサイドの募集根拠ではない。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。",
+      "instagram_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "2026-11-02 公式HC/AC連絡先確認",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://eiupanthers.com/sports/mens-soccer/roster/2026",
+      "staff": "https://eiupanthers.com/sports/mens-soccer/coaches",
+      "instagram_basis": "男子サッカー公式リンク",
+      "geo": "https://en.wikipedia.org/wiki/Eastern_Illinois_University"
+    },
+    "facts_ja": "DF：Patrick Osilaja・Andre EckerがSr.。EckerはCowley College出身。Kai Odagiri（GK）は日本出身、Otero Collegeから編入。",
+    "needs_note_ja": "DFの更新と短大編入の経路を確認できる。暁廣のサイド起用と支援額を質問。日本人GKの在籍はサイドの募集根拠ではない。",
+    "cost_reference": {
+      "values": [
+        null,
+        null,
+        "Official breakdown pending"
+      ],
+      "source": "https://www.eiu.edu/international/cost.php",
+      "basis": "国際学部の授業料・必須費・寮食費の内訳は確認中。推定値は未登録。",
+      "label": "公式費用ページ（内訳確認中）",
+      "note": "国際学部の授業料・必須費・寮食費の内訳は確認中。推定値は未登録。"
+    }
+  },
+  {
+    "source_index": 4,
+    "is_new": true,
+    "priority": "A",
+    "row": {
+      "id": 134,
+      "name": "Western Illinois University",
+      "region_code": "other_public",
+      "division": "NCAA D1",
+      "conference": "Ohio Valley",
+      "latitude": 40.470392,
+      "longitude": -90.68774,
+      "head_coach_name": "Kooten Johnson",
+      "head_coach_email": "kl-johnson5@wiu.edu",
+      "assistant_coach_name": "Josh Reddy",
+      "assistant_coach_email": "",
+      "facility_url": "https://goleathernecks.com/sports/2014/6/4/facilities_0604141132.aspx",
+      "roster_url": "https://goleathernecks.com/sports/mens-soccer/roster",
+      "instagram_url": "https://instagram.com/wiumsoc",
+      "description": "[IL・公立／調査優先A] 2026年ロスター：DF：Marco PrestaがGr.、Joel McIntyreがSr.。MFにもJokubas Samsonas・Oskar Grevelius・Nathan BessingerのSr.表記。 補強の見立て（推定）：DFとMF双方の更新を確認する価値あり。サイドの具体的な役割と残留予定者を質問。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。",
+      "instagram_verified": true,
+      "staff_status": "partial",
+      "staff_status_label": "2026-11-02 公式公開情報のみ登録・未公表メールは空欄",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://goleathernecks.com/sports/mens-soccer/roster/2026",
+      "staff": "https://goleathernecks.com/sports/mens-soccer/coaches",
+      "instagram_basis": "男子サッカー公式リンク",
+      "geo": "https://en.wikipedia.org/wiki/Western_Illinois_University"
+    },
+    "facts_ja": "DF：Marco PrestaがGr.、Joel McIntyreがSr.。MFにもJokubas Samsonas・Oskar Grevelius・Nathan BessingerのSr.表記。",
+    "needs_note_ja": "DFとMF双方の更新を確認する価値あり。サイドの具体的な役割と残留予定者を質問。",
+    "cost_reference": {
+      "values": [
+        null,
+        null,
+        "Official breakdown pending"
+      ],
+      "source": "https://www.wiu.edu/business_services/tuition/plans/b.php",
+      "basis": "国際学部の授業料・必須費・寮食費の内訳は確認中。推定値は未登録。",
+      "label": "公式費用ページ（内訳確認中）",
+      "note": "国際学部の授業料・必須費・寮食費の内訳は確認中。推定値は未登録。"
+    }
+  },
+  {
+    "source_index": 5,
+    "is_new": true,
+    "priority": "A",
+    "row": {
+      "id": 135,
+      "name": "Chicago State University",
+      "region_code": "other_public",
+      "division": "NCAA D1",
+      "conference": "NEC",
+      "latitude": 41.718,
+      "longitude": -87.609,
+      "head_coach_name": "Norris Howze",
+      "head_coach_email": "nhowze@csu.edu",
+      "assistant_coach_name": "Jesse Rosen",
+      "assistant_coach_email": "jrosen@csu.edu",
+      "facility_url": "https://gocsucougars.com/facilities",
+      "roster_url": "https://www.gocsucougars.com/sports/mens-soccer/roster",
+      "instagram_url": "https://instagram.com/chistatesoccer",
+      "description": "[IL・公立／調査優先A] 2026年ロスター：DF：Maxx Peters・Jacob Deng・Alex MutalibovがSr.。Mason MorenoはCollege of the Desert出身のMF。 補強の見立て（推定）：DF更新候補が複数。FB/WBを募集するか、短大編入への競技支援と総費用を確認。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。",
+      "instagram_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "2026-11-02 公式HC/AC連絡先確認",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://www.gocsucougars.com/sports/mens-soccer/roster",
+      "staff": "https://www.gocsucougars.com/sports/mens-soccer/coaches",
+      "instagram_basis": "男子サッカー公式リンク",
+      "geo": "https://en.wikipedia.org/wiki/Chicago_State_University"
+    },
+    "facts_ja": "DF：Maxx Peters・Jacob Deng・Alex MutalibovがSr.。Mason MorenoはCollege of the Desert出身のMF。",
+    "needs_note_ja": "DF更新候補が複数。FB/WBを募集するか、短大編入への競技支援と総費用を確認。",
+    "cost_reference": {
+      "values": [
+        null,
+        null,
+        "Official breakdown pending"
+      ],
+      "source": "https://www.csu.edu/financialoperations/bursar/tuition/spring2027.htm",
+      "basis": "国際学部の授業料・必須費・寮食費の内訳は確認中。推定値は未登録。",
+      "label": "公式費用ページ（内訳確認中）",
+      "note": "国際学部の授業料・必須費・寮食費の内訳は確認中。推定値は未登録。"
+    }
+  },
+  {
+    "source_index": 6,
+    "is_new": true,
+    "priority": "A",
+    "row": {
+      "id": 136,
+      "name": "University of Central Arkansas",
+      "region_code": "other_public",
+      "division": "NCAA D1",
+      "conference": "ASUN",
+      "latitude": 35.077,
+      "longitude": -92.457,
+      "head_coach_name": "Kyle Segebart",
+      "head_coach_email": "ksegebart@uca.edu",
+      "assistant_coach_name": "Joe LaCasto",
+      "assistant_coach_email": "jlacasto@uca.edu",
+      "facility_url": "https://ucasports.com/sports/2011/4/1/facilities.aspx",
+      "roster_url": "https://ucasports.com/sports/mens-soccer/roster",
+      "instagram_url": "https://www.instagram.com/ucamenssoccer/",
+      "description": "[AR・公立／調査優先A] 2026年ロスター：DF：Kaisei Matsudo・Joseph MwambaがSr.、Jaxon HindsがGr.。Tristan AmezcuaはIrvine Valley College出身のMID。 補強の見立て（推定）：DF上級生の更新を優先確認。日本人DF在籍も確認できるが、後任募集は未公表。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。",
+      "instagram_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "2026-11-02 公式HC/AC連絡先確認",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://ucasports.com/sports/mens-soccer/roster/2026",
+      "staff": "https://ucasports.com/sports/mens-soccer/coaches",
+      "instagram_basis": "男子チーム公式記事で確認",
+      "geo": "https://en.wikipedia.org/wiki/University_of_Central_Arkansas"
+    },
+    "facts_ja": "DF：Kaisei Matsudo・Joseph MwambaがSr.、Jaxon HindsがGr.。Tristan AmezcuaはIrvine Valley College出身のMID。",
+    "needs_note_ja": "DF上級生の更新を優先確認。日本人DF在籍も確認できるが、後任募集は未公表。",
+    "cost_reference": {
+      "values": [
+        20000,
+        10300,
+        "2026-27 official reference"
+      ],
+      "source": "https://uca.edu/internationaladmissions/cost-of-attendance/",
+      "basis": "2026-27、30単位。州外加算・国際管理費込み、減免前。学内居住者の州外加算免除は別確認。保険・教材等別。",
+      "label": "2026–27 official reference",
+      "note": "2026-27、30単位。州外加算・国際管理費込み、減免前。学内居住者の州外加算免除は別確認。保険・教材等別。"
+    }
+  },
+  {
+    "source_index": 7,
+    "is_new": true,
+    "priority": "A",
+    "row": {
+      "id": 137,
+      "name": "University of North Carolina Asheville",
+      "region_code": "other_public",
+      "division": "NCAA D1",
+      "conference": "Big South",
+      "latitude": 35.61619,
+      "longitude": -82.56614,
+      "head_coach_name": "Danny Frid",
+      "head_coach_email": "dfrid@unca.edu",
+      "assistant_coach_name": "Derek Neidlinger",
+      "assistant_coach_email": "dneidlin@unca.edu",
+      "facility_url": "https://uncabulldogs.com/facilities",
+      "roster_url": "https://uncabulldogs.com/sports/mens-soccer/roster",
+      "instagram_url": "",
+      "description": "[NC・公立／調査優先A] 2026年ロスター：DF：Lennart Granzow・Louie SalkeldがSr.、Nathan MontiniがR-Sr.。D/MのIan SmithもSr.。GranzowはIrvine Valley College出身。 補強の見立て（推定）：DF/MFを兼ねる役割の更新を尋ねやすい。2026年途中統計ではSmithは16試合13先発・1,000分。FB/WB/LMの募集は未確認。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。 Instagram未確認。",
+      "instagram_verified": false,
+      "staff_status": "verified",
+      "staff_status_label": "2026-11-02 公式HC/AC連絡先確認",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://uncabulldogs.com/sports/mens-soccer/roster/2026",
+      "staff": "https://uncabulldogs.com/sports/mens-soccer/coaches",
+      "instagram_basis": "Instagram未確認",
+      "geo": "https://en.wikipedia.org/wiki/University_of_North_Carolina_Asheville"
+    },
+    "facts_ja": "DF：Lennart Granzow・Louie SalkeldがSr.、Nathan MontiniがR-Sr.。D/MのIan SmithもSr.。GranzowはIrvine Valley College出身。",
+    "needs_note_ja": "DF/MFを兼ねる役割の更新を尋ねやすい。2026年途中統計ではSmithは16試合13先発・1,000分。FB/WB/LMの募集は未確認。",
+    "cost_reference": {
+      "values": [
+        null,
+        null,
+        "Official breakdown pending"
+      ],
+      "source": "https://www.unca.edu/admission/financial-aid/tuition/",
+      "basis": "公式ページの年間見出し額と学期別内訳に差があるため金額確定保留。",
+      "label": "公式費用ページ（内訳確認中）",
+      "note": "公式ページの年間見出し額と学期別内訳に差があるため金額確定保留。"
+    }
+  },
+  {
+    "source_index": 8,
+    "is_new": true,
+    "priority": "A",
+    "row": {
+      "id": 138,
+      "name": "Longwood University",
+      "region_code": "other_public",
+      "division": "NCAA D1",
+      "conference": "Big South",
+      "latitude": 37.301556,
+      "longitude": -78.394194,
+      "head_coach_name": "Paul Gilbert",
+      "head_coach_email": "gilbertpe@longwood.edu",
+      "assistant_coach_name": "Yuriy Sadula",
+      "assistant_coach_email": "sadulay@longwood.edu",
+      "facility_url": "https://longwoodlancers.com/facilities",
+      "roster_url": "https://longwoodlancers.com/sports/mens-soccer/roster",
+      "instagram_url": "",
+      "description": "[VA・公立／調査優先A] 2026年ロスター：DF：Aristhid Kamdjin・Jahiem CampbellがSr.、Kunandy Ouattara・Benjamin GaertnerがGr.。Campbellの経歴にHarford CCを含む。 補強の見立て（推定）：DF上級生の更新候補が複数。サイド枠と既存選手の起用変更を確認する。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。 Instagram未確認。",
+      "instagram_verified": false,
+      "staff_status": "verified",
+      "staff_status_label": "2026-11-02 公式HC/AC連絡先確認",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://longwoodlancers.com/sports/mens-soccer/roster/2026",
+      "staff": "https://longwoodlancers.com/sports/mens-soccer/coaches",
+      "instagram_basis": "Instagram未確認",
+      "geo": "https://en.wikipedia.org/wiki/Longwood_University"
+    },
+    "facts_ja": "DF：Aristhid Kamdjin・Jahiem CampbellがSr.、Kunandy Ouattara・Benjamin GaertnerがGr.。Campbellの経歴にHarford CCを含む。",
+    "needs_note_ja": "DF上級生の更新候補が複数。サイド枠と既存選手の起用変更を確認する。",
+    "cost_reference": {
+      "values": [
+        29108,
+        18902,
+        "2026-27 official reference"
+      ],
+      "source": "https://www.longwood.edu/financialaid/cost-of-attendance/",
+      "basis": "2026-27州外・国際学部の授業料/必須費と寮食費の参考小計。保険・教材・交通・個人支出・夏季費用は別。",
+      "label": "2026–27 official reference",
+      "note": "2026-27州外・国際学部の授業料/必須費と寮食費の参考小計。保険・教材・交通・個人支出・夏季費用は別。"
+    }
+  },
+  {
+    "source_index": 9,
+    "is_new": true,
+    "priority": "A",
+    "row": {
+      "id": 139,
+      "name": "Colorado Mesa University",
+      "region_code": "other_public",
+      "division": "NCAA D2",
+      "conference": "RMAC",
+      "latitude": 39.08061,
+      "longitude": -108.55456,
+      "head_coach_name": "Jon Fridal",
+      "head_coach_email": "jfridal@coloradomesa.edu",
+      "assistant_coach_name": "Ramses Atahualpa",
+      "assistant_coach_email": "raatahualpa@coloradomesa.edu",
+      "facility_url": "https://cmumavericks.com/sports/2010/4/22/Facilities_Walker.aspx?id=216",
+      "roster_url": "https://cmumavericks.com/sports/mens-soccer/roster",
+      "instagram_url": "https://instagram.com/coloradomesamenssoccer",
+      "description": "[CO・公立／調査優先A] 2026年ロスター：DF：Daniel Ehler・Jonah Elstad・George Jones・Diego MedinaがSr.、Connor Chilson・Mostafa Hassanが5th。EhlerはPima CC出身。 補強の見立て（推定）：確認できた上級生DFは6人。人数上の更新材料は強いが、全員がサイドではない。左右SBの実際の退部見込みを優先確認。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。",
+      "instagram_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "2026-11-02 公式HC/AC連絡先確認",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://cmumavericks.com/sports/mens-soccer/roster/",
+      "staff": "https://cmumavericks.com/sports/mens-soccer/coaches",
+      "instagram_basis": "男子サッカー公式リンク",
+      "geo": "https://en.wikipedia.org/wiki/Colorado_Mesa_University"
+    },
+    "facts_ja": "DF：Daniel Ehler・Jonah Elstad・George Jones・Diego MedinaがSr.、Connor Chilson・Mostafa Hassanが5th。EhlerはPima CC出身。",
+    "needs_note_ja": "確認できた上級生DFは6人。人数上の更新材料は強いが、全員がサイドではない。左右SBの実際の退部見込みを優先確認。",
+    "cost_reference": {
+      "values": [
+        null,
+        null,
+        "Official breakdown pending"
+      ],
+      "source": "https://www.catalog.coloradomesa.edu/tuition-fees-residence-life-student-accounts/tuition-fees/",
+      "basis": "国際学部の授業料・必須費・寮食費の内訳は確認中。推定値は未登録。",
+      "label": "公式費用ページ（内訳確認中）",
+      "note": "国際学部の授業料・必須費・寮食費の内訳は確認中。推定値は未登録。"
+    }
+  },
+  {
+    "source_index": 10,
+    "is_new": true,
+    "priority": "A",
+    "row": {
+      "id": 140,
+      "name": "Colorado State University Pueblo",
+      "region_code": "other_public",
+      "division": "NCAA D2",
+      "conference": "RMAC",
+      "latitude": 38.3075,
+      "longitude": -104.57833,
+      "head_coach_name": "Thomás Pazo Tourinho",
+      "head_coach_email": "t.pazotourinho@csupueblo.edu",
+      "assistant_coach_name": "Moustapha Fofana",
+      "assistant_coach_email": "",
+      "facility_url": "https://gothunderwolves.com/facilities/art-and-lorraine-gonzales-stadium/14",
+      "roster_url": "https://gothunderwolves.com/sports/mens-soccer/roster",
+      "instagram_url": "https://instagram.com/csupmsoccer",
+      "description": "[CO・公立／調査優先A] 2026年ロスター：DF：Leonardo VilchisがGr.、Jose Peris GimenoがSr.。2026年RMACプレシーズン選抜でPeris GimenoはDFとして掲載。 補強の見立て（推定）：経験あるDFの更新を尋ねる根拠あり。日本人選手も在籍するが、サイドの役割・競争相手・支援額は未確認。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。",
+      "instagram_verified": true,
+      "staff_status": "partial",
+      "staff_status_label": "2026-11-02 公式公開情報のみ登録・未公表メールは空欄",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://gothunderwolves.com/sports/mens-soccer/roster",
+      "staff": "https://gothunderwolves.com/sports/mens-soccer/coaches",
+      "instagram_basis": "男子サッカー公式リンク",
+      "geo": "https://en.wikipedia.org/wiki/Colorado_State_University_Pueblo"
+    },
+    "facts_ja": "DF：Leonardo VilchisがGr.、Jose Peris GimenoがSr.。2026年RMACプレシーズン選抜でPeris GimenoはDFとして掲載。",
+    "needs_note_ja": "経験あるDFの更新を尋ねる根拠あり。日本人選手も在籍するが、サイドの役割・競争相手・支援額は未確認。",
+    "cost_reference": {
+      "values": [
+        23700,
+        13035,
+        "2026-27 official reference"
+      ],
+      "source": "https://auth.csupueblo.edu/institutional-research/_doc/2024-2025-data-set/2025-2026-csup_common_dataset.pdf",
+      "basis": "2026-27公式CDS。30単位、州外授業料20,400＋必須費3,300。専攻加算・保険等別。",
+      "label": "2026–27 official reference",
+      "note": "2026-27公式CDS。30単位、州外授業料20,400＋必須費3,300。専攻加算・保険等別。"
+    }
+  },
+  {
+    "source_index": 11,
+    "is_new": false,
+    "priority": "A",
+    "row": {
+      "id": 28,
+      "name": "Western Oregon University",
+      "region_code": "other_public",
+      "division": "NCAA D2",
+      "conference": "GNAC",
+      "latitude": 44.853,
+      "longitude": -123.234,
+      "head_coach_name": "Andrew May",
+      "head_coach_email": "mayan@wou.edu",
+      "assistant_coach_name": "Donovan Hesslemeyer",
+      "assistant_coach_email": null,
+      "facility_url": "https://wouwolves.com/facilities/",
+      "roster_url": "https://wouwolves.com/sports/msoc/roster",
+      "instagram_url": "https://instagram.com/wou_msoc",
+      "description": "[OR・公立／調査優先A] 2026年ロスター：DF：Javier Blas CasarezがSr.、Aidan HarveyがR-Sr.。MF：Marcos FigueroaがR-Sr.、Charlie MatsumotoがSr.。F/W：Will BoyleがR-Sr.。 補強の見立て（推定）：DF・MF・ワイドの更新が重なる。2026年プレビューではBlas Casarezの2025年13先発を確認。若手との競争と2027年の監督体制を質問。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。",
+      "instagram_verified": true,
+      "staff_status": "partial",
+      "staff_status_label": "△ Current staff/name found; exact email not published or not independently confirmed",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://wouwolves.com/sports/msoc/roster",
+      "staff": "https://wouwolves.com/sports/msoc/coaches",
+      "instagram_basis": "男子サッカー公式リンク",
+      "geo": "https://en.wikipedia.org/wiki/Western_Oregon_University"
+    },
+    "facts_ja": "DF：Javier Blas CasarezがSr.、Aidan HarveyがR-Sr.。MF：Marcos FigueroaがR-Sr.、Charlie MatsumotoがSr.。F/W：Will BoyleがR-Sr.。",
+    "needs_note_ja": "DF・MF・ワイドの更新が重なる。2026年プレビューではBlas Casarezの2025年13先発を確認。若手との競争と2027年の監督体制を質問。"
+  },
+  {
+    "source_index": 12,
+    "is_new": true,
+    "priority": "A",
+    "row": {
+      "id": 141,
+      "name": "Northeastern State University",
+      "region_code": "other_public",
+      "division": "NCAA D2",
+      "conference": "GAC/MIAA",
+      "latitude": 35.9251,
+      "longitude": -94.967542,
+      "head_coach_name": "Rob Czlonka",
+      "head_coach_email": "czlonka@nsuok.edu",
+      "assistant_coach_name": "Carl Murch",
+      "assistant_coach_email": "murch@nsuok.edu",
+      "facility_url": "https://goriverhawksgo.com/facilities/",
+      "roster_url": "https://goriverhawksgo.com/sports/mens-soccer/roster",
+      "instagram_url": "https://instagram.com/nsumsoccer",
+      "description": "[OK・公立／調査優先A] 2026年ロスター：DF：Thomas Maestranzi・Jack Smith・Ethan VanDusen・Edson MarchanがSr.。MaestranziはRose State、SmithはEastern Oklahoma出身。 補強の見立て（推定）：DF上級生4人と短大編入実績が重なる。SB/WBの更新と外国人編入への支援を優先確認。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。",
+      "instagram_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "2026-11-02 公式HC/AC連絡先確認",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://goriverhawksgo.com/sports/mens-soccer/roster/2026",
+      "staff": "https://goriverhawksgo.com/sports/mens-soccer/coaches",
+      "instagram_basis": "男子サッカー公式リンク",
+      "geo": "https://en.wikipedia.org/wiki/Northeastern_State_University"
+    },
+    "facts_ja": "DF：Thomas Maestranzi・Jack Smith・Ethan VanDusen・Edson MarchanがSr.。MaestranziはRose State、SmithはEastern Oklahoma出身。",
+    "needs_note_ja": "DF上級生4人と短大編入実績が重なる。SB/WBの更新と外国人編入への支援を優先確認。",
+    "cost_reference": {
+      "values": [
+        18667.5,
+        9020,
+        "2026-27 official reference"
+      ],
+      "source": "https://offices.nsuok.edu/international/UndergraduateAdmission.aspx",
+      "basis": "2026-27、30単位。国際費300込み。一時費50・保険・教材等別。",
+      "label": "2026–27 official reference",
+      "note": "2026-27、30単位。国際費300込み。一時費50・保険・教材等別。"
+    }
+  },
+  {
+    "source_index": 13,
+    "is_new": true,
+    "priority": "A",
+    "row": {
+      "id": 142,
+      "name": "Purdue University Northwest",
+      "region_code": "other_public",
+      "division": "NCAA D2",
+      "conference": "GLIAC",
+      "latitude": 41.58167,
+      "longitude": -87.47139,
+      "head_coach_name": "Luke Dunn",
+      "head_coach_email": "dunn74@pnw.edu",
+      "assistant_coach_name": "Jaime Garcia",
+      "assistant_coach_email": "jogarcia@pnw.edu",
+      "facility_url": "https://pnwathletics.com/facilities",
+      "roster_url": "https://pnwathletics.com/sports/mens-soccer/roster",
+      "instagram_url": "https://www.instagram.com/pnw_athletics/",
+      "description": "[IN・公立／調査優先A] 2026年ロスター：D：Zach Bautista・Brandon YoungがSr.、Bruno SzumnyがGr.。D/M：Xavier Potts、M/D：Ramez EzatがSr.。YoungはLaramie County CC出身。 補強の見立て（推定）：守備と中盤を兼ねる上級生が複数。FB/WB/LMの複数対応を提案しやすい。若手・既存編入選手との競争は別途確認。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。 InstagramはAthletics全体公式。",
+      "instagram_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "2026-11-02 公式HC/AC連絡先確認",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://pnwathletics.com/sports/mens-soccer/roster",
+      "staff": "https://pnwathletics.com/sports/mens-soccer/coaches",
+      "instagram_basis": "Athletics公式",
+      "geo": "https://en.wikipedia.org/wiki/Purdue_University_Northwest"
+    },
+    "facts_ja": "D：Zach Bautista・Brandon YoungがSr.、Bruno SzumnyがGr.。D/M：Xavier Potts、M/D：Ramez EzatがSr.。YoungはLaramie County CC出身。",
+    "needs_note_ja": "守備と中盤を兼ねる上級生が複数。FB/WB/LMの複数対応を提案しやすい。若手・既存編入選手との競争は別途確認。",
+    "cost_reference": {
+      "values": [
+        20814.2,
+        null,
+        "2026-27 official reference"
+      ],
+      "source": "https://www.pnw.edu/bursar/tuition-and-fees/",
+      "basis": "2026-27国際学部、12–18単位/学期の基本授業料＋Composite Fee。専攻費・国際費・教材費・保険等別。寮食費は確認中。",
+      "label": "2026–27 official reference",
+      "note": "2026-27国際学部、12–18単位/学期の基本授業料＋Composite Fee。専攻費・国際費・教材費・保険等別。寮食費は確認中。"
+    }
+  },
+  {
+    "source_index": 14,
+    "is_new": true,
+    "priority": "A",
+    "row": {
+      "id": 143,
+      "name": "University of West Alabama",
+      "region_code": "other_public",
+      "division": "NCAA D2",
+      "conference": "Gulf South",
+      "latitude": 32.59,
+      "longitude": -88.186,
+      "head_coach_name": "Ross Nelson",
+      "head_coach_email": "rnelson@uwa.edu",
+      "assistant_coach_name": "Alfie Tucker",
+      "assistant_coach_email": "",
+      "facility_url": "https://uwaathletics.com/facilities/hines-spree-rodeo-complex/9",
+      "roster_url": "https://uwaathletics.com/sports/mens-soccer/roster",
+      "instagram_url": "https://instagram.com/uwamenssoccer",
+      "description": "[AL・公立／調査優先A] 2026年ロスター：DF：Daniel Christensen・Mathias IbanezがSr.、Oisin GriffinがGr.。Ethan SharpeはCopiah-Lincoln CC出身のJr.DF。 補強の見立て（推定）：DF更新候補3人。短大出身DFも在籍。サイドの募集、Scholarship、寮食費込み負担を同時に確認。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。",
+      "instagram_verified": true,
+      "staff_status": "partial",
+      "staff_status_label": "2026-11-02 公式公開情報のみ登録・未公表メールは空欄",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://uwaathletics.com/sports/mens-soccer/roster/2026",
+      "staff": "https://uwaathletics.com/sports/mens-soccer/coaches",
+      "instagram_basis": "男子サッカー公式リンク",
+      "geo": "https://en.wikipedia.org/wiki/University_of_West_Alabama"
+    },
+    "facts_ja": "DF：Daniel Christensen・Mathias IbanezがSr.、Oisin GriffinがGr.。Ethan SharpeはCopiah-Lincoln CC出身のJr.DF。",
+    "needs_note_ja": "DF更新候補3人。短大出身DFも在籍。サイドの募集、Scholarship、寮食費込み負担を同時に確認。",
+    "cost_reference": {
+      "values": [
+        null,
+        null,
+        "Official breakdown pending"
+      ],
+      "source": "https://www.uwa.edu/tuition-expenses/",
+      "basis": "2026-27国際学部は寮・食事選択で価格幅あり。授業料・必須費と保険を含むTiger One Feeの分離確認待ち。",
+      "label": "2026–27 official reference",
+      "note": "2026-27国際学部は寮・食事選択で価格幅あり。授業料・必須費と保険を含むTiger One Feeの分離確認待ち。"
+    }
+  },
+  {
+    "source_index": 15,
+    "is_new": true,
+    "priority": "B",
+    "row": {
+      "id": 144,
+      "name": "Southern Illinois University Edwardsville (SIUE)",
+      "region_code": "other_public",
+      "division": "NCAA D1",
+      "conference": "Ohio Valley",
+      "latitude": 38.793396,
+      "longitude": -90.0,
+      "head_coach_name": "Cale Wassermann",
+      "head_coach_email": "cawasse@siue.edu",
+      "assistant_coach_name": "Jacob Bilyeu",
+      "assistant_coach_email": "jacbily@siue.edu",
+      "facility_url": "https://siuecougars.com/facilities",
+      "roster_url": "https://siuecougars.com/sports/mens-soccer/roster",
+      "instagram_url": "https://instagram.com/SIUEMENSSOCCER",
+      "description": "[IL・公立／調査優先B] 2026年ロスター：DF：Elliott Forestierが5th、Archie McDonnellがSr.。Pepe SanchezはKansas City Kansas CC、Robbie SpainはSkagit Valley出身のJr.DF。 補強の見立て（推定）：更新材料はあるが、短大出身のJr.DFも残る見込み。2027年のサイドの優先度を確認して順位調整。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。",
+      "instagram_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "2026-11-02 公式HC/AC連絡先確認",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://siuecougars.com/sports/mens-soccer/roster/2026",
+      "staff": "https://siuecougars.com/sports/mens-soccer/coaches",
+      "instagram_basis": "男子サッカー公式リンク",
+      "geo": "https://en.wikipedia.org/wiki/Southern_Illinois_University_Edwardsville"
+    },
+    "facts_ja": "DF：Elliott Forestierが5th、Archie McDonnellがSr.。Pepe SanchezはKansas City Kansas CC、Robbie SpainはSkagit Valley出身のJr.DF。",
+    "needs_note_ja": "更新材料はあるが、短大出身のJr.DFも残る見込み。2027年のサイドの優先度を確認して順位調整。",
+    "cost_reference": {
+      "values": [
+        null,
+        null,
+        "Official breakdown pending"
+      ],
+      "source": "https://www.siue.edu/paying-for-college/tuition-and-fees/international.html",
+      "basis": "国際学部の授業料・必須費・寮食費の内訳は確認中。推定値は未登録。",
+      "label": "公式費用ページ（内訳確認中）",
+      "note": "国際学部の授業料・必須費・寮食費の内訳は確認中。推定値は未登録。"
+    }
+  },
+  {
+    "source_index": 16,
+    "is_new": true,
+    "priority": "B",
+    "row": {
+      "id": 145,
+      "name": "Utah Tech University",
+      "region_code": "other_public",
+      "division": "NCAA D1",
+      "conference": "Mountain West",
+      "latitude": 37.104472,
+      "longitude": -113.565194,
+      "head_coach_name": "Jonny Broadhead",
+      "head_coach_email": "jonny.broadhead@utahtech.edu",
+      "assistant_coach_name": "Zac Hales",
+      "assistant_coach_email": "zac.hales@utahtech.edu",
+      "facility_url": "https://utahtechtrailblazers.com/sports/2025/7/14/facilities-update.aspx",
+      "roster_url": "https://utahtechtrailblazers.com/sports/mens-soccer/roster",
+      "instagram_url": "https://instagram.com/utahtech_msoc",
+      "description": "[UT・公立／調査優先B] 2026年ロスター：DF：Miguel ReginoがSr.。Dominic Portale・Tanner DutraはJr.。DFやMFにはFr./So.が複数在籍。 補強の見立て（推定）：西部のD1として残す。ロスターは若手も多く、卒業による大量更新の根拠は弱い。サイドの即戦力希望を確認。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。",
+      "instagram_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "2026-11-02 公式HC/AC連絡先確認",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://utahtechtrailblazers.com/sports/mens-soccer/roster",
+      "staff": "https://utahtechtrailblazers.com/sports/mens-soccer/coaches",
+      "instagram_basis": "男子サッカー公式リンク",
+      "geo": "https://en.wikipedia.org/wiki/Utah_Tech_University"
+    },
+    "facts_ja": "DF：Miguel ReginoがSr.。Dominic Portale・Tanner DutraはJr.。DFやMFにはFr./So.が複数在籍。",
+    "needs_note_ja": "西部のD1として残す。ロスターは若手も多く、卒業による大量更新の根拠は弱い。サイドの即戦力希望を確認。",
+    "cost_reference": {
+      "values": [
+        19628,
+        7950,
+        "2026-27 official reference"
+      ],
+      "source": "https://international.utahtech.edu/prospective-estimated-cost-of-attendance/",
+      "basis": "2026-27、国際学部。国際学生費200込み。Livingは寮4,450＋大学生活費見積3,500。教材・保険別。",
+      "label": "2026–27 official reference",
+      "note": "2026-27、国際学部。国際学生費200込み。Livingは寮4,450＋大学生活費見積3,500。教材・保険別。"
+    }
+  },
+  {
+    "source_index": 17,
+    "is_new": false,
+    "priority": "B",
+    "row": {
+      "id": 44,
+      "name": "UT Rio Grande Valley",
+      "region_code": "other_public",
+      "division": "NCAA D1",
+      "conference": "Ohio Valley",
+      "latitude": 26.3053,
+      "longitude": -98.1738,
+      "head_coach_name": "Bryheem Hancock",
+      "head_coach_email": "bryheem.hancock@utrgv.edu",
+      "assistant_coach_name": "Sheldon Cipriani",
+      "assistant_coach_email": "sheldon.cipriani@utrgv.edu",
+      "facility_url": "https://goutrgv.com/feature/facilities",
+      "roster_url": "https://goutrgv.com/sports/mens-soccer/roster",
+      "instagram_url": "https://instagram.com/utrgvmsoccer",
+      "description": "[TX・公立／調査優先B] 2026年ロスター：DF：Arev VeraがSr.。MF：Mouhamed Pouye・Malang MandiangがSr.、Eduardo De Oliveiraが5th。複数の短大出身選手が在籍。 補強の見立て（推定）：MFの更新材料はあるがLMとは限らない。FB/LMのどちらを評価するかを尋ねる。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。",
+      "instagram_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "✓ Official/current contact verified",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://goutrgv.com/sports/mens-soccer/roster/2026",
+      "staff": "https://goutrgv.com/sports/mens-soccer/coaches",
+      "instagram_basis": "男子サッカー公式リンク",
+      "geo": "https://en.wikipedia.org/wiki/University_of_Texas_Rio_Grande_Valley"
+    },
+    "facts_ja": "DF：Arev VeraがSr.。MF：Mouhamed Pouye・Malang MandiangがSr.、Eduardo De Oliveiraが5th。複数の短大出身選手が在籍。",
+    "needs_note_ja": "MFの更新材料はあるがLMとは限らない。FB/LMのどちらを評価するかを尋ねる。"
+  },
+  {
+    "source_index": 18,
+    "is_new": false,
+    "priority": "B",
+    "row": {
+      "id": 26,
+      "name": "Western Washington Univ.",
+      "region_code": "other_public",
+      "division": "NCAA D2",
+      "conference": "GNAC",
+      "latitude": 48.7303,
+      "longitude": -122.4862,
+      "head_coach_name": "Greg Brisbon",
+      "head_coach_email": "wwumsoccer@wwu.edu",
+      "assistant_coach_name": "Chuck Pitts",
+      "assistant_coach_email": "wwumsoccer@wwu.edu",
+      "facility_url": "https://wwuvikings.com/sports/2018/6/4/athletic-facilities.aspx",
+      "roster_url": "https://wwuvikings.com/sports/mens-soccer/roster",
+      "instagram_url": "https://www.instagram.com/wwu_msoccer/",
+      "description": "[WA・公立／調査優先B] 2026年ロスター：DF：Gabriel MataがSr.。MF：Edgar SerranoがSr.。M/WのJose Perez・Filip KarlssonはSo.表記。 補強の見立て（推定）：西海岸希望に沿う。ワイドの若手が残るため、単純な卒業枠とは考えず、SB寄りの評価を確認。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。",
+      "instagram_verified": false,
+      "staff_status": "verified",
+      "staff_status_label": "✓ Official/current contact verified",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://wwuvikings.com/sports/mens-soccer/roster",
+      "staff": "https://wwuvikings.com/sports/mens-soccer/coaches",
+      "instagram_basis": "既存登録・今回公式リンク未再確認",
+      "geo": "https://en.wikipedia.org/wiki/Western_Washington_University"
+    },
+    "facts_ja": "DF：Gabriel MataがSr.。MF：Edgar SerranoがSr.。M/WのJose Perez・Filip KarlssonはSo.表記。",
+    "needs_note_ja": "西海岸希望に沿う。ワイドの若手が残るため、単純な卒業枠とは考えず、SB寄りの評価を確認。"
+  },
+  {
+    "source_index": 19,
+    "is_new": true,
+    "priority": "B",
+    "row": {
+      "id": 146,
+      "name": "Metropolitan State University of Denver",
+      "region_code": "other_public",
+      "division": "NCAA D2",
+      "conference": "RMAC",
+      "latitude": 39.744,
+      "longitude": -105.0115,
+      "head_coach_name": "Nick Kirchhof",
+      "head_coach_email": "nkirchho@msudenver.edu",
+      "assistant_coach_name": "Eric Bracy",
+      "assistant_coach_email": "ebracy1@msudenver.edu",
+      "facility_url": "https://roadrunnersathletics.com/facilities/the-assembly-athletic-complex-soccer-pitch/154",
+      "roster_url": "https://roadrunnersathletics.com/sports/mens-soccer/roster",
+      "instagram_url": "https://www.instagram.com/msudenverathletics/",
+      "description": "[CO・公立／調査優先B] 2026年ロスター：Robert SumnerがSr.。MFのAran GarzaもSr.。DFのAustin Armstrong・Riley GallowayはいずれもSpokane Falls CC出身のJr.。 補強の見立て（推定）：短大編入の在籍実績あり。一方、Jr.DFが残るのでサイドの募集は確認が必要。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。 InstagramはAthletics全体公式。",
+      "instagram_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "2026-11-02 公式HC/AC連絡先確認",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://roadrunnersathletics.com/sports/mens-soccer/roster/2026",
+      "staff": "https://roadrunnersathletics.com/sports/mens-soccer/coaches",
+      "instagram_basis": "Instagram未確認",
+      "geo": "https://en.wikipedia.org/wiki/Metropolitan_State_University_of_Denver",
+      "instagram_source": "https://www.msudenver.edu/brand-central/social-media/social-media-directory/"
+    },
+    "facts_ja": "Robert SumnerがSr.。MFのAran GarzaもSr.。DFのAustin Armstrong・Riley GallowayはいずれもSpokane Falls CC出身のJr.。",
+    "needs_note_ja": "短大編入の在籍実績あり。一方、Jr.DFが残るのでサイドの募集は確認が必要。",
+    "cost_reference": {
+      "values": [
+        null,
+        null,
+        "Official breakdown pending"
+      ],
+      "source": "https://www.msudenver.edu/bursar/tuition-and-fees/undergraduate/",
+      "basis": "国際学部の授業料・必須費・寮食費の内訳は確認中。推定値は未登録。",
+      "label": "公式費用ページ（内訳確認中）",
+      "note": "国際学部の授業料・必須費・寮食費の内訳は確認中。推定値は未登録。"
+    }
+  },
+  {
+    "source_index": 20,
+    "is_new": false,
+    "priority": "B",
+    "row": {
+      "id": 48,
+      "name": "Midwestern State Univ.",
+      "region_code": "other_public",
+      "division": "NCAA D2",
+      "conference": "Lone Star",
+      "latitude": 33.8722,
+      "longitude": -98.5222,
+      "head_coach_name": "Michael Meachum",
+      "head_coach_email": "michael.meachum@msutexas.edu",
+      "assistant_coach_name": "Patrick Fitzgerald",
+      "assistant_coach_email": "patrick.fitzgerald@msutexas.edu",
+      "facility_url": "https://msumustangs.com/facilities",
+      "roster_url": "https://msumustangs.com/sports/mens-soccer/roster",
+      "instagram_url": "https://instagram.com/msutx_msoc",
+      "description": "[TX・公立／調査優先B] 2026年ロスター：DF：Davis Mays・Oscar SosaがGr.。Ethan Krchnak・Cristobal Benito・Skyler Krchnak・Anthony BarreraはRS-Jr.表記。 補強の見立て（推定）：DF上級生の更新はあるが既存の経験者も多い。出場機会を具体的に聞いてから優先度を上げる。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。",
+      "instagram_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "✓ Official/current contact verified",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://msumustangs.com/sports/mens-soccer/roster/2026",
+      "staff": "https://msumustangs.com/sports/mens-soccer/coaches",
+      "instagram_basis": "男子サッカー公式リンク",
+      "geo": "https://en.wikipedia.org/wiki/Midwestern_State_University"
+    },
+    "facts_ja": "DF：Davis Mays・Oscar SosaがGr.。Ethan Krchnak・Cristobal Benito・Skyler Krchnak・Anthony BarreraはRS-Jr.表記。",
+    "needs_note_ja": "DF上級生の更新はあるが既存の経験者も多い。出場機会を具体的に聞いてから優先度を上げる。"
+  },
+  {
+    "source_index": 21,
+    "is_new": true,
+    "priority": "B",
+    "row": {
+      "id": 147,
+      "name": "Rogers State University",
+      "region_code": "other_public",
+      "division": "NCAA D2",
+      "conference": "GAC/MIAA",
+      "latitude": 36.31917,
+      "longitude": -95.63917,
+      "head_coach_name": "Jake Simpson",
+      "head_coach_email": "jsimpson@rsu.edu",
+      "assistant_coach_name": "Jason Rogers",
+      "assistant_coach_email": "jrogers@rsu.edu",
+      "facility_url": "https://rsuhillcats.com/facilities/",
+      "roster_url": "https://rsuhillcats.com/sports/mens-soccer/roster",
+      "instagram_url": "https://instagram.com/rsumsoccer",
+      "description": "[OK・公立／調査優先B] 2026年ロスター：DF：Alex Fletcher・Conor Mills・Tom Dixon・Alex LaingがSr.。公式プレビューでFletcherは2025年21試合19先発と記載。 補強の見立て（推定）：複数DFの更新材料は強い。一方、若手・編入を含む守備陣も多く、競争は未評価。サイドの役割と選考基準を確認。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。",
+      "instagram_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "2026-11-02 公式HC/AC連絡先確認",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://rsuhillcats.com/sports/mens-soccer/roster",
+      "staff": "https://rsuhillcats.com/sports/mens-soccer/coaches",
+      "instagram_basis": "男子サッカー公式リンク",
+      "geo": "https://en.wikipedia.org/wiki/Rogers_State_University"
+    },
+    "facts_ja": "DF：Alex Fletcher・Conor Mills・Tom Dixon・Alex LaingがSr.。公式プレビューでFletcherは2025年21試合19先発と記載。",
+    "needs_note_ja": "複数DFの更新材料は強い。一方、若手・編入を含む守備陣も多く、競争は未評価。サイドの役割と選考基準を確認。",
+    "cost_reference": {
+      "values": [
+        null,
+        null,
+        "Official breakdown pending"
+      ]
+    }
+  },
+  {
+    "source_index": 22,
+    "is_new": true,
+    "priority": "B",
+    "row": {
+      "id": 148,
+      "name": "Lander University",
+      "region_code": "other_public",
+      "division": "NCAA D2",
+      "conference": "Peach Belt",
+      "latitude": 34.20028,
+      "longitude": -82.16556,
+      "head_coach_name": "Paul Leese",
+      "head_coach_email": "pleese@lander.edu",
+      "assistant_coach_name": "Chris Ketron",
+      "assistant_coach_email": "cketron@lander.edu",
+      "facility_url": "https://landerbearcats.com/facilities",
+      "roster_url": "https://landerbearcats.com/sports/mens-soccer/roster",
+      "instagram_url": "https://instagram.com/landermsoc",
+      "description": "[SC・公立／調査優先B] 2026年ロスター：DF：Måns KlintがGr.。FW：Orran Mushet・Tal Torgeman・Carson GravesがSr.。Mushet・Torgemanは短大出身。 補強の見立て（推定）：DFと攻撃陣の更新候補は確認。ただしFW更新をLM募集に置き換えず、ワイド補強の意向を尋ねる。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。",
+      "instagram_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "2026-11-02 公式HC/AC連絡先確認",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://landerbearcats.com/sports/mens-soccer/roster",
+      "staff": "https://landerbearcats.com/sports/mens-soccer/coaches",
+      "instagram_basis": "男子サッカー公式リンク",
+      "geo": "https://en.wikipedia.org/wiki/Lander_University"
+    },
+    "facts_ja": "DF：Måns KlintがGr.。FW：Orran Mushet・Tal Torgeman・Carson GravesがSr.。Mushet・Torgemanは短大出身。",
+    "needs_note_ja": "DFと攻撃陣の更新候補は確認。ただしFW更新をLM募集に置き換えず、ワイド補強の意向を尋ねる。",
+    "cost_reference": {
+      "values": [
+        null,
+        null,
+        "Official breakdown pending"
+      ],
+      "source": "https://lander.edu/about/offices-departments/finance-administration/student-accounts/fall-fees.html",
+      "basis": "国際学部の授業料・必須費・寮食費の内訳は確認中。推定値は未登録。",
+      "label": "公式費用ページ（内訳確認中）",
+      "note": "国際学部の授業料・必須費・寮食費の内訳は確認中。推定値は未登録。"
+    }
+  },
+  {
+    "source_index": 23,
+    "is_new": true,
+    "priority": "B",
+    "row": {
+      "id": 149,
+      "name": "Francis Marion University",
+      "region_code": "other_public",
+      "division": "NCAA D2",
+      "conference": "Conference Carolinas",
+      "latitude": 34.1904,
+      "longitude": -79.6542,
+      "head_coach_name": "Luis Rincon",
+      "head_coach_email": "Luis.Rincon@fmarion.edu",
+      "assistant_coach_name": "Nicolas Rodriguez",
+      "assistant_coach_email": "nicolas.rodriguez@fmarion.edu",
+      "facility_url": "https://fmupatriots.com/sports/2020/7/22/facilities-FMU-Athletic-Facilities.aspx",
+      "roster_url": "https://fmupatriots.com/sports/mens-soccer/roster",
+      "instagram_url": "https://instagram.com/fmu_patsmensoccer",
+      "description": "[SC・公立／調査優先B] 2026年ロスター：DF：David GuevaraがGr.。MF：Tim WilkeningがGr.。Stiward PalaciosはMississippi Gulf Coast CC出身のSo.DF。 補強の見立て（推定）：DF/MF更新候補と短大編入の在籍を確認。残留DFもいるため、サイドの具体的な募集を尋ねる。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。",
+      "instagram_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "2026-11-02 公式HC/AC連絡先確認",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://fmupatriots.com/sports/mens-soccer/roster/2026",
+      "staff": "https://fmupatriots.com/sports/mens-soccer/coaches",
+      "instagram_basis": "男子サッカー公式リンク",
+      "geo": "https://en.wikipedia.org/wiki/Francis_Marion_University"
+    },
+    "facts_ja": "DF：David GuevaraがGr.。MF：Tim WilkeningがGr.。Stiward PalaciosはMississippi Gulf Coast CC出身のSo.DF。",
+    "needs_note_ja": "DF/MF更新候補と短大編入の在籍を確認。残留DFもいるため、サイドの具体的な募集を尋ねる。",
+    "cost_reference": {
+      "values": [
+        null,
+        null,
+        "Official breakdown pending"
+      ]
+    }
+  },
+  {
+    "source_index": 24,
+    "is_new": true,
+    "priority": "B",
+    "row": {
+      "id": 150,
+      "name": "Millersville University",
+      "region_code": "other_public",
+      "division": "NCAA D2",
+      "conference": "PSAC",
+      "latitude": 40.0,
+      "longitude": -76.356,
+      "head_coach_name": "Steve Widdowson",
+      "head_coach_email": "steven.widdowson@millersville.edu",
+      "assistant_coach_name": "Quinn McCarty",
+      "assistant_coach_email": "",
+      "facility_url": "https://millersvilleathletics.com/facilities",
+      "roster_url": "https://millersvilleathletics.com/sports/mens-soccer/roster",
+      "instagram_url": "https://instagram.com/VilleMarauders",
+      "description": "[PA・公立／調査優先B] 2026年ロスター：DF：Zach RichwineがSr.。MF：Matias SchmidtがSr.。 補強の見立て（推定）：Harcumから現地訪問・評価を相談する候補。DF/MF更新はあるが、SBの卒業・募集とは未確定。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。 InstagramはAthletics全体公式。",
+      "instagram_verified": true,
+      "staff_status": "partial",
+      "staff_status_label": "2026-11-02 公式公開情報のみ登録・未公表メールは空欄",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://millersvilleathletics.com/sports/mens-soccer/roster",
+      "staff": "https://millersvilleathletics.com/sports/mens-soccer/coaches",
+      "instagram_basis": "Instagram未確認",
+      "geo": "https://en.wikipedia.org/wiki/Millersville_University",
+      "instagram_source": "https://millersvilleathletics.com/"
+    },
+    "facts_ja": "DF：Zach RichwineがSr.。MF：Matias SchmidtがSr.。",
+    "needs_note_ja": "Harcumから現地訪問・評価を相談する候補。DF/MF更新はあるが、SBの卒業・募集とは未確定。",
+    "cost_reference": {
+      "values": [
+        17920,
+        13890,
+        "2026-27 official reference"
+      ],
+      "source": "https://www.millersville.edu/international/cost-tuition.php",
+      "basis": "2026-27国際学部、12–18単位/学期。基本17,620＋別掲国際費150/学期。Livingは大学掲載値。保険・教材等別。",
+      "label": "2026–27 official reference",
+      "note": "2026-27国際学部、12–18単位/学期。基本17,620＋別掲国際費150/学期。Livingは大学掲載値。保険・教材等別。"
+    }
+  },
+  {
+    "source_index": 25,
+    "is_new": false,
+    "priority": "B",
+    "row": {
+      "id": 74,
+      "name": "West Chester University",
+      "region_code": "other_public",
+      "division": "NCAA D2",
+      "conference": "PSAC",
+      "latitude": 39.939,
+      "longitude": -75.60012,
+      "head_coach_name": "Michael Benn",
+      "head_coach_email": "mbenn@wcupa.edu",
+      "assistant_coach_name": "Matt Goodall",
+      "assistant_coach_email": null,
+      "facility_url": "https://wcupagoldenrams.com/sports/2007/7/3/Facilities.aspx?tab=facilities",
+      "roster_url": "https://wcupagoldenrams.com/sports/mens-soccer/roster",
+      "instagram_url": "https://www.instagram.com/wcuathletics/",
+      "description": "[PA・公立／調査優先B] 2026年ロスター：DF：Ian AliceaがSr.。DFのMichael Regan・Kenyon CarterはSo.。GKのSeniorもいるがワイドの根拠には使わない。 補強の見立て（推定）：Harcum近隣の追加候補。若手DFが残るため、サイドの即戦力需要を尋ねて判断。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。 InstagramはAthletics全体公式。",
+      "instagram_verified": true,
+      "staff_status": "partial",
+      "staff_status_label": "△ Current staff/name found; exact email not published or not independently confirmed",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://wcupagoldenrams.com/sports/mens-soccer/roster",
+      "staff": "https://wcupagoldenrams.com/sports/mens-soccer/coaches",
+      "instagram_basis": "Athletics公式",
+      "geo": "https://en.wikipedia.org/wiki/West_Chester_University"
+    },
+    "facts_ja": "DF：Ian AliceaがSr.。DFのMichael Regan・Kenyon CarterはSo.。GKのSeniorもいるがワイドの根拠には使わない。",
+    "needs_note_ja": "Harcum近隣の追加候補。若手DFが残るため、サイドの即戦力需要を尋ねて判断。"
+  },
+  {
+    "source_index": 26,
+    "is_new": true,
+    "priority": "B",
+    "row": {
+      "id": 151,
+      "name": "Frostburg State University",
+      "region_code": "other_public",
+      "division": "NCAA D2",
+      "conference": "Mountain East",
+      "latitude": 39.650352,
+      "longitude": -78.93253,
+      "head_coach_name": "Lamine Balde",
+      "head_coach_email": "lbalde@frostburg.edu",
+      "assistant_coach_name": "Brian Cruz",
+      "assistant_coach_email": "bcruz@frostburg.edu",
+      "facility_url": "https://frostburgsports.com/facilities/facilities/25",
+      "roster_url": "https://frostburgsports.com/sports/msoc/roster",
+      "instagram_url": "https://instagram.com/frostburgsoccer",
+      "description": "[MD・公立／調査優先B] 2026年ロスター：DF：Brian GomezがSr.。MF：Kevin Garcia-TorresがGr.。 補強の見立て（推定）：DF/MFの更新候補を確認。2027年のSB/LM採用予定、奨学金、転入単位を確認する候補。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。",
+      "instagram_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "2026-11-02 公式HC/AC連絡先確認",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://frostburgsports.com/sports/msoc/roster",
+      "staff": "https://frostburgsports.com/sports/msoc/coaches",
+      "instagram_basis": "男子サッカー公式リンク",
+      "geo": "https://en.wikipedia.org/wiki/Frostburg_State_University"
+    },
+    "facts_ja": "DF：Brian GomezがSr.。MF：Kevin Garcia-TorresがGr.。",
+    "needs_note_ja": "DF/MFの更新候補を確認。2027年のSB/LM採用予定、奨学金、転入単位を確認する候補。",
+    "cost_reference": {
+      "values": [
+        26444,
+        15242,
+        "2026-27 official reference"
+      ],
+      "source": "https://www.frostburg.edu/admissions-and-cost/tuition-and-fees/",
+      "basis": "2026-27州外・国際学部の授業料/必須費と寮食費の参考小計。保険・教材・交通・個人支出・夏季費用は別。",
+      "label": "2026–27 official reference",
+      "note": "2026-27州外・国際学部の授業料/必須費と寮食費の参考小計。保険・教材・交通・個人支出・夏季費用は別。"
+    }
+  },
+  {
+    "source_index": 27,
+    "is_new": true,
+    "priority": "C",
+    "row": {
+      "id": 152,
+      "name": "University of Nebraska Omaha",
+      "region_code": "other_public",
+      "division": "NCAA D1",
+      "conference": "Summit League",
+      "latitude": 41.259,
+      "longitude": -96.006,
+      "head_coach_name": "Donovan Dowling",
+      "head_coach_email": "ddowling@omavs.com",
+      "assistant_coach_name": "Josh McReynolds",
+      "assistant_coach_email": "jmcreynolds@omavs.com",
+      "facility_url": "https://omahamavs.com/facilities",
+      "roster_url": "https://omahamavs.com/sports/mens-soccer/roster",
+      "instagram_url": "https://www.instagram.com/OmahaMSOC/",
+      "description": "[NE・公立／調査優先C] 2026年ロスター：MF：Ian Silva・Sam SchendtがSr.。Gael de Montigny・Simon GuardieroはJr.DF。 補強の見立て（推定）：現時点でサイドDFの大きな卒業更新は示せない。LMの役割と2027年DF編入募集を追加調査。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。",
+      "instagram_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "2026-11-02 公式HC/AC連絡先確認",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://omahamavs.com/sports/mens-soccer/roster",
+      "staff": "https://omahamavs.com/sports/mens-soccer/coaches",
+      "instagram_basis": "Instagram未確認",
+      "geo": "https://en.wikipedia.org/wiki/University_of_Nebraska_Omaha",
+      "instagram_source": "https://gculopes.com/documents/download/2024/9/5/2024_Men_s_Soccer_Notes_G__5.pdf"
+    },
+    "facts_ja": "MF：Ian Silva・Sam SchendtがSr.。Gael de Montigny・Simon GuardieroはJr.DF。",
+    "needs_note_ja": "現時点でサイドDFの大きな卒業更新は示せない。LMの役割と2027年DF編入募集を追加調査。",
+    "cost_reference": {
+      "values": [
+        26400,
+        13548,
+        "2026-27 official reference"
+      ],
+      "source": "https://www.unomaha.edu/undergraduate-admissions/tuition-and-aid/estimated-cost-of-attendance.php",
+      "basis": "2026-27州外・国際学部の授業料/必須費と寮食費の参考小計。保険・教材・交通・個人支出・夏季費用は別。",
+      "label": "2026–27 official reference",
+      "note": "2026-27州外・国際学部の授業料/必須費と寮食費の参考小計。保険・教材・交通・個人支出・夏季費用は別。"
+    }
+  },
+  {
+    "source_index": 28,
+    "is_new": false,
+    "priority": "C",
+    "row": {
+      "id": 81,
+      "name": "NJIT",
+      "region_code": "other_public",
+      "division": "NCAA D1",
+      "conference": "America East",
+      "latitude": 40.742323,
+      "longitude": -74.180145,
+      "head_coach_name": "Fernando Barboto",
+      "head_coach_email": "barboto@njit.edu",
+      "assistant_coach_name": "John Velasco",
+      "assistant_coach_email": "john.velasco@njit.edu",
+      "facility_url": "https://njithighlanders.com/facilities/njit-wellness-and-events-center/129",
+      "roster_url": "https://njithighlanders.com/sports/mens-soccer/roster",
+      "instagram_url": "https://instagram.com/njitsoccer",
+      "description": "[NJ・公立／調査優先C] 2026年ロスター：D/F：Junee LeeがSr.。MF：Maximus Barboto・Jake RubisがSr.、Itay SofferがGr.。日本出身のHarusumi TakesadaはSo.MF。 補強の見立て（推定）：MFの更新材料はあるがLMかは未確認。サイド適合とBusiness系専攻・総費用を追加確認。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。",
+      "instagram_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "✓ Official/current contact verified",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://njithighlanders.com/sports/mens-soccer/roster/2026",
+      "staff": "https://njithighlanders.com/sports/mens-soccer/coaches",
+      "instagram_basis": "男子サッカー公式リンク",
+      "geo": "https://en.wikipedia.org/wiki/New_Jersey_Institute_of_Technology"
+    },
+    "facts_ja": "D/F：Junee LeeがSr.。MF：Maximus Barboto・Jake RubisがSr.、Itay SofferがGr.。日本出身のHarusumi TakesadaはSo.MF。",
+    "needs_note_ja": "MFの更新材料はあるがLMかは未確認。サイド適合とBusiness系専攻・総費用を追加確認。"
+  },
+  {
+    "source_index": 29,
+    "is_new": true,
+    "priority": "C",
+    "row": {
+      "id": 153,
+      "name": "University of South Carolina Upstate",
+      "region_code": "other_public",
+      "division": "NCAA D1",
+      "conference": "Big South",
+      "latitude": 34.9975,
+      "longitude": -81.97056,
+      "head_coach_name": "Michael Antoniewicz",
+      "head_coach_email": "AntonieM@uscupstate.edu",
+      "assistant_coach_name": "Matthew Dunn",
+      "assistant_coach_email": "md147@uscupstate.edu",
+      "facility_url": "https://upstatespartans.com/sports/2026/4/20/facilities-soccer",
+      "roster_url": "https://upstatespartans.com/sports/mens-soccer/roster",
+      "instagram_url": "https://www.instagram.com/upstatespartans/",
+      "description": "[SC・公立／調査優先C] 2026年ロスター：2026年公式ロスターとOllie Westの選手ページを確認。今回の取得情報だけではサイドの卒業候補を整理しきれていない。 補強の見立て（推定）：2026年の学年別DF/MF一覧、先発と左右SBを追加確認してから問い合わせ順位を決める。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。 InstagramはAthletics全体公式。",
+      "instagram_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "2026-11-02 公式HC/AC連絡先確認",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://upstatespartans.com/sports/mens-soccer/roster/2026",
+      "staff": "https://upstatespartans.com/sports/mens-soccer/coaches",
+      "instagram_basis": "Athletics公式",
+      "geo": "https://en.wikipedia.org/wiki/University_of_South_Carolina_Upstate"
+    },
+    "facts_ja": "2026年公式ロスターとOllie Westの選手ページを確認。今回の取得情報だけではサイドの卒業候補を整理しきれていない。",
+    "needs_note_ja": "2026年の学年別DF/MF一覧、先発と左右SBを追加確認してから問い合わせ順位を決める。",
+    "cost_reference": {
+      "values": [
+        23612,
+        11918,
+        "2026-27 official reference"
+      ],
+      "source": "https://uscupstate.edu/tuition-and-financial-aid/cost-of-attendance/",
+      "basis": "2026-27州外・国際学部の授業料/必須費と寮食費の参考小計。保険・教材・交通・個人支出・夏季費用は別。",
+      "label": "2026–27 official reference",
+      "note": "2026-27州外・国際学部の授業料/必須費と寮食費の参考小計。保険・教材・交通・個人支出・夏季費用は別。"
+    }
+  },
+  {
+    "source_index": 30,
+    "is_new": true,
+    "priority": "C",
+    "row": {
+      "id": 154,
+      "name": "University of West Florida",
+      "region_code": "other_public",
+      "division": "NCAA D1",
+      "conference": "ASUN (D1 transition)",
+      "latitude": 30.5495,
+      "longitude": -87.2181,
+      "head_coach_name": "Bill Elliott",
+      "head_coach_email": "belliot@uwf.edu",
+      "assistant_coach_name": "Felipe Lawall",
+      "assistant_coach_email": "flawall@uwf.edu",
+      "facility_url": "https://goargos.com/facilities",
+      "roster_url": "https://goargos.com/sports/mens-soccer/roster",
+      "instagram_url": "https://instagram.com/uwfsoccer",
+      "description": "[FL・公立／調査優先C] 2026年ロスター：大学とASUNが2026年秋からのD1移行を公式発表。今回、2026年ロスターの詳細取得は未完了。 補強の見立て（推定）：2027年の編成・奨学金と移行中の大会資格を確認。D1移行だけを補強需要の根拠にしない。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。 D1移行中。2027年の全国大会参加資格は要確認。",
+      "instagram_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "2026-11-02 公式HC/AC連絡先確認",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://news.uwf.edu/uwf-athletics-announces-move-to-ncaa-division-i-athletics-joins-atlantic-sun-conference-united-athletic-conference/",
+      "staff": "https://goargos.com/sports/mens-soccer/coaches",
+      "instagram_basis": "男子サッカー公式リンク",
+      "geo": "https://en.wikipedia.org/wiki/University_of_West_Florida"
+    },
+    "facts_ja": "大学とASUNが2026年秋からのD1移行を公式発表。今回、2026年ロスターの詳細取得は未完了。",
+    "needs_note_ja": "2027年の編成・奨学金と移行中の大会資格を確認。D1移行だけを補強需要の根拠にしない。",
+    "cost_reference": {
+      "values": [
+        16968,
+        12986,
+        "2026-27 official reference"
+      ],
+      "source": "https://uwf.edu/offices/financial-aid/cost-of-attendance/cost-of-attendance-estimates/",
+      "basis": "2026-27州外・国際学部の授業料/必須費と寮食費の参考小計。保険・教材・交通・個人支出・夏季費用は別。",
+      "label": "2026–27 official reference",
+      "note": "2026-27州外・国際学部の授業料/必須費と寮食費の参考小計。保険・教材・交通・個人支出・夏季費用は別。"
+    }
+  },
+  {
+    "source_index": 31,
+    "is_new": true,
+    "priority": "C",
+    "row": {
+      "id": 155,
+      "name": "University of Colorado Colorado Springs (UCCS)",
+      "region_code": "other_public",
+      "division": "NCAA D2",
+      "conference": "RMAC",
+      "latitude": 38.894,
+      "longitude": -104.803,
+      "head_coach_name": "Lewis Wilcox",
+      "head_coach_email": "lwilcox2@uccs.edu",
+      "assistant_coach_name": "Joe Mellars",
+      "assistant_coach_email": "jmellars@uccs.edu",
+      "facility_url": "https://gomountainlions.com/facilities/gallogly-events-center/1",
+      "roster_url": "https://gomountainlions.com/sports/mens-soccer/roster",
+      "instagram_url": "https://instagram.com/uccs_mens_soccer",
+      "description": "[CO・公立／調査優先C] 2026年ロスター：MF：Dalton UehlingがSr.、FW：Jack CookがSr.。Dillon Clarke・Sean Belzer・Renan OliveiraはJr.DF。 補強の見立て（推定）：DFが残る見込みで、サイド更新の根拠は弱い。LM/ワイドの役割と2027年編入募集を追加調査。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。",
+      "instagram_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "2026-11-02 公式HC/AC連絡先確認",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://gomountainlions.com/sports/mens-soccer/roster",
+      "staff": "https://gomountainlions.com/sports/mens-soccer/coaches",
+      "instagram_basis": "男子サッカー公式リンク",
+      "geo": "https://en.wikipedia.org/wiki/University_of_Colorado_Colorado_Springs"
+    },
+    "facts_ja": "MF：Dalton UehlingがSr.、FW：Jack CookがSr.。Dillon Clarke・Sean Belzer・Renan OliveiraはJr.DF。",
+    "needs_note_ja": "DFが残る見込みで、サイド更新の根拠は弱い。LM/ワイドの役割と2027年編入募集を追加調査。",
+    "cost_reference": {
+      "values": [
+        null,
+        null,
+        "Official breakdown pending"
+      ]
+    }
+  },
+  {
+    "source_index": 32,
+    "is_new": true,
+    "priority": "C",
+    "row": {
+      "id": 156,
+      "name": "University of Texas at Tyler",
+      "region_code": "other_public",
+      "division": "NCAA D2",
+      "conference": "Lone Star",
+      "latitude": 32.317258,
+      "longitude": -95.251937,
+      "head_coach_name": "Kenny Jones",
+      "head_coach_email": "menssoccer@uttyler.edu",
+      "assistant_coach_name": "Robert Serra",
+      "assistant_coach_email": "rserra@uttyler.edu",
+      "facility_url": "https://uttylerpatriots.com/facilities/citizens-1st-bank-perkins-soccer-complex/4",
+      "roster_url": "https://uttylerpatriots.com/sports/mens-soccer/roster",
+      "instagram_url": "",
+      "description": "[TX・公立／調査優先C] 2026年ロスター：MF：Yanis LasriがSr.。Hugo Dunger・Anthony Licea・Samuel Carrias・Bryan Garcia・Leandro YzaguirreはJr.DF。 補強の見立て（推定）：既存DFの残留見込みを踏まえ、FBの募集を確認。GKのSenior数を暁廣向けの空きに数えない。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。 Instagram未確認。",
+      "instagram_verified": false,
+      "staff_status": "verified",
+      "staff_status_label": "2026-11-02 公式HC/AC連絡先確認",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://uttylerpatriots.com/sports/mens-soccer/roster",
+      "staff": "https://uttylerpatriots.com/sports/mens-soccer/coaches",
+      "instagram_basis": "Instagram未確認",
+      "geo": "https://en.wikipedia.org/wiki/University_of_Texas_at_Tyler"
+    },
+    "facts_ja": "MF：Yanis LasriがSr.。Hugo Dunger・Anthony Licea・Samuel Carrias・Bryan Garcia・Leandro YzaguirreはJr.DF。",
+    "needs_note_ja": "既存DFの残留見込みを踏まえ、FBの募集を確認。GKのSenior数を暁廣向けの空きに数えない。",
+    "cost_reference": {
+      "values": [
+        null,
+        null,
+        "Official breakdown pending"
+      ]
+    }
+  },
+  {
+    "source_index": 33,
+    "is_new": true,
+    "priority": "C",
+    "row": {
+      "id": 157,
+      "name": "Saginaw Valley State University",
+      "region_code": "other_public",
+      "division": "NCAA D2",
+      "conference": "GLIAC",
+      "latitude": 43.5141,
+      "longitude": -83.96156,
+      "head_coach_name": "Louis Barrow",
+      "head_coach_email": "lpbarrow@svsu.edu",
+      "assistant_coach_name": "Adam McAleenan",
+      "assistant_coach_email": "amcaleen@SVSU.edu",
+      "facility_url": "https://svsucardinals.com/sports/2026/6/17/saginaw-valley-state-university-athletic-facilities.aspx",
+      "roster_url": "https://svsucardinals.com/sports/msoc/roster",
+      "instagram_url": "https://instagram.com/svsusoccer",
+      "description": "[MI・公立／調査優先C] 2026年ロスター：2026年公式ロスターを確認。学年が「3rd」等の在籍年表記を含むため、最終競技年の判定は未完了。 補強の見立て（推定）：学年表示をSeniorに機械変換せず、残存資格とサイドの更新候補を追加調査。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。",
+      "instagram_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "2026-11-02 公式HC/AC連絡先確認",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://svsucardinals.com/sports/mens-soccer/roster",
+      "staff": "https://svsucardinals.com/sports/msoc/coaches",
+      "instagram_basis": "男子サッカー公式リンク",
+      "geo": "https://en.wikipedia.org/wiki/Saginaw_Valley_State_University"
+    },
+    "facts_ja": "2026年公式ロスターを確認。学年が「3rd」等の在籍年表記を含むため、最終競技年の判定は未完了。",
+    "needs_note_ja": "学年表示をSeniorに機械変換せず、残存資格とサイドの更新候補を追加調査。",
+    "cost_reference": {
+      "values": [
+        null,
+        13000,
+        "2026-27 official reference"
+      ],
+      "source": "https://www.svsu.edu/officeofinternationalprograms/admissions/costsscholarships/",
+      "basis": "大学が示す授業料14,280はRed & White奨学金適用後の値。授業料の減免前金額は未確定、掲載せず。",
+      "label": "2026–27 official reference",
+      "note": "大学が示す授業料14,280はRed & White奨学金適用後の値。授業料の減免前金額は未確定、掲載せず。"
+    }
+  },
+  {
+    "source_index": 34,
+    "is_new": true,
+    "priority": "C",
+    "row": {
+      "id": 158,
+      "name": "Fort Hays State University",
+      "region_code": "other_public",
+      "division": "NCAA D2",
+      "conference": "GAC/MIAA",
+      "latitude": 38.87333,
+      "longitude": -99.34333,
+      "head_coach_name": "Alex Nichols",
+      "head_coach_email": "ajnichols@fhsu.edu",
+      "assistant_coach_name": "Felix Tellez Ramirez",
+      "assistant_coach_email": "f_tellez@mail.fhsu.edu",
+      "facility_url": "https://fhsuathletics.com/sports/2020/1/21/fhsu-soccer-stadium-mens-soccer.aspx",
+      "roster_url": "https://fhsuathletics.com/sports/mens-soccer/roster",
+      "instagram_url": "https://instagram.com/fhsusoccer",
+      "description": "[KS・公立／調査優先C] 2026年ロスター：検索結果は2026ロスターだが、開いた本文は「2026 Men's Soccer Spring Roster」。秋ロスターとしての検証ができていない。 補強の見立て（推定）：秋2026の名簿・統計を再取得し、卒業候補を再判定。春名簿から2027年の空きを推定しない。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。",
+      "instagram_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "2026-11-02 公式HC/AC連絡先確認",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://fhsuathletics.com/sports/mens-soccer/roster/",
+      "staff": "https://fhsuathletics.com/sports/mens-soccer/coaches",
+      "instagram_basis": "男子サッカー公式リンク",
+      "geo": "https://en.wikipedia.org/wiki/Fort_Hays_State_University"
+    },
+    "facts_ja": "検索結果は2026ロスターだが、開いた本文は「2026 Men's Soccer Spring Roster」。秋ロスターとしての検証ができていない。",
+    "needs_note_ja": "秋2026の名簿・統計を再取得し、卒業候補を再判定。春名簿から2027年の空きを推定しない。",
+    "cost_reference": {
+      "values": [
+        19539.9,
+        9725,
+        "2026-27 official reference"
+      ],
+      "source": "https://www.fhsu.edu/admissions/admissions-application/international-undergrad",
+      "basis": "国際学部の詳細表の授業料・費用19,539.90を採用（別記19,536.90と差あり）。保険3,000・教材・その他別。",
+      "label": "2026–27 official reference",
+      "note": "国際学部の詳細表の授業料・費用19,539.90を採用（別記19,536.90と差あり）。保険3,000・教材・その他別。"
+    }
+  },
+  {
+    "source_index": 35,
+    "is_new": true,
+    "priority": "C",
+    "row": {
+      "id": 159,
+      "name": "Shippensburg University",
+      "region_code": "other_public",
+      "division": "NCAA D2",
+      "conference": "PSAC",
+      "latitude": 40.06167,
+      "longitude": -77.52278,
+      "head_coach_name": "Jeremy Spering",
+      "head_coach_email": "jjspering@ship.edu",
+      "assistant_coach_name": "Gaz Davies",
+      "assistant_coach_email": "gwdavies@ship.edu",
+      "facility_url": "https://shipraiders.com/facilities",
+      "roster_url": "https://shipraiders.com/sports/mens-soccer/roster",
+      "instagram_url": "https://instagram.com/shipmsoccer",
+      "description": "[PA・公立／調査優先C] 2026年ロスター：DF：Evan BrandtがSr.。Tanner HorvathはJr.で、公式略歴に2025年は主に左SB、11試合7先発と記載。 補強の見立て（推定）：既存左SBが翌年も残る見込み。即戦力左SBが空くとは言えず、右SB/WBや競争枠の募集を確認。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。",
+      "instagram_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "2026-11-02 公式HC/AC連絡先確認",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://shipraiders.com/sports/mens-soccer/roster",
+      "staff": "https://shipraiders.com/sports/mens-soccer/coaches",
+      "instagram_basis": "男子サッカー公式リンク",
+      "geo": "https://en.wikipedia.org/wiki/Shippensburg_University"
+    },
+    "facts_ja": "DF：Evan BrandtがSr.。Tanner HorvathはJr.で、公式略歴に2025年は主に左SB、11試合7先発と記載。",
+    "needs_note_ja": "既存左SBが翌年も残る見込み。即戦力左SBが空くとは言えず、右SB/WBや競争枠の募集を確認。",
+    "cost_reference": {
+      "values": [
+        16728,
+        13701,
+        "2026-27 official reference"
+      ],
+      "source": "https://www.ship.edu/paying/financial-aid/cost_of_attendance/historical-and-estimated-future-costs/",
+      "basis": "大学公式の2026-27予測値。確定請求額ではない。州外・学内居住。",
+      "label": "2026–27 official reference",
+      "note": "大学公式の2026-27予測値。確定請求額ではない。州外・学内居住。"
+    }
+  },
+  {
+    "source_index": 36,
+    "is_new": true,
+    "priority": "C",
+    "row": {
+      "id": 160,
+      "name": "University of Hawaiʻi at Hilo",
+      "region_code": "other_public",
+      "division": "NCAA D2",
+      "conference": "PacWest",
+      "latitude": 19.6996,
+      "longitude": -155.0816,
+      "head_coach_name": "Diego Marroquin",
+      "head_coach_email": "dmarr@hawaii.edu",
+      "assistant_coach_name": "Terry Yamane",
+      "assistant_coach_email": "terryy@hawaii.edu",
+      "facility_url": "https://hiloathletics.com/facilities",
+      "roster_url": "https://hiloathletics.com/sports/mens-soccer/roster",
+      "instagram_url": "https://instagram.com/uhhilomsoc",
+      "description": "[HI・公立／調査優先C] 2026年ロスター：日本出身DFのRei SatoはJr.、Peninsula出身。Diego SolorioはJr.M/DでMerced出身。 補強の見立て（推定）：日本人・短大編入の在籍は確認できるが既存サイド候補も残る。卒業枠と費用、とくに住居費を追加確認。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。",
+      "instagram_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "2026-11-02 公式HC/AC連絡先確認",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://hiloathletics.com/sports/mens-soccer/roster/2026",
+      "staff": "https://hiloathletics.com/sports/mens-soccer/coaches",
+      "instagram_basis": "男子サッカー公式リンク",
+      "geo": "https://en.wikipedia.org/wiki/University_of_Hawai%CA%BBi_at_Hilo"
+    },
+    "facts_ja": "日本出身DFのRei SatoはJr.、Peninsula出身。Diego SolorioはJr.M/DでMerced出身。",
+    "needs_note_ja": "日本人・短大編入の在籍は確認できるが既存サイド候補も残る。卒業枠と費用、とくに住居費を追加確認。",
+    "cost_reference": {
+      "values": [
+        21218,
+        10814,
+        "2026-27 official reference"
+      ],
+      "source": "https://hilo.hawaii.edu/admissions/estimated-costs-for-international-students.php",
+      "basis": "2026-27国際学生予算の授業料＋費用21,218、寮食10,814。概要と詳細の総計に不整合あり、TOTALはこの2費目の参考小計のみ。",
+      "label": "2026–27 official reference",
+      "note": "2026-27国際学生予算の授業料＋費用21,218、寮食10,814。概要と詳細の総計に不整合あり、TOTALはこの2費目の参考小計のみ。"
+    }
+  },
+  {
+    "source_index": 37,
+    "is_new": true,
+    "priority": "C",
+    "row": {
+      "id": 161,
+      "name": "Fort Lewis College",
+      "region_code": "other_public",
+      "division": "NCAA D2",
+      "conference": "RMAC",
+      "latitude": 37.275,
+      "longitude": -107.869999,
+      "head_coach_name": "David Oberholtzer",
+      "head_coach_email": "dwoberholtzer@fortlewis.edu",
+      "assistant_coach_name": "Matt Baldridge",
+      "assistant_coach_email": "msbaldridge@fortlewis.edu",
+      "facility_url": "https://goskyhawks.com/facilities",
+      "roster_url": "https://goskyhawks.com/sports/mens-soccer/roster",
+      "instagram_url": "https://instagram.com/flcmsoccer",
+      "description": "[CO・公立／調査優先C] 2026年ロスター：DF：Chase Larson・Zachary Lanman・Alexandros PapakonstantinouがJr.。後二者はMesa CC、Kansas City Kansas CC出身。 補強の見立て（推定）：短大編入の在籍実績はあるがDFは残留見込み。サイドの更新需要を追加調査。 2027年募集枠・奨学金・60認定単位未満の入学可否は未確認。",
+      "instagram_verified": true,
+      "staff_status": "verified",
+      "staff_status_label": "2026-11-02 公式HC/AC連絡先確認",
+      "is_test": false,
+      "is_active": true
+    },
+    "evidence": {
+      "roster": "https://goskyhawks.com/sports/mens-soccer/roster/2026",
+      "staff": "https://goskyhawks.com/sports/mens-soccer/coaches",
+      "instagram_basis": "男子サッカー公式リンク",
+      "geo": "https://en.wikipedia.org/wiki/Fort_Lewis_College"
+    },
+    "facts_ja": "DF：Chase Larson・Zachary Lanman・Alexandros PapakonstantinouがJr.。後二者はMesa CC、Kansas City Kansas CC出身。",
+    "needs_note_ja": "短大編入の在籍実績はあるがDFは残留見込み。サイドの更新需要を追加調査。",
+    "cost_reference": {
+      "values": [
+        null,
+        null,
+        "Official breakdown pending"
+      ]
+    }
+  }
+]
