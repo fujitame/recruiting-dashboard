@@ -168,7 +168,7 @@ async function prepareReportPrint(id){
     // maps and other nested viewports; raw descendant rectangles do not.
     const height=Math.max(rect.height,sheet.scrollHeight);
     const width=Math.max(rect.width,sheet.scrollWidth);
-    printChecks.push({id:sheet.id,boxHeight:Math.ceil(rect.height),scrollHeight:sheet.scrollHeight,height:Math.ceil(height),width:Math.ceil(width),availableHeight:Math.floor(availableHeight),availableWidth:Math.floor(availableWidth),parts:[...sheet.children].map(el=>({tag:el.tagName,cls:el.className,height:Math.ceil(el.getBoundingClientRect().height)})),fits:height<=availableHeight+1&&width<=availableWidth+1});
+    printChecks.push({id:sheet.id,boxHeight:Math.ceil(rect.height),scrollHeight:sheet.scrollHeight,height:Math.ceil(height),width:Math.ceil(width),availableHeight:Math.floor(availableHeight),availableWidth:Math.floor(availableWidth),parts:[...sheet.children].map(el=>({tag:el.tagName,cls:el.className,height:Math.ceil(el.getBoundingClientRect().height)})),columns:[...sheet.querySelectorAll('.print-column')].map(col=>({height:Math.ceil(col.getBoundingClientRect().height),blocks:[...col.children].map(el=>({section:el.querySelector(':scope > h3 .num')?.textContent.trim()||el.className,height:Math.ceil(el.getBoundingClientRect().height)}))})),fits:height<=availableHeight+1&&width<=availableWidth+1});
   }
   app.dataset.printChecks=JSON.stringify(printChecks);
   const overflow=printChecks.filter(check=>!check.fits);
