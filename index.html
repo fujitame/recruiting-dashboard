@@ -7462,7 +7462,7 @@ let universities=[...fallbackUniversities];
 const schoolReportSlugs=new Map();
 function schoolNameHtml(u){
  const name=crmEsc(u.name),slug=schoolReportSlugs.get(Number(u.id));
- return slug?`<a class="school-report-name" href="school-report.html?school=${encodeURIComponent(slug)}" target="_blank" rel="noopener noreferrer" title="学校評価シートを開く">${name}</a>`:name;
+ return slug?`<a class="school-report-name" href="school-report.html?school=${encodeURIComponent(slug)}" title="学校評価シートを開く">${name}</a>`:name;
 }
 async function loadSchoolReportLinks(){
  try{
