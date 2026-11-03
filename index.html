@@ -2653,6 +2653,8 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
 .reply-cc-editor small{display:block;color:#64748b;font-size:11px;line-height:1.6}
 .reply-stage-edit{margin:12px 0}.reply-stage-edit>label{display:block!important;font-size:11px!important;color:#64748b!important;margin:0 0 6px!important}.reply-stage-edit>div{display:flex;gap:8px;align-items:center}.reply-stage-edit select{flex:1;min-width:0;background:#fff;color:#334155;border:1px solid #cbd5e0;border-radius:6px;padding:9px}
 .reply-open-status{white-space:pre-wrap;font-size:12px;font-weight:600;color:#9f1239;line-height:1.7;margin:10px 0}
+
+.school-report-name{color:inherit;text-decoration:underline;text-decoration-color:#94a3b8;text-underline-offset:3px}.school-report-name:hover{color:#2563a6;text-decoration-color:currentColor}
 </style>
 </head>
 <body>
@@ -7457,6 +7459,20 @@ const fallbackUniversities=[
 
 let universities=[...fallbackUniversities];
 
+const schoolReportSlugs=new Map();
+function schoolNameHtml(u){
+ const name=crmEsc(u.name),slug=schoolReportSlugs.get(Number(u.id));
+ return slug?`<a class="school-report-name" href="school-report.html?school=${encodeURIComponent(slug)}" target="_blank" rel="noopener noreferrer" title="学校評価シートを開く">${name}</a>`:name;
+}
+async function loadSchoolReportLinks(){
+ try{
+  const {data,error}=await supabaseClient.from('recruiting_school_reports').select('university_id,slug').eq('owner_user_id',DASHBOARD_OWNER_ID);
+  if(error)throw error;
+  schoolReportSlugs.clear();
+  (data||[]).forEach(r=>{if(r.slug)schoolReportSlugs.set(Number(r.university_id),r.slug);});
+ }catch(error){console.warn('School report links unavailable:',error);}
+}
+
 function mapUniversityMasterRow(row){
     return {
         id:Number(row.id),
@@ -7508,6 +7524,7 @@ async function loadUniversityMasterFromSupabase(){
             throw new Error('University Master contains duplicate IDs.');
         }
 
+        await loadSchoolReportLinks();
         universities=mapped;
 
         console.info(
@@ -10450,7 +10467,7 @@ function createPopupContent(u){
     <div class="candidate-title-wrap">
      <button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button>
      <div>
-      <strong>${crmEsc(u.name)}</strong>
+      <strong>${schoolNameHtml(u)}</strong>
       <small>${crmEsc(u.div)} · ${crmEsc(u.conf)}</small>
      </div>
     </div>
@@ -10547,7 +10564,7 @@ function renderMobileSchoolCards(){
       <button class="star-btn ${u.fav?'active':''}"
        onclick="toggleFav(${u.id});renderMobileSchoolCards()">★</button>
       <div>
-       <strong>${crmEsc(u.name)}</strong><div data-mail-interest-school="${u.id}">${crmSchoolInterestHtml(u.id)}</div>
+       <strong>${schoolNameHtml(u)}</strong><div data-mail-interest-school="${u.id}">${crmSchoolInterestHtml(u.id)}</div>
        <small>${crmEsc(u.div)} · ${crmEsc(u.conf)}</small>
       </div>
      </div>
@@ -10805,7 +10822,7 @@ function schoolCrmStatusClass(state){
  return map[state]||'status-uncontacted';
 }
 
-function renderTable(){renderMobileSchoolCards();const tbody=document.getElementById('table-body');tbody.innerHTML='';visibleUniversities().forEach(u=>{const tr=document.createElement('tr');tr.id=`row-${u.id}`;tr.innerHTML=`<td><button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button></td><td>${u.id}</td><td><strong>${u.name}</strong><div data-mail-interest-school="${u.id}">${crmSchoolInterestHtml(u.id)}</div></td><td><span class="badge ${badgeClass(u.div)}">${u.div}</span></td><td>${u.conf}</td><td>${(()=>{const s=schoolCrmState(u);return `<span class="status-select ${schoolCrmStatusClass(s.state)} crm-school-status">${crmEsc(s.label)}</span>`})()}</td><td>${recruitingStageSelectHtml(u)}</td><td class="external-link-cell">${u.ig?`<a class="btn-link btn-ig" href="${crmEsc(u.ig)}" target="_blank" rel="noopener noreferrer">IG</a>`:`<span class="btn-link btn-ig disabled-mail" title="公式Instagram未確認">IG —</span>`}<a class="btn-link btn-fac" href="${u.facility}" target="_blank" rel="noopener noreferrer">施設</a><a class="btn-link btn-ros" href="${u.roster}" target="_blank" rel="noopener noreferrer">Roster</a></td><td>${u.desc}</td><td>${costHtml(u)}</td><td class="coach-cell"><div class="coach-row"><span>HC</span><b>${u.hc_name||'Coach'}</b></div><div class="coach-row"><span>AC</span><b>${u.ac_name||'Coach'}</b></div><div class="${u.staff_status==='verified'?'staff-flag':u.staff_status==='partial'?'staff-flag partial':'staff-flag review'}">${u.staff_status==='verified'?'✓ Verified':u.staff_status==='partial'?'△ Verify':'⚠ Verify'}</div></td><td class="action-cell"><button class="gmail-btn" type="button" title="HCへメール" onclick="openGmailComposer(${u.id},'head_coach')">HC</button><button class="gmail-btn" type="button" title="ACへメール" onclick="openGmailComposer(${u.id},'assistant_coach')">AC</button></td><td class="action-cell"><button class="crm-btn" type="button" title="HCのCRM" onclick="openCrmDrawer(${u.id},'head_coach')">HC</button><button class="crm-btn" type="button" title="ACのCRM" onclick="openCrmDrawer(${u.id},'assistant_coach')">AC</button></td>`;tbody.appendChild(tr)})}
+function renderTable(){renderMobileSchoolCards();const tbody=document.getElementById('table-body');tbody.innerHTML='';visibleUniversities().forEach(u=>{const tr=document.createElement('tr');tr.id=`row-${u.id}`;tr.innerHTML=`<td><button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button></td><td>${u.id}</td><td><strong>${schoolNameHtml(u)}</strong><div data-mail-interest-school="${u.id}">${crmSchoolInterestHtml(u.id)}</div></td><td><span class="badge ${badgeClass(u.div)}">${u.div}</span></td><td>${u.conf}</td><td>${(()=>{const s=schoolCrmState(u);return `<span class="status-select ${schoolCrmStatusClass(s.state)} crm-school-status">${crmEsc(s.label)}</span>`})()}</td><td>${recruitingStageSelectHtml(u)}</td><td class="external-link-cell">${u.ig?`<a class="btn-link btn-ig" href="${crmEsc(u.ig)}" target="_blank" rel="noopener noreferrer">IG</a>`:`<span class="btn-link btn-ig disabled-mail" title="公式Instagram未確認">IG —</span>`}<a class="btn-link btn-fac" href="${u.facility}" target="_blank" rel="noopener noreferrer">施設</a><a class="btn-link btn-ros" href="${u.roster}" target="_blank" rel="noopener noreferrer">Roster</a></td><td>${u.desc}</td><td>${costHtml(u)}</td><td class="coach-cell"><div class="coach-row"><span>HC</span><b>${u.hc_name||'Coach'}</b></div><div class="coach-row"><span>AC</span><b>${u.ac_name||'Coach'}</b></div><div class="${u.staff_status==='verified'?'staff-flag':u.staff_status==='partial'?'staff-flag partial':'staff-flag review'}">${u.staff_status==='verified'?'✓ Verified':u.staff_status==='partial'?'△ Verify':'⚠ Verify'}</div></td><td class="action-cell"><button class="gmail-btn" type="button" title="HCへメール" onclick="openGmailComposer(${u.id},'head_coach')">HC</button><button class="gmail-btn" type="button" title="ACへメール" onclick="openGmailComposer(${u.id},'assistant_coach')">AC</button></td><td class="action-cell"><button class="crm-btn" type="button" title="HCのCRM" onclick="openCrmDrawer(${u.id},'head_coach')">HC</button><button class="crm-btn" type="button" title="ACのCRM" onclick="openCrmDrawer(${u.id},'assistant_coach')">AC</button></td>`;tbody.appendChild(tr)})}
 
 
 function toggleFav(id){const u=universities.find(x=>x.id===id);if(!u)return;u.fav=!u.fav;const row=document.getElementById(`row-${id}`);if(row)row.querySelector('.star-btn')?.classList.toggle('active',u.fav);const mobileCard=document.getElementById(`mobile-card-${id}`);if(mobileCard)mobileCard.querySelector('.star-btn')?.classList.toggle('active',u.fav);const mo=markers.find(m=>m.data.id===id);if(mo&&mo.instance.isPopupOpen())mo.instance.setPopupContent(createPopupContent(u));applyFilters();saveDataToCloud()}
@@ -10921,5 +10938,6 @@ window.addEventListener('resize',()=>{if(currentView==='map'&&map)map.invalidate
 <footer><nav class="app-policy-links" aria-label="アプリ情報"><a href="about.html">アプリについて</a><a href="privacy.html">プライバシーポリシー</a><a href="terms.html">利用規約</a></nav></footer>
 </body>
 </html>
+
 
 
