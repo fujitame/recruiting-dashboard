@@ -8960,7 +8960,7 @@ function renderOutreachArea(){
   return '<article class="outreach-school-card">'+
    '<div class="outreach-card-head">'+
     '<div>'+
-     '<h3>'+crmEsc(u.name)+'</h3>'+
+     '<h3>'+schoolNameHtml(u)+'</h3>'+
      '<div class="outreach-school-meta">'+crmEsc(u.div)+' · '+crmEsc(u.conf)+'</div>'+
     '</div>'+
     '<span class="outreach-state '+statusClass+'">'+statusText+'</span>'+
@@ -9148,7 +9148,7 @@ function renderActiveArea(){
   return '<article class="active-school-card">'+
    '<div class="active-card-head">'+
     '<div>'+
-      '<h3>'+crmEsc(u.name)+'</h3>'+
+      '<h3>'+schoolNameHtml(u)+'</h3>'+
       '<div class="active-school-meta">'+crmEsc(u.div)+' · '+crmEsc(u.conf)+'</div>'+
     '</div>'+
     '<span class="active-state '+(r.priority?'priority':'responded')+'">'+(r.priority?'Priority':'返信あり')+'</span>'+
@@ -9335,7 +9335,7 @@ function renderCrmContactList(){
 
   return '<div class="crm-contact-row">'+
     '<div class="crm-contact-school">'+
-      '<b>'+crmEsc(u.name)+'</b>'+
+      '<b>'+schoolNameHtml(u)+'</b>'+
       '<span>'+crmEsc(u.div)+' · '+crmEsc(u.conf)+'</span>'+
     '</div>'+
     '<div class="crm-contact-coach">'+
