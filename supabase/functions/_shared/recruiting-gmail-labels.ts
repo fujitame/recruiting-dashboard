@@ -1,4 +1,5 @@
-import { gmailGetThread, googleAccessToken as batchAccessToken, threadReplyFrom } from "./followup-batch-gmail.ts";
+import { gmailGetThread, googleAccessToken as batchAccessToken, threadReplyFrom, GMAIL_ACCOUNT, emailAddress, getHeader } from "./followup-batch-gmail.ts";
+import {liveReplyStateLabel} from './campaign-reply-attribution.js';
 const GOOGLE_CLIENT_ID =
   Deno.env.get("GOOGLE_OAUTH_CLIENT_ID");
 
@@ -274,6 +275,9 @@ export async function syncRecruitingThreadLabels(
 
 // A Gmail thread can belong to both HC and AC. Resolve its label from all contacts.
 export async function syncContactThreadLabels(db: any, contact: any) {
+ const campaign=await db.from('recruiting_campaign_deliveries').select('*').eq('owner_user_id',contact.owner_user_id).eq('gmail_thread_id',contact.gmail_thread_id).eq('status','sent').order('sent_at',{ascending:false}).limit(1);
+ if(campaign.error)throw campaign.error;
+ if(campaign.data?.length)return await syncCampaignDeliveryLabels(db,campaign.data[0]);
  const {data:contacts,error}=await db.from('recruiting_contacts').select('*').eq('owner_user_id',contact.owner_user_id).eq('gmail_thread_id',contact.gmail_thread_id);
  if(error)throw error;
  if(!contacts?.length)throw new Error('CRM contacts for Gmail thread unavailable');
@@ -291,3 +295,26 @@ export async function syncContactThreadLabels(db: any, contact: any) {
  await syncRecruitingThreadLabels(contact.gmail_thread_id,target);
  return target;
 }
+
+// Campaign identity is attached only to its actual message, never to old thread messages.
+export async function syncCampaignDeliveryLabels(db:any,delivery:any){
+ if(delivery.status!=='sent'||!delivery.gmail_message_id||!delivery.gmail_thread_id)throw Error('Verified campaign message unavailable');
+ const {data:definition,error}=await db.from('recruiting_campaigns').select('campaign_key').eq('id',delivery.campaign_id).eq('owner_user_id',delivery.owner_user_id).single();if(error)throw error;
+ if(!/^[a-zA-Z0-9_-]+$/.test(definition.campaign_key))throw Error('Invalid campaign label key');
+ const token=await googleAccessToken(),name='Recruiting/Campaigns/'+definition.campaign_key;
+ let labels=await gmailRequest('labels',token),label=labels.labels?.find((l:any)=>l.name===name);
+ if(!label){try{label=await gmailRequest('labels',token,{method:'POST',body:JSON.stringify({name,labelListVisibility:'labelShow',messageListVisibility:'show'})});}catch(e){labels=await gmailRequest('labels',token);label=labels.labels?.find((l:any)=>l.name===name);if(!label)throw e;}}
+ await gmailRequest('messages/'+encodeURIComponent(delivery.gmail_message_id)+'/modify',token,{method:'POST',body:JSON.stringify({addLabelIds:[label.id],removeLabelIds:[]})});
+ const live=await gmailGetThread(delivery.gmail_thread_id,token);
+ let target=liveReplyStateLabel(live,(Deno.env.get('GMAIL_ACCOUNT')||'fujiakihiro8@gmail.com').toLowerCase());
+ if(!target)throw Error('Live Gmail thread state unavailable');
+ const latestOwn=(live.messages||[]).filter((m:any)=>emailAddress(getHeader(m.payload?.headers||[],'From'))===GMAIL_ACCOUNT).sort((a:any,b:any)=>Number(b.internalDate)-Number(a.internalDate))[0];
+ const latest=await db.from('recruiting_campaign_deliveries').select('stage,gmail_message_id').eq('owner_user_id',delivery.owner_user_id).eq('gmail_thread_id',delivery.gmail_thread_id).eq('status','sent').order('sent_at',{ascending:false}).limit(1);if(latest.error)throw latest.error;
+ const cs=await db.from('recruiting_contacts').select('contact_status').eq('owner_user_id',delivery.owner_user_id).in('id',delivery.contact_ids);if(cs.error)throw cs.error;
+ if(target!=='Recruiting/Needs Reply'){
+  if(cs.data?.length&&cs.data.every((c:any)=>['closed','not_a_fit'].includes(c.contact_status)))target='Recruiting/Closed';
+  else if(latest.data?.[0]?.stage==='follow_up_2'&&latestOwn?.id===latest.data[0].gmail_message_id)target='Recruiting/No Response';
+ }
+ await syncRecruitingThreadLabels(delivery.gmail_thread_id,target);return target;
+}
+

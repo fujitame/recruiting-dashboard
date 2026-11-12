@@ -138,6 +138,7 @@ export function buildReplyRaw(args: {
   htmlBody?: string;
   messageId: string;
   references: string;
+  transportMessageId?: string;
 }): string {
   if (!args.body.trim()) throw new Error("Email body must not be empty.");
   const bytes = new TextEncoder().encode(args.body);
@@ -155,6 +156,7 @@ export function buildReplyRaw(args: {
     "From: " + GMAIL_ACCOUNT,
     args.cc?.length ? "Cc: " + args.cc.map(clean).join(", ") : "",
     "Subject: " + encodedSubject,
+    args.transportMessageId ? "Message-ID: " + clean(args.transportMessageId) : "",
     args.messageId ? "In-Reply-To: " + clean(args.messageId) : "",
     references ? "References: " + clean(references) : "",
     "MIME-Version: 1.0",
@@ -169,3 +171,4 @@ export function buildReplyRaw(args: {
   return btoa(unescape(encodeURIComponent(mime)))
     .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
 }
+

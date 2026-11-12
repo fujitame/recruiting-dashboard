@@ -14,6 +14,7 @@ export default { fetch: withSupabase({auth:"user"},async(req,ctx)=>{
   try{
     const body=await req.json();
     const mode=batchMode(body?.test_mode),isTest=mode==="test";
+    if(!isTest)return json({ok:false,error:"今回の一括送信は「活動状況・送信準備」の予約前チェックを利用してください。"},409);
     const owner=String(ctx.jwtClaims?.sub??ctx.userClaims?.sub??"");
     if(!owner)return json({ok:false,error:"Authentication required"},401);
     const ids=Array.isArray(body.contact_ids)?Array.from(new Set(body.contact_ids.map((x:unknown)=>String(x).trim()).filter(Boolean))):[];
@@ -73,3 +74,4 @@ export default { fetch: withSupabase({auth:"user"},async(req,ctx)=>{
     return json({ok:true,test_mode:isTest,mode,recipient_email:isTest?TEST_RECIPIENT:null,items:items.filter(item=>!repliedSchools.has(item.university_id)),skipped});
   }catch(e){console.error("TEST Follow-up preparation failed:",e);return json({ok:false,error:e instanceof Error?e.message:String(e)},500)}
 })};
+

@@ -1,161 +1,19 @@
-import { withSupabase } from "npm:@supabase/server@1";
-
-import {
-  syncContactThreadLabels,
-} from "../_shared/recruiting-gmail-labels.ts";
-
-function json(body: unknown, status = 200) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: {
-      "content-type":
-        "application/json; charset=utf-8",
-      "access-control-allow-origin": "*",
-      "access-control-allow-headers":
-        "authorization, x-client-info, apikey, content-type",
-    },
-  });
+import {admin,checked,json,ownerFor} from '../_shared/campaign-outreach.ts';
+import {syncContactThreadLabels} from '../_shared/recruiting-gmail-labels.ts';
+export async function handler(req:Request){
+ if(req.method==='OPTIONS')return json({ok:true});if(req.method!=='POST')return json({ok:false,error:'POST required'},405);
+ let contact:any=null;
+ try{
+  const owner=await ownerFor(req),input=await req.json();
+  contact=checked(await admin.from('recruiting_contacts').select('*').eq('id',input.contact_id).eq('owner_user_id',owner).single());
+  if(!contact.gmail_thread_id)throw Error('Gmail thread ID is missing');
+  const target=await syncContactThreadLabels(admin,contact);
+  checked(await admin.from('recruiting_campaign_issues').update({status:'resolved',updated_at:new Date().toISOString()}).eq('owner_user_id',owner).eq('issue_key','contact-label:'+contact.id));
+  return json({ok:true,university_id:contact.university_id,coach_name:contact.coach_name,contact_status:contact.contact_status,target_label:target,thread_id:contact.gmail_thread_id});
+ }catch(e){
+  const message=e instanceof Error?e.message:String(e);
+  if(contact?.gmail_thread_id){const result=await admin.from('recruiting_campaign_issues').upsert({owner_user_id:contact.owner_user_id,university_id:contact.university_id,contact_ids:[contact.id],issue_key:'contact-label:'+contact.id,kind:'label_sync',blocking:false,status:'open',gmail_thread_id:contact.gmail_thread_id,details:message,updated_at:new Date().toISOString()},{onConflict:'owner_user_id,issue_key'});if(result.error)console.error('Could not persist Gmail label issue',result.error.code);}
+  return json({ok:false,error:message},message==='Unauthorized'?403:400);
+ }
 }
-
-export default {
-  fetch: withSupabase(
-    { auth: "user" },
-    async (req, ctx) => {
-      if (req.method === "OPTIONS") {
-        return json({ ok: true });
-      }
-
-      if (req.method !== "POST") {
-        return json(
-          { ok: false, error: "POST required" },
-          405,
-        );
-      }
-
-      try {
-        const ownerUserId = String(
-          ctx.jwtClaims?.sub ??
-          ctx.userClaims?.sub ??
-          "",
-        );
-
-        if (
-          ownerUserId !==
-          "47e7c1a9-a806-4f65-b5ed-2b9b124ef337"
-        ) {
-          return json(
-            { ok: false, error: "Unauthorized" },
-            403,
-          );
-        }
-
-        const payload =
-          await req.json();
-
-        const contactId =
-          String(
-            payload.contact_id || "",
-          ).trim();
-
-        if (!contactId) {
-          return json(
-            {
-              ok: false,
-              error:
-                "contact_id is required",
-            },
-            400,
-          );
-        }
-
-        const supabase =
-          ctx.supabase;
-
-        const {
-          data: contact,
-          error: contactError,
-        } = await supabase
-          .from(
-            "recruiting_contacts",
-          )
-          .select(`
-            id,
-            owner_user_id,
-            university_id,
-            coach_name,
-            coach_email,
-            contact_status,
-            coach_response,
-            gmail_thread_id
-          `)
-          .eq("id", contactId)
-          .single();
-
-        if (
-          contactError ||
-          !contact
-        ) {
-          return json(
-            {
-              ok: false,
-              error:
-                "CRM Contact not found",
-            },
-            404,
-          );
-        }
-
-        const universityId =
-          Number(
-            contact.university_id,
-          );
-
-
-        if (
-          !contact.gmail_thread_id
-        ) {
-          return json(
-            {
-              ok: false,
-              error:
-                "Gmail thread ID is missing",
-            },
-            400,
-          );
-        }
-
-        const targetLabel = await syncContactThreadLabels(supabase, contact);
-
-        return json({
-          ok: true,
-          university_id:
-            universityId,
-          coach_name:
-            contact.coach_name,
-          contact_status:
-            contact.contact_status,
-          target_label:
-            targetLabel,
-          thread_id:
-            contact.gmail_thread_id,
-        });
-      } catch (error) {
-        console.error(
-          "Recruiting Gmail label sync failed:",
-          error,
-        );
-
-        return json(
-          {
-            ok: false,
-            error:
-              error instanceof Error
-                ? error.message
-                : String(error),
-          },
-          500,
-        );
-      }
-    },
-  ),
-};
+Deno.serve(handler);

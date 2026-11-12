@@ -2,7 +2,7 @@ import { directOutboundParent, liveReplyStateLabel } from '../_shared/campaign-r
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 import {
-  syncRecruitingThreadLabels,
+  syncRecruitingThreadLabels, syncCampaignDeliveryLabels,
 } from "../_shared/recruiting-gmail-labels.ts";
 
 const GMAIL_ACCOUNT =
@@ -603,6 +603,17 @@ async function listRecentInboundMessages(
   };
 }
 
+async function saveSyncIssue(owner:string,school:number,ids:string[],key:string,kind:string,details:string,thread:string,campaign:string|null,blocking:boolean){
+ const {error}=await supabase.from('recruiting_campaign_issues').upsert({owner_user_id:owner,university_id:school,contact_ids:ids,issue_key:key,kind,details:details.slice(0,3000),gmail_thread_id:thread,campaign_id:campaign,blocking,status:'open',updated_at:new Date().toISOString()},{onConflict:'owner_user_id,issue_key'});if(error)throw error;
+}
+async function resolveSyncIssue(owner:string,key:string){const {error}=await supabase.from('recruiting_campaign_issues').update({status:'resolved',updated_at:new Date().toISOString()}).eq('owner_user_id',owner).eq('issue_key',key);if(error)throw error;}
+async function syncReplyLabels(thread:string,contact:any,token:string){
+ const {data:ds,error}=await supabase.from('recruiting_campaign_deliveries').select('*').eq('owner_user_id',contact.owner_user_id).eq('gmail_thread_id',thread).eq('status','sent').order('sent_at',{ascending:false}).limit(1);if(error)throw error;
+ if(ds?.length){await syncCampaignDeliveryLabels(supabase,ds[0]);return;}
+ const liveThread=await gmailGet(`threads/${encodeURIComponent(thread)}?format=metadata&metadataHeaders=From`,token);
+ const target=liveReplyStateLabel(liveThread,GMAIL_ACCOUNT);if(target)await syncRecruitingThreadLabels(thread,target);
+}
+
 // Campaign classification is separate from the cumulative contact history.
 async function attributeCampaignReply(message: any, threadId: string, contact: any, campaignJobs: any[], token: string) {
   const candidates = campaignJobs.filter(j => j.owner_user_id === contact.owner_user_id &&
@@ -751,8 +762,10 @@ Deno.serve(
       const {data: sentFollowups, error: followupsError} = await supabase.from('recruiting_followup_batch_items')
         .select('owner_user_id,contact_id,gmail_thread_id').eq('status','sent').eq('mode','production');
       if (followupsError) throw followupsError;
-      const campaignJobs = (sentJobs || []).map(j => ({...j, campaign_id: (campaignDefs || []).find(c => c.owner_user_id === j.owner_user_id && c.campaign_key === j.campaign_key)?.id})).filter(j => j.campaign_id);
-      for (const job of [...(sentJobs || []), ...(sentFollowups || [])]) {
+      const {data: deliveries,error: deliveryError}=await supabase.from('recruiting_campaign_deliveries').select('id,campaign_id,owner_user_id,university_id,contact_ids,gmail_thread_id,gmail_message_id,sent_at').eq('status','sent');
+      if(deliveryError)throw deliveryError;
+      const campaignJobs = [...(deliveries||[]),...(sentJobs || []).map(j => ({...j, campaign_id: (campaignDefs || []).find(c => c.owner_user_id === j.owner_user_id && c.campaign_key === j.campaign_key)?.id})).filter(j => j.campaign_id)];
+      for (const job of [...(sentJobs || []), ...(sentFollowups || []),...(deliveries||[])]) {
         if (!job.gmail_thread_id) continue;
         const ids = new Set([job.contact_id, ...(('contact_ids' in job ? job.contact_ids : []) || [])]);
         const linked = (contacts || []).filter(c => c.owner_user_id === job.owner_user_id && ids.has(c.id));
@@ -838,12 +851,21 @@ Deno.serve(
           }
 
           if (
-            contact.coach_email &&
+            !contact.coach_email ||
             emailAddress(
               contact.coach_email,
             ) !==
               fromEmail
           ) {
+            // An unknown sender on a verified school thread is held for review,
+            // rather than silently assigned to whichever coach was listed first.
+            for(const job of campaignJobs.filter(j=>j.gmail_thread_id===candidate.threadId)){
+              const {data:state,error:stateError}=await supabase.from('recruiting_campaign_schools').select('reply_status').eq('campaign_id',job.campaign_id).eq('owner_user_id',job.owner_user_id).eq('university_id',job.university_id).maybeSingle();if(stateError)throw stateError;
+              if(state?.reply_status!=='received'){
+                const {error}=await supabase.from('recruiting_campaign_schools').upsert({campaign_id:job.campaign_id,owner_user_id:job.owner_user_id,university_id:job.university_id,reply_status:'review',reply_reference:'gmail:'+message.id+' | sender requires review',updated_at:new Date().toISOString()},{onConflict:'campaign_id,university_id'});if(error)throw error;
+                await saveSyncIssue(job.owner_user_id,job.university_id,job.contact_ids||[], 'attribution:'+message.id,'reply_attribution','Gmailスレッドの返信者を確認してください。',candidate.threadId,job.campaign_id,true);
+              }
+            }
             skippedSenderMismatch++;
             continue;
           }
@@ -883,11 +905,16 @@ Deno.serve(
 
           try {
             await attributeCampaignReply(message, candidate.threadId, contact, campaignJobs, token);
+            await resolveSyncIssue(contact.owner_user_id,'attribution:'+messageId);
           } catch (attributionError) {
             campaignAttributionFailures++;
+            await saveSyncIssue(contact.owner_user_id,contact.university_id,[contact.id],'attribution:'+messageId,'reply_attribution',String(attributionError),candidate.threadId,null,true);
             errors.push({gmail_message_id: messageId, operation:'campaign_reply_attribution', error: attributionError instanceof Error ? attributionError.message : String(attributionError)});
           }
           if (existing) {
+            // Retrying labels never repeats the history insert or an email send.
+            const {data:pending,error:pendingError}=await supabase.from('recruiting_campaign_issues').select('id').eq('owner_user_id',contact.owner_user_id).eq('issue_key','reply-label:'+messageId).eq('status','open').limit(1);if(pendingError)throw pendingError;
+            if(pending?.length){try{await syncReplyLabels(candidate.threadId,contact,token);await resolveSyncIssue(contact.owner_user_id,'reply-label:'+messageId);}catch(labelError){labelSyncFailures++;await saveSyncIssue(contact.owner_user_id,contact.university_id,[contact.id],'reply-label:'+messageId,'label_sync',String(labelError),candidate.threadId,null,false);}}
             skippedDuplicate++;
             continue;
           }
@@ -1053,12 +1080,12 @@ Deno.serve(
           // detected and stored Coach reply.
           if (candidate.threadId) {
             try {
-              const liveThread = await gmailGet(`threads/${encodeURIComponent(candidate.threadId)}?format=metadata&metadataHeaders=From`, token);
-              const target = liveReplyStateLabel(liveThread, GMAIL_ACCOUNT);
-              if (target) await syncRecruitingThreadLabels(candidate.threadId, target);
+              await syncReplyLabels(candidate.threadId,contact,token);
+              await resolveSyncIssue(contact.owner_user_id,'reply-label:'+messageId);
             } catch (labelError) {
               labelSyncFailures++;
               errors.push({gmail_message_id:messageId, gmail_thread_id:candidate.threadId, operation:'gmail_label_sync', error:labelError instanceof Error ? labelError.message : String(labelError)});
+              await saveSyncIssue(contact.owner_user_id,contact.university_id,[contact.id],'reply-label:'+messageId,'label_sync',String(labelError),candidate.threadId,null,false);
               console.warn("Reply Gmail label sync failed:", labelError);
             }
           }
@@ -1239,4 +1266,5 @@ Deno.serve(
     }
   },
 );
+
 

@@ -12,9 +12,9 @@ export function trackingHtml(body: string, pixelUrl: string): string {
  const content=escape(body).replace(/https?:\/\/[^\s<]+/g,url=>'<a href="'+url+'">'+(url.includes('/functions/v1/recruiting-email-events?event=profile')?'View Recruiting Profile':url.includes('/functions/v1/recruiting-email-events?event=youtube')?'Watch Highlights on YouTube':url)+'</a>');
  return '<!doctype html><html><body><div style="white-space:pre-wrap;font-family:Arial,sans-serif;line-height:1.5">'+content+'</div><img src="'+escape(pixelUrl)+'" width="1" height="1" alt="" style="border:0" /></body></html>';
 }
-export async function prepareEmailTracking(args: {contactId:string;ownerId:string;stage:string;body:string;reservationItemId?:string;isTest?:boolean}): Promise<any> {
+export async function prepareEmailTracking(args: {contactId:string;ownerId:string;stage:string;body:string;reservationItemId?:string;campaignDeliveryId?:string;isTest?:boolean}): Promise<any> {
  if(!args.body.trim())throw new Error("Email body must not be empty.");
- const identity=args.reservationItemId||crypto.randomUUID();
+ const identity=args.campaignDeliveryId||args.reservationItemId||crypto.randomUUID();
  const secret=Deno.env.get("FOLLOWUP_BATCH_WORKER_SECRET");
  if(!secret)throw new Error("Email tracking signing secret unavailable.");
  const key=await crypto.subtle.importKey("raw",encode.encode(secret),{name:"HMAC",hash:"SHA-256"},false,["sign"]);
@@ -39,7 +39,7 @@ export async function prepareEmailTracking(args: {contactId:string;ownerId:strin
   return slot?base+"?event=youtube&t="+token+"&v="+slot:url;
  });
  const html=trackingHtml(plain,base+"?event=open&t="+token);
- const row={owner_user_id:args.ownerId,contact_id:args.contactId,university_id:contact.university_id,recipient_email:String(contact.coach_email||'').trim().toLowerCase(),reservation_item_id:args.reservationItemId||null,token_hash:tokenHash,stage:args.stage,is_test:args.isTest===true,video_targets:videoTargets};
+ const row={owner_user_id:args.ownerId,contact_id:args.contactId,university_id:contact.university_id,recipient_email:String(contact.coach_email||'').trim().toLowerCase(),reservation_item_id:args.reservationItemId||null,...(args.campaignDeliveryId?{campaign_delivery_id:args.campaignDeliveryId}:{}),token_hash:tokenHash,stage:args.stage,is_test:args.isTest===true,video_targets:videoTargets};
  const {data,error}=await admin.from("recruiting_email_tracking").insert(row).select("id").single();
  if(error)throw new Error("Tracking preparation failed; an uncertain earlier send must be checked before retrying: "+error.message);
  return {id:data.id,plain,html};
@@ -74,3 +74,4 @@ export async function recordEmailTrackingResult(trackingId:string,messageId:stri
  const {error}=await admin.from("recruiting_email_tracking").update({status:verified?"sent":"send_unknown",...(messageId?{gmail_message_id:messageId,sent_at:new Date().toISOString()}:{})}).eq("id",trackingId);
  if(error)console.warn("Email tracking result requires reconciliation");return !error;
 }
+

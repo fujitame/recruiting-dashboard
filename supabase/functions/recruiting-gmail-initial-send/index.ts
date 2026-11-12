@@ -148,6 +148,7 @@ export default {
       if(pendingInitial?.length)return json({ok:false,error:"This initial email is already reserved or requires reconciliation."},409);
       if(contact.contact_status!=='not_contacted'||Number(contact.follow_up_count||0)!==0||contact.gmail_thread_id||String(contact.coach_response||'').trim())return json({ok:false,error:'Initial email has already been sent or this contact is no longer eligible.'},409);
       const universityId = Number(contact.university_id);
+      if(![900,901,902].includes(universityId))return json({ok:false,error:"今回の初回メールは「活動状況・送信準備」で準備・予約してください。"},409);
 
       if (!contact.coach_email) {
         return json(
@@ -286,3 +287,4 @@ export default {
     }
   }),
 };
+

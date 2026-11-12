@@ -2549,6 +2549,8 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
 <section id="crm-batch-followup" class="crm-batch-followup" data-recruiting-area="crm" data-crm-panel="reservations" role="tabpanel" aria-labelledby="crm-tab-reservations" tabindex="0" hidden>
  <div style="display:flex;justify-content:space-between;align-items:center"><h3 id="crm-reservation-title">送信予約</h3><button class="crm-action-btn" type="button" onclick="switchCrmWorkspaceTab('overview')">連絡状況へ</button></div>
  <p id="crm-reservation-description"></p>
+ <button id="campaign-reservation-entry" class="crm-action-btn" type="button" onclick="switchRecruitingArea('activity')">今回の送信準備・予約前チェックへ</button>
+ <div id="legacy-reservation-controls">
  <label class="crm-reservation-search">対象Coachを検索<input type="search" placeholder="学校名・Coach名で検索" oninput="filterCrmReservationContacts(this.value)"></label>
  <div style="display:flex;justify-content:space-between;align-items:center"><b id="crm-batch-candidate-summary" aria-live="polite"></b><button class="crm-action-btn" type="button" onclick="refreshCrmReservations()">予約状況を更新</button></div>
  <div class="crm-reservation-candidate-controls">
@@ -2564,6 +2566,7 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
  </div>
  <div id="crm-batch-message" aria-live="polite"></div>
  <div id="crm-batch-drafts"></div>
+ </div>
  <div id="crm-batch-reservations" aria-live="polite"></div>
  <div id="crm-batch-confirm" hidden>
   <label class="crm-batch-contact"><input id="crm-batch-reviewed" type="checkbox" onchange="updateCrmFollowUpBatchConfirm()">全件の宛先・Research根拠・現地時刻・本文を確認しました。</label>
@@ -2708,7 +2711,7 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
 <div class="crm-head"><div><h2 id="crm-title">Recruiting CRM</h2><small id="crm-subtitle"></small></div><button class="crm-close" type="button" onclick="closeCrmDrawer()" aria-label="Close">×</button></div>
 <div class="crm-body"><section class="coach-overview" aria-label="このコーチの状況">
  <dl class="coach-overview-facts"><div><dt>連絡状況</dt><dd id="crm-overview-status"></dd></div><div><dt>学校との進捗（累積）</dt><dd id="crm-overview-progress"></dd></div><div><dt>最終連絡</dt><dd id="crm-overview-last"></dd></div><div><dt>次の予定・メモ</dt><dd id="crm-overview-next"></dd></div></dl>
- <div class="coach-flow-next"><h3 id="crm-flow-title">次にできること</h3><p id="crm-next-actions-note" role="status"></p><button id="crm-flow-primary" class="gmail-btn" type="button" onclick="runCoachPrimaryAction()">次へ</button><button class="crm-secondary" type="button" onclick="openCoachRecordEditor()">記録を編集</button><button id="crm-flow-reservations" class="crm-secondary" type="button" onclick="openCoachReservations()" hidden>予約を確認</button></div>
+ <div class="coach-flow-next"><h3 id="crm-flow-title">次にできること</h3><p id="crm-next-actions-note" role="status"></p><button id="crm-flow-primary" class="gmail-btn" type="button" onclick="runCoachPrimaryAction()">次へ</button><button class="crm-secondary" type="button" onclick="openCoachRecordEditor()">記録を編集</button><button id="crm-flow-reservations" class="crm-secondary" type="button" onclick="openCoachReservations()" hidden>過去の予約を確認</button></div>
 </section>
 <section id="crm-latest-reply-section" class="coach-latest-reply" hidden><h3>保存済みのコーチ返信</h3><pre id="crm-latest-reply"></pre><small>送信済みの返信と過去のやり取りは「連絡履歴」で確認できます。</small></section><details id="crm-mail-details" class="coach-disclosure"><summary id="crm-mail-summary">個別メールを準備</summary><div class="crm-next-actions">
  <div class="crm-next-actions-head"><strong>個別メールを準備</strong></div>
@@ -2775,7 +2778,7 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
 <div class="crm-field"><label for="crm-follow-up">フォローアップ予定日</label><input id="crm-follow-up" type="date"></div>
 <div class="crm-field full"><label for="crm-note">履歴メモ</label><textarea id="crm-note" placeholder="この連絡についてのメモ"></textarea></div></div><details id="crm-advanced-record" class="coach-disclosure"><summary>送受信記録を手動で修正する</summary><p class="coach-flow-help">日付・回数・返信本文は通常、メールの送受信で更新されます。訂正が必要な場合に編集してください。</p><div class="crm-grid"><div class="crm-field"><label for="crm-last-contact">最終連絡日</label><input id="crm-last-contact" type="datetime-local"></div>
 <div class="crm-field"><label for="crm-count">連絡回数</label><input id="crm-count" type="number" min="0" step="1"></div>
-<div class="crm-field"><label for="crm-follow-up-count">Follow-up回数</label><input id="crm-follow-up-count" type="number" min="0" max="2" step="1"></div>
+<div class="crm-field"><label for="crm-follow-up-count">従来方式のFollow-up回数</label><input id="crm-follow-up-count" type="number" min="0" max="2" step="1"></div>
 <div class="crm-field"><label><input id="crm-auto-follow-up" type="checkbox" style="width:auto;margin-right:5px"> 自動Follow-upを有効化</label></div>
 <div class="crm-field full"><label for="crm-response">コーチからの反応</label><textarea id="crm-response" placeholder="コーチからの反応・返信内容を記録"></textarea></div>
 <div class="crm-field"><label for="crm-visit">訪問・面談メモ</label><input id="crm-visit" type="text" placeholder="ID Camp / 訪問 / 面談"></div></div></details><div class="crm-save-section"><button class="crm-save" type="button" onclick="saveCrmContact()">記録を保存</button><p class="coach-flow-help">連絡状況・次の予定・メモと手動修正を保存します。学校との進捗は選択時に保存されます。</p></div></details><details id="crm-school-reapproach" class="crm-history" hidden>
@@ -3234,6 +3237,7 @@ async function openConversationFollowUpComposer(contactId){
 }
 
 function openFollowUpComposer(contactId){
+ if(!testMode){openCampaignPreparation(contactId);return;}
  resetConversationDraft();
  gmailTestMode=false;
  gmailSendMode='followup';
@@ -3278,6 +3282,7 @@ function openFollowUpComposer(contactId){
 }
 
 function openGmailComposer(id,role){
+ if(!testMode){const c=Array.from(crmContacts.values()).find(c=>Number(c.university_id)===Number(id)&&c.coach_role===role);if(!c){alert('CRMを読み込んでから送信準備を開いてください。');return;}openCampaignPreparation(c.id);return;}
  resetConversationDraft();
  gmailTestMode=false;
  gmailSendMode='initial';
@@ -7728,6 +7733,7 @@ function setCrmReservationCandidateControlsDisabled(disabled){
  document.querySelectorAll('.crm-reservation-candidate-controls select').forEach(el=>el.disabled=disabled);
 }
 function openCrmBatchNextAction(contactId){
+ if(!testMode){openCampaignPreparation(contactId);return;}
  const c=Array.from(crmContacts.values()).find(c=>String(c.id)===String(contactId));
  if(!c||!crmBatchInCurrentMode(c)||!crmCanReserveFollowUp(c))return;
  closeCrmDrawer();
@@ -7748,10 +7754,14 @@ function renderCrmFollowUpBatch(){
  setCrmReservationCandidateControlsDisabled(crmBatchPreparing);
  panel.hidden=!crmReservationsOpen||currentRecruitingArea!=='crm';panel.classList.toggle('is-active',crmReservationsOpen);
  document.getElementById('crm-reservation-toggle')?.setAttribute('aria-expanded',String(crmReservationsOpen));
- document.getElementById('crm-reservation-title').textContent=testMode?'送信予約 · TEST（900–902）':'送信予約 · Follow-up #1 / #2';
+ document.getElementById('crm-tab-reservations').textContent=testMode?'送信予約（テスト）':'過去の予約履歴';
+ document.getElementById('legacy-reservation-controls').hidden=!testMode;
+ document.getElementById('campaign-reservation-entry').hidden=testMode;
+ document.getElementById('crm-batch-confirm').style.display=testMode?'':'none';
+ document.getElementById('crm-reservation-title').textContent=testMode?'送信予約 · TEST（900–902）':'過去の送信予約・記録';
  document.getElementById('crm-reservation-description').textContent=testMode?
   'Test Mode：送信先はfujitame@gmail.comに固定します。初回送信済みは#1、#1送信済みは#2の対象です。同校の誰かに返信があれば全員対象外です。各校の現地日時と本文を確認して予約してください。':
-  '各Coachのメールアドレスへ、初回メールと同じスレッドで送信します。初回送信済みは#1、#1送信済みは#2の対象です。HC・ACの宛先が別ならそれぞれ選択できます。共有宛先には1通だけ送り、両CoachのFollow-up状態を更新します。同校の誰かに返信があれば全員対象外です。各校の現地日時と本文を確認して予約してください。';
+  'これまでの予約履歴を確認する画面です。今回の初回・Follow-up 1・2の文案、日時案、予約前チェックは「活動状況・送信準備」で管理します。';
  const selected=new Set(crmBatchSelectedIds());
  const allContacts=Array.from(crmContacts.values()).filter(c=>crmBatchInCurrentMode(c)&&crmCanReserveFollowUp(c)&&(testMode||(c.coach_email&&c.gmail_thread_id)));
  const stage=document.getElementById('crm-batch-stage-filter')?.value||'all';
@@ -7839,6 +7849,7 @@ function crmBatchFormatLocal(iso,zone){
  catch{return iso+' ('+zone+')'}
 }
 async function prepareCrmFollowUpBatch(){
+ if(!testMode){switchRecruitingArea('activity');return;}
  const prepare=document.getElementById('crm-batch-prepare');
  const draftsEl=document.getElementById('crm-batch-drafts');
  const confirm=document.getElementById('crm-batch-confirm');
@@ -7902,6 +7913,7 @@ function updateCrmFollowUpBatchConfirm(){
  if(schedule)schedule.disabled=crmBatchPreparing||!crmBatchReservationReady||!reviewed||!crmFollowUpBatchPrepared.length||crmFollowUpBatchPrepared.some(i=>crmBatchPendingReservations.has(String(i.contact_id)));
 }
 async function scheduleCrmFollowUpBatch(){
+ if(!testMode){switchRecruitingArea('activity');return;}
  const button=document.getElementById('crm-batch-schedule');
  if(!crmBatchReservationReady||crmFollowUpBatchPrepared.some(i=>crmBatchPendingReservations.has(String(i.contact_id)))){crmBatchSetMessage('予約状況を更新してください。予約済み・処理中・要確認のContactは再予約できません。','error');return;}
  if(!document.getElementById('crm-batch-reviewed')?.checked||!crmFollowUpBatchPrepared.length||crmFollowUpBatchPrepared.some(i=>i.test_mode!==testMode)){crmBatchSetMessage('モードと予約内容を確認してください。','error');return}
@@ -9111,6 +9123,12 @@ function refreshCoachOverview(c){
 function openCoachRecordEditor(){
  const panel=document.getElementById('crm-record-editor');if(panel){panel.open=true;panel.scrollIntoView?.({block:'start',behavior:'smooth'});}
 }
+function openCampaignPreparation(contactId){
+ const c=Array.from(crmContacts.values()).find(c=>String(c.id)===String(contactId));if(!c)return;
+ if(['closed','not_a_fit'].includes(c.contact_status)){openCrmFromContact(c.id);return;}
+ if(Array.from(crmContacts.values()).some(x=>Number(x.university_id)===Number(c.university_id)&&(x.contact_status==='responded'||String(x.coach_response||'').trim()))){closeCrmDrawer();switchRecruitingArea('active');return;}
+ closeCrmDrawer();switchRecruitingArea('activity');document.getElementById('activity-frame').src='activity.html?view=prepare&contact='+encodeURIComponent(c.id);
+}
 function openCoachReservations(){closeCrmDrawer();switchCrmWorkspaceTab('reservations');}
 function runCoachPrimaryAction(){
  const c=crmCurrentContact;if(!c)return;
@@ -9235,6 +9253,8 @@ function updateCrmNextActions(c){
 
   return;
  }
+
+ if(!testMode){note.textContent='今回の初回・Follow-upは「活動状況・送信準備」で管理します。上の「今回の送信準備」から進んでください。';return;}
 
  if(status==='no_response' || followCount>=2){
   note.textContent='Follow-upは完了しています。必要に応じてCRM情報を更新してください。';
@@ -9942,7 +9962,7 @@ function renderCrmActionList(){
     :'';
 
   const testBatchButton=!isConversation&&crmBatchInCurrentMode(c)&&crmCanReserveFollowUp(c)&&(testMode||(c.coach_email&&c.gmail_thread_id));
-  const regularFollowUpButton=testBatchButton?'<button class="crm-action-btn" type="button" onclick="openCrmBatchNextAction(\''+crmEsc(c.id)+'\')">送信予約 #'+(Number(c.follow_up_count||0)+1)+'</button>':
+  const regularFollowUpButton=!testMode&&!isConversation?'<button class="crm-action-btn" type="button" onclick="openCampaignPreparation(\''+crmEsc(c.id)+'\')">今回の送信準備</button>':testBatchButton?'<button class="crm-action-btn" type="button" onclick="openCrmBatchNextAction(\''+crmEsc(c.id)+'\')">送信予約 #'+(Number(c.follow_up_count||0)+1)+'</button>':
    !isConversation &&
    !crmBatchInCurrentMode(c) &&
    c.follow_up_date &&
@@ -10289,7 +10309,7 @@ function createPopupContent(u){
      </div>
      <div class="candidate-coach-actions">
       <button type="button" class="candidate-gmail-btn"
-       onclick="openGmailComposer(${u.id},'head_coach')">✉ Gmail</button>
+       onclick="openGmailComposer(${u.id},'head_coach')">文案・送信準備</button>
       <button type="button" class="candidate-detail-btn"
        onclick="openCrmDrawer(${u.id},'head_coach')">詳細</button>
      </div>
@@ -10302,7 +10322,7 @@ function createPopupContent(u){
      </div>
      <div class="candidate-coach-actions">
       <button type="button" class="candidate-gmail-btn"
-       onclick="openGmailComposer(${u.id},'assistant_coach')">✉ Gmail</button>
+       onclick="openGmailComposer(${u.id},'assistant_coach')">文案・送信準備</button>
       <button type="button" class="candidate-detail-btn"
        onclick="openCrmDrawer(${u.id},'assistant_coach')">詳細</button>
      </div>
@@ -10386,7 +10406,7 @@ function renderMobileSchoolCards(){
       </div>
       <div class="candidate-coach-actions">
        <button type="button" class="candidate-gmail-btn"
-        onclick="openGmailComposer(${u.id},'head_coach')">✉ Gmail</button>
+        onclick="openGmailComposer(${u.id},'head_coach')">文案・送信準備</button>
        <button type="button" class="candidate-detail-btn"
         onclick="openCrmDrawer(${u.id},'head_coach')">詳細</button>
       </div>
@@ -10399,7 +10419,7 @@ function renderMobileSchoolCards(){
       </div>
       <div class="candidate-coach-actions">
        <button type="button" class="candidate-gmail-btn"
-        onclick="openGmailComposer(${u.id},'assistant_coach')">✉ Gmail</button>
+        onclick="openGmailComposer(${u.id},'assistant_coach')">文案・送信準備</button>
        <button type="button" class="candidate-detail-btn"
         onclick="openCrmDrawer(${u.id},'assistant_coach')">詳細</button>
       </div>
@@ -10623,6 +10643,7 @@ window.addEventListener('resize',()=>{if(currentView==='map'&&map)map.invalidate
 <footer><nav class="app-policy-links" aria-label="アプリ情報"><a href="about.html">アプリについて</a><a href="privacy.html">プライバシーポリシー</a><a href="terms.html">利用規約</a></nav></footer>
 </body>
 </html>
+
 
 
 

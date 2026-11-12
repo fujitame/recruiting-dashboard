@@ -21,8 +21,9 @@ go('activity');assert.equal(elements['correspondence-nav'].hidden,true);assert.e
 go('correspondence');assert.equal(context.currentRecruitingArea,'crm');assert.equal(panels[1].hidden,false);
 go('invalid');assert.equal(context.currentRecruitingArea,'schools');assert.equal(elements['correspondence-nav'].hidden,true);
 const nav=html.match(/<nav id="recruiting-nav"[\s\S]*?<\/nav>/)[0];assert.equal((nav.match(/class="recruiting-nav-btn/g)||[]).length,4);for(const id of ['nav-count-schools','nav-count-outreach','nav-count-active'])assert.equal((html.match(new RegExp('id="'+id+'"','g'))||[]).length,1);
-const ae={campaign:{value:'new'},stage:{value:'initial'},detail:{showModal(){}},'detail-title':{},'detail-body':{},'save-draft':{}};
+const ae={campaign:{value:'new'},stage:{value:'initial'},detail:{showModal(){}},'detail-title':{},'detail-body':{querySelectorAll:()=>[]},'save-draft':{}};
 const ac={window:{supabase:{createClient:()=>({})}},document:{getElementById:id=>ae[id]||{}},Date};ac.window.parent=ac.window;vm.createContext(ac);vm.runInContext(fs.readFileSync(root+'/recruiting-status.js','utf8'),ac);vm.runInContext(activity.split("$('close').onclick=")[0],ac);
 vm.runInContext("campaigns=[{id:'new'}];schools=[{id:1,name:'Example'}];contacts=[{id:'coach',university_id:1,coach_name:'Example Coach',coach_email:'coach@example.edu'}]",ac);
 for(const [stage,heading] of [['initial','初回メールの準備'],['follow_up_1','Follow-up 1の準備'],['follow_up_2','Follow-up 2の準備']]){ae.stage.value=stage;vm.runInContext("openContact('coach')",ac);assert.ok(ae['detail-body'].innerHTML.includes('<h3>'+heading+'</h3>'));assert.ok(!ae['detail-body'].innerHTML.includes('今回の今回の'));}
 console.log('PASS: four primary menus; reply/history/detail routing; existing reservation tabs; returning to last view; unique counts; all preparation headings; inline script syntax');
+

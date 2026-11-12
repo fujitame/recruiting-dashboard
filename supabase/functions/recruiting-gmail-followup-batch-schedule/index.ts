@@ -14,6 +14,7 @@ export default {fetch:withSupabase({auth:"user"},async(req,ctx)=>{
  try{
   const payload=await req.json();
   const mode=batchMode(payload?.test_mode),isTest=mode==="test";
+  if(!isTest)return json({ok:false,error:"今回の一括送信は「活動状況・送信準備」の予約前チェックを利用してください。"},409);
   const owner=String(ctx.jwtClaims?.sub??ctx.userClaims?.sub??"");
   if(!owner)return json({ok:false,error:"Authentication required"},401);
   const localDate=String(payload.local_date||""),localTime=String(payload.local_time||"");
@@ -88,3 +89,4 @@ export default {fetch:withSupabase({auth:"user"},async(req,ctx)=>{
    items:rpcItems.map((x:any)=>({contact_id:x.contact_id,scheduled_at:x.scheduled_at,school_timezone:x.school_timezone}))});
  }catch(e){console.error("TEST Follow-up scheduling failed:",e);return json({ok:false,error:e instanceof Error?e.message:String(e)},400)}
 })};
+

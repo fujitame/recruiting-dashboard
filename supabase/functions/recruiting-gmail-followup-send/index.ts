@@ -178,6 +178,7 @@ export default {
 
       const universityId =
         Number(contact.university_id);
+      return json({ok:false,error:"未返信へのFollow-upは「活動状況・送信準備」で今回の活動に紐付けて準備してください。"},409);
       if(universityId>=900)return json({ok:false,error:"Use fixed-recipient Test Mode reservations."},409);
 
       if (!contact.coach_email) {
@@ -394,3 +395,4 @@ export default {
     }
   }),
 };
+
