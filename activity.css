@@ -2,3 +2,5 @@
 
 
 button:disabled{opacity:.5;cursor:not-allowed}#detail-body details{margin:12px 0;border:1px solid #dce4ed;border-radius:7px;padding:12px}summary{cursor:pointer;font-weight:600;overflow-wrap:anywhere}#detail-body input[type=checkbox]{display:inline-block;width:auto;margin-right:8px}.coach>div{min-width:0;overflow-wrap:anywhere}.school-head{flex-wrap:wrap}#sync-issues details{background:#fff8ed;padding:12px;border-radius:8px}
+
+#list[inert]{opacity:.6}
