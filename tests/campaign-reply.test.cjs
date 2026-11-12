@@ -1,0 +1,28 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert'),{stripTypeScriptTypes}=require('node:module');
+(async()=>{
+const helper=fs.readFileSync('supabase/functions/_shared/campaign-reply-attribution.js','utf8').replaceAll('export function','function');
+const source=stripTypeScriptTypes(fs.readFileSync('supabase/functions/recruiting-gmail-replies/index.ts','utf8')).replace(/import[\s\S]*?from\s+['"][^'"]+['"];?/g,'');
+new vm.Script(source);
+const hdr=(id,from='me@example.com')=>({id,payload:{headers:[{name:'From',value:from},{name:'Message-ID',value:`<${id}@example.com>`}]}});
+let parentReply={id:'reply',internalDate:2000,payload:{headers:[{name:'In-Reply-To',value:'<new@example.com>'}]}};
+const thread={messages:[hdr('old'),hdr('new'),hdr('not-us','coach@example.edu')]};
+let saved=[],state=null,links=[{campaign_id:'campaign'}],tracks=[{id:'tracking'}],threadReads=0;
+const client={from(table){const q={select(){return this},eq(){return this},in(){return this},maybeSingle(){return Promise.resolve({data:state})},upsert(p){saved.push(p);return Promise.resolve({error:null})},then(resolve,reject){return Promise.resolve({data:table==='recruiting_email_tracking'?tracks:table==='recruiting_campaign_messages'?links:[]}).then(resolve,reject)}};return q}};
+const ctx={console:{error(){},warn(){}},TextDecoder,Uint8Array,URLSearchParams,Response,Date,createClient:()=>client,Deno:{env:{get:n=>n==='GMAIL_ACCOUNT'?'me@example.com':'fixture'},serve(){}},fetch:async()=>{threadReads++;return {ok:true,json:async()=>thread}}};vm.createContext(ctx);vm.runInContext(helper+source,ctx);
+ctx.reply=parentReply;ctx.thread=thread;assert.equal(vm.runInContext("directOutboundParent(reply,thread,'me@example.com')",ctx),'new');
+ctx.jobs=[{owner_user_id:'owner',university_id:1,gmail_thread_id:'thread',sent_at:new Date(1000).toISOString(),campaign_id:'campaign'}];ctx.contact={owner_user_id:'owner',university_id:1};
+const run=()=>vm.runInContext("attributeCampaignReply(reply,'thread',contact,jobs,'test-token')",ctx);
+await run();assert.equal(saved[0].reply_status,'received');assert.match(saved[0].reply_reference,/parent:new/);
+saved=[];links=[];ctx.reply={...parentReply,payload:{headers:[{name:'In-Reply-To',value:'<old@example.com>'}]}};await run();assert.equal(saved.length,0,'old activity reply leaked');
+ctx.reply={...parentReply,payload:{headers:[]}};await run();assert.equal(saved[0].reply_status,'review','unresolved reply silently counted');
+saved=[];state={reply_status:'received'};await run();assert.equal(saved.length,0,'confirmed response downgraded');
+state=null;saved=[];ctx.reply={...parentReply,internalDate:500};await run();assert.equal(saved.length,0,'pre-campaign reply counted');
+ctx.labelThread={messages:[{...hdr('out'),internalDate:1000},{...hdr('reply','coach@example.edu'),internalDate:2000}]};
+assert.equal(vm.runInContext("liveReplyStateLabel(labelThread,'me@example.com')",ctx),'Recruiting/Needs Reply');
+ctx.labelThread.messages.push({...hdr('our-reply'),internalDate:3000});
+assert.equal(vm.runInContext("liveReplyStateLabel(labelThread,'me@example.com')",ctx),'Recruiting/Waiting Coach','old reply incorrectly marked needs-reply after our response');
+ctx.labelThread.messages.reverse();
+assert.equal(vm.runInContext("liveReplyStateLabel(labelThread,'me@example.com')",ctx),'Recruiting/Waiting Coach','mail array order changed label');
+console.log('PASS: Gmail needs-reply / waiting labels follow latest actual message');
+console.log('PASS: reply parent attribution; prior activity isolation; unresolved review; no downgrade; pre-send exclusion; Edge Function syntax');
+})();
