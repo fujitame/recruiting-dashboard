@@ -11,3 +11,6 @@ assert.equal(vm.runInContext('repliedSchool(1)',ctx),true,'unlinked inquiry emai
 vm.runInContext("leads=[];contacts[0].coach_email='invalid'",ctx);
 assert.match(vm.runInContext('safety(contacts[0])',ctx),/メールアドレス/);
 console.log('PASS: old reservation isolation; explicit Follow-up reservation; new reply school stop; unlinked inbound match; invalid recipient hold');
+
+vm.runInContext("schoolStates=[{campaign_id:'new',university_id:1,progress:'not_interested'}]",ctx);
+assert.match(vm.runInContext('safety(contacts[1])',ctx),/一括送信対象外/,'school progress must stop bulk outreach');
