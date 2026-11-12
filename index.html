@@ -920,7 +920,7 @@ header{
 
 .recruiting-nav{
   display:grid;
-  grid-template-columns:repeat(6,minmax(0,1fr));
+  grid-template-columns:repeat(4,minmax(0,1fr));
   gap:6px;
   overflow:visible;
 }
@@ -938,7 +938,7 @@ header{
 
 @media(max-width:620px){
   .recruiting-nav{
-    grid-template-columns:repeat(3,minmax(0,1fr));
+    grid-template-columns:repeat(2,minmax(0,1fr));
     gap:4px;
     padding:5px;
   }
@@ -2663,6 +2663,12 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
 .school-report-overlay-head h2{font-size:14px;margin:0}
 .school-report-overlay-head button{border:1px solid #ffffff66;border-radius:6px;background:transparent;color:white;padding:6px 12px;font-size:13px;cursor:pointer}
 #school-report-frame{border:0;width:100%;flex:1;min-height:0;background:white}
+
+.correspondence-nav{display:flex;flex-wrap:wrap;gap:8px;padding:10px;background:#eef3f8;border-bottom:1px solid #dbe3ed}
+.correspondence-nav[hidden]{display:none}
+.correspondence-nav button{display:flex;align-items:center;gap:7px;padding:8px 12px;border:1px solid #cbd5e0;border-radius:6px;background:#fff;color:#475569;font-family:inherit;font-size:12px;font-weight:600;line-height:1.4;cursor:pointer}
+.correspondence-nav button.active{background:#1a365d;color:white;border-color:#1a365d}
+.correspondence-nav button.active .recruiting-nav-count{background:white;color:#1a365d}
 </style>
 </head>
 <body>
@@ -2701,20 +2707,15 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
   <button id="logout-btn" class="logout-btn" type="button" hidden>Logout</button>
 </div></header>
 <nav id="recruiting-nav" class="recruiting-nav" aria-label="Recruiting workflow">
-  <button class="recruiting-nav-btn active" type="button" data-area="schools" onclick="switchRecruitingArea('schools')">
-    <span class="nav-label-long">候補校</span><span class="nav-label-short">候補</span><span id="nav-count-schools" class="recruiting-nav-count">0</span>
-  </button>
-  <button class="recruiting-nav-btn" type="button" data-area="activity" onclick="switchRecruitingArea('activity')"><span class="nav-label-long">活動状況・送信準備</span><span class="nav-label-short">活動・準備</span></button>
-  <button class="recruiting-nav-btn" type="button" data-area="outreach" onclick="switchRecruitingArea('outreach')">
-    <span class="nav-label-long">連絡履歴</span><span class="nav-label-short">連絡</span><span id="nav-count-outreach" class="recruiting-nav-count">0</span>
-  </button>
-  <button class="recruiting-nav-btn" type="button" data-area="active" onclick="switchRecruitingArea('active')">
-    <span class="nav-label-long">返信対応</span><span class="nav-label-short">進行</span><span id="nav-count-active" class="recruiting-nav-count">0</span>
-  </button>
-  <button class="recruiting-nav-btn" type="button" data-area="crm" onclick="switchRecruitingArea('crm')">
-    <span class="nav-label-long">個別CRM・予約管理</span><span class="nav-label-short">個別CRM</span>
-  </button>
+  <button class="recruiting-nav-btn active" type="button" data-area="schools" onclick="switchRecruitingArea('schools')"><span class="nav-label-long">候補校</span><span class="nav-label-short">候補校</span><span id="nav-count-schools" class="recruiting-nav-count">0</span></button>
+  <button class="recruiting-nav-btn" type="button" data-area="activity" onclick="switchRecruitingArea('activity')"><span class="nav-label-long">活動状況・送信準備</span><span class="nav-label-short">活動・送信準備</span></button>
+  <button class="recruiting-nav-btn" type="button" data-area="correspondence" onclick="switchRecruitingArea('correspondence')"><span>返信・個別対応</span></button>
   <a class="recruiting-nav-btn" href="school-reports.html?v=20261027-print2" style="display:flex;align-items:center;justify-content:center;text-decoration:none" aria-label="学校評価シートを開く"><span class="nav-label-long">学校評価シート</span><span class="nav-label-short">評価シート</span></a>
+</nav>
+<nav id="correspondence-nav" class="correspondence-nav" aria-label="返信・個別対応の表示" hidden>
+  <button type="button" data-correspondence-area="active" aria-pressed="false" onclick="switchRecruitingArea('active')">返信対応 <span id="nav-count-active" class="recruiting-nav-count">0</span></button>
+  <button type="button" data-correspondence-area="outreach" aria-pressed="false" onclick="switchRecruitingArea('outreach')">連絡履歴 <span id="nav-count-outreach" class="recruiting-nav-count">0</span></button>
+  <button type="button" data-correspondence-area="crm" aria-pressed="false" onclick="switchRecruitingArea('crm')">コーチ詳細・予約管理</button>
 </nav>
 <div id="sync-banner" class="sync-banner">☁️ クラウド同期準備中...</div>
 <div class="controls" data-recruiting-area="schools">
@@ -2752,8 +2753,8 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
 <section class="workflow-area-placeholder outreach-area" data-recruiting-area="outreach" hidden>
   <div class="workflow-area-head">
     <div>
-      <h2>連絡した学校のその後</h2>
-      <p>送信済みの学校、返信待ち、Follow-up予定を大学単位で管理します。</p>
+      <h2>連絡履歴</h2>
+      <p>これまでの連絡状況を学校単位で確認します。今回の活動別の集計・送信準備は「活動状況・送信準備」で行います。</p>
     </div>
     <span id="outreach-area-count" class="workflow-area-number">0</span>
   </div>
@@ -2799,8 +2800,8 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
 <section class="workflow-area-placeholder crm-area-intro" data-recruiting-area="crm" hidden>
   <div class="workflow-area-head">
     <div>
-      <h2>詳細CRM</h2>
-      <p>連絡状況、送信予約、メールへの反応をタブで切り替えて確認できます。</p>
+      <h2>コーチ詳細・予約管理</h2>
+      <p>コーチごとの情報・履歴と、従来の送信予約を確認します。今回の一括アプローチの準備は「活動状況・送信準備」で行います。</p>
     </div>
   </div>
 </section>
@@ -8697,11 +8698,18 @@ function crmWorkspaceTabKey(event){
 }
 
 let currentRecruitingArea='schools';
+let lastCorrespondenceArea='active';
 
 function switchRecruitingArea(area){
+ const correspondenceAreas=['active','outreach','crm'];
+ if(area==='correspondence')area=lastCorrespondenceArea;
  const allowed=['schools','outreach','active','crm','activity'];
  if(!allowed.includes(area))area='schools';
  currentRecruitingArea=area;
+ const isCorrespondence=correspondenceAreas.includes(area);
+ if(isCorrespondence)lastCorrespondenceArea=area;
+ document.getElementById('correspondence-nav').hidden=!isCorrespondence;
+ document.querySelectorAll('[data-correspondence-area]').forEach(btn=>{const selected=btn.dataset.correspondenceArea===area;btn.classList.toggle('active',selected);btn.setAttribute('aria-pressed',String(selected));});
  if(area==='activity'){const f=document.getElementById('activity-frame');if(!f.getAttribute('src'))f.src='activity.html';}
 
  document.querySelectorAll('[data-recruiting-area]').forEach(el=>{
@@ -8710,7 +8718,7 @@ function switchRecruitingArea(area){
 
  applyCrmWorkspaceVisibility();
  document.querySelectorAll('.recruiting-nav-btn').forEach(btn=>{
-  btn.classList.toggle('active',btn.dataset.area===area);
+  btn.classList.toggle('active',btn.dataset.area===area||(btn.dataset.area==='correspondence'&&isCorrespondence));
  });
 
  if(area==='schools' && currentView==='map' && map){
