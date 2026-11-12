@@ -2,6 +2,6 @@
 <html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CRM responsive QA</title>
 <style>body{margin:0;background:#e8edf3;font:14px system-ui;color:#18365b}header{padding:10px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}button{padding:7px 12px}main{overflow:auto;padding:0 12px 12px}iframe{display:block;width:390px;height:900px;max-width:none;border:1px solid #b7c5d3;background:white}</style>
 <header><strong>CRM 表示幅の確認</strong><button data-width="390">390 px</button><button data-width="768">768 px</button><button data-width="1280">1280 px</button><span id="width">390 px</span><a href="../index.html">通常画面</a></header>
-<main><iframe id="crm-preview" title="CRM responsive preview" src="../index.html?area=activity"></iframe></main>
-<script>document.querySelectorAll('[data-width]').forEach(b=>b.onclick=()=>{document.getElementById('crm-preview').style.width=b.dataset.width+'px';document.getElementById('width').textContent=b.dataset.width+' px';});</script>
+<main><iframe id="crm-preview" title="CRM responsive preview" ></iframe></main>
+<script>document.getElementById('crm-preview').src=new URLSearchParams(location.search).get('fixture')==='activity'?'activity-fixture.html':'../index.html?area=activity';document.querySelectorAll('[data-width]').forEach(b=>b.onclick=()=>{document.getElementById('crm-preview').style.width=b.dataset.width+'px';document.getElementById('width').textContent=b.dataset.width+' px';});</script>
 </html>
