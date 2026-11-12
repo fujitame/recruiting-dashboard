@@ -2699,18 +2699,19 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
   <span id="auth-user-badge" class="user-badge">Not signed in</span>
   <button id="logout-btn" class="logout-btn" type="button" hidden>Logout</button>
 </div></header>
-<nav id="recruiting-nav" class="recruiting-nav" style="grid-template-columns:repeat(5,minmax(0,1fr))" aria-label="Recruiting workflow">
+<nav id="recruiting-nav" class="recruiting-nav" style="grid-template-columns:repeat(6,minmax(0,1fr))" aria-label="Recruiting workflow">
   <button class="recruiting-nav-btn active" type="button" data-area="schools" onclick="switchRecruitingArea('schools')">
     <span class="nav-label-long">候補校</span><span class="nav-label-short">候補</span><span id="nav-count-schools" class="recruiting-nav-count">0</span>
   </button>
+  <button class="recruiting-nav-btn" type="button" data-area="activity" onclick="switchRecruitingArea('activity')"><span>活動状況・送信準備</span></button>
   <button class="recruiting-nav-btn" type="button" data-area="outreach" onclick="switchRecruitingArea('outreach')">
-    <span class="nav-label-long">連絡後</span><span class="nav-label-short">連絡</span><span id="nav-count-outreach" class="recruiting-nav-count">0</span>
+    <span class="nav-label-long">過去の連絡</span><span class="nav-label-short">連絡</span><span id="nav-count-outreach" class="recruiting-nav-count">0</span>
   </button>
   <button class="recruiting-nav-btn" type="button" data-area="active" onclick="switchRecruitingArea('active')">
-    <span class="nav-label-long">進行中</span><span class="nav-label-short">進行</span><span id="nav-count-active" class="recruiting-nav-count">0</span>
+    <span class="nav-label-long">返信対応</span><span class="nav-label-short">進行</span><span id="nav-count-active" class="recruiting-nav-count">0</span>
   </button>
   <button class="recruiting-nav-btn" type="button" data-area="crm" onclick="switchRecruitingArea('crm')">
-    <span>CRM</span>
+    <span>個別CRM・旧予約</span>
   </button>
   <a class="recruiting-nav-btn" href="school-reports.html?v=20261027-print2" style="display:flex;align-items:center;justify-content:center;text-decoration:none" aria-label="学校評価シートを開く"><span class="nav-label-long">学校評価シート</span><span class="nav-label-short">評価シート</span></a>
 </nav>
@@ -2746,6 +2747,7 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
 </div>
 
 
+<section data-recruiting-area="activity" hidden style="flex:1;min-height:720px"><iframe id="activity-frame" title="活動状況・送信準備" style="width:100%;height:85vh;min-height:720px;border:0"></iframe></section>
 <section class="workflow-area-placeholder outreach-area" data-recruiting-area="outreach" hidden>
   <div class="workflow-area-head">
     <div>
@@ -8696,9 +8698,10 @@ function crmWorkspaceTabKey(event){
 let currentRecruitingArea='schools';
 
 function switchRecruitingArea(area){
- const allowed=['schools','outreach','active','crm'];
+ const allowed=['schools','outreach','active','crm','activity'];
  if(!allowed.includes(area))area='schools';
  currentRecruitingArea=area;
+ if(area==='activity'){const f=document.getElementById('activity-frame');if(!f.getAttribute('src'))f.src='activity.html';}
 
  document.querySelectorAll('[data-recruiting-area]').forEach(el=>{
   el.hidden=el.getAttribute('data-recruiting-area')!==area||(el.id==='crm-batch-followup'&&!crmReservationsOpen);
@@ -10966,6 +10969,7 @@ window.addEventListener('resize',()=>{if(currentView==='map'&&map)map.invalidate
 <footer><nav class="app-policy-links" aria-label="アプリ情報"><a href="about.html">アプリについて</a><a href="privacy.html">プライバシーポリシー</a><a href="terms.html">利用規約</a></nav></footer>
 </body>
 </html>
+
 
 
 
