@@ -5,6 +5,7 @@
  const pipelineKeys=Object.freeze({none:'unset',id_camp_candidate:'camp_candidate',id_camp_scheduled:'camp_scheduled',id_camp_attended:'camp_attended',offer_candidate:'offer_candidate',offer_received:'offer'});
  const campaignKeys=Object.freeze({unknown:'unknown',conversation:'conversation',camp:'camp',meeting:'meeting',terms:'terms',offer:'offer',not_interested:'not_interested',declined:'declined'});
  const labels=keys=>Object.freeze(Object.fromEntries(Object.entries(keys).map(([key,value])=>[key,progress[value]])));
+ function contactNeedsReview(c){return ['学校接触済み・個人メール非公開','学校接触済み・別スタッフ経由','Staff要確認'].includes(String(c?.next_action||'').trim());}
  function schoolContactState(rows,{available=true,isDeferred=()=>false}={}){
   const result=(state,priority=false)=>({state,label:contactLabels[state],priority});
   if(!available||!rows.length)return result('unverified');
@@ -21,5 +22,5 @@
   if(rows.some(c=>state(c)==='not_contacted'&&isDeferred(c)))return result('deferred');
   return result('unverified');
  }
- root.RecruitingStatus=Object.freeze({contactLabels,pipelineLabels:labels(pipelineKeys),campaignLabels:labels(campaignKeys),schoolContactState});
+ root.RecruitingStatus=Object.freeze({contactLabels,pipelineLabels:labels(pipelineKeys),campaignLabels:labels(campaignKeys),contactNeedsReview,schoolContactState});
 })(window);

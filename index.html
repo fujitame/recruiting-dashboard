@@ -9,7 +9,7 @@
         Table order: University → Division → Conference → Status → IG → Links → Scouting → Cost → Coach → Email
     -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-<script src="recruiting-status.js?v=20261112"></script>
+<script src="recruiting-status.js?v=20261112-step1"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
@@ -2401,7 +2401,9 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
 #crm-drawer .crm-action-section[hidden],#crm-drawer [hidden]{display:none!important}
 #crm-mail-details .crm-next-actions,#crm-mail-details .crm-history{margin-left:0;margin-right:0}
 @media(max-width:550px){.coach-overview-facts{grid-template-columns:1fr}.coach-flow-next button{max-width:100%}}
+.reply-draft-storage{margin:10px 0;padding:10px;background:#eff6ff;border:1px solid #cfdeef;border-radius:7px}.reply-draft-storage button{margin:3px 6px 3px 0}.reply-draft-storage p{font-size:11px;line-height:1.5;margin:5px 0 0;color:#475569}
 </style>
+<script src="reply-draft-storage.js?v=20261112-step1" defer></script>
 </head>
 <body>
 <div id="auth-gate" class="auth-gate" aria-live="polite">
@@ -2756,7 +2758,7 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
  </div>
 </div><div id="crm-ai-reply-panel" class="crm-history" hidden>
 <h3>返信原稿と送信前の確認</h3>
-<div id="crm-ai-reply-status" class="crm-empty"></div>
+<div id="crm-ai-reply-status" class="crm-empty"></div><div class="reply-draft-storage"><button id="crm-save-reply-draft" class="crm-secondary" type="button" onclick="saveCrmReplyDraft()">下書きを保存</button><button id="crm-restore-reply-draft" class="crm-secondary" type="button" onclick="loadCrmReplyDraft(crmCurrentContact,true)" disabled>保存済みを復元</button><p id="crm-reply-draft-storage-status" role="status"></p></div>
 <div id="crm-draft-fields"><div class="crm-field full"><label for="crm-ai-subject">件名</label><input id="crm-ai-subject" type="text" oninput="crmReplyEnglishChanged()"></div>
 <div class="crm-field full"><label for="crm-ai-body">本文</label><textarea id="crm-ai-body" style="min-height:220px" oninput="crmReplyEnglishChanged()"></textarea></div>
 <details class="coach-disclosure" id="crm-reply-extra"><summary>作成理由・求められている情報</summary><div class="crm-field full"><label for="crm-ai-rationale">生成理由</label><textarea id="crm-ai-rationale" style="min-height:80px" readonly></textarea></div><div class="crm-field full"><label for="crm-ai-items">Coachから求められているもの</label><input id="crm-ai-items" type="text" readonly></div></details>
@@ -8892,14 +8894,7 @@ function renderActiveArea(){
 }
 
 
-function crmContactIsDeferred(c){
- const action=String(c?.next_action||'').trim();
- return [
-  '学校接触済み・個人メール非公開',
-  '学校接触済み・別スタッフ経由',
-  'Staff要確認'
- ].includes(action);
-}
+function crmContactIsDeferred(c){return window.RecruitingStatus.contactNeedsReview(c);}
 
 function crmContactMatchesCurrentFilter(c){
  if(crmInterestFilter==='high'){
@@ -9449,6 +9444,7 @@ function openCrmContactDrawer(contactId){
  document.getElementById('crm-drawer').classList.add('open');
  document.getElementById('crm-drawer').setAttribute('aria-hidden','false');
  restoreReplyWorkspace(c);
+ if(typeof loadCrmReplyDraft==='function')loadCrmReplyDraft(c);
  const mailPanel=document.getElementById('crm-mail-details');if(mailPanel)mailPanel.open=crmCanComposeCoachReply(c);
  renderCrmAiStageSuggestion(c);
  loadCrmSchoolReapproach(c);
@@ -9483,12 +9479,14 @@ function manualRecruitingReply(coach,player){
 
 const crmReplyWorkspaceStates=new Map();
 let crmReplyWorkspaceRequest=0,gmailReplyContext=null,gmailReplyAccepted=false;
+function crmReplySourceAnchor(c){const latest=typeof crmConversationLatest!=='undefined'?crmConversationLatest.get(c.id):null,raw=latest?.event_time||c.last_contact_at||'',time=Date.parse(raw);return String(c.gmail_thread_id||'')+'|'+(Number.isFinite(time)?String(time):String(raw));}
 function replyWorkspace(c=crmCurrentContact){
  if(!c?.id)return null;
  const source=String(c.coach_response||'');
+ const sourceAnchor=crmReplySourceAnchor(c);
  let state=crmReplyWorkspaceStates.get(c.id);
- if(!state||state.source!==source){
-  state={source,direction:'',analysis:null,subject:'',body:'',translation:'',translationSubject:'',translatedBody:'',origin:'manual',cc:'',agency:false,busy:false,notice:''};
+ if(!state||state.source!==source||state.sourceAnchor!==sourceAnchor){
+  state={source,sourceAnchor,direction:'',analysis:null,subject:'',body:'',translation:'',translationSubject:'',translatedBody:'',origin:'manual',cc:'',agency:false,busy:false,notice:''};
   crmReplyWorkspaceStates.set(c.id,state);
   crmAiStageSuggestionFor.delete(c.id);crmAiStageDecisionFor.delete(c.id);
  }
@@ -9501,14 +9499,17 @@ function captureCrmReplyWorkspace(){
  s.body=document.getElementById('crm-ai-body')?.value||'';
  const cc=document.getElementById('crm-reply-cc');if(cc)s.cc=cc.value;
  const agency=document.getElementById('crm-reply-cc-agency');if(agency)s.agency=agency.checked;
+ s.rationale=document.getElementById('crm-ai-rationale')?.value||'';s.requestedItems=document.getElementById('crm-ai-items')?.value||'';
 }
 function crmReplyDirectionChanged(){
  captureCrmReplyWorkspace();crmReplyWorkspaceRequest++;
+ if(typeof markReplyDraftEdited==='function')markReplyDraftEdited();
  const s=replyWorkspace();if(s){s.busy=false;s.notice='方針を更新しました。AI返信案は再作成して反映してください。';}
  renderReplyWorkspace();
 }
 function crmReplyEnglishChanged(){
  captureCrmReplyWorkspace();crmReplyWorkspaceRequest++;const state=replyWorkspace();if(state)state.busy=false;const check=document.getElementById('crm-reply-stage-reviewed');if(check)check.checked=false;
+ if(typeof markReplyDraftEdited==='function')markReplyDraftEdited();
  renderReplyTranslation();updateAiGmailStageGate(crmCurrentContact);
 }
 function renderReplyTranslation(){
@@ -9542,6 +9543,7 @@ function renderReplyWorkspace(){
   }else analysis.textContent='「コーチの返信を分析」で、事実・解釈・未確認事項を分けて確認できます。';
  }
  renderReplyTranslation();refreshReplyStageDisplays(c);updateCrmReplyActions(c);updateAiGmailStageGate(c);
+ if(typeof updateReplyDraftStorageUi==='function')updateReplyDraftStorageUi(c);
 }
 function restoreReplyWorkspace(c){
  const s=replyWorkspace(c);crmReplyWorkspaceRequest++;s.busy=false;
@@ -9550,6 +9552,7 @@ function restoreReplyWorkspace(c){
  const check=document.getElementById('crm-reply-stage-reviewed');if(check)check.checked=false;
  const cc=document.getElementById('crm-reply-cc');if(cc)cc.value=s.cc;
  const agency=document.getElementById('crm-reply-cc-agency');if(agency)agency.checked=s.agency;
+ const rationale=document.getElementById('crm-ai-rationale'),items=document.getElementById('crm-ai-items');if(rationale)rationale.value=s.rationale||'';if(items)items.value=s.requestedItems||'';
  renderReplyWorkspace();
 }
 function crmCanComposeCoachReply(c){
@@ -9599,6 +9602,7 @@ async function requestCrmReplyAI(mode){
     crmAiReplyGeneratedFor.set(c.id,source);renderCrmAiStageSuggestion(c);
    }
   }
+  if(typeof markReplyDraftEdited==='function')markReplyDraftEdited(c);
   s.notice=(mode==='analysis'?'分析完了':mode==='translate'?'日本語訳を更新しました':'返信案と日本語訳を作成しました')+' · '+(data.model||'AI');
  }catch(error){if(active())s.notice='処理できませんでした: '+(error?.message||'不明なエラー');}
  finally{if(active()){s.busy=false;renderReplyWorkspace();}}
@@ -9619,6 +9623,7 @@ async function createManualCrmReply(){
   s.translation='';s.translationSubject='';s.translatedBody='';
   document.getElementById('crm-ai-subject').value=s.subject;document.getElementById('crm-ai-body').value=s.body;
   document.getElementById('crm-ai-rationale').value='';document.getElementById('crm-ai-items').value='';
+  if(typeof markReplyDraftEdited==='function')markReplyDraftEdited(c);
   s.notice='件名・宛名・署名だけを用意しました。本文を入力してください。';const check=document.getElementById('crm-reply-stage-reviewed');if(check)check.checked=false;
  }catch(error){if(request===crmReplyWorkspaceRequest)s.notice=error?.message||'手動返信を準備できませんでした。';}
  finally{if(request===crmReplyWorkspaceRequest&&crmCurrentContact?.id===c.id){s.busy=false;renderReplyWorkspace();}}
@@ -9646,6 +9651,7 @@ function crmReplyCcChanged(){
  captureCrmReplyWorkspace();const c=crmCurrentContact,s=replyWorkspace(c),preview=document.getElementById('crm-reply-cc-preview');if(!s)return;
  try{const cc=normalizeReplyCc([s.cc,...(s.agency?[REPLY_AGENCY_CC]:[])],c.coach_email);if(preview)preview.textContent=cc.length?'送信するCC：'+cc.join(', '):'CCなし';}
  catch(error){if(preview)preview.textContent=error.message;}
+ if(typeof markReplyDraftEdited==='function')markReplyDraftEdited(c);
 }
 
 function resetReplyComposerOptions(){
@@ -9654,6 +9660,7 @@ function resetReplyComposerOptions(){
   if(s&&!gmailReplyAccepted){
    s.subject=document.getElementById('gmail-subject')?.value||s.subject;s.body=document.getElementById('gmail-body')?.value||s.body;
    s.cc=document.getElementById('gmail-cc')?.value||'';s.agency=document.getElementById('gmail-cc-agency')?.checked===true;
+   s.draftDirty=true;s.draftStorageNotice='';
   }
  }
  gmailReplyContext=null;gmailReplyAccepted=false;
