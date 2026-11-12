@@ -1,0 +1,35 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert');
+const shared=fs.readFileSync('recruiting-status.js','utf8'),html=fs.readFileSync('index.html','utf8');
+const ctx={window:{}};vm.createContext(ctx);vm.runInContext(shared,ctx);const S=ctx.window.RecruitingStatus;
+const c=(contact_status,extra={})=>({contact_status,...extra});
+assert.equal(S.schoolContactState([]).state,'unverified');
+assert.equal(S.schoolContactState([c('not_contacted')],{available:false}).state,'unverified');
+assert.equal(S.schoolContactState([c('not_contacted')]).state,'not_contacted');
+assert.equal(S.schoolContactState([c('draft_ready')]).state,'not_contacted');
+assert.equal(S.schoolContactState([c('not_contacted'),c('no_response')]).state,'partial');
+assert.equal(S.schoolContactState([c('not_contacted'),c('contacted')]).state,'partial');
+assert.equal(S.schoolContactState([c('not_contacted'),c('responded')]).state,'responded');
+assert.equal(S.schoolContactState([c('not_contacted'),c('closed',{coach_response:'Earlier reply'})]).state,'responded');
+assert.equal(S.schoolContactState([c('closed',{coach_response:'Earlier reply'}),c('closed')]).state,'closed');
+assert.equal(S.schoolContactState([c('closed'),c('not_a_fit')]).state,'not_a_fit');
+assert.equal(S.schoolContactState([c('not_contacted',{deferred:true})],{isDeferred:r=>r.deferred}).state,'deferred');
+assert.equal(S.campaignLabels.offer,S.pipelineLabels.offer_received);
+assert.notEqual(S.campaignLabels.camp,S.pipelineLabels.id_camp_candidate,'invitation must not equal an internal camp candidate');
+assert.equal(S.contactLabels.responded,'返信あり','a reply alone must not imply interest');
+function extract(name,next){const a=html.indexOf('function '+name+'(');return html.slice(a,html.indexOf('\n'+next,a+10));}
+const elements={},rows=[];ctx.crmContacts=new Map();ctx.crmAvailable=true;ctx.crmContactIsDeferred=()=>false;ctx.CRM_STATUS_LABELS=S.contactLabels;ctx.RECRUITING_STAGE_LABELS=S.pipelineLabels;
+ctx.crmEsc=x=>String(x??'').replaceAll('<','&lt;');ctx.crmStatusLabel=k=>S.contactLabels[k];ctx.getRecruitingSchoolStage=()=>ctx.stage||'none';ctx.recruitingStageLabel=k=>S.pipelineLabels[k];ctx.stage='id_camp_candidate';
+vm.runInContext(extract('schoolCrmState','async function updateRecruitingSchoolStage'),ctx);
+vm.runInContext(extract('schoolOverviewStatusHtml','function refreshSchoolProgressViews'),ctx);
+vm.runInContext(extract('schoolCrmStatusClass','function renderTable'),ctx);
+ctx.crmContacts.set('x',{university_id:1,coach_role:'head_coach',contact_status:'responded'});
+const status=vm.runInContext('schoolOverviewStatusHtml({id:1})',ctx);assert.match(status,/返信あり/);assert.match(status,/進捗：IDキャンプ候補/);assert.ok(!status.includes('<select'));
+assert.equal((html.match(/\$\{schoolOverviewStatusHtml\(u\)\}/g)||[]).length,3,'map/mobile/table must share the same status renderer');
+const header=html.match(/<table class="candidate-table">[\s\S]*?<\/thead>/)[0];assert.equal((header.match(/<th>/g)||[]).length,12);assert.ok(!header.includes('選考段階'));assert.ok(!html.includes('recruitingStageSelectHtml'));
+const apply=extract('applyFilters','function ');assert.ok(!apply.includes('okCrm'),'hidden CRM list filter leaked into candidate filters');
+for(const m of html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g))if(m[1].trim())new vm.Script(m[1]);
+// The school-wide progress editor must preserve the existing storage key and value.
+let saved,refreshed=false;const backend={from(table){assert.equal(table,'recruiting_school_pipeline');return {upsert(payload){saved=payload;return {select(){return {single:async()=>({data:payload,error:null})}}}}}}};
+Object.assign(ctx,{supabaseClient:backend,DASHBOARD_OWNER_ID:'owner',recruitingSchoolPipeline:new Map(),refreshSchoolProgressViews:()=>{refreshed=true},console,Date,alert:message=>{throw Error(message)}});
+vm.runInContext('async '+extract('saveRecruitingSchoolStage','const CRM_STATUS_LABELS'),ctx);
+(async()=>{assert.equal(await vm.runInContext("saveRecruitingSchoolStage(1,'id_camp_scheduled')",ctx),true);assert.equal(saved.recruiting_stage,'id_camp_scheduled');assert.equal(saved.university_id,1);assert.equal(refreshed,true);console.log('PASS: consistent school communication rules; partial/missing/closed handling; shared progress labels; 12-column table; map/mobile/table rendering; no hidden filter; unchanged school progress storage');})();
