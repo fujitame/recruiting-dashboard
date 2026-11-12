@@ -1,0 +1,30 @@
+begin;
+create temporary table scope_fixture(owner_id uuid,campaign_id uuid,school_id integer,contact_id uuid);
+do $$declare r record;p uuid:=gen_random_uuid();d uuid:=gen_random_uuid();v text;begin
+ select * into r from public.recruiting_activity_records where owner_user_id='47e7c1a9-a806-4f65-b5ed-2b9b124ef337' and gmail_message_id is not null limit 1;
+ if r.id is null then raise exception 'Legacy parent fixture unavailable';end if;
+ insert into public.recruiting_campaigns(id,owner_user_id,campaign_key,name) values(p,r.owner_user_id,'scope_fixture_'||p,'Rollback only');
+ insert into public.recruiting_campaign_deliveries(id,campaign_id,owner_user_id,university_id,stage,recipient_email,contact_ids,subject,body,scheduled_at,school_timezone,source_key,status,gmail_message_id,gmail_thread_id)
+ values(d,p,r.owner_user_id,r.university_id,'initial','fixture@example.invalid',array[r.contact_id],'Fixture','Fixture',now(),'Asia/Tokyo','fixture','sent','fixture-send-'||d,'fixture-thread-'||d);
+ v:=public.record_recruiting_message_activity(r.owner_user_id,r.contact_id,'fixture-send-'||d,'fixture-thread-'||d);if v<>'campaign' then raise exception 'Exact delivery not classified';end if;
+ v:=public.record_recruiting_message_activity(r.owner_user_id,r.contact_id,'fixture-reply-'||d,'fixture-thread-'||d,'fixture-send-'||d);if v<>'campaign' then raise exception 'Actual campaign parent not inherited';end if;
+ v:=public.record_recruiting_message_activity(r.owner_user_id,r.contact_id,'fixture-old-reply-'||d,'fixture-thread-'||d,r.gmail_message_id);if v<>'legacy' then raise exception 'Old parent incorrectly mixed into current thread';end if;
+ v:=public.record_recruiting_message_activity(r.owner_user_id,r.contact_id,'fixture-ambiguous-'||d,'fixture-thread-'||d);if v<>'unassigned' then raise exception 'Mixed thread was guessed';end if;
+ v:=public.record_recruiting_message_activity(r.owner_user_id,r.contact_id,'fixture-unmapped-'||d,'new-unknown-thread');if v<>'unassigned' then raise exception 'Unknown new thread was guessed as legacy';end if;
+ perform public.record_recruiting_message_activity(r.owner_user_id,r.contact_id,r.gmail_message_id,'fixture-thread-'||d,'fixture-send-'||d);
+ if (select activity_scope from public.recruiting_activity_records where id=r.id)<>'legacy' then raise exception 'Proven legacy record overwritten';end if;
+ insert into scope_fixture values(r.owner_user_id,p,r.university_id,r.contact_id);
+ perform set_config('request.jwt.claims',jsonb_build_object('sub',r.owner_user_id,'role','authenticated')::text,true);
+end $$;
+grant select on scope_fixture to authenticated;
+set local role authenticated;
+do $$declare r record;begin select * into r from scope_fixture;
+ if not exists(select 1 from public.recruiting_activity_records where owner_user_id=auth.uid()) then raise exception 'Owner select failed';end if;
+ begin perform public.record_recruiting_message_activity(r.owner_id,r.contact_id,'unauthorized','thread');raise exception 'Authenticated mutation RPC accepted';exception when insufficient_privilege then null;end;
+ begin insert into public.recruiting_activity_records(owner_user_id,university_id,contact_id,gmail_message_id,activity_scope,source) values(r.owner_id,r.school_id,r.contact_id,'unauthorized','legacy','test');raise exception 'Authenticated metadata insert accepted';exception when insufficient_privilege then null;end;
+ perform set_config('request.jwt.claims','{"sub":"00000000-0000-0000-0000-000000000001","role":"authenticated"}',true);
+ if exists(select 1 from public.recruiting_activity_records where owner_user_id=r.owner_id) then raise exception 'Foreign metadata visible';end if;
+end $$;
+reset role;
+select 'PASS: additive attribution; exact delivery and reply parent; mixed/unknown threads unassigned; legacy proof immutable; owner-only read; service-only mutation; all fixtures rolled back' as result;
+rollback;

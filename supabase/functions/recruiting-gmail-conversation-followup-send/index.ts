@@ -1,3 +1,4 @@
+import {recordMessageActivity} from '../_shared/recruiting-message-activity.ts';
 import { sendTrackedFollowUp } from "../_shared/recruiting-email-tracking.ts";
 import { withSupabase } from "npm:@supabase/server@1";
 import { ConversationBlocked, conversationSnapshot } from "../_shared/conversation-followup-context.ts";
@@ -423,6 +424,7 @@ export default {
               sentAt,
           });
 
+      await recordMessageActivity(updated.owner_user_id,updated.id,result.id,result.threadId||contact.gmail_thread_id,String(latestMessage?.id||""));
       if (historyInsert.error) {
         console.warn(
           "Conversation Follow-up history insert failed:",
@@ -478,3 +480,4 @@ export default {
     }
   }),
 };
+

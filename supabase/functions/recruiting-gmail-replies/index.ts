@@ -1,3 +1,4 @@
+import {recordMessageActivity} from '../_shared/recruiting-message-activity.ts';
 import { directOutboundParent, liveReplyStateLabel } from '../_shared/campaign-reply-attribution.js';
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -619,7 +620,7 @@ async function attributeCampaignReply(message: any, threadId: string, contact: a
   const candidates = campaignJobs.filter(j => j.owner_user_id === contact.owner_user_id &&
     j.university_id === contact.university_id && j.gmail_thread_id === threadId &&
     Number(message.internalDate || 0) >= Date.parse(j.sent_at || ''));
-  if (!candidates.length) return;
+  if (!candidates.length) return null;
   const thread = await gmailGet(`threads/${encodeURIComponent(threadId)}?format=metadata&metadataHeaders=From&metadataHeaders=Message-ID`, token);
   const parentId = directOutboundParent(message, thread, GMAIL_ACCOUNT);
   let campaignIds: string[] = [];
@@ -629,12 +630,12 @@ async function attributeCampaignReply(message: any, threadId: string, contact: a
       .select('id').eq('owner_user_id', contact.owner_user_id).eq('gmail_message_id', parentId).eq('status','sent').eq('is_test',false);
     if (te) throw te;
     // A known parent from the previous activity must not count as a new response.
-    if (!tracks?.length) return;
+    if (!tracks?.length) return parentId;
     const {data: links, error: le} = await supabase.from('recruiting_campaign_messages')
       .select('campaign_id').eq('owner_user_id', contact.owner_user_id).in('tracking_id', tracks.map(t => t.id));
     if (le) throw le;
     campaignIds = [...new Set((links || []).map(l => String(l.campaign_id)))];
-    if (!campaignIds.length) return;
+    if (!campaignIds.length) return parentId;
     status = campaignIds.length === 1 ? 'received' : 'review';
   } else {
     campaignIds = [...new Set(candidates.map(j => String(j.campaign_id)))];
@@ -652,6 +653,7 @@ async function attributeCampaignReply(message: any, threadId: string, contact: a
     }, {onConflict:'campaign_id,university_id'});
     if (error) throw error;
   }
+  return parentId;
 }
 
 Deno.serve(
@@ -903,14 +905,16 @@ Deno.serve(
             throw existingError;
           }
 
+          let actualParentId:string|null=null;
           try {
-            await attributeCampaignReply(message, candidate.threadId, contact, campaignJobs, token);
+            actualParentId=await attributeCampaignReply(message, candidate.threadId, contact, campaignJobs, token);
             await resolveSyncIssue(contact.owner_user_id,'attribution:'+messageId);
           } catch (attributionError) {
             campaignAttributionFailures++;
             await saveSyncIssue(contact.owner_user_id,contact.university_id,[contact.id],'attribution:'+messageId,'reply_attribution',String(attributionError),candidate.threadId,null,true);
             errors.push({gmail_message_id: messageId, operation:'campaign_reply_attribution', error: attributionError instanceof Error ? attributionError.message : String(attributionError)});
           }
+          await recordMessageActivity(contact.owner_user_id,contact.id,messageId,candidate.threadId,actualParentId);
           if (existing) {
             // Retrying labels never repeats the history insert or an email send.
             const {data:pending,error:pendingError}=await supabase.from('recruiting_campaign_issues').select('id').eq('owner_user_id',contact.owner_user_id).eq('issue_key','reply-label:'+messageId).eq('status','open').limit(1);if(pendingError)throw pendingError;
@@ -1266,5 +1270,6 @@ Deno.serve(
     }
   },
 );
+
 
 

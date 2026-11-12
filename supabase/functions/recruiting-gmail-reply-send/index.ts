@@ -1,3 +1,4 @@
+import {recordMessageActivity} from '../_shared/recruiting-message-activity.ts';
 import { normalizeReplyCc, recruitingReplySubject } from "../_shared/recruiting-reply-policy.js";
 import { prepareEmailTracking, recordEmailTrackingResult } from "../_shared/recruiting-email-tracking.ts";
 import { withSupabase } from "npm:@supabase/server@1";
@@ -318,6 +319,7 @@ export default {
       }
 
       if(bodyVerified)bodyVerified=await recordEmailTrackingResult(emailTracking.id,result.id,true);
+      await recordMessageActivity(contact.owner_user_id,contact.id,result.id,result.threadId||contact.gmail_thread_id,String(latest.id||""));
       // Gmail label sync.
       // Label failure must not turn a successful reply send
       // into a send failure.
@@ -366,3 +368,4 @@ export default {
     }
   }),
 };
+

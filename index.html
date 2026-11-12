@@ -2404,7 +2404,7 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
 .reply-draft-storage{margin:10px 0;padding:10px;background:#eff6ff;border:1px solid #cfdeef;border-radius:7px}.reply-draft-storage button{margin:3px 6px 3px 0}.reply-draft-storage p{font-size:11px;line-height:1.5;margin:5px 0 0;color:#475569}
 </style>
 <script src="reply-draft-storage.js?v=20261112-step1" defer></script>
-</head>
+<link rel="stylesheet" href="recruiting-activity-scope.css?v=20261113"><script src="recruiting-activity-scope.js?v=20261113"></script></head>
 <body>
 <div id="auth-gate" class="auth-gate" aria-live="polite">
     <div class="auth-card">
@@ -2489,11 +2489,12 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
   <div class="workflow-area-head">
     <div>
       <h2>連絡履歴</h2>
-      <p>これまでの連絡状況を学校単位で確認します。今回の活動別の集計・送信準備は「活動状況・送信準備」で行います。</p>
+      <p>活動を切り替えて、その活動の連絡・返信履歴を確認します。</p>
     </div>
     <span id="outreach-area-count" class="workflow-area-number">0</span>
   </div>
 
+  <div class="activity-scope-tools" data-scope-toolbar><label>活動<select data-correspondence-scope aria-label="表示する活動"><option>活動を確認中…</option></select></label><button type="button" data-scope-refresh>活動の記録を更新</button><p data-scope-note class="scope-caption"></p></div>
   <div class="outreach-toolbar">
     <button type="button" class="outreach-filter active" data-outreach-filter="all" onclick="setOutreachFilter('all')">すべて</button>
     <button type="button" class="outreach-filter" data-outreach-filter="waiting" onclick="setOutreachFilter('waiting')">返信待ち</button>
@@ -2536,7 +2537,7 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
   <div class="workflow-area-head">
     <div>
       <h2>コーチ詳細</h2>
-      <p>コーチごとの情報・履歴と、従来の送信予約を確認します。今回の一括アプローチの準備は「活動状況・送信準備」で行います。</p>
+      <p>活動ごとに、コーチの実績・履歴・予約を確認します。返信対応では過去のやり取りも参照できます。</p><div class="activity-scope-tools" data-scope-toolbar><label>活動<select data-correspondence-scope aria-label="表示する活動"><option>活動を確認中…</option></select></label><button type="button" data-scope-refresh>活動の記録を更新</button><p data-scope-note class="scope-caption"></p></div>
     </div>
   </div>
 </section>
@@ -2546,7 +2547,7 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
  <button id="crm-tab-reservations" role="tab" type="button" data-crm-tab="reservations" aria-selected="false" aria-controls="crm-batch-followup" tabindex="-1" onclick="switchCrmWorkspaceTab('reservations')">送信予約</button>
  <button id="crm-tab-interest" role="tab" type="button" data-crm-tab="interest" aria-selected="false" aria-controls="crm-panel-interest" tabindex="-1" onclick="switchCrmWorkspaceTab('interest')">メール関心度</button>
 </div>
-<section id="crm-batch-followup" class="crm-batch-followup" data-recruiting-area="crm" data-crm-panel="reservations" role="tabpanel" aria-labelledby="crm-tab-reservations" tabindex="0" hidden>
+<section id="crm-batch-followup" class="crm-batch-followup" data-recruiting-area="crm" data-crm-panel="reservations" role="tabpanel" aria-labelledby="crm-tab-reservations" tabindex="0" hidden><div id="crm-scoped-reservations" hidden></div><div id="crm-legacy-reservations">
  <div style="display:flex;justify-content:space-between;align-items:center"><h3 id="crm-reservation-title">送信予約</h3><button class="crm-action-btn" type="button" onclick="switchCrmWorkspaceTab('overview')">連絡状況へ</button></div>
  <p id="crm-reservation-description"></p>
  <button id="campaign-reservation-entry" class="crm-action-btn" type="button" onclick="switchRecruitingArea('activity')">今回の送信準備・予約前チェックへ</button>
@@ -2572,9 +2573,9 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
   <label class="crm-batch-contact"><input id="crm-batch-reviewed" type="checkbox" onchange="updateCrmFollowUpBatchConfirm()">全件の宛先・Research根拠・現地時刻・本文を確認しました。</label>
   <button id="crm-batch-schedule" class="crm-batch-schedule" type="button" onclick="scheduleCrmFollowUpBatch()" disabled>確認したメールを送信予約</button>
  </div>
-</section>
+</div></section>
 
-<section id="crm-panel-interest" data-recruiting-area="crm" data-crm-panel="interest" role="tabpanel" aria-labelledby="crm-tab-interest" tabindex="0" class="crm-email-engagement" hidden>
+<section id="crm-panel-interest" data-recruiting-area="crm" data-crm-panel="interest" role="tabpanel" aria-labelledby="crm-tab-interest" tabindex="0" class="crm-email-engagement" hidden><div id="crm-scoped-interest" hidden></div><div id="crm-legacy-interest">
  <div class="crm-panel-heading"><div><h3>送信メールへの関心度</h3><p id="crm-email-engagement-counts">直近30日 · 学校単位</p></div><button class="crm-action-btn" type="button" onclick="loadCrmEmailTracking()">更新</button></div>
  <div id="crm-interest-summary" class="interest-stats"></div>
  <div class="interest-distribution"><div><h4>反応の分布</h4><p>棒グラフを押すと、学校一覧を絞り込めます。</p></div><div id="crm-interest-chart" class="interest-bars"></div><p id="crm-interest-chart-note" class="interest-chart-note"></p></div>
@@ -2588,8 +2589,8 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
  </div>
  <div id="crm-email-engagement-list"></div>
  <div class="interest-pagination"><button id="crm-interest-prev" type="button" onclick="changeCrmInterestPage(-1)">前へ</button><span id="crm-interest-page">1 / 1</span><button id="crm-interest-next" type="button" onclick="changeCrmInterestPage(1)">次へ</button></div>
-</section>
-<section id="crm-panel-overview" data-recruiting-area="crm" data-crm-panel="overview" role="tabpanel" aria-labelledby="crm-tab-overview" tabindex="0" hidden>
+</div></section>
+<section id="crm-panel-overview" data-recruiting-area="crm" data-crm-panel="overview" role="tabpanel" aria-labelledby="crm-tab-overview" tabindex="0" hidden><div id="crm-scoped-overview" hidden></div><div id="crm-legacy-overview">
 <div id="crm-summary" class="crm-summary" aria-label="連絡状況サマリー">
 
 <div class="crm-summary-group crm-summary-overview">
@@ -2662,7 +2663,7 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
 
 <details class="crm-overview-actions"><summary>今日・これからのアクション</summary><div id="crm-actions-panel" class="crm-actions-panel" aria-label="CRM 次のアクション"><div class="crm-action-box"><h3>今日・期限超過</h3><div id="crm-due-list" class="crm-action-empty">読み込み中...</div></div><div class="crm-action-box"><h3>次のアクション</h3><div id="crm-next-list" class="crm-action-empty">読み込み中...</div></div></div>
 </details>
-</section>
+</div></section>
 <div class="cost-note" data-recruiting-area="schools"><b>費用(参考)</b>：学費は原則として2025年の比較データに基づく参考値（公立はOut-of-State、私立/NAIAは通常のTuition）。寮・食費相当は「On-campus living」の参考値です。TuitionとOn-campus livingの両方が確認できる学校は、<b>年間合計 = Tuition + On-campus living</b>として表示します。学校別に取得できなかったものは「School-specific ref pending」と表示。奨学金・編入後の実費・2026-27公式COAとは異なる場合があります。</div>
 
 <div class="main-content" data-recruiting-area="schools"><div id="map-view"></div><div id="list-view">
@@ -2709,7 +2710,7 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
 <div id="gmail-modal" class="gmail-modal" onclick="if(event.target===this)closeGmailComposer()"><div class="gmail-card" role="dialog" aria-modal="true"><div class="gmail-head"><div><h2 id="gmail-title">Gmail送信</h2><small id="gmail-subtitle"></small></div><button class="gmail-close" type="button" onclick="closeGmailComposer()">×</button></div><div class="gmail-body"><div id="gmail-error" class="gmail-error"></div><div id="gmail-note" class="gmail-note">送信前に宛先・件名・本文を確認してください。通常送信ではCRMを「送信済・返信待」に更新し、GmailのThread IDを保存します。</div><div class="gmail-field"><label for="gmail-to">宛先</label><input id="gmail-to" type="email" readonly></div><section id="gmail-reply-options" class="gmail-reply-options" hidden><div class="reply-status-row"><b>連絡状況</b><span id="gmail-reply-contact-status"></span></div><div class="reply-status-row"><b>学校との進捗</b><span id="gmail-reply-stage"></span></div><small>連絡状況はメールの送受信状態、学校との進捗はIDキャンプ・オファーなどの進み具合です。</small><div class="gmail-field"><label for="gmail-cc">⑥ CC（自由入力）</label><input id="gmail-cc" type="text" maxlength="2000" placeholder="coach@example.edu, other@example.com" oninput="gmailReplyOptionsChanged()"><small>複数の宛先はカンマで区切って入力してください。</small></div><label class="reply-check reply-choice"><input id="gmail-cc-agency" type="checkbox" onchange="gmailReplyOptionsChanged()"><span class="reply-choice-copy">CCに追加する<span class="reply-choice-address">recruit@withtyou-usa.com</span></span><span class="reply-choice-state" aria-hidden="true"><span class="choice-off">追加しない</span><span class="choice-on">✓ 追加する</span></span></label><p id="gmail-cc-preview" aria-live="polite">CCなし</p><small>CCの相手にも本文が届きます。CCや転送先のリンクアクセスは、元のメールの関心度に含まれます。</small><label class="reply-check reply-choice"><input id="gmail-reply-reviewed" type="checkbox" onchange="updateGmailReplyReview()"><span class="reply-choice-copy">連絡状況・学校との進捗・宛先・CC・件名・本文を確認しました</span><span class="reply-choice-state" aria-hidden="true"><span class="choice-off">未確認</span><span class="choice-on">✓ 確認済み</span></span></label></section><div class="gmail-field"><label for="gmail-subject">件名</label><input id="gmail-subject" type="text" oninput="gmailReplyOptionsChanged()"></div><div class="gmail-field"><label for="gmail-body">本文</label><textarea id="gmail-body" oninput="gmailReplyOptionsChanged()"></textarea></div><div class="gmail-actions"><button id="gmail-personalize-btn" class="gmail-secondary" type="button" onclick="personalizeGmailDraft()" hidden>✨ Personalize</button><button class="gmail-secondary" type="button" onclick="closeGmailComposer()">キャンセル</button><button id="gmail-send-btn" class="gmail-send" type="button" onclick="sendGmailMessage()">Gmailから送信</button></div></div></div></div>
 <aside id="crm-drawer" class="crm-drawer" aria-hidden="true">
 <div class="crm-head"><div><h2 id="crm-title">Recruiting CRM</h2><small id="crm-subtitle"></small></div><button class="crm-close" type="button" onclick="closeCrmDrawer()" aria-label="Close">×</button></div>
-<div class="crm-body"><section class="coach-overview" aria-label="このコーチの状況">
+<div class="crm-body"><div id="crm-activity-context" hidden></div><section class="coach-overview" aria-label="このコーチの状況">
  <dl class="coach-overview-facts"><div><dt>連絡状況</dt><dd id="crm-overview-status"></dd></div><div><dt>学校との進捗（累積）</dt><dd id="crm-overview-progress"></dd></div><div><dt>最終連絡</dt><dd id="crm-overview-last"></dd></div><div><dt>次の予定・メモ</dt><dd id="crm-overview-next"></dd></div></dl>
  <div class="coach-flow-next"><h3 id="crm-flow-title">次にできること</h3><p id="crm-next-actions-note" role="status"></p><button id="crm-flow-primary" class="gmail-btn" type="button" onclick="runCoachPrimaryAction()">次へ</button><button class="crm-secondary" type="button" onclick="openCoachRecordEditor()">記録を編集</button><button id="crm-flow-reservations" class="crm-secondary" type="button" onclick="openCoachReservations()" hidden>過去の予約を確認</button></div>
 </section>
@@ -2772,7 +2773,7 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
 <div class="crm-actions">
 <button id="crm-ai-gmail-btn" class="gmail-btn" type="button" onclick="openAiReplyInGmailComposer()">宛先・本文の最終確認へ</button>
 </div>
-</div></div></details><details id="crm-history-section" class="coach-disclosure"><summary id="crm-history-summary">連絡履歴を確認</summary><button class="crm-btn" type="button" onclick="crmCurrentContact&&loadCrmHistory(crmCurrentContact.id)">履歴を更新</button><div id="crm-history-list" class="crm-empty">履歴を読み込んでいます…</div></details><details id="crm-engagement-section" class="coach-disclosure"><summary>閲覧・動画への反応を確認</summary><div class="crm-history"><button class="crm-btn" type="button" onclick="loadCrmEmailTracking()">計測情報を更新</button><div id="crm-contact-engagement"></div><small>学校全体の反応を含みます。未検知は未読の証明ではありません。</small></div></details><details id="crm-record-editor" class="coach-disclosure"><summary>記録・学校の進捗を編集</summary><div class="crm-grid"><div class="crm-field"><label for="crm-status">連絡状況</label><select id="crm-status"><option value="not_contacted">未連絡</option><option value="contacted">送信済・返信待</option><option value="follow_up_due">要Follow-up</option><option value="responded">返信有・対応中</option><option value="no_response">返信無（Follow-up完了）</option><option value="not_a_fit">対象外</option><option value="closed">Close</option></select></div>
+</div></div></details><details id="crm-history-section" class="coach-disclosure"><summary id="crm-history-summary">連絡履歴を確認</summary><button class="crm-btn" type="button" onclick="crmCurrentContact&&loadCrmHistory(crmCurrentContact.id)">履歴を更新</button><div id="crm-history-list" class="crm-empty">履歴を読み込んでいます…</div></details><details id="crm-engagement-section" class="coach-disclosure"><summary>閲覧・動画への反応を確認</summary><div class="crm-history"><button class="crm-btn" type="button" onclick="loadCrmEmailTracking()">計測情報を更新</button><div id="crm-contact-engagement"></div><small>学校全体の反応を含みます。未検知は未読の証明ではありません。</small></div></details><details id="crm-record-editor" class="coach-disclosure"><summary>基本情報・全活動共通の記録を編集</summary><div class="crm-grid"><div class="crm-field"><label for="crm-status">連絡状況</label><select id="crm-status"><option value="not_contacted">未連絡</option><option value="contacted">送信済・返信待</option><option value="follow_up_due">要Follow-up</option><option value="responded">返信有・対応中</option><option value="no_response">返信無（Follow-up完了）</option><option value="not_a_fit">対象外</option><option value="closed">Close</option></select></div>
 <div class="crm-field full"><label for="crm-school-progress">学校との進捗（全活動の累積・学校共通）</label><select id="crm-school-progress" onchange="crmCurrentContact&&updateRecruitingSchoolStage(crmCurrentContact.university_id,this)"></select><small>変更すると学校全体の進捗を保存します。連絡状況や今回の活動の進捗は変更しません。</small></div>
 <div class="crm-field"><label for="crm-next-action">次のアクション</label><input id="crm-next-action" type="text" placeholder="例：フォローアップメール送信"></div>
 <div class="crm-field"><label for="crm-follow-up">フォローアップ予定日</label><input id="crm-follow-up" type="date"></div>
@@ -7497,6 +7498,7 @@ async function initializeAuth(){
                 hideAuthGate(session.user);
                 startDashboard(session.user);
             }else if(event==='SIGNED_OUT'){
+                if(typeof crmActivityScope==='function')crmActivityScope()?.clear();
                 dashboardStarted=false;
                 showAuthGate('ログアウトしました。Dashboardを利用するにはログインしてください。','info');
             }
@@ -7749,6 +7751,7 @@ function openCrmBatchNextAction(contactId){
  document.getElementById('crm-batch-followup')?.scrollIntoView({behavior:'smooth',block:'start'});
 }
 function renderCrmFollowUpBatch(){
+ if(typeof crmActivityScope==='function'&&crmActivityScope()?.renderReservations())return;
  const panel=document.getElementById('crm-batch-followup'),list=document.getElementById('crm-batch-contact-list');
  if(!panel||!list)return;
  setCrmReservationCandidateControlsDisabled(crmBatchPreparing);
@@ -7959,7 +7962,18 @@ document.addEventListener('change',event=>{
   crmBatchSetMessage('日付または時刻が変わりました。選択Contactの案を作り直してください。');
  }
 });
+function crmActivityScope(){return typeof window!=='undefined'?window.CRMActivityUI:null;}
+function configureCrmActivityScope(){
+ const ui=crmActivityScope();if(!ui)return;
+ ui.configure({client:()=>supabaseClient,owner:()=>DASHBOARD_OWNER_ID,isTest:()=>testMode,
+  contacts:()=>visibleCrmContacts(),schools:()=>universities.filter(u=>!isTestUniversityId(u.id)),outreachFilter:()=>outreachFilter,
+  schoolName:u=>schoolNameHtml(u),openContact:id=>openCrmFromContact(id),
+  openPreparation:(scope,id)=>{if(scope==='legacy'||scope==='all')return;closeCrmDrawer();switchRecruitingArea('activity');document.getElementById('activity-frame').src='activity.html?campaign='+encodeURIComponent(scope)+'&view=prepare'+(id?'&contact='+encodeURIComponent(id):'');},
+  cancelLegacy:async id=>{const {error}=await supabaseClient.rpc('cancel_recruiting_followup_batch',{p_batch_id:id});if(error)throw error;}
+ });
+}
 async function loadCrmContacts(){
+ configureCrmActivityScope();
  crmContacts.clear();crmHistory=[];crmAvailable=false;if(!supabaseClient||!DASHBOARD_OWNER_ID)return false;
  try{
   const {data,error}=await supabaseClient.from('recruiting_contacts').select('*').eq('owner_user_id',DASHBOARD_OWNER_ID);
@@ -7972,6 +7986,7 @@ async function loadCrmContacts(){
   await loadInboundLeads();
   await loadConversationReplyTimeline();
   await loadRecruitingSchoolPipeline();
+  if(crmActivityScope()&&['outreach','crm'].includes(currentRecruitingArea))await crmActivityScope().refresh();
   renderTable();applyFilters();
   renderCrmSummary();
   renderCrmActionList();
@@ -8409,6 +8424,7 @@ function switchCrmWorkspaceTab(tab){
  crmWorkspaceTab=tab;crmReservationsOpen=tab==='reservations';
  if(currentRecruitingArea!=='crm')switchRecruitingArea('crm');
  applyCrmWorkspaceVisibility();
+ if(typeof crmActivityScope==='function')crmActivityScope()?.onArea('crm');
  if(tab==='interest'){renderSchoolMailInterest();if(!crmTrackingLoaded&&!crmEmailTrackingError)loadCrmEmailTracking();}
  if(tab==='reservations'&&!crmBatchReservationReady&&!crmBatchPreparing)loadCrmFollowUpBatchReservations();
 }
@@ -8451,6 +8467,7 @@ function switchRecruitingArea(area){
   },50);
  }
 
+ if(typeof crmActivityScope==='function')crmActivityScope()?.onArea(area);
  window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -8624,6 +8641,7 @@ function setOutreachFilter(value){
 }
 
 function renderOutreachArea(){
+ if(typeof crmActivityScope==='function'&&crmActivityScope()?.renderOutreach())return;
  const el=document.getElementById('outreach-school-list');
  if(!el)return;
 
@@ -8965,6 +8983,7 @@ function updateCrmKpiSelection(){
 }
 
 function renderCrmContactList(){
+ if(typeof crmActivityScope==='function'&&crmActivityScope()?.renderCRM())return;
  updateCrmKpiSelection();
  const el=document.getElementById('crm-contact-list');
  const section=document.getElementById('crm-contact-list-section');
@@ -9432,6 +9451,7 @@ function openCrmContactDrawer(contactId){
  const c=Array.from(crmContacts.values()).find(x=>x.id===contactId);if(!c)return;
  const u=universities.find(x=>x.id===Number(c.university_id));if(!u||!crmAvailable){alert('Recruiting CRM is currently unavailable.');return}
  crmCurrentContact=c;
+ if(typeof crmActivityScope==='function')crmActivityScope()?.onContact(c,currentRecruitingArea);
  ['crm-record-editor','crm-advanced-record','crm-history-section','crm-engagement-section','crm-mail-details','crm-reply-extra','crm-reply-analysis-section','crm-reply-stage-edit'].forEach(id=>{const el=document.getElementById(id);if(el)el.open=false;});
  updateCrmNextActions(c);
  const roleLabel=c.coach_role==='head_coach'?'HC':c.coach_role==='assistant_coach'?'AC':'Other';
@@ -9471,7 +9491,7 @@ function openCrmContactDrawer(contactId){
  loadCrmHistory(c.id);
  renderCrmContactEngagement();loadCrmEmailTracking();
 }
-function openCrmFromContact(contactId){openCrmContactDrawer(contactId)}
+function openCrmFromContact(contactId,activity){openCrmContactDrawer(contactId);if(activity&&typeof crmActivityScope==='function')crmActivityScope()?.setDrawer(activity)}
 
 const REPLY_AGENCY_CC="recruit@withtyou-usa.com";
 function normalizeReplyCc(value,primary=""){
@@ -10147,6 +10167,7 @@ function crmSchoolInterestBreakdown(school,rows){
  }).join('');
 }
 function renderSchoolMailInterest(){
+ if(typeof crmActivityScope==='function'&&crmActivityScope()?.renderInterest())return;
  const el=document.getElementById('crm-email-engagement-list');if(!el)return;
  const all=crmInterestSchoolData(),measured=all.filter(s=>s.score.tracked>0),counts=[0,0,0,0,0];
  measured.forEach(s=>counts[s.score.rank]++);
@@ -10227,7 +10248,7 @@ function closeCrmDrawer(){
  crmCurrentContact=null;
 }
 async function loadCrmHistory(id){if(crmCurrentContact?.id!==id)return;const summary=document.getElementById('crm-history-summary');if(summary)summary.textContent='連絡履歴（読み込み中）';const el=document.getElementById('crm-history-list');if(!el)return;el.innerHTML='<div class="crm-empty">履歴を読み込んでいます…</div>';try{const {data,error}=await supabaseClient.from('recruiting_contact_history').select('*').eq('contact_id',id).order('event_at',{ascending:false});if(error)throw error;if(crmCurrentContact?.id!==id)return;crmHistory=data||[];renderCrmHistory()}catch(err){console.warn('CRM history load failed:',err);if(crmCurrentContact?.id!==id)return;el.innerHTML='<div class="crm-empty">履歴を取得できませんでした。「履歴を更新」で再取得できます。</div>'}}
-function renderCrmHistory(){const summary=document.getElementById('crm-history-summary');if(summary)summary.textContent='連絡履歴（'+crmHistory.length+'件）';const events={reply_received:'コーチからの返信',reply_sent:'こちらからの返信',follow_up_sent:'Follow-up送信',conversation_follow_up_sent:'返信後のFollow-up送信',contact_logged:'連絡記録の更新',status_changed:'連絡状況の変更',follow_up_set:'次回予定の更新',visit_camp_updated:'訪問・面談メモ',note:'メモ'};const el=document.getElementById('crm-history-list');if(!el)return;if(!crmHistory.length){el.innerHTML='<div class="crm-empty">連絡履歴はまだありません。</div>';return}el.innerHTML=crmHistory.map(h=>'<div class="crm-history-item"><b>'+crmEsc(events[h.event_type]||h.event_type)+'</b><div class="crm-history-meta">'+crmEsc(crmDateDisplay(h.event_at))+(h.from_status||h.to_status?' · '+crmEsc(h.from_status?crmStatusLabel(h.from_status):'')+' → '+crmEsc(h.to_status?crmStatusLabel(h.to_status):''):'')+'</div>'+(h.note?'<div>'+crmEsc(h.note)+'</div>':'')+'</div>').join('')}
+function renderCrmHistory(){if(typeof crmActivityScope==='function'&&crmActivityScope()?.renderHistory(crmHistory))return;const summary=document.getElementById('crm-history-summary');if(summary)summary.textContent='連絡履歴（'+crmHistory.length+'件）';const events={reply_received:'コーチからの返信',reply_sent:'こちらからの返信',follow_up_sent:'Follow-up送信',conversation_follow_up_sent:'返信後のFollow-up送信',contact_logged:'連絡記録の更新',status_changed:'連絡状況の変更',follow_up_set:'次回予定の更新',visit_camp_updated:'訪問・面談メモ',note:'メモ'};const el=document.getElementById('crm-history-list');if(!el)return;if(!crmHistory.length){el.innerHTML='<div class="crm-empty">連絡履歴はまだありません。</div>';return}el.innerHTML=crmHistory.map(h=>'<div class="crm-history-item"><b>'+crmEsc(events[h.event_type]||h.event_type)+'</b><div class="crm-history-meta">'+crmEsc(crmDateDisplay(h.event_at))+(h.from_status||h.to_status?' · '+crmEsc(h.from_status?crmStatusLabel(h.from_status):'')+' → '+crmEsc(h.to_status?crmStatusLabel(h.to_status):''):'')+'</div>'+(h.note?'<div>'+crmEsc(h.note)+'</div>':'')+'</div>').join('')}
 async function saveCrmContact(){
  const c=crmCurrentContact;if(!c||!crmAvailable)return;const status=document.getElementById('crm-status').value,last=document.getElementById('crm-last-contact').value,next=document.getElementById('crm-next-action').value.trim(),follow=document.getElementById('crm-follow-up').value||null,count=Math.max(0,Number(document.getElementById('crm-count').value||0)),followCount=Math.min(2,Math.max(0,Number(document.getElementById('crm-follow-up-count').value||0))),autoFollow=document.getElementById('crm-auto-follow-up').checked,response=document.getElementById('crm-response').value.trim(),visit=document.getElementById('crm-visit').value.trim(),note=document.getElementById('crm-note').value.trim();
  const prev={status:c.contact_status||'not_contacted',next:c.next_action||'',follow:c.follow_up_date||null,response:c.coach_response||'',visit:c.visit_camp||'',count:c.contact_count||0,last:c.last_contact_at||null,followCount:c.follow_up_count||0,autoFollow:c.auto_follow_up_enabled!==false};
@@ -10643,6 +10664,7 @@ window.addEventListener('resize',()=>{if(currentView==='map'&&map)map.invalidate
 <footer><nav class="app-policy-links" aria-label="アプリ情報"><a href="about.html">アプリについて</a><a href="privacy.html">プライバシーポリシー</a><a href="terms.html">利用規約</a></nav></footer>
 </body>
 </html>
+
 
 
 
