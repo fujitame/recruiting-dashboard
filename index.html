@@ -2390,6 +2390,17 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
 .candidate-status-guide{padding:7px 12px;font-size:11px;color:#52657b;background:#f8fafc}
 .candidate-status-guide summary{cursor:pointer}
 .candidate-status-guide p{margin:6px 0;line-height:1.6}
+
+/* Coach CRM: overview, relevant preparation, then optional detail. */
+#crm-title{font-size:16px;line-height:1.45;margin:0}#crm-subtitle{display:block;overflow-wrap:anywhere;white-space:normal}
+#crm-drawer .coach-overview{padding:12px;border:1px solid #d6e2ef;border-radius:10px;background:#f7fafc;margin-bottom:12px}
+.coach-overview-facts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0}.coach-overview-facts div{min-width:0}.coach-overview-facts dt{color:#64748b;font-size:10px}.coach-overview-facts dd{margin:3px 0 0;font-size:12px;font-weight:700;overflow-wrap:anywhere}
+.coach-flow-next{border-top:1px solid #dce5ef;margin-top:12px;padding-top:10px}.coach-flow-next h3{margin:0;font-size:13px}.coach-flow-next p{font-size:11px;line-height:1.6}.coach-flow-next button{margin:4px 5px 0 0}.coach-flow-help{font-size:11px;line-height:1.5;color:#64748b}
+.coach-disclosure{margin:12px 0;border:1px solid #dce4ed;border-radius:8px;padding:10px}.coach-disclosure>summary{font-size:12px;font-weight:700;color:#243b53;cursor:pointer}.coach-disclosure[open]>summary{margin-bottom:12px}
+.coach-latest-reply{margin:12px 0}.coach-latest-reply h3{font-size:12px;margin-bottom:7px}.coach-latest-reply pre{max-height:190px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;background:#f8fafc;border:1px solid #e2e8f0;border-radius:7px;padding:10px;font-family:inherit;font-size:12px;line-height:1.6}.coach-latest-reply small{font-size:10px;color:#64748b}
+#crm-drawer .crm-action-section[hidden],#crm-drawer [hidden]{display:none!important}
+#crm-mail-details .crm-next-actions,#crm-mail-details .crm-history{margin-left:0;margin-right:0}
+@media(max-width:550px){.coach-overview-facts{grid-template-columns:1fr}.coach-flow-next button{max-width:100%}}
 </style>
 </head>
 <body>
@@ -2693,32 +2704,12 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
 <div id="gmail-modal" class="gmail-modal" onclick="if(event.target===this)closeGmailComposer()"><div class="gmail-card" role="dialog" aria-modal="true"><div class="gmail-head"><div><h2 id="gmail-title">Gmail送信</h2><small id="gmail-subtitle"></small></div><button class="gmail-close" type="button" onclick="closeGmailComposer()">×</button></div><div class="gmail-body"><div id="gmail-error" class="gmail-error"></div><div id="gmail-note" class="gmail-note">送信前に宛先・件名・本文を確認してください。通常送信ではCRMを「送信済・返信待」に更新し、GmailのThread IDを保存します。</div><div class="gmail-field"><label for="gmail-to">宛先</label><input id="gmail-to" type="email" readonly></div><section id="gmail-reply-options" class="gmail-reply-options" hidden><div class="reply-status-row"><b>連絡状況</b><span id="gmail-reply-contact-status"></span></div><div class="reply-status-row"><b>学校との進捗</b><span id="gmail-reply-stage"></span></div><small>連絡状況はメールの送受信状態、学校との進捗はIDキャンプ・オファーなどの進み具合です。</small><div class="gmail-field"><label for="gmail-cc">⑥ CC（自由入力）</label><input id="gmail-cc" type="text" maxlength="2000" placeholder="coach@example.edu, other@example.com" oninput="gmailReplyOptionsChanged()"><small>複数の宛先はカンマで区切って入力してください。</small></div><label class="reply-check reply-choice"><input id="gmail-cc-agency" type="checkbox" onchange="gmailReplyOptionsChanged()"><span class="reply-choice-copy">CCに追加する<span class="reply-choice-address">recruit@withtyou-usa.com</span></span><span class="reply-choice-state" aria-hidden="true"><span class="choice-off">追加しない</span><span class="choice-on">✓ 追加する</span></span></label><p id="gmail-cc-preview" aria-live="polite">CCなし</p><small>CCの相手にも本文が届きます。CCや転送先のリンクアクセスは、元のメールの関心度に含まれます。</small><label class="reply-check reply-choice"><input id="gmail-reply-reviewed" type="checkbox" onchange="updateGmailReplyReview()"><span class="reply-choice-copy">連絡状況・学校との進捗・宛先・CC・件名・本文を確認しました</span><span class="reply-choice-state" aria-hidden="true"><span class="choice-off">未確認</span><span class="choice-on">✓ 確認済み</span></span></label></section><div class="gmail-field"><label for="gmail-subject">件名</label><input id="gmail-subject" type="text" oninput="gmailReplyOptionsChanged()"></div><div class="gmail-field"><label for="gmail-body">本文</label><textarea id="gmail-body" oninput="gmailReplyOptionsChanged()"></textarea></div><div class="gmail-actions"><button id="gmail-personalize-btn" class="gmail-secondary" type="button" onclick="personalizeGmailDraft()" hidden>✨ Personalize</button><button class="gmail-secondary" type="button" onclick="closeGmailComposer()">キャンセル</button><button id="gmail-send-btn" class="gmail-send" type="button" onclick="sendGmailMessage()">Gmailから送信</button></div></div></div></div>
 <aside id="crm-drawer" class="crm-drawer" aria-hidden="true">
 <div class="crm-head"><div><h2 id="crm-title">Recruiting CRM</h2><small id="crm-subtitle"></small></div><button class="crm-close" type="button" onclick="closeCrmDrawer()" aria-label="Close">×</button></div>
-<div class="crm-body"><div class="crm-grid">
-<div class="crm-field"><label for="crm-status">連絡状況</label><select id="crm-status"><option value="not_contacted">未連絡</option><option value="contacted">送信済・返信待</option><option value="follow_up_due">要Follow-up</option><option value="responded">返信有・対応中</option><option value="no_response">返信無（Follow-up完了）</option><option value="not_a_fit">対象外</option><option value="closed">Close</option></select></div>
-<div class="crm-field full"><label for="crm-school-progress">学校との進捗（全活動の累積・学校共通）</label><select id="crm-school-progress" onchange="crmCurrentContact&&updateRecruitingSchoolStage(crmCurrentContact.university_id,this)"></select><small>変更すると学校全体の進捗を保存します。連絡状況や今回の活動の進捗は変更しません。</small></div>
-<div class="crm-field"><label for="crm-last-contact">最終連絡日</label><input id="crm-last-contact" type="datetime-local"></div>
-<div class="crm-field"><label for="crm-next-action">次のアクション</label><input id="crm-next-action" type="text" placeholder="例：フォローアップメール送信"></div>
-<div class="crm-field"><label for="crm-follow-up">フォローアップ予定日</label><input id="crm-follow-up" type="date"></div>
-<div class="crm-field"><label for="crm-count">連絡回数</label><input id="crm-count" type="number" min="0" step="1"></div>
-<div class="crm-field"><label for="crm-follow-up-count">Follow-up回数</label><input id="crm-follow-up-count" type="number" min="0" max="2" step="1"></div>
-<div class="crm-field"><label><input id="crm-auto-follow-up" type="checkbox" style="width:auto;margin-right:5px"> 自動Follow-upを有効化</label></div>
-<div class="crm-field"><label for="crm-visit">訪問・キャンプ</label><input id="crm-visit" type="text" placeholder="ID Camp / 訪問 / 面談"></div>
-<div class="crm-field full"><label for="crm-response">コーチからの反応</label><textarea id="crm-response" placeholder="コーチからの反応・返信内容を記録"></textarea></div>
-<div class="crm-field full"><label for="crm-note">履歴メモ</label><textarea id="crm-note" placeholder="この連絡についてのメモ"></textarea></div>
-</div>
-
-<div class="crm-save-section">
- <div class="crm-save-row">
-  <button class="crm-save" type="button" onclick="saveCrmContact()">CRM情報を保存</button>
-  <span class="crm-save-help">上のステータス・日付・メモを保存します</span>
- </div>
-</div>
-
-<div class="crm-next-actions">
- <div class="crm-next-actions-head">
-  <strong>次のアクション</strong>
-  <span id="crm-next-actions-note">送信前に必ず内容を確認します</span>
- </div>
+<div class="crm-body"><section class="coach-overview" aria-label="このコーチの状況">
+ <dl class="coach-overview-facts"><div><dt>連絡状況</dt><dd id="crm-overview-status"></dd></div><div><dt>学校との進捗（累積）</dt><dd id="crm-overview-progress"></dd></div><div><dt>最終連絡</dt><dd id="crm-overview-last"></dd></div><div><dt>次の予定・メモ</dt><dd id="crm-overview-next"></dd></div></dl>
+ <div class="coach-flow-next"><h3 id="crm-flow-title">次にできること</h3><p id="crm-next-actions-note" role="status"></p><button id="crm-flow-primary" class="gmail-btn" type="button" onclick="runCoachPrimaryAction()">次へ</button><button class="crm-secondary" type="button" onclick="openCoachRecordEditor()">記録を編集</button><button id="crm-flow-reservations" class="crm-secondary" type="button" onclick="openCoachReservations()" hidden>予約を確認</button></div>
+</section>
+<section id="crm-latest-reply-section" class="coach-latest-reply" hidden><h3>保存済みのコーチ返信</h3><pre id="crm-latest-reply"></pre><small>送信済みの返信と過去のやり取りは「連絡履歴」で確認できます。</small></section><details id="crm-mail-details" class="coach-disclosure"><summary id="crm-mail-summary">個別メールを準備</summary><div class="crm-next-actions">
+ <div class="crm-next-actions-head"><strong>個別メールを準備</strong></div>
  <section class="crm-action-section">
   <h3>初回連絡</h3>
   <p>Coachへ最初のメールを作成し、Gmailの送信画面で内容を確認します。</p>
@@ -2734,12 +2725,12 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
   </div>
  </section>
  <section class="crm-action-section crm-reply-workspace">
-  <h3>Coachへの返信を準備</h3>
-  <p>保存済みの返信を分析し、ご自身の考えを整理してから原稿を作成できます。</p>
+  <h3>① 返信内容と方針</h3>
+  <p>上の返信を確認し、伝えたい内容を入力します。分析は必要な場合に利用できます。</p>
   <button id="crm-reply-analyze-btn" class="crm-secondary" type="button" onclick="analyzeCrmCoachReply()">コーチの返信を分析</button>
-  <details id="crm-reply-analysis-section" class="reply-analysis-section"><summary>① コーチ返信の考察・分析</summary><div id="crm-reply-analysis" aria-live="polite"></div></details>
-  <div class="crm-field full"><label for="crm-reply-direction">② 自身の考え・返信の方向性</label><textarea id="crm-reply-direction" rows="4" maxlength="4000" oninput="crmReplyDirectionChanged()" placeholder="例：予算の質問に回答し、映像をどう評価したか、2027年のサイドの募集状況を確認したい。"></textarea><small>希望する論点・質問・トーンを入力してください。未確定の条件は確認事項として扱います。</small></div>
-  <h4 class="crm-reply-method-heading">③ 返信案の作成方法を選択</h4>
+  <details id="crm-reply-analysis-section" class="reply-analysis-section"><summary>返信の分析結果を見る</summary><div id="crm-reply-analysis" aria-live="polite"></div></details>
+  <div class="crm-field full"><label for="crm-reply-direction">伝えたい内容・返信の方針（任意）</label><textarea id="crm-reply-direction" rows="4" maxlength="4000" oninput="crmReplyDirectionChanged()" placeholder="例：予算の質問に回答し、映像をどう評価したか、2027年のサイドの募集状況を確認したい。"></textarea><small>希望する論点・質問・トーンを入力してください。未確定の条件は確認事項として扱います。</small></div>
+  <h4 class="crm-reply-method-heading">② 返信原稿を作る</h4>
   <div class="crm-next-actions-buttons crm-reply-methods">
    <button id="crm-ai-reply-btn" class="crm-secondary" type="button" onclick="generateAiReplyDraft()">✨ AI返信案を作成</button>
    <button id="crm-manual-reply-btn" class="crm-secondary" type="button" onclick="createManualCrmReply()">自身で返信を作成</button>
@@ -2763,26 +2754,30 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
   <button id="crm-ai-stage-apply-btn" class="gmail-btn" type="button" onclick="applyAiStageSuggestion()">学校との進捗を変更</button>
   <button id="crm-ai-stage-dismiss-btn" class="crm-secondary" type="button" onclick="dismissAiStageSuggestion()">変更しない</button>
  </div>
-</div>
-
-<div id="crm-ai-reply-panel" class="crm-history" hidden>
-<h3>返信原稿</h3>
+</div><div id="crm-ai-reply-panel" class="crm-history" hidden>
+<h3>返信原稿と送信前の確認</h3>
 <div id="crm-ai-reply-status" class="crm-empty"></div>
-<div class="crm-field full"><label for="crm-ai-subject">件名</label><input id="crm-ai-subject" type="text" oninput="crmReplyEnglishChanged()"></div>
+<div id="crm-draft-fields"><div class="crm-field full"><label for="crm-ai-subject">件名</label><input id="crm-ai-subject" type="text" oninput="crmReplyEnglishChanged()"></div>
 <div class="crm-field full"><label for="crm-ai-body">本文</label><textarea id="crm-ai-body" style="min-height:220px" oninput="crmReplyEnglishChanged()"></textarea></div>
-<div class="crm-field full"><label for="crm-ai-rationale">生成理由</label><textarea id="crm-ai-rationale" style="min-height:80px" readonly></textarea></div>
-<div class="crm-field full"><label for="crm-ai-items">Coachから求められているもの</label><input id="crm-ai-items" type="text" readonly></div>
-<details class="reply-translation-section" open><summary>④ 日本語訳（確認用）</summary><p id="crm-reply-translation-note"></p><pre id="crm-reply-translation"></pre><button id="crm-reply-translate-btn" class="crm-secondary" type="button" onclick="translateCrmReplyDraft()">現在の原稿を日本語訳</button></details>
-<div class="reply-stage-review"><b>⑤ 現在の状況を確認</b><div class="reply-status-row"><b>連絡状況</b><span id="crm-reply-contact-status"></span></div><div class="reply-status-row"><b>学校との進捗</b><span id="crm-reply-stage-current"></span></div><div class="reply-stage-edit"><label for="crm-reply-stage-select">学校との進捗を変更</label><div><select id="crm-reply-stage-select"><option value="none">未設定</option><option value="id_camp_candidate">IDキャンプ候補</option><option value="id_camp_scheduled">IDキャンプ予定</option><option value="id_camp_attended">IDキャンプ参加済</option><option value="offer_candidate">オファー検討段階</option><option value="offer_received">オファー受領</option></select><button id="crm-reply-stage-save" class="crm-secondary" type="button" onclick="saveCrmReplyStage()">変更して保存</button></div></div><button class="crm-secondary" type="button" onclick="editCrmReplyContactStatus()">連絡状況を編集</button><small>連絡状況はメールの送受信状態、学校との進捗はIDキャンプ・オファーなどの進み具合です。</small><label class="reply-choice"><input id="crm-reply-stage-reviewed" type="checkbox" onchange="updateAiGmailStageGate(crmCurrentContact)"><span class="reply-choice-copy">連絡状況と学校との進捗を確認しました</span><span class="reply-choice-state" aria-hidden="true"><span class="choice-off">未確認</span><span class="choice-on">✓ 確認済み</span></span></label><small>AIが学校との進捗の変更を提案した場合は、先に「学校との進捗を変更／変更しない」を選択してください。</small></div>
-<section class="reply-cc-editor"><h3>⑥ CCを設定・修正</h3><div class="crm-field full"><label for="crm-reply-cc">CCメールアドレス（自由入力）</label><input id="crm-reply-cc" type="text" maxlength="2000" placeholder="coach@example.edu, other@example.com" oninput="crmReplyCcChanged()"></div><label class="reply-choice"><input id="crm-reply-cc-agency" type="checkbox" onchange="crmReplyCcChanged()"><span class="reply-choice-copy">CCに追加する<span class="reply-choice-address">recruit@withtyou-usa.com</span></span><span class="reply-choice-state" aria-hidden="true"><span class="choice-off">追加しない</span><span class="choice-on">✓ 追加する</span></span></label><p id="crm-reply-cc-preview" role="status">CCなし</p><small>ここで入力したCCを、次のGmail作成画面へ引き継ぎます。次の画面でも件名・本文・CCを編集できます。</small></section>
+<details class="coach-disclosure" id="crm-reply-extra"><summary>作成理由・求められている情報</summary><div class="crm-field full"><label for="crm-ai-rationale">生成理由</label><textarea id="crm-ai-rationale" style="min-height:80px" readonly></textarea></div><div class="crm-field full"><label for="crm-ai-items">Coachから求められているもの</label><input id="crm-ai-items" type="text" readonly></div></details>
+<details class="reply-translation-section" open><summary>日本語訳で内容を確認</summary><p id="crm-reply-translation-note"></p><pre id="crm-reply-translation"></pre><button id="crm-reply-translate-btn" class="crm-secondary" type="button" onclick="translateCrmReplyDraft()">現在の原稿を日本語訳</button></details>
+<div class="reply-stage-review"><b>③ 送信前の確認</b><div class="reply-status-row"><b>連絡状況</b><span id="crm-reply-contact-status"></span></div><div class="reply-status-row"><b>学校との進捗</b><span id="crm-reply-stage-current"></span></div><details id="crm-reply-stage-edit" class="coach-disclosure"><summary>学校との進捗を修正する</summary><div class="reply-stage-edit"><label for="crm-reply-stage-select">学校との進捗を変更</label><div><select id="crm-reply-stage-select"><option value="none">未設定</option><option value="id_camp_candidate">IDキャンプ候補</option><option value="id_camp_scheduled">IDキャンプ予定</option><option value="id_camp_attended">IDキャンプ参加済</option><option value="offer_candidate">オファー検討段階</option><option value="offer_received">オファー受領</option></select><button id="crm-reply-stage-save" class="crm-secondary" type="button" onclick="saveCrmReplyStage()">変更して保存</button></div></div></details><button class="crm-secondary" type="button" onclick="editCrmReplyContactStatus()">連絡状況を編集</button><small>連絡状況はメールの送受信状態、学校との進捗はIDキャンプ・オファーなどの進み具合です。</small><label class="reply-choice"><input id="crm-reply-stage-reviewed" type="checkbox" onchange="updateAiGmailStageGate(crmCurrentContact)"><span class="reply-choice-copy">連絡状況と学校との進捗を確認しました</span><span class="reply-choice-state" aria-hidden="true"><span class="choice-off">未確認</span><span class="choice-on">✓ 確認済み</span></span></label><small>AIが学校との進捗の変更を提案した場合は、先に「学校との進捗を変更／変更しない」を選択してください。</small></div>
+<section class="reply-cc-editor"><h3>CC（必要な場合）</h3><div class="crm-field full"><label for="crm-reply-cc">CCメールアドレス（自由入力）</label><input id="crm-reply-cc" type="text" maxlength="2000" placeholder="coach@example.edu, other@example.com" oninput="crmReplyCcChanged()"></div><label class="reply-choice"><input id="crm-reply-cc-agency" type="checkbox" onchange="crmReplyCcChanged()"><span class="reply-choice-copy">CCに追加する<span class="reply-choice-address">recruit@withtyou-usa.com</span></span><span class="reply-choice-state" aria-hidden="true"><span class="choice-off">追加しない</span><span class="choice-on">✓ 追加する</span></span></label><p id="crm-reply-cc-preview" role="status">CCなし</p><small>ここで入力したCCを、次のGmail作成画面へ引き継ぎます。次の画面でも件名・本文・CCを編集できます。</small></section>
 <div id="crm-reply-open-error" class="reply-open-status" role="status" aria-live="polite"></div>
 <div class="crm-actions">
-<button id="crm-ai-gmail-btn" class="gmail-btn" type="button" onclick="openAiReplyInGmailComposer()">Gmail作成画面へ進む</button>
+<button id="crm-ai-gmail-btn" class="gmail-btn" type="button" onclick="openAiReplyInGmailComposer()">宛先・本文の最終確認へ</button>
 </div>
-</div>
-
-<details id="crm-school-reapproach" class="crm-history" hidden>
-<summary><strong>2027年秋編入 Research</strong> <span id="crm-reapproach-summary"></span></summary>
+</div></div></details><details id="crm-history-section" class="coach-disclosure"><summary id="crm-history-summary">連絡履歴を確認</summary><button class="crm-btn" type="button" onclick="crmCurrentContact&&loadCrmHistory(crmCurrentContact.id)">履歴を更新</button><div id="crm-history-list" class="crm-empty">履歴を読み込んでいます…</div></details><details id="crm-engagement-section" class="coach-disclosure"><summary>閲覧・動画への反応を確認</summary><div class="crm-history"><button class="crm-btn" type="button" onclick="loadCrmEmailTracking()">計測情報を更新</button><div id="crm-contact-engagement"></div><small>学校全体の反応を含みます。未検知は未読の証明ではありません。</small></div></details><details id="crm-record-editor" class="coach-disclosure"><summary>記録・学校の進捗を編集</summary><div class="crm-grid"><div class="crm-field"><label for="crm-status">連絡状況</label><select id="crm-status"><option value="not_contacted">未連絡</option><option value="contacted">送信済・返信待</option><option value="follow_up_due">要Follow-up</option><option value="responded">返信有・対応中</option><option value="no_response">返信無（Follow-up完了）</option><option value="not_a_fit">対象外</option><option value="closed">Close</option></select></div>
+<div class="crm-field full"><label for="crm-school-progress">学校との進捗（全活動の累積・学校共通）</label><select id="crm-school-progress" onchange="crmCurrentContact&&updateRecruitingSchoolStage(crmCurrentContact.university_id,this)"></select><small>変更すると学校全体の進捗を保存します。連絡状況や今回の活動の進捗は変更しません。</small></div>
+<div class="crm-field"><label for="crm-next-action">次のアクション</label><input id="crm-next-action" type="text" placeholder="例：フォローアップメール送信"></div>
+<div class="crm-field"><label for="crm-follow-up">フォローアップ予定日</label><input id="crm-follow-up" type="date"></div>
+<div class="crm-field full"><label for="crm-note">履歴メモ</label><textarea id="crm-note" placeholder="この連絡についてのメモ"></textarea></div></div><details id="crm-advanced-record" class="coach-disclosure"><summary>送受信記録を手動で修正する</summary><p class="coach-flow-help">日付・回数・返信本文は通常、メールの送受信で更新されます。訂正が必要な場合に編集してください。</p><div class="crm-grid"><div class="crm-field"><label for="crm-last-contact">最終連絡日</label><input id="crm-last-contact" type="datetime-local"></div>
+<div class="crm-field"><label for="crm-count">連絡回数</label><input id="crm-count" type="number" min="0" step="1"></div>
+<div class="crm-field"><label for="crm-follow-up-count">Follow-up回数</label><input id="crm-follow-up-count" type="number" min="0" max="2" step="1"></div>
+<div class="crm-field"><label><input id="crm-auto-follow-up" type="checkbox" style="width:auto;margin-right:5px"> 自動Follow-upを有効化</label></div>
+<div class="crm-field full"><label for="crm-response">コーチからの反応</label><textarea id="crm-response" placeholder="コーチからの反応・返信内容を記録"></textarea></div>
+<div class="crm-field"><label for="crm-visit">訪問・面談メモ</label><input id="crm-visit" type="text" placeholder="ID Camp / 訪問 / 面談"></div></div></details><div class="crm-save-section"><button class="crm-save" type="button" onclick="saveCrmContact()">記録を保存</button><p class="coach-flow-help">連絡状況・次の予定・メモと手動修正を保存します。学校との進捗は選択時に保存されます。</p></div></details><details id="crm-school-reapproach" class="crm-history" hidden>
+<summary><strong>学校の参考情報・従来の文案ツール</strong> <span id="crm-reapproach-summary"></span></summary>
 <p id="crm-reapproach-plan"></p>
 <p><small>11月中旬以降の再アプローチ用。学年・DF人数は卒業枠や募集枠の確定数ではありません。</small></p>
 <details><summary>学校別の材料・出典・未確認事項</summary><div id="crm-reapproach-research"></div></details>
@@ -2796,10 +2791,7 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
 <p id="crm-reapproach-rationale"></p><ul id="crm-reapproach-checks"></ul>
 <button type="button" class="crm-btn" onclick="copyCrmReapproachDraft()">件名・本文をコピー</button>
 <small>準備用の文案です。送信前に最新状況と内容を確認してください。</small>
-</div></details>
-
-<div class="crm-history"><h3>送信メールへの関心度</h3><button class="crm-btn" type="button" onclick="loadCrmEmailTracking()">更新</button><div id="crm-contact-engagement"></div><small>計測対応後の初回メール・返信・Follow-upが対象です。検知なしは未読の証明ではありません。</small></div>
-<div class="crm-history"><h3>連絡履歴</h3><div id="crm-history-list" class="crm-empty">No history yet.</div></div></div></aside>
+</div></details></div></aside>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 
@@ -9094,6 +9086,53 @@ function renderCrmSummary(){
 function crmStatusLabel(status){return CRM_STATUS_LABELS[status]||status||'未設定'}
 function crmDateOnlyLocal(v){if(!v)return null;const d=new Date(v+'T00:00:00');return Number.isNaN(d.getTime())?null:d}
 function crmActionRecord(c){const u=universities.find(x=>x.id===Number(c.university_id));if(!u)return null;const role=c.coach_role==='head_coach'?'head_coach':'assistant_coach';return {contact:c,university:u,role}}
+
+function refreshCoachOverview(c){
+ if(!c||crmCurrentContact?.id!==c.id)return;
+ const text=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=value;};
+ text('crm-overview-status',crmStatusLabel(c.contact_status));
+ text('crm-overview-progress',recruitingStageLabel(getRecruitingSchoolStage(c.university_id)));
+ text('crm-overview-last',c.last_contact_at?crmDateDisplay(c.last_contact_at):'記録なし');
+ text('crm-overview-next',c.next_action||(c.follow_up_date?'Follow-up予定 '+c.follow_up_date:'未設定'));
+ const response=String(c.coach_response||'').trim();
+ const latest=document.getElementById('crm-latest-reply-section');if(latest)latest.hidden=!response;
+ text('crm-latest-reply',response);
+ const active=crmCanComposeCoachReply(c);
+ const schoolHasReply=Array.from(crmContacts.values()).some(other=>Number(other.university_id)===Number(c.university_id)&&(other.contact_status==='responded'||String(other.coach_response||'').trim()));
+ ['crm-initial-btn','crm-followup-btn','crm-conversation-followup-btn'].forEach(id=>{const button=document.getElementById(id),section=button?.closest?.('.crm-action-section');if(section)section.hidden=button.style.display==='none';});
+ const replySection=document.getElementById('crm-manual-reply-btn')?.closest?.('.crm-reply-workspace');if(replySection)replySection.hidden=!active;
+ const primary=document.getElementById('crm-flow-primary');if(!primary)return;
+ let action='history',label='連絡履歴を確認',title='これまでのやり取りを確認';
+ if(active){action='reply';label=replyWorkspace(c)?.body?'返信原稿を確認':'返信を準備';title='コーチへの返信を準備';}
+ else if(!['closed','not_a_fit','responded'].includes(c.contact_status)&&!response&&schoolHasReply){action='schoolReply';label='学校の返信対応を確認';title='同じ学校のコーチから返信があります';text('crm-next-actions-note','この学校は今回の一括アプローチの対象外です。既存の返信・やり取りを確認して個別に対応します。');}
+ else if(!['closed','not_a_fit','responded'].includes(c.contact_status)&&!response){action='campaign';label='今回のアプローチを準備';title='今回の活動へ進む';text('crm-next-actions-note','今回の初回メール・Follow-upは、過去の連絡と分けて「活動状況・送信準備」で準備します。');}
+ else if(crmConversationState(c.id).state==='conversation_follow_up_due'&&document.getElementById('crm-conversation-followup-btn')?.style.display!=='none'){action='conversation';label='返信後のFollow-upを準備';title='返信後のFollow-up';}
+ else if(crmConversationState(c.id).state==='waiting'){title='コーチからの次の返信を待っています';}
+ else if(['closed','not_a_fit'].includes(c.contact_status)){title='このコーチとの対応は終了しています';}
+ primary.dataset.action=action;primary.textContent=label;primary.disabled=Boolean(replyWorkspace(c)?.busy);
+ text('crm-flow-title',title);text('crm-mail-summary',active?'返信を準備・原稿を確認':'従来の個別メール操作（必要な場合）');
+ const reservations=document.getElementById('crm-flow-reservations');if(reservations)reservations.hidden=!crmPendingReservationFor(c);
+}
+function openCoachRecordEditor(){
+ const panel=document.getElementById('crm-record-editor');if(panel){panel.open=true;panel.scrollIntoView?.({block:'start',behavior:'smooth'});}
+}
+function openCoachReservations(){closeCrmDrawer();switchCrmWorkspaceTab('reservations');}
+function runCoachPrimaryAction(){
+ const c=crmCurrentContact;if(!c)return;
+ updateCrmNextActions(c);
+ const action=document.getElementById('crm-flow-primary')?.dataset.action;
+ if(action==='schoolReply'){closeCrmDrawer();switchRecruitingArea('active');return;}
+ if(action==='campaign'){
+  if(['closed','not_a_fit','responded'].includes(c.contact_status)||String(c.coach_response||'').trim())return;
+  const contactId=c.id;closeCrmDrawer();switchRecruitingArea('activity');
+  document.getElementById('activity-frame').src='activity.html?view=prepare&contact='+encodeURIComponent(contactId);return;
+ }
+ if(action==='history'){const history=document.getElementById('crm-history-section');if(history){history.open=true;history.scrollIntoView?.({block:'start',behavior:'smooth'});}return;}
+ const panel=document.getElementById('crm-mail-details');if(panel)panel.open=true;
+ if(action==='reply'&&crmCanComposeCoachReply(c)){const target=replyWorkspace(c)?.body?document.getElementById('crm-ai-reply-panel'):document.getElementById('crm-reply-direction');target?.scrollIntoView?.({block:'center',behavior:'smooth'});target?.focus?.();}
+ if(action==='conversation'){const button=document.getElementById('crm-conversation-followup-btn');if(button&&button.style.display!=='none'&&!button.disabled)button.click();}
+}
+
 function updateCrmNextActions(c){
  try{
  const initialBtn=document.getElementById('crm-initial-btn');
@@ -9378,10 +9417,11 @@ function openCrmContactDrawer(contactId){
  const c=Array.from(crmContacts.values()).find(x=>x.id===contactId);if(!c)return;
  const u=universities.find(x=>x.id===Number(c.university_id));if(!u||!crmAvailable){alert('Recruiting CRM is currently unavailable.');return}
  crmCurrentContact=c;
+ ['crm-record-editor','crm-advanced-record','crm-history-section','crm-engagement-section','crm-mail-details','crm-reply-extra','crm-reply-analysis-section','crm-reply-stage-edit'].forEach(id=>{const el=document.getElementById(id);if(el)el.open=false;});
  updateCrmNextActions(c);
  const roleLabel=c.coach_role==='head_coach'?'HC':c.coach_role==='assistant_coach'?'AC':'Other';
- document.getElementById('crm-title').textContent=u.name+' — CRM';
- document.getElementById('crm-subtitle').textContent=roleLabel+': '+c.coach_name+' · '+(c.coach_email||'email not confirmed');
+ document.getElementById('crm-title').textContent=roleLabel+' · '+c.coach_name;
+ document.getElementById('crm-subtitle').textContent=u.name+' · '+(c.coach_email||'メールアドレス未確認');
  document.getElementById('crm-status').value=c.contact_status==='draft_ready'?'not_contacted':c.contact_status||'not_contacted';
  const schoolProgress=document.getElementById('crm-school-progress');schoolProgress.value=getRecruitingSchoolStage(c.university_id);schoolProgress.dataset.currentStage=schoolProgress.value;
  document.getElementById('crm-last-contact').value=crmDateInput(c.last_contact_at);
@@ -9409,6 +9449,7 @@ function openCrmContactDrawer(contactId){
  document.getElementById('crm-drawer').classList.add('open');
  document.getElementById('crm-drawer').setAttribute('aria-hidden','false');
  restoreReplyWorkspace(c);
+ const mailPanel=document.getElementById('crm-mail-details');if(mailPanel)mailPanel.open=crmCanComposeCoachReply(c);
  renderCrmAiStageSuggestion(c);
  loadCrmSchoolReapproach(c);
  loadCrmHistory(c.id);
@@ -9484,10 +9525,12 @@ function refreshReplyStageDisplays(c=crmCurrentContact){
  const el=document.getElementById('crm-reply-stage-current');
  if(el){if(el.dataset.stage!==stage){const select=document.getElementById('crm-reply-stage-select');if(select)select.value=stage;const check=document.getElementById('crm-reply-stage-reviewed');if(check)check.checked=false;}el.dataset.stage=stage;el.textContent=label;}
  const composer=document.getElementById('gmail-reply-stage');if(composer&&gmailCurrentContactId===c.id)composer.textContent=label;
+ if(typeof refreshCoachOverview==='function')refreshCoachOverview(c);
 }
 function renderReplyWorkspace(){
  const c=crmCurrentContact,s=replyWorkspace(c);if(!s)return;
  const panel=document.getElementById('crm-ai-reply-panel');if(panel)panel.hidden=!crmCanComposeCoachReply(c)||!Boolean(s.body||s.busy||s.notice);
+ const fields=document.getElementById('crm-draft-fields');s.draftStarted=s.draftStarted||Boolean(s.subject||s.body);if(fields)fields.hidden=!s.draftStarted;
  const status=document.getElementById('crm-ai-reply-status');if(status)status.textContent=s.notice||'';
  const analysis=document.getElementById('crm-reply-analysis');
  if(analysis){
@@ -9524,6 +9567,7 @@ function updateCrmReplyActions(c){
  const ai=document.getElementById('crm-ai-reply-btn');
  if(ai){ai.style.display=hasResponse&&active?'inline-block':'none';ai.disabled=Boolean(s?.busy)||!hasResponse||!active;ai.textContent=s?.busy?'AI返信案を作成（処理中…）':s?.origin==='ai'&&s.body?'AI返信案を再作成':'✨ AI返信案を作成';}
  const translation=document.getElementById('crm-reply-translate-btn');if(translation)translation.disabled=!active||Boolean(s?.busy)||!s?.body;
+ if(typeof refreshCoachOverview==='function')refreshCoachOverview(c);
 }
 async function requestCrmReplyAI(mode){
  const c=crmCurrentContact;if(!crmCanComposeCoachReply(c)){alert('未対応のCoach返信がありません。返信送信済みの場合は次の返信を待ち、7日を超えたらFollow-upを利用してください。');return;}if(!c?.id||!String(c.coach_response||'').trim()){alert('保存済みのCoach返信がありません。');return;}
@@ -9541,7 +9585,7 @@ async function requestCrmReplyAI(mode){
    if((document.getElementById('crm-ai-body')?.value||'')!==english||(document.getElementById('crm-ai-subject')?.value||'')!==subject)throw new Error('翻訳中に英文が変わりました。現在の英文で翻訳し直してください。');
    s.translation=String(draft.body_ja||'');s.translationSubject=String(draft.subject_ja||'');s.translatedBody=english;s.translatedSubject=subject;
   }else{
-   s.analysis=draft.analysis_ja||null;const analysisSection=document.getElementById('crm-reply-analysis-section');if(analysisSection)analysisSection.open=true;
+   s.analysis=draft.analysis_ja||null;const analysisSection=document.getElementById('crm-reply-analysis-section');if(analysisSection&&mode==='analysis')analysisSection.open=true;
    if(mode==='draft'){
     s.subject=String(draft.subject||'');s.body=String(draft.body||'');s.origin='ai';s.sent=false;
     s.translation=String(draft.body_ja||'');s.translationSubject=String(draft.subject_ja||'');s.translatedBody=s.body;s.translatedSubject=s.subject;s.replyGmailMessageId=data.reply_message_id||'';s.replyMessageId='';
@@ -9580,6 +9624,7 @@ async function createManualCrmReply(){
  finally{if(request===crmReplyWorkspaceRequest&&crmCurrentContact?.id===c.id){s.busy=false;renderReplyWorkspace();}}
 }
 function editCrmReplyContactStatus(){
+ openCoachRecordEditor();
  const status=document.getElementById('crm-status');status?.scrollIntoView({block:'center',behavior:'smooth'});status?.focus();
  const notice=document.getElementById('crm-reply-open-error');if(notice)notice.textContent='上の「連絡状況」で変更し、「CRM情報を保存」を押してください。';
 }
@@ -10154,14 +10199,14 @@ function closeCrmDrawer(){
  document.getElementById('crm-drawer')?.setAttribute('aria-hidden','true');
  crmCurrentContact=null;
 }
-async function loadCrmHistory(id){const el=document.getElementById('crm-history-list');if(!el)return;el.innerHTML='<div class="crm-empty">Loading…</div>';try{const {data,error}=await supabaseClient.from('recruiting_contact_history').select('*').eq('contact_id',id).order('event_at',{ascending:false});if(error)throw error;crmHistory=data||[];renderCrmHistory()}catch(err){console.warn('CRM history load failed:',err);el.innerHTML='<div class="crm-empty">History unavailable.</div>'}}
-function renderCrmHistory(){const el=document.getElementById('crm-history-list');if(!el)return;if(!crmHistory.length){el.innerHTML='<div class="crm-empty">No history yet.</div>';return}el.innerHTML=crmHistory.map(h=>'<div class="crm-history-item"><b>'+crmEsc(h.event_type)+'</b><div class="crm-history-meta">'+crmEsc(crmDateDisplay(h.event_at))+(h.from_status||h.to_status?' · '+crmEsc(h.from_status||'')+' → '+crmEsc(h.to_status||''):'')+'</div>'+(h.note?'<div>'+crmEsc(h.note)+'</div>':'')+'</div>').join('')}
+async function loadCrmHistory(id){if(crmCurrentContact?.id!==id)return;const summary=document.getElementById('crm-history-summary');if(summary)summary.textContent='連絡履歴（読み込み中）';const el=document.getElementById('crm-history-list');if(!el)return;el.innerHTML='<div class="crm-empty">履歴を読み込んでいます…</div>';try{const {data,error}=await supabaseClient.from('recruiting_contact_history').select('*').eq('contact_id',id).order('event_at',{ascending:false});if(error)throw error;if(crmCurrentContact?.id!==id)return;crmHistory=data||[];renderCrmHistory()}catch(err){console.warn('CRM history load failed:',err);if(crmCurrentContact?.id!==id)return;el.innerHTML='<div class="crm-empty">履歴を取得できませんでした。「履歴を更新」で再取得できます。</div>'}}
+function renderCrmHistory(){const summary=document.getElementById('crm-history-summary');if(summary)summary.textContent='連絡履歴（'+crmHistory.length+'件）';const events={reply_received:'コーチからの返信',reply_sent:'こちらからの返信',follow_up_sent:'Follow-up送信',conversation_follow_up_sent:'返信後のFollow-up送信',contact_logged:'連絡記録の更新',status_changed:'連絡状況の変更',follow_up_set:'次回予定の更新',visit_camp_updated:'訪問・面談メモ',note:'メモ'};const el=document.getElementById('crm-history-list');if(!el)return;if(!crmHistory.length){el.innerHTML='<div class="crm-empty">連絡履歴はまだありません。</div>';return}el.innerHTML=crmHistory.map(h=>'<div class="crm-history-item"><b>'+crmEsc(events[h.event_type]||h.event_type)+'</b><div class="crm-history-meta">'+crmEsc(crmDateDisplay(h.event_at))+(h.from_status||h.to_status?' · '+crmEsc(h.from_status?crmStatusLabel(h.from_status):'')+' → '+crmEsc(h.to_status?crmStatusLabel(h.to_status):''):'')+'</div>'+(h.note?'<div>'+crmEsc(h.note)+'</div>':'')+'</div>').join('')}
 async function saveCrmContact(){
  const c=crmCurrentContact;if(!c||!crmAvailable)return;const status=document.getElementById('crm-status').value,last=document.getElementById('crm-last-contact').value,next=document.getElementById('crm-next-action').value.trim(),follow=document.getElementById('crm-follow-up').value||null,count=Math.max(0,Number(document.getElementById('crm-count').value||0)),followCount=Math.min(2,Math.max(0,Number(document.getElementById('crm-follow-up-count').value||0))),autoFollow=document.getElementById('crm-auto-follow-up').checked,response=document.getElementById('crm-response').value.trim(),visit=document.getElementById('crm-visit').value.trim(),note=document.getElementById('crm-note').value.trim();
  const prev={status:c.contact_status||'not_contacted',next:c.next_action||'',follow:c.follow_up_date||null,response:c.coach_response||'',visit:c.visit_camp||'',count:c.contact_count||0,last:c.last_contact_at||null,followCount:c.follow_up_count||0,autoFollow:c.auto_follow_up_enabled!==false};
  const payload={contact_status:status,last_contact_at:last?new Date(last).toISOString():null,next_action:next||null,follow_up_date:follow,contact_count:count,follow_up_count:followCount,auto_follow_up_enabled:autoFollow,coach_response:response||null,visit_camp:visit||null};
  const {data,error}=await supabaseClient.from('recruiting_contacts').update(payload).eq('id',c.id).eq('owner_user_id',DASHBOARD_OWNER_ID).select('*').single();if(error){alert('CRM save failed: '+error.message);return}
- crmContacts.set(data.university_id+':'+data.coach_key,data);crmCurrentContact=data;updateCrmNextActions(data);const events=[];
+ crmContacts.set(data.university_id+':'+data.coach_key,data);if(crmCurrentContact?.id===c.id){crmCurrentContact=data;updateCrmNextActions(data);}const events=[];
  if(prev.status!==status)events.push({event_type:'status_changed',from_status:prev.status,to_status:status,note:note||null});
  if(prev.next!==next||prev.follow!==follow)events.push({event_type:'follow_up_set',note:note||null});
  if(prev.visit!==visit)events.push({event_type:'visit_camp_updated',note:visit||null});
@@ -10193,7 +10238,7 @@ async function saveCrmContact(){
   }
  }
 
- renderCrmSummary();renderCrmActionList();applyFilters();await loadCrmHistory(data.id);alert('CRM saved.')
+ renderCrmSummary();renderCrmActionList();applyFilters();await loadCrmHistory(data.id);if(crmCurrentContact?.id===data.id)alert('記録を保存しました。')
 }
 
 function createPopupContent(u){
