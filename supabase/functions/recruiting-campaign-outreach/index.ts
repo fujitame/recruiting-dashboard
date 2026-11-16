@@ -8,11 +8,11 @@ export async function handler(req:Request){
   const owner=await ownerFor(req),input=await req.json();
   if(input.action==='preview')return json({ok:true,...await preview(owner,input.campaign_id,input.stage)});
   if(input.action==='schedule'){
-   if(input.reviewed!==true||!Array.isArray(input.groups)||!input.groups.length)throw Error('Review recipients, content, and dates first');
+   if(input.reviewed!==true||input.confirm_schedule!==true||!Array.isArray(input.groups)||!input.groups.length)throw Error('Review recipients, content, and dates first');
    const current=await preview(owner,input.campaign_id,input.stage);
-   if(!current.execution_enabled)throw Error('②学校別日程・③メール内容の確定後に有効化します。');
+   if(!current.reservation_available)throw Error(current.content_confirmed?'予約の開始日時以降に操作してください。':'メール内容の確認完了後に予約できます。');
    const groups=input.groups.map((r:any)=>{const g=current.groups.find((g:any)=>g.source_key===r.source_key&&g.ready);if(!g)throw Error('Preview changed; review again');return {source_key:g.source_key,school_timezone:g.school_timezone};});
-   return json({ok:true,deliveries:checked(await admin.rpc('schedule_recruiting_campaign',{p_owner_id:owner,p_campaign_id:input.campaign_id,p_stage:input.stage,p_groups:groups}))});
+   return json({ok:true,deliveries:checked(await admin.rpc('confirm_and_schedule_recruiting_campaign',{p_owner_id:owner,p_campaign_id:input.campaign_id,p_stage:input.stage,p_groups:groups}))});
   }
   if(input.action==='retry_issue'){
    const item=checked(await admin.from('recruiting_campaign_issues').select('*').eq('owner_user_id',owner).eq('id',input.issue_id).single());
@@ -42,3 +42,4 @@ export async function handler(req:Request){
  }catch(e){return json({ok:false,error:e instanceof Error?e.message:String(e)},String(e).includes('Unauthorized')?403:400);}
 }
 Deno.serve(handler);
+
