@@ -20,7 +20,7 @@ begin
   select x into g from jsonb_array_elements(snapshot->'groups')x where x->>'source_key'=selected->>'source_key';
   if g is null or not(g->>'ready')::boolean then raise exception 'Recipient, draft or dates changed';end if;
   select array_agg(value::uuid) into ids from jsonb_array_elements_text(g->'contact_ids');
-  if exists(select 1 from unnest(ids)id left join public.recruiting_campaign_messages m on m.contact_id=id and m.campaign_id=p_campaign_id and m.owner_user_id=p_owner_id and m.stage=p_stage
+  if exists(select 1 from unnest(ids) as selected_contact(contact_id) left join public.recruiting_campaign_messages m on m.contact_id=selected_contact.contact_id and m.campaign_id=p_campaign_id and m.owner_user_id=p_owner_id and m.stage=p_stage
     left join public.recruiting_campaign_draft_reviews r on r.message_id=m.id and r.owner_user_id=p_owner_id
     where r.reviewed is distinct from true or r.source_subject is distinct from m.subject or r.source_body is distinct from m.body)
   then raise exception 'Current English and Japanese drafts must be reviewed';end if;
