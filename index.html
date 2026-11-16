@@ -2663,7 +2663,7 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
 <details class="crm-overview-actions"><summary>今日・これからのアクション</summary><div id="crm-actions-panel" class="crm-actions-panel" aria-label="CRM 次のアクション"><div class="crm-action-box"><h3>今日・期限超過</h3><div id="crm-due-list" class="crm-action-empty">読み込み中...</div></div><div class="crm-action-box"><h3>次のアクション</h3><div id="crm-next-list" class="crm-action-empty">読み込み中...</div></div></div>
 </details>
 </div></section>
-<div class="cost-note" data-recruiting-area="schools"><b>費用（参考）</b>：保存済み評価シート04の年間参考額・確認額小計と同じ金額を表示しています。学費・住居食費だけの合計ではありません。保険・教材等の算入範囲、対象年度、除外費用は学校ごとに異なるため、「内訳・年度・条件」をご確認ください。奨学金は未提示分を差し引きません。評価シート未保存校は従来の参考値／未確認表示です。</div>
+<div class="cost-note" data-recruiting-area="schools"><b>費用（参考）</b>：評価シートの年間参考額／確認小計です。対象年度・保険等の範囲は「詳細」から評価シートで確認できます。</div>
 
 <div class="main-content" data-recruiting-area="schools"><div id="map-view"></div><div id="list-view">
 <div id="mobile-school-list" class="mobile-school-list"></div>
@@ -7601,12 +7601,14 @@ function getCost(u){const report=REPORT_COSTS[u.id];if(report)return {...report,
 function money(v){return v==null?'—':`$${Number(v).toLocaleString('en-US')}`}
 
 function costHtml(u){
- const c=getCost(u);
- if(!c.report)return legacyCostHtml(u);
- const slug=schoolReportSlugs.get(Number(u.id));
- const reference=slug?`<a href="school-report.html?school=${encodeURIComponent(slug)}" target="_blank" rel="noopener noreferrer" onclick="return openSchoolReportOverlay(event,${Number(u.id)})">評価シート04 ↗</a>`:'保存済み評価シート04';
- const breakdown=c.rows.map(([label,value])=>`<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin:3px 0"><span>${crmEsc(label)}</span><b>${crmEsc(value)}</b></div>`).join('');
- return `<div class="cost-cell"><div class="cost-sub" style="color:#1a365d;font-weight:700">${crmEsc(c.totalLabel)}</div><div class="cost-main" style="font-size:13px">${crmEsc(c.totalText)}</div><div class="cost-sub">${crmEsc(c.scope)}</div><details style="margin-top:4px"><summary style="cursor:pointer;font-size:10px">内訳・年度・条件</summary><div style="font-size:10px;padding:4px 0;max-width:340px;white-space:normal;overflow-wrap:anywhere">${breakdown}${c.note?`<p style="margin:5px 0;color:#52657b">${crmEsc(c.note)}</p>`:''}</div></details><div class="cost-sub">${reference}・11/16照合</div></div>`;
+ const c=getCost(u),slug=schoolReportSlugs.get(Number(u.id));
+ const value=c.report?c.totalText:(c.total==null?'未確認':money(c.total));
+ const isSubtotal=c.report&&/小計|主要|直接費|固定費|[35]項目/.test(c.totalLabel);
+ const insuranceExtra=c.report&&/保険(?:等)?別(?!途照合)/.test(c.totalLabel);
+ const label=c.report&&c.total==null?'対象条件未確認':isSubtotal?(insuranceExtra?'小計・保険別':'確認小計'):insuranceExtra?'参考額・保険別':'年間参考額';
+ const title=c.report?[c.totalLabel,c.scope].filter(Boolean).join('｜'):c.year||'';
+ const detail=slug?`<a href="school-report.html?school=${encodeURIComponent(slug)}" target="_blank" rel="noopener noreferrer" onclick="return openSchoolReportOverlay(event,${Number(u.id)})">詳細 ↗</a>`:'';
+ return `<div class="cost-cell cost-compact" style="min-width:0;max-width:100%;white-space:normal;line-height:1.3" title="${crmEsc(title)}"><b class="cost-main" style="display:block;font-size:12px;white-space:nowrap">${crmEsc(value)}</b><span class="cost-sub" style="display:block;white-space:nowrap">${crmEsc(label)}</span>${detail?`<span class="cost-sub" style="display:block;white-space:nowrap">${detail}</span>`:''}</div>`;
 }
 function legacyCostHtml(u){const c=getCost(u);const meta=COST_SOURCES[u.id];const source=meta?`<div class="cost-sub"><a href="${crmEsc(meta.source)}" target="_blank" rel="noopener noreferrer" title="${crmEsc(meta.basis)}">${crmEsc(meta.label||'2026–27 official reference')} ↗</a></div>`:'';const note=meta?.note?`<div class="cost-sub">${crmEsc(meta.note)}</div>`:'';const shortMoney=v=>v==null?'—':`$${(Number(v)/1000).toFixed(1)}K`;if(c.tuition==null&&c.living==null)return `<div class="cost-cell"><div class="cost-sub">Cost pending</div>${source}${note}</div>`;return `<div class="cost-cell"><div class="cost-row"><span>Tuition</span><b>${shortMoney(c.tuition)}</b></div><div class="cost-row"><span>Living</span><b>${shortMoney(c.living)}</b></div><div class="cost-row cost-total"><span>TOTAL</span><b>${shortMoney(c.total)}</b></div>${source}${note}</div>`}
 
