@@ -1,3 +1,4 @@
+import {gmailResponseError} from './campaign-send-control.js';
 import {createClient} from 'npm:@supabase/supabase-js@2.117.3';
 import {GMAIL_ACCOUNT,getHeader,emailAddress,gmailGetThread,googleAccessToken,verifyGmailSentBody} from './followup-batch-gmail.ts';
 import {timezoneForCoordinates} from './followup-batch-timezone.ts';
@@ -37,7 +38,7 @@ export async function hold(d:any,message:string,unknown=false){
 export async function accountToken(){
  const token=await googleAccessToken();
  const response=await fetch('https://gmail.googleapis.com/gmail/v1/users/me/profile',{headers:{Authorization:'Bearer '+token}});
- const profile=await response.json();if(!response.ok||String(profile.emailAddress||'').toLowerCase()!==GMAIL_ACCOUNT)throw Error('Gmail account mismatch');return token;
+ const profile=await response.json().catch(()=>({}));if(!response.ok)throw gmailResponseError(response,profile,'Gmail account verification failed');if(String(profile.emailAddress||'').toLowerCase()!==GMAIL_ACCOUNT)throw Error('Gmail account mismatch');return token;
 }
 export const marker=(id:string)=>'<crm-'+id+'@fujitame.github.io>';
 export function decodedSubject(value:string){return value.replace(/=\?utf-8\?([bq])\?([^?]*)\?=/gi,(_m,kind,encoded)=>{const bytes=kind.toLowerCase()==='b'?Uint8Array.from(atob(encoded),c=>c.charCodeAt(0)):Uint8Array.from(encoded.replace(/_/g,' ').replace(/=([0-9a-f]{2})/gi,(_m:string,h:string)=>String.fromCharCode(parseInt(h,16))),c=>c.charCodeAt(0));return new TextDecoder().decode(bytes);});}
@@ -65,7 +66,7 @@ export async function reconcile(d:any,token:string){
   if(!Number.isFinite(start))return {verified:false,reason:'Transport time unavailable; do not resend'};
   const query='in:sent to:'+d.recipient_email+' after:'+(start-120)+' before:'+(start+3600);
   const response=await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=20&q='+encodeURIComponent(query),{headers:{Authorization:'Bearer '+token}});
-  const found=await response.json();if(!response.ok)throw Error('Gmail reconciliation search failed');
+  const found=await response.json().catch(()=>({}));if(!response.ok)throw Error('Gmail reconciliation search failed');
   if(found.nextPageToken)return {verified:false,reason:'Too many candidates; do not resend'};
   ids=(found.messages||[]).map((m:any)=>m.id);
  }
@@ -82,7 +83,7 @@ export async function schoolGmailGate(d:any,token:string){
  const addresses=[...new Set<string>(contacts.map((c:any)=>String(c.coach_email||'').trim().toLowerCase()).filter((email:string)=>/^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-z0-9.-]+\.[a-z]{2,}$/i.test(email)))];
  if(addresses.length){
   const q='in:anywhere -in:spam -in:trash {'+addresses.map(email=>'from:'+email).join(' ')+'}';
-  const r=await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=1&q='+encodeURIComponent(q),{headers:{Authorization:'Bearer '+token}}),found=await r.json();if(!r.ok)throw Error('School sender reply search failed');
+  const r=await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=1&q='+encodeURIComponent(q),{headers:{Authorization:'Bearer '+token}}),found=await r.json().catch(()=>({}));if(!r.ok)throw gmailResponseError(r,found,'School sender reply search failed');
   if(found.messages?.length){await issue(d,'reply_attribution','学校のコーチからGmailへの受信あり。別スレッドも含めて返信を確認してください。',true,'gmail-reply:'+d.campaign_id+':'+d.university_id);throw Error('School sender reply found in Gmail; bulk outreach stopped');}
  }
  const threads=new Set<string>(contacts.map((c:any)=>c.gmail_thread_id).filter(Boolean));
