@@ -1,3 +1,4 @@
+import {gmailResponseError} from "./campaign-send-control.js";
 import { gmailGetThread, googleAccessToken as batchAccessToken, threadReplyFrom, GMAIL_ACCOUNT, emailAddress, getHeader } from "./followup-batch-gmail.ts";
 import {liveReplyStateLabel} from './campaign-reply-attribution.js';
 const GOOGLE_CLIENT_ID =
@@ -48,7 +49,7 @@ export async function googleAccessToken() {
     },
   );
 
-  const data = await response.json();
+  const data = await response.json().catch(()=>({}));
 
   if (!response.ok || !data.access_token) {
     throw new Error(
@@ -79,13 +80,10 @@ export async function gmailRequest(
     },
   );
 
-  const data = await response.json();
+  const data = await response.json().catch(()=>({}));
 
   if (!response.ok) {
-    throw new Error(
-      data.error?.message ||
-      `Gmail API error: ${response.status}`,
-    );
+    throw gmailResponseError(response,data,"Gmail label request failed");
   }
 
   return data;
@@ -317,4 +315,5 @@ export async function syncCampaignDeliveryLabels(db:any,delivery:any){
  }
  await syncRecruitingThreadLabels(delivery.gmail_thread_id,target);return target;
 }
+
 
