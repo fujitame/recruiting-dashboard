@@ -1,3 +1,4 @@
+import {gmailResponseError} from './campaign-send-control.js';
 export const GMAIL_ACCOUNT = (Deno.env.get("GMAIL_ACCOUNT") || "fujiakihiro8@gmail.com").toLowerCase();
 
 export function getHeader(headers: any[] = [], name: string): string {
@@ -27,7 +28,7 @@ export async function googleAccessToken(): Promise<string> {
       grant_type: "refresh_token",
     }),
   });
-  const data = await response.json();
+  const data = await response.json().catch(()=>({}));
   if (!response.ok || !data.access_token) {
     throw new Error(data.error_description || data.error || "Google OAuth refresh failed");
   }
@@ -39,8 +40,8 @@ export async function gmailGetThread(threadId: string, token: string): Promise<a
     "https://gmail.googleapis.com/gmail/v1/users/me/threads/" + encodeURIComponent(threadId) + "?format=full",
     { headers: { Authorization: "Bearer " + token } },
   );
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.error?.message || "Gmail thread lookup failed");
+  const data = await response.json().catch(()=>({}));
+  if (!response.ok) throw gmailResponseError(response,data,"Gmail thread lookup failed");
   return data;
 }
 
@@ -50,9 +51,9 @@ export async function gmailSend(raw: string, threadId: string | null, token: str
     headers: { Authorization: "Bearer " + token, "content-type": "application/json" },
     body: JSON.stringify(threadId ? { raw, threadId } : { raw }),
   });
-  const data = await response.json();
+  const data = await response.json().catch(()=>({}));
   if (!response.ok || !data.id) {
-    throw new Error(data.error?.message || "Gmail did not confirm the message");
+    throw gmailResponseError(response,data,"Gmail did not confirm the message");
   }
   return data;
 }
@@ -121,8 +122,8 @@ export async function verifyGmailSentBody(messageId: string, expectedBody: strin
     "https://gmail.googleapis.com/gmail/v1/users/me/messages/" + encodeURIComponent(messageId) + "?format=full",
     { headers: { Authorization: "Bearer " + token } },
   );
-  if (!response.ok) throw new Error("Could not verify sent Gmail message: " + response.status);
-  const message = await response.json();
+  if (!response.ok) throw gmailResponseError(response,await response.json().catch(()=>({})),"Could not verify sent Gmail message");
+  const message = await response.json().catch(()=>({}));
   const normalize = (value: string) => value.replace(/\r\n?/g, "\n").trim();
   if (message.id !== messageId || normalize(plainTextMessage(message)) !== normalize(expectedBody)) {
     throw new Error("Sent Gmail body is missing or differs from the confirmed body.");
@@ -157,6 +158,7 @@ export function buildReplyRaw(args: {
     args.cc?.length ? "Cc: " + args.cc.map(clean).join(", ") : "",
     "Subject: " + encodedSubject,
     args.transportMessageId ? "Message-ID: " + clean(args.transportMessageId) : "",
+    args.transportMessageId ? "X-Recruiting-Delivery-ID: " + clean(args.transportMessageId) : "",
     args.messageId ? "In-Reply-To: " + clean(args.messageId) : "",
     references ? "References: " + clean(references) : "",
     "MIME-Version: 1.0",
@@ -171,4 +173,5 @@ export function buildReplyRaw(args: {
   return btoa(unescape(encodeURIComponent(mime)))
     .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
 }
+
 
