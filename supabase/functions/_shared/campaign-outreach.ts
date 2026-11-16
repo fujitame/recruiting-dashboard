@@ -21,6 +21,10 @@ export async function preview(owner:string,campaign:string,stage:string){
   const school=schools.find((s:any)=>s.id===group.university_id);group.school_name=school?.name||'';
   try{if(school?.latitude==null||school?.longitude==null)throw Error('Coordinates unavailable');group.school_timezone=timezoneForCoordinates(school.latitude,school.longitude);}catch{group.send_reasons.push('timezone_missing');group.ready=false;}
  }
+ const execution=checked(await admin.from('recruiting_campaign_execution').select('enabled,content_confirmed_at,schedule_confirmed_at,reservation_not_before').eq('campaign_id',campaign).eq('owner_user_id',owner).maybeSingle());
+ snapshot.content_confirmed=!!execution?.content_confirmed_at;
+ snapshot.reservation_not_before=execution?.reservation_not_before||null;
+ snapshot.reservation_available=!!execution?.content_confirmed_at&&(!execution.reservation_not_before||Date.parse(execution.reservation_not_before)<=Date.now());
  return snapshot;
 }
 export async function issue(d:any,kind:string,details:string,blocking=true,key?:string){
@@ -41,7 +45,10 @@ export async function verifyDelivery(d:any,id:string,token:string){
  const message=await verifyGmailSentBody(id,d.transport_body,token);
  const headers=message.payload?.headers||[];
  const recipients=getHeader(headers,'To').split(',').map((s:string)=>emailAddress(s));
- if(emailAddress(getHeader(headers,'From'))!==GMAIL_ACCOUNT||recipients.length!==1||recipients[0]!==d.recipient_email||getHeader(headers,'Message-ID').trim()!==marker(d.id)||decodedSubject(getHeader(headers,'Subject'))!==d.subject||!(message.labelIds||[]).includes('SENT'))throw Error('Gmail delivery identity mismatch');
+ const ownMarker=getHeader(headers,'Message-ID').trim()===marker(d.id)||getHeader(headers,'X-Recruiting-Delivery-ID').trim()===marker(d.id);
+ const recordedResponse=d.gmail_message_id===id&&message.id===id;
+ if(!ownMarker&&!recordedResponse)throw Error('Gmail delivery marker mismatch');
+ if(emailAddress(getHeader(headers,'From'))!==GMAIL_ACCOUNT||recipients.length!==1||recipients[0]!==d.recipient_email||decodedSubject(getHeader(headers,'Subject'))!==d.subject||!(message.labelIds||[]).includes('SENT'))throw Error('Gmail delivery identity mismatch');
  if(d.stage!=='initial'){
   const predecessor=checked(await admin.from('recruiting_campaign_deliveries').select('*').eq('id',d.predecessor_id).eq('owner_user_id',d.owner_user_id).single());
   if(predecessor.status!=='sent'||message.threadId!==predecessor.gmail_thread_id)throw Error('Campaign follow-up thread mismatch');
@@ -51,10 +58,21 @@ export async function verifyDelivery(d:any,id:string,token:string){
 export async function reconcile(d:any,token:string){
  if(d.status==='sent')return {verified:true,already_sent:true};
  if(!d.transport_started_at||!d.transport_body)return {verified:false,reason:'No transport attempt recorded'};
- const response=await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages?q='+encodeURIComponent('in:sent rfc822msgid:'+marker(d.id)),{headers:{Authorization:'Bearer '+token}});
- const found=await response.json();if(!response.ok)throw Error(found.error?.message||'Gmail search failed');
- if((found.messages||[]).length!==1)return {verified:false,reason:'No unique verified Gmail match; do not resend'};
- const message=await verifyDelivery(d,found.messages[0].id,token);
+ let ids:string[]=[];
+ if(d.gmail_message_id)ids=[d.gmail_message_id];
+ else{
+  const start=Math.floor(Date.parse(d.transport_started_at)/1000);
+  if(!Number.isFinite(start))return {verified:false,reason:'Transport time unavailable; do not resend'};
+  const query='in:sent to:'+d.recipient_email+' after:'+(start-120)+' before:'+(start+3600);
+  const response=await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=20&q='+encodeURIComponent(query),{headers:{Authorization:'Bearer '+token}});
+  const found=await response.json();if(!response.ok)throw Error('Gmail reconciliation search failed');
+  if(found.nextPageToken)return {verified:false,reason:'Too many candidates; do not resend'};
+  ids=(found.messages||[]).map((m:any)=>m.id);
+ }
+ const matches:any[]=[];
+ for(const id of ids){try{matches.push(await verifyDelivery(d,id,token));}catch{}}
+ if(matches.length!==1)return {verified:false,reason:'No unique verified Gmail match; do not resend'};
+ const message=matches[0];
  checked(await admin.rpc('finalize_recruiting_campaign_delivery',{p_delivery_id:d.id,p_gmail_message_id:message.id,p_gmail_thread_id:message.threadId,p_sent_at:new Date(Number(message.internalDate)).toISOString()}));
  return {verified:true};
 }
@@ -81,3 +99,5 @@ export async function schoolGmailGate(d:any,token:string){
   }
  }
 }
+
+
