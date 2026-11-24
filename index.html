@@ -2381,7 +2381,8 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
 .candidate-table th:nth-child(10),.candidate-table td:nth-child(10){width:200px;min-width:190px;max-width:none}
 .candidate-table td:nth-child(10),.candidate-table td:nth-child(10)>div,.candidate-table td:nth-child(10) b{white-space:normal!important;overflow:visible!important;text-overflow:clip!important}
 .candidate-table td:nth-child(10) b{word-break:normal;overflow-wrap:normal}
-.candidate-table th:nth-child(11),.candidate-table td:nth-child(11),.candidate-table th:nth-child(12),.candidate-table td:nth-child(12){width:58px;min-width:56px;text-align:center;white-space:nowrap}
+.candidate-table th:nth-child(11),.candidate-table td:nth-child(11){width:60px;min-width:58px;text-align:center;white-space:nowrap}
+.candidate-table th:nth-child(12),.candidate-table td:nth-child(12){width:76px;min-width:72px;text-align:center;white-space:nowrap}
 .candidate-table td:nth-child(11) .gmail-btn,.candidate-table td:nth-child(12) .crm-btn{min-width:24px;padding:3px 4px;margin:0 1px}
 .school-status-summary{display:flex;flex-direction:column;align-items:flex-start;gap:5px}
 .school-status-summary .crm-school-status{cursor:default;font-size:10px;max-width:100%!important;white-space:normal!important;text-align:left}
@@ -2483,7 +2484,7 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
 </div>
 
 
-<details class="candidate-status-guide" data-recruiting-area="schools"><summary>連絡状況・進捗は全活動の累積です</summary><p>連絡状況はコーチの記録を学校単位で集約します。「返信あり」は少なくとも1人から返信があった状態で、採用への関心を意味しません。「学校との進捗」はIDキャンプやオファーなど、確認して保存した内容です。今回の初回・Follow-upごとの送信・予約・返信は「活動状況・送信準備」で確認してください。</p></details>
+<details class="candidate-status-guide" data-recruiting-area="schools"><summary>連絡状況・進捗は全活動の累積です</summary><p>連絡状況はコーチの記録を学校単位で集約します。「返信あり」は少なくとも1人から返信があった状態で、採用への関心を意味しません。「学校との進捗」はIDキャンプやオファーなど、確認して保存した内容です。今回の初回・Follow-upごとの送信・予約・返信は「活動状況・送信準備」で確認してください。</p><p>各行の「送信準備」は連絡状況に応じた画面を開き、「連絡先・履歴」は一覧を離れずに確認できます。</p></details>
 <section data-recruiting-area="activity" hidden style="flex:1;min-height:720px"><iframe id="activity-frame" title="活動状況・送信準備" style="width:100%;height:85vh;min-height:720px;border:0"></iframe></section>
 <section class="workflow-area-placeholder outreach-area" data-recruiting-area="outreach" hidden>
   <div class="workflow-area-head">
@@ -2681,8 +2682,8 @@ input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;accent-color:#1d4
             <th>Scouting</th>
             <th>Cost (Ref./Yr.)</th>
             <th>Coach</th>
-            <th>連絡</th>
-            <th>CRM</th>
+            <th>送信準備</th>
+            <th>連絡先・履歴</th>
         </tr>
     </thead><tbody id="table-body"></tbody></table></div></div></div>
 
@@ -10436,9 +10437,11 @@ function renderMobileSchoolCards(){
       </div>
       <div class="candidate-coach-actions">
        <button type="button" class="candidate-gmail-btn"
-        onclick="openGmailComposer(${u.id},'head_coach')">文案・送信準備</button>
+        title="HCの送信準備を開く" aria-label="${crmEsc(u.name||'')} Head Coachの送信準備を開く"
+        onclick="openGmailComposer(${u.id},'head_coach')">送信準備</button>
        <button type="button" class="candidate-detail-btn"
-        onclick="openCrmDrawer(${u.id},'head_coach')">詳細</button>
+        title="HCの連絡先・履歴を開く" aria-label="${crmEsc(u.name||'')} Head Coachの連絡先・履歴を開く"
+        onclick="openCrmDrawer(${u.id},'head_coach')">連絡先・履歴</button>
       </div>
      </div>
 
@@ -10449,9 +10452,11 @@ function renderMobileSchoolCards(){
       </div>
       <div class="candidate-coach-actions">
        <button type="button" class="candidate-gmail-btn"
-        onclick="openGmailComposer(${u.id},'assistant_coach')">文案・送信準備</button>
+        title="ACの送信準備を開く" aria-label="${crmEsc(u.name||'')} Assistant Coachの送信準備を開く"
+        onclick="openGmailComposer(${u.id},'assistant_coach')">送信準備</button>
        <button type="button" class="candidate-detail-btn"
-        onclick="openCrmDrawer(${u.id},'assistant_coach')">詳細</button>
+        title="ACの連絡先・履歴を開く" aria-label="${crmEsc(u.name||'')} Assistant Coachの連絡先・履歴を開く"
+        onclick="openCrmDrawer(${u.id},'assistant_coach')">連絡先・履歴</button>
       </div>
      </div>
 
@@ -10557,7 +10562,7 @@ function schoolCrmStatusClass(state){
  return map[state]||'status-uncontacted';
 }
 
-function renderTable(){renderMobileSchoolCards();const tbody=document.getElementById('table-body');tbody.innerHTML='';visibleUniversities().forEach(u=>{const tr=document.createElement('tr');tr.id=`row-${u.id}`;tr.innerHTML=`<td><button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button></td><td>${u.id}</td><td><strong>${schoolNameHtml(u)}</strong><div data-mail-interest-school="${u.id}">${crmSchoolInterestHtml(u.id)}</div></td><td><span class="badge ${badgeClass(u.div)}">${u.div}</span></td><td>${u.conf}</td><td>${schoolOverviewStatusHtml(u)}</td><td class="external-link-cell">${u.ig?`<a class="btn-link btn-ig" href="${crmEsc(u.ig)}" target="_blank" rel="noopener noreferrer">IG</a>`:`<span class="btn-link btn-ig disabled-mail" title="公式Instagram未確認">IG —</span>`}<a class="btn-link btn-fac" href="${u.facility}" target="_blank" rel="noopener noreferrer">施設</a><a class="btn-link btn-ros" href="${u.roster}" target="_blank" rel="noopener noreferrer">Roster</a></td><td>${u.desc}</td><td>${costHtml(u)}</td><td class="coach-cell"><div class="coach-row"><span>HC</span><b>${u.hc_name||'Coach'}</b></div><div class="coach-row"><span>AC</span><b>${u.ac_name||'Coach'}</b></div><div class="${u.staff_status==='verified'?'staff-flag':u.staff_status==='partial'?'staff-flag partial':'staff-flag review'}">${u.staff_status==='verified'?'✓ Verified':u.staff_status==='partial'?'△ Verify':'⚠ Verify'}</div></td><td class="action-cell"><button class="gmail-btn" type="button" title="HCへメール" onclick="openGmailComposer(${u.id},'head_coach')">HC</button><button class="gmail-btn" type="button" title="ACへメール" onclick="openGmailComposer(${u.id},'assistant_coach')">AC</button></td><td class="action-cell"><button class="crm-btn" type="button" title="HCのCRM" onclick="openCrmDrawer(${u.id},'head_coach')">HC</button><button class="crm-btn" type="button" title="ACのCRM" onclick="openCrmDrawer(${u.id},'assistant_coach')">AC</button></td>`;tbody.appendChild(tr)})}
+function renderTable(){renderMobileSchoolCards();const tbody=document.getElementById('table-body');tbody.innerHTML='';visibleUniversities().forEach(u=>{const tr=document.createElement('tr');tr.id=`row-${u.id}`;tr.innerHTML=`<td><button class="star-btn ${u.fav?'active':''}" onclick="toggleFav(${u.id})">★</button></td><td>${u.id}</td><td><strong>${schoolNameHtml(u)}</strong><div data-mail-interest-school="${u.id}">${crmSchoolInterestHtml(u.id)}</div></td><td><span class="badge ${badgeClass(u.div)}">${u.div}</span></td><td>${u.conf}</td><td>${schoolOverviewStatusHtml(u)}</td><td class="external-link-cell">${u.ig?`<a class="btn-link btn-ig" href="${crmEsc(u.ig)}" target="_blank" rel="noopener noreferrer">IG</a>`:`<span class="btn-link btn-ig disabled-mail" title="公式Instagram未確認">IG —</span>`}<a class="btn-link btn-fac" href="${u.facility}" target="_blank" rel="noopener noreferrer">施設</a><a class="btn-link btn-ros" href="${u.roster}" target="_blank" rel="noopener noreferrer">Roster</a></td><td>${u.desc}</td><td>${costHtml(u)}</td><td class="coach-cell"><div class="coach-row"><span>HC</span><b>${u.hc_name||'Coach'}</b></div><div class="coach-row"><span>AC</span><b>${u.ac_name||'Coach'}</b></div><div class="${u.staff_status==='verified'?'staff-flag':u.staff_status==='partial'?'staff-flag partial':'staff-flag review'}">${u.staff_status==='verified'?'✓ Verified':u.staff_status==='partial'?'△ Verify':'⚠ Verify'}</div></td><td class="action-cell"><button class="gmail-btn" type="button" title="HCの送信準備を開く" aria-label="${crmEsc(u.name||'')} Head Coachの送信準備を開く" onclick="openGmailComposer(${u.id},'head_coach')">HC</button><button class="gmail-btn" type="button" title="ACの送信準備を開く" aria-label="${crmEsc(u.name||'')} Assistant Coachの送信準備を開く" onclick="openGmailComposer(${u.id},'assistant_coach')">AC</button></td><td class="action-cell"><button class="crm-btn" type="button" title="HCの連絡先・履歴を開く" aria-label="${crmEsc(u.name||'')} Head Coachの連絡先・履歴を開く" onclick="openCrmDrawer(${u.id},'head_coach')">HC</button><button class="crm-btn" type="button" title="ACの連絡先・履歴を開く" aria-label="${crmEsc(u.name||'')} Assistant Coachの連絡先・履歴を開く" onclick="openCrmDrawer(${u.id},'assistant_coach')">AC</button></td>`;tbody.appendChild(tr)})}
 
 
 function toggleFav(id){const u=universities.find(x=>x.id===id);if(!u)return;u.fav=!u.fav;const row=document.getElementById(`row-${id}`);if(row)row.querySelector('.star-btn')?.classList.toggle('active',u.fav);const mobileCard=document.getElementById(`mobile-card-${id}`);if(mobileCard)mobileCard.querySelector('.star-btn')?.classList.toggle('active',u.fav);const mo=markers.find(m=>m.data.id===id);if(mo&&mo.instance.isPopupOpen())mo.instance.setPopupContent(createPopupContent(u));applyFilters();saveDataToCloud()}
