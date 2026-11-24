@@ -39,7 +39,7 @@ async function run(mode,count,options={}){
  assert.equal(c.chooseRecruitingStateLabel({contact_status:'follow_up_due'},[]),'Recruiting/Follow-up Due');
  assert.equal(c.chooseRecruitingStateLabel({contact_status:'no_response',follow_up_count:2},[]),'Recruiting/No Response');
  assert.equal(c.chooseRecruitingStateLabel({contact_status:'contacted',coach_response:'Coach replied'},[]),'Recruiting/Needs Reply');
- async function shared(contacts,history=[]){const db={from:table=>{const q={select:()=>q,eq:()=>q,in:()=>q,then:fn=>Promise.resolve({data:table==='recruiting_contacts'?contacts:history,error:null}).then(fn)};return q}};await c.syncContactThreadLabels(db,{owner_user_id:'fixture',gmail_thread_id:'shared-thread'});return labels.at(-1).label;}
+ async function shared(contacts,history=[]){const db={from:table=>{const q={select:()=>q,eq:()=>q,in:()=>q,order:()=>q,limit:()=>q,then:fn=>Promise.resolve({data:table==='recruiting_contacts'?contacts:table==='recruiting_contact_history'?history:[],error:null}).then(fn)};return q}};await c.syncContactThreadLabels(db,{owner_user_id:'fixture',gmail_thread_id:'shared-thread'});return labels.at(-1).label;}
  assert.equal(await shared([{contact_status:'no_response',follow_up_count:2},{contact_status:'contacted',follow_up_count:0}]),'Recruiting/Waiting Coach');
  assert.equal(await shared([{contact_status:'no_response',follow_up_count:2},{contact_status:'no_response',follow_up_count:2}]),'Recruiting/No Response');
  assert.equal(await shared([{contact_status:'responded',coach_response:'Reply'},{contact_status:'contacted'}],[{event_type:'reply_received',event_at:'2026-10-07T00:00:00Z'}]),'Recruiting/Needs Reply');
