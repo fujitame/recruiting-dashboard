@@ -29,6 +29,12 @@
 
 **設計の理由：** Gmail・DB間に一つのトランザクションは張れない。画面だけで送信可否を判定せず、予約時と実行直前に同じ制約を確かめる。Gmail受理後の未知状態は照合へ回す。過去の履歴や累積の進捗は保全しつつ、「今回の活動」の予約・送信・返信・反応は別の範囲として扱う。
 
+### ChatGPTの契約を停止する場合の依存関係
+
+- CRMとProfileの `main`（CRM `7f3b5ee`、Profile `fe1b8c9`）と、確認時点のデプロイ済みSupabase Edge Functions 17件を読み取りで確認。直接のOpenAI API呼び出し・OpenAI APIキー参照は見つからなかった。稼働ソースの初回文案・通常Follow-up・個別返信・返信後Follow-upの4関数は、いずれも `GEMINI_API_KEY` でGemini Developer APIを呼ぶ。公開Profileの問い合わせはSupabase RPCとEmailJS、CRMの送信・返信同期はGmail APIが担当する。**確認したアプリ経路にOpenAIからのAPI移行は不要。**
+- [ChatGPTの契約とOpenAI APIの請求](https://help.openai.com/ja-jp/articles/9039756-managing-billing-for-chatgpt-and-the-api-platform)は別。OpenAI API組織の契約・使用明細や、この2リポジトリ外のサービスまでは確認対象外。Antigravityは開発環境であり、CRM本番のGemini APIの契約・鍵を代替しない。Gemini文案が使えない場合は [Gemini APIの料金・利用枠](https://ai.google.dev/gemini-api/docs/pricing)、Google側の対応モデル、Supabase側の鍵設定をそれぞれ確認する。鍵の値は共有しない。
+- **ChatGPT側の外付け定期監視とSupabase側の予約・返信同期は別。** ChatGPTで運用している再アプローチ等の定期タスクや接続権限は、GitHubやRemote Projectに自動移管されない。契約変更前に継続要否、直近の実行結果、未処理の対象と今後の承認範囲を非公開の運用記録で確認する。必要ならAntigravity等へ引き継ぎ、まず読み取り専用で試し、旧監視と新監視から重複して予約・送信しない切替を計画する。正確な送信時刻を管理するのは既存のSupabase予約キューであり、AIの監視スケジュールへ置き換えない。
+
 ## 3. 主要データと導線
 
 | データ | 変更時の注意 |
